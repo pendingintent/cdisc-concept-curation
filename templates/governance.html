@@ -1,0 +1,213 @@
+{% extends "base.html" %}
+
+{% block title %}Governance Board — CDISC BC Curation{% endblock %}
+{% block page_title %}Governance Board{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <h1 class="page-title">Governance Workflow Board</h1>
+  <span class="page-meta">
+    BCs enter as Provisional and progress through SME Review and CDISC Approval before publishing.
+  </span>
+</div>
+
+<!-- Summary counts -->
+<div class="metric-grid mb-3">
+  <div class="metric-card metric-card-amber">
+    <div class="metric-val metric-val-amber">{{ columns.provisional | length if columns else 0 }}</div>
+    <div class="metric-lbl">Provisional</div>
+  </div>
+  <div class="metric-card metric-card-purple">
+    <div class="metric-val metric-val-purple">{{ columns.sme_review | length if columns else 0 }}</div>
+    <div class="metric-lbl">SME Review</div>
+  </div>
+  <div class="metric-card metric-card-blue">
+    <div class="metric-val metric-val-blue">{{ columns.cdisc_approval | length if columns else 0 }}</div>
+    <div class="metric-lbl">CDISC Approval</div>
+  </div>
+  <div class="metric-card metric-card-green">
+    <div class="metric-val metric-val-green">{{ columns.published | length if columns else 0 }}</div>
+    <div class="metric-lbl">Published</div>
+  </div>
+</div>
+
+<!-- Kanban board -->
+<div class="kanban-grid" role="region" aria-label="Governance Kanban board">
+
+  <!-- Provisional column -->
+  <div class="kanban-column" role="list" aria-label="Provisional BCs">
+    <div class="kanban-column-header kanban-header-provisional">
+      <span>Provisional</span>
+      <span class="kanban-column-count kanban-count-provisional">
+        {{ columns.provisional | length if columns else 0 }}
+      </span>
+    </div>
+    <div class="kanban-column-body">
+      {% if columns and columns.provisional %}
+        {% for bc in columns.provisional %}
+        <div class="kanban-card" role="listitem">
+          <a href="{{ url_for('bc.detail', bc_id=bc.bc_id) }}" class="text-decoration-none">
+            <div class="kanban-card-title">{{ bc.short_name }}</div>
+          </a>
+          <div class="kanban-card-meta">
+            {% if bc.ncit_code %}<code>{{ bc.ncit_code }}</code> &middot; {% endif %}
+            {{ bc.submitter | default('Unknown') }}
+            {% if bc.updated_at %} &middot; {{ bc.updated_at }}{% endif %}
+          </div>
+          <span class="bc-badge bc-badge-provisional">Awaiting SME</span>
+          <div class="kanban-card-actions">
+            <button type="button"
+                    class="btn btn-sm btn-outline-secondary kanban-advance-btn"
+                    data-bc-id="{{ bc.bc_id }}"
+                    aria-label="Advance {{ bc.short_name }} to SME Review">
+              <i class="bi bi-arrow-right" aria-hidden="true"></i> Advance
+            </button>
+            <button type="button"
+                    class="btn btn-sm btn-outline-danger kanban-reject-btn"
+                    data-bc-id="{{ bc.bc_id }}"
+                    aria-label="Reject {{ bc.short_name }}">
+              <i class="bi bi-x" aria-hidden="true"></i> Reject
+            </button>
+          </div>
+        </div>
+        {% endfor %}
+      {% else %}
+        <div class="small text-secondary px-2 py-3 text-center">No BCs in this stage.</div>
+      {% endif %}
+    </div>
+  </div>
+
+  <!-- SME Review column -->
+  <div class="kanban-column" role="list" aria-label="SME Review BCs">
+    <div class="kanban-column-header kanban-header-sme-review">
+      <span>SME Review</span>
+      <span class="kanban-column-count kanban-count-sme-review">
+        {{ columns.sme_review | length if columns else 0 }}
+      </span>
+    </div>
+    <div class="kanban-column-body">
+      {% if columns and columns.sme_review %}
+        {% for bc in columns.sme_review %}
+        <div class="kanban-card" role="listitem">
+          <a href="{{ url_for('bc.detail', bc_id=bc.bc_id) }}" class="text-decoration-none">
+            <div class="kanban-card-title">{{ bc.short_name }}</div>
+          </a>
+          <div class="kanban-card-meta">
+            {% if bc.ncit_code %}<code>{{ bc.ncit_code }}</code> &middot; {% endif %}
+            {{ bc.submitter | default('Unknown') }}
+            {% if bc.assigned_to %} &middot; {{ bc.assigned_to }}{% endif %}
+          </div>
+          <span class="bc-badge bc-badge-sme-review">SME Review</span>
+          <div class="kanban-card-actions">
+            <button type="button"
+                    class="btn btn-sm btn-outline-secondary kanban-advance-btn"
+                    data-bc-id="{{ bc.bc_id }}"
+                    aria-label="Advance {{ bc.short_name }} to CDISC Approval">
+              <i class="bi bi-arrow-right" aria-hidden="true"></i> Advance
+            </button>
+            <button type="button"
+                    class="btn btn-sm btn-outline-danger kanban-reject-btn"
+                    data-bc-id="{{ bc.bc_id }}"
+                    aria-label="Reject {{ bc.short_name }}">
+              <i class="bi bi-x" aria-hidden="true"></i> Reject
+            </button>
+          </div>
+        </div>
+        {% endfor %}
+      {% else %}
+        <div class="small text-secondary px-2 py-3 text-center">No BCs in this stage.</div>
+      {% endif %}
+    </div>
+  </div>
+
+  <!-- CDISC Approval column -->
+  <div class="kanban-column" role="list" aria-label="CDISC Approval BCs">
+    <div class="kanban-column-header kanban-header-cdisc-approval">
+      <span>CDISC Approval</span>
+      <span class="kanban-column-count kanban-count-cdisc-approval">
+        {{ columns.cdisc_approval | length if columns else 0 }}
+      </span>
+    </div>
+    <div class="kanban-column-body">
+      {% if columns and columns.cdisc_approval %}
+        {% for bc in columns.cdisc_approval %}
+        <div class="kanban-card" role="listitem">
+          <a href="{{ url_for('bc.detail', bc_id=bc.bc_id) }}" class="text-decoration-none">
+            <div class="kanban-card-title">{{ bc.short_name }}</div>
+          </a>
+          <div class="kanban-card-meta">
+            {% if bc.ncit_code %}<code>{{ bc.ncit_code }}</code> &middot; {% endif %}
+            {{ bc.submitter | default('Unknown') }}
+          </div>
+          <span class="bc-badge bc-badge-cdisc-approval">CDISC Approval</span>
+          <div class="kanban-card-actions">
+            <button type="button"
+                    class="btn btn-sm btn-outline-success kanban-advance-btn"
+                    data-bc-id="{{ bc.bc_id }}"
+                    aria-label="Publish {{ bc.short_name }}">
+              <i class="bi bi-check-circle" aria-hidden="true"></i> Publish
+            </button>
+            <button type="button"
+                    class="btn btn-sm btn-outline-danger kanban-reject-btn"
+                    data-bc-id="{{ bc.bc_id }}"
+                    aria-label="Reject {{ bc.short_name }}">
+              <i class="bi bi-x" aria-hidden="true"></i> Reject
+            </button>
+          </div>
+        </div>
+        {% endfor %}
+      {% else %}
+        <div class="small text-secondary px-2 py-3 text-center">No BCs in this stage.</div>
+      {% endif %}
+    </div>
+  </div>
+
+  <!-- Published column -->
+  <div class="kanban-column" role="list" aria-label="Published BCs">
+    <div class="kanban-column-header kanban-header-published">
+      <span>Published</span>
+      <span class="kanban-column-count kanban-count-published">
+        {{ columns.published | length if columns else 0 }}
+      </span>
+    </div>
+    <div class="kanban-column-body">
+      {% if columns and columns.published %}
+        {% for bc in columns.published %}
+        <div class="kanban-card" role="listitem">
+          <a href="{{ url_for('bc.detail', bc_id=bc.bc_id) }}" class="text-decoration-none">
+            <div class="kanban-card-title">{{ bc.short_name }}</div>
+          </a>
+          <div class="kanban-card-meta">
+            {% if bc.ncit_code %}<code>{{ bc.ncit_code }}</code>{% endif %}
+            {% if bc.package_date %} &middot; Published {{ bc.package_date }}{% endif %}
+          </div>
+          <span class="bc-badge bc-badge-published">Published</span>
+        </div>
+        {% endfor %}
+      {% else %}
+        <div class="small text-secondary px-2 py-3 text-center">No published BCs yet.</div>
+      {% endif %}
+    </div>
+  </div>
+
+</div><!-- /kanban-grid -->
+
+<!-- Governance action bar -->
+<div class="bc-card mt-3">
+  <div class="bc-card-header">
+    <h2 class="bc-card-title">Governance Actions</h2>
+  </div>
+  <div class="d-flex gap-2 flex-wrap">
+    <a href="{{ url_for('ncit.mapping') }}" class="btn btn-sm btn-outline-secondary">
+      <i class="bi bi-diagram-2" aria-hidden="true"></i> Resolve NCIT Conflict
+    </a>
+    <a href="{{ url_for('specializations.index') }}" class="btn btn-sm btn-primary">
+      <i class="bi bi-table" aria-hidden="true"></i> Approve &amp; Generate Specializations
+    </a>
+    <a href="{{ url_for('audit.index') }}" class="btn btn-sm btn-outline-secondary">
+      <i class="bi bi-clock-history" aria-hidden="true"></i> View Full Audit Trail
+    </a>
+  </div>
+</div>
+
+{% endblock %}

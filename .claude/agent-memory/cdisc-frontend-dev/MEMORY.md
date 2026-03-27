@@ -1,0 +1,2 @@
+- [Project Foundation](project_foundation.md) — Flask app factory, blueprint registry, model locations, SQLite DB setup
+- [Frontend Architecture](frontend_architecture.md) — Template hierarchy, CSS classes, JS modules, context variable conventions

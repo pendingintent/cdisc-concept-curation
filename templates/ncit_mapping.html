@@ -1,0 +1,135 @@
+{% extends "base.html" %}
+
+{% block title %}NCIT Mapping — CDISC BC Curation{% endblock %}
+{% block page_title %}NCIT Mapping{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <h1 class="page-title">NCI Thesaurus Mapping</h1>
+  <span class="page-meta">Search and resolve NCIT concept assignments</span>
+</div>
+
+<!-- NCIt search card -->
+<div class="bc-card">
+  <div class="bc-card-header">
+    <h2 class="bc-card-title">Search NCI Thesaurus</h2>
+  </div>
+  <div class="search-filter-row">
+    <input type="text" id="ncit-search-input" class="form-control form-control-sm flex-grow-1"
+           placeholder="Search NCI Thesaurus… (concept name, code, or synonym)"
+           aria-label="Search NCI Thesaurus">
+    <button id="ncit-search-btn" type="button" class="btn btn-sm btn-primary">
+      <i class="bi bi-search" aria-hidden="true"></i> Search
+    </button>
+  </div>
+
+  <!-- Results area (populated by main.js) -->
+  <div id="ncit-search-results" aria-live="polite" aria-label="NCIt search results"></div>
+</div>
+
+<!-- Conflict resolution section -->
+{% if conflict_bcs %}
+<div class="bc-card">
+  <div class="bc-card-header">
+    <h2 class="bc-card-title">
+      Unresolved / Low-Confidence NCIt Mappings
+      <span class="bc-badge bc-badge-conflict ms-2">{{ conflict_bcs | length }} item{{ 's' if conflict_bcs | length != 1 }}</span>
+    </h2>
+  </div>
+
+  <div class="info-box info-amber mb-3">
+    <i class="bi bi-exclamation-triangle me-1" aria-hidden="true"></i>
+    The BCs below have conflicting or low-confidence NCIt assignments that require expert resolution before they can advance in the governance workflow.
+  </div>
+
+  <div class="table-responsive">
+    <table class="bc-table" aria-label="BCs with unresolved NCIt mappings">
+      <thead>
+        <tr>
+          <th scope="col">BC Name</th>
+          <th scope="col">Current NCIt Code</th>
+          <th scope="col">Conflict / Confidence</th>
+          <th scope="col">Status</th>
+          <th scope="col">Assigned To</th>
+          <th scope="col">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for bc in conflict_bcs %}
+        <tr>
+          <td class="fw-medium">
+            <a href="{{ url_for('bc.detail', bc_id=bc.bc_id) }}" class="text-decoration-none">{{ bc.short_name }}</a>
+          </td>
+          <td>
+            {% if bc.ncit_code %}
+              <code>{{ bc.ncit_code }}</code>
+            {% else %}
+              <span class="text-secondary">Unassigned</span>
+            {% endif %}
+          </td>
+          <td>
+            {% set conf = bc.confidence | default(0) | int %}
+            {% if bc.has_conflict %}
+              <span class="bc-badge bc-badge-conflict">
+                <i class="bi bi-exclamation-circle" aria-hidden="true"></i> Conflict
+              </span>
+            {% elif conf >= 80 %}
+              <span class="confidence-badge confidence-high">{{ conf }}%</span>
+            {% elif conf >= 60 %}
+              <span class="confidence-badge confidence-mid">{{ conf }}%</span>
+            {% else %}
+              <span class="confidence-badge confidence-low">{{ conf }}%</span>
+            {% endif %}
+          </td>
+          <td>
+            {% if bc.status == 'provisional' %}
+              <span class="bc-badge bc-badge-provisional">Provisional</span>
+            {% elif bc.status == 'sme_review' %}
+              <span class="bc-badge bc-badge-sme-review">SME Review</span>
+            {% endif %}
+          </td>
+          <td class="small text-secondary">{{ bc.assigned_to | default('Unassigned') }}</td>
+          <td>
+            <a href="{{ url_for('bc.detail', bc_id=bc.bc_id) }}"
+               class="btn btn-sm btn-outline-secondary">
+              Resolve <i class="bi bi-arrow-right" aria-hidden="true"></i>
+            </a>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% else %}
+<div class="bc-card">
+  <div class="d-flex align-items-center gap-3 py-2">
+    <i class="bi bi-check-circle text-success fs-4" aria-hidden="true"></i>
+    <div>
+      <div class="fw-medium">No unresolved NCIt conflicts</div>
+      <div class="small text-secondary">All current BC mappings meet the confidence threshold.</div>
+    </div>
+  </div>
+</div>
+{% endif %}
+
+<!-- Confidence score legend -->
+<div class="bc-card bc-card-sm">
+  <h2 class="bc-card-title mb-3">Confidence Score Reference</h2>
+  <div class="d-flex gap-4 flex-wrap">
+    <div class="d-flex align-items-center gap-2">
+      <span class="confidence-badge confidence-high">96%</span>
+      <span class="small text-secondary">High (&ge;80%) — auto-approve eligible</span>
+    </div>
+    <div class="d-flex align-items-center gap-2">
+      <span class="confidence-badge confidence-mid">74%</span>
+      <span class="small text-secondary">Medium (60–79%) — SME review recommended</span>
+    </div>
+    <div class="d-flex align-items-center gap-2">
+      <span class="confidence-badge confidence-low">55%</span>
+      <span class="small text-secondary">Low (&lt;60%) — expert resolution required</span>
+    </div>
+  </div>
+</div>
+
+{% endblock %}

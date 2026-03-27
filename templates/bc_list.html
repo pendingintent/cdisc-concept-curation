@@ -1,0 +1,205 @@
+{% extends "base.html" %}
+
+{% block title %}Biomedical Concepts — CDISC BC Curation{% endblock %}
+{% block page_title %}Biomedical Concepts{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <h1 class="page-title">Biomedical Concepts</h1>
+  <span class="page-meta">
+    {% if total_count is defined %}{{ total_count }} BC{{ 's' if total_count != 1 else '' }}{% endif %}
+  </span>
+  <div class="page-actions">
+    <!-- Export dropdown -->
+    <div class="dropdown">
+      <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button"
+              id="export-dropdown" data-bs-toggle="dropdown" aria-expanded="false">
+        <i class="bi bi-download" aria-hidden="true"></i> Export
+      </button>
+      <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="export-dropdown">
+        <li>
+          <a class="dropdown-item small"
+             href="{{ url_for('bc.index') }}?export=json{% if request.args.get('q') %}&q={{ request.args.get('q') }}{% endif %}">
+            <i class="bi bi-filetype-json me-2" aria-hidden="true"></i>JSON
+          </a>
+        </li>
+        <li>
+          <a class="dropdown-item small"
+             href="{{ url_for('bc.index') }}?export=xlsx{% if request.args.get('q') %}&q={{ request.args.get('q') }}{% endif %}">
+            <i class="bi bi-file-earmark-spreadsheet me-2" aria-hidden="true"></i>XLSX
+          </a>
+        </li>
+        <li>
+          <a class="dropdown-item small"
+             href="{{ url_for('bc.index') }}?export=odm{% if request.args.get('q') %}&q={{ request.args.get('q') }}{% endif %}">
+            <i class="bi bi-file-earmark-code me-2" aria-hidden="true"></i>ODM-XML
+          </a>
+        </li>
+      </ul>
+    </div>
+
+    <a href="{{ url_for('bc.new_bc') }}" class="btn btn-sm btn-primary">
+      <i class="bi bi-plus-lg" aria-hidden="true"></i> Add New BC
+    </a>
+  </div>
+</div>
+
+<!-- Search / filter bar -->
+<form method="GET" action="{{ url_for('bc.index') }}" role="search" aria-label="Search and filter BCs">
+  <div class="search-filter-row">
+    <input type="search" name="q" class="form-control form-control-sm flex-grow-1"
+           placeholder="Search by name, NCIt code, category, submitter…"
+           value="{{ request.args.get('q', '') }}"
+           aria-label="Search biomedical concepts">
+
+    <select name="status" class="form-select form-select-sm" style="width: auto;"
+            aria-label="Filter by status">
+      <option value="">All statuses</option>
+      <option value="provisional"     {% if request.args.get('status') == 'provisional'     %}selected{% endif %}>Provisional</option>
+      <option value="sme_review"      {% if request.args.get('status') == 'sme_review'      %}selected{% endif %}>SME Review</option>
+      <option value="cdisc_approval"  {% if request.args.get('status') == 'cdisc_approval'  %}selected{% endif %}>CDISC Approval</option>
+      <option value="published"       {% if request.args.get('status') == 'published'       %}selected{% endif %}>Published</option>
+    </select>
+
+    <select name="category" class="form-select form-select-sm" style="width: auto;"
+            aria-label="Filter by category">
+      <option value="">All categories</option>
+      {% if categories %}
+        {% for cat in categories %}
+          <option value="{{ cat }}" {% if request.args.get('category') == cat %}selected{% endif %}>{{ cat }}</option>
+        {% endfor %}
+      {% endif %}
+    </select>
+
+    <button type="submit" class="btn btn-sm btn-outline-secondary">
+      <i class="bi bi-search" aria-hidden="true"></i> Search
+    </button>
+    {% if request.args.get('q') or request.args.get('status') or request.args.get('category') %}
+      <a href="{{ url_for('bc.index') }}" class="btn btn-sm btn-outline-secondary" aria-label="Clear filters">
+        <i class="bi bi-x-lg" aria-hidden="true"></i> Clear
+      </a>
+    {% endif %}
+  </div>
+</form>
+
+<!-- BCs table -->
+<div class="bc-card">
+  <div class="table-responsive">
+    <table class="bc-table" aria-label="Biomedical concepts list">
+      <thead>
+        <tr>
+          <th scope="col">BC ID</th>
+          <th scope="col">Short Name</th>
+          <th scope="col">NCIt Code</th>
+          <th scope="col">Categories</th>
+          <th scope="col">Status</th>
+          <th scope="col">Last Updated</th>
+          <th scope="col">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% if bcs %}
+          {% for bc in bcs %}
+          <tr onclick="window.location='{{ url_for('bc.detail', bc_id=bc.bc_id) }}'">
+            <td><code>{{ bc.bc_id }}</code></td>
+            <td class="fw-medium">{{ bc.short_name }}</td>
+            <td>
+              {% if bc.ncit_code %}
+                <code>{{ bc.ncit_code }}</code>
+              {% else %}
+                <span class="text-secondary">—</span>
+              {% endif %}
+            </td>
+            <td class="text-secondary small">{{ bc.bc_categories | default('—') }}</td>
+            <td>
+              {% if bc.status == 'provisional' %}
+                <span class="bc-badge bc-badge-provisional">Provisional</span>
+              {% elif bc.status == 'sme_review' %}
+                <span class="bc-badge bc-badge-sme-review">SME Review</span>
+              {% elif bc.status == 'cdisc_approval' %}
+                <span class="bc-badge bc-badge-cdisc-approval">CDISC Approval</span>
+              {% elif bc.status == 'published' %}
+                <span class="bc-badge bc-badge-published">Published</span>
+              {% else %}
+                <span class="bc-badge bc-badge-new">{{ bc.status | default('—') }}</span>
+              {% endif %}
+            </td>
+            <td class="small text-secondary">{{ bc.updated_at | default(bc.package_date) | default('—') }}</td>
+            <td onclick="event.stopPropagation()">
+              <div class="d-flex gap-1">
+                <a href="{{ url_for('bc.detail', bc_id=bc.bc_id) }}"
+                   class="btn btn-sm btn-outline-secondary"
+                   aria-label="View/Edit {{ bc.short_name }}">
+                  <i class="bi bi-pencil" aria-hidden="true"></i> Edit
+                </a>
+                <form method="POST"
+                      action="{{ url_for('bc.detail', bc_id=bc.bc_id) }}"
+                      onsubmit="return confirm('Delete {{ bc.short_name | replace("'", "\\'") }}?');"
+                      style="display:inline;">
+                  {{ form.hidden_tag() if form else '' }}
+                  <input type="hidden" name="action" value="delete">
+                  <button type="submit" class="btn btn-sm btn-outline-danger"
+                          aria-label="Delete {{ bc.short_name }}">
+                    <i class="bi bi-trash" aria-hidden="true"></i>
+                  </button>
+                </form>
+              </div>
+            </td>
+          </tr>
+          {% endfor %}
+        {% else %}
+          <tr>
+            <td colspan="7" class="text-center text-secondary py-4">
+              {% if request.args.get('q') or request.args.get('status') %}
+                No BCs match your filters.
+                <a href="{{ url_for('bc.index') }}" class="ms-2">Clear filters</a>
+              {% else %}
+                No Biomedical Concepts found.
+                <a href="{{ url_for('bc.new_bc') }}" class="ms-2">Add the first one</a>.
+              {% endif %}
+            </td>
+          </tr>
+        {% endif %}
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- Pagination -->
+{% if pagination and pagination.pages > 1 %}
+<nav class="bc-pagination" aria-label="BC list pagination">
+  <ul class="pagination pagination-sm justify-content-center">
+    <li class="page-item {% if not pagination.has_prev %}disabled{% endif %}">
+      <a class="page-link"
+         href="{{ url_for('bc.index', page=pagination.prev_num, q=request.args.get('q',''), status=request.args.get('status',''), category=request.args.get('category','')) }}"
+         aria-label="Previous page">
+        <i class="bi bi-chevron-left" aria-hidden="true"></i>
+      </a>
+    </li>
+
+    {% for page_num in pagination.iter_pages(left_edge=1, right_edge=1, left_current=2, right_current=2) %}
+      {% if page_num %}
+        <li class="page-item {% if page_num == pagination.page %}active{% endif %}">
+          <a class="page-link"
+             href="{{ url_for('bc.index', page=page_num, q=request.args.get('q',''), status=request.args.get('status',''), category=request.args.get('category','')) }}"
+             {% if page_num == pagination.page %}aria-current="page"{% endif %}>
+            {{ page_num }}
+          </a>
+        </li>
+      {% else %}
+        <li class="page-item disabled"><span class="page-link">…</span></li>
+      {% endif %}
+    {% endfor %}
+
+    <li class="page-item {% if not pagination.has_next %}disabled{% endif %}">
+      <a class="page-link"
+         href="{{ url_for('bc.index', page=pagination.next_num, q=request.args.get('q',''), status=request.args.get('status',''), category=request.args.get('category','')) }}"
+         aria-label="Next page">
+        <i class="bi bi-chevron-right" aria-hidden="true"></i>
+      </a>
+    </li>
+  </ul>
+</nav>
+{% endif %}
+
+{% endblock %}

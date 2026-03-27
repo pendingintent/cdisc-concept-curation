@@ -1,0 +1,213 @@
+{% extends "base.html" %}
+
+{% block title %}Audit Trail — CDISC BC Curation{% endblock %}
+{% block page_title %}Audit Trail{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <h1 class="page-title">Audit Trail</h1>
+  <span class="page-meta">
+    Complete history of all BC curation actions
+  </span>
+  <div class="page-actions">
+    <a href="{{ url_for('audit.index') }}?export=csv{% if request.args %}&{{ request.query_string.decode() }}{% endif %}"
+       class="btn btn-sm btn-outline-secondary">
+      <i class="bi bi-filetype-csv" aria-hidden="true"></i> Export CSV
+    </a>
+    <a href="{{ url_for('audit.index') }}?export=json{% if request.args %}&{{ request.query_string.decode() }}{% endif %}"
+       class="btn btn-sm btn-outline-secondary">
+      <i class="bi bi-filetype-json" aria-hidden="true"></i> Export JSON
+    </a>
+  </div>
+</div>
+
+<!-- Filter bar -->
+<div class="bc-card bc-card-sm">
+  <form method="GET" action="{{ url_for('audit.index') }}" role="search" aria-label="Filter audit trail">
+    <div class="search-filter-row">
+
+      <input type="text" name="actor" class="form-control form-control-sm"
+             placeholder="Search by actor…"
+             value="{{ request.args.get('actor', '') }}"
+             aria-label="Filter by actor" style="width: 160px;">
+
+      <select name="entity_type" class="form-select form-select-sm" style="width: auto;"
+              aria-label="Filter by entity type">
+        <option value="">All entity types</option>
+        <option value="BiomedicalConcept"  {% if request.args.get('entity_type') == 'BiomedicalConcept'  %}selected{% endif %}>Biomedical Concept</option>
+        <option value="DataElementConcept" {% if request.args.get('entity_type') == 'DataElementConcept' %}selected{% endif %}>Data Element Concept</option>
+        <option value="GovernanceRecord"   {% if request.args.get('entity_type') == 'GovernanceRecord'   %}selected{% endif %}>Governance Record</option>
+        <option value="DatasetSpecialization" {% if request.args.get('entity_type') == 'DatasetSpecialization' %}selected{% endif %}>Specialization</option>
+      </select>
+
+      <select name="action" class="form-select form-select-sm" style="width: auto;"
+              aria-label="Filter by action">
+        <option value="">All actions</option>
+        <option value="create"   {% if request.args.get('action') == 'create'   %}selected{% endif %}>Create</option>
+        <option value="update"   {% if request.args.get('action') == 'update'   %}selected{% endif %}>Update</option>
+        <option value="delete"   {% if request.args.get('action') == 'delete'   %}selected{% endif %}>Delete</option>
+        <option value="advance"  {% if request.args.get('action') == 'advance'  %}selected{% endif %}>Advance</option>
+        <option value="reject"   {% if request.args.get('action') == 'reject'   %}selected{% endif %}>Reject</option>
+        <option value="publish"  {% if request.args.get('action') == 'publish'  %}selected{% endif %}>Publish</option>
+        <option value="ingest"   {% if request.args.get('action') == 'ingest'   %}selected{% endif %}>Ingest</option>
+      </select>
+
+      <label for="date-from" class="form-label small visually-hidden">From date</label>
+      <input type="date" name="date_from" id="date-from" class="form-control form-control-sm"
+             value="{{ request.args.get('date_from', '') }}"
+             aria-label="From date" style="width: 140px;">
+
+      <label for="date-to" class="form-label small visually-hidden">To date</label>
+      <input type="date" name="date_to" id="date-to" class="form-control form-control-sm"
+             value="{{ request.args.get('date_to', '') }}"
+             aria-label="To date" style="width: 140px;">
+
+      <button type="submit" class="btn btn-sm btn-outline-secondary">
+        <i class="bi bi-funnel" aria-hidden="true"></i> Filter
+      </button>
+
+      {% if request.args %}
+        <a href="{{ url_for('audit.index') }}" class="btn btn-sm btn-outline-secondary"
+           aria-label="Clear all filters">
+          <i class="bi bi-x-lg" aria-hidden="true"></i> Clear
+        </a>
+      {% endif %}
+    </div>
+  </form>
+</div>
+
+<!-- Audit table -->
+<div class="bc-card">
+  <div class="table-responsive">
+    <table class="bc-table" aria-label="Audit trail events">
+      <thead>
+        <tr>
+          <th scope="col">Timestamp (UTC)</th>
+          <th scope="col">Entity Type</th>
+          <th scope="col">Entity ID</th>
+          <th scope="col">Action</th>
+          <th scope="col">Actor</th>
+          <th scope="col" style="width: 90px;">Before/After</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% if audit_logs %}
+          {% for log in audit_logs %}
+          <tr>
+            <td>
+              <code class="small">{{ log.timestamp | default('—') }}</code>
+            </td>
+            <td class="small">{{ log.entity_type | default('—') }}</td>
+            <td>
+              {% if log.entity_type == 'BiomedicalConcept' and log.entity_id %}
+                <a href="{{ url_for('bc.detail', bc_id=log.entity_id) }}" class="text-decoration-none">
+                  <code>{{ log.entity_id }}</code>
+                </a>
+              {% else %}
+                <code>{{ log.entity_id | default('—') }}</code>
+              {% endif %}
+            </td>
+            <td>
+              {% set action = log.action | default('') %}
+              {% if action in ('create', 'ingest') %}
+                <span class="bc-badge bc-badge-new">{{ action | title }}</span>
+              {% elif action in ('update', 'advance') %}
+                <span class="bc-badge bc-badge-sme-review">{{ action | title }}</span>
+              {% elif action == 'publish' %}
+                <span class="bc-badge bc-badge-published">{{ action | title }}</span>
+              {% elif action in ('delete', 'reject') %}
+                <span class="bc-badge bc-badge-rejected">{{ action | title }}</span>
+              {% else %}
+                <span class="bc-badge bc-badge-provisional">{{ action | title }}</span>
+              {% endif %}
+            </td>
+            <td class="small text-secondary">{{ log.actor | default('System') }}</td>
+            <td>
+              {% if log.before_state or log.after_state %}
+              <button type="button"
+                      class="btn btn-sm btn-outline-secondary audit-diff-toggle"
+                      aria-expanded="false"
+                      aria-label="Toggle before/after diff for this event">
+                Show diff
+              </button>
+              {% else %}
+                <span class="text-tertiary small">—</span>
+              {% endif %}
+            </td>
+          </tr>
+          {% if log.before_state or log.after_state %}
+          <tr class="audit-diff-row d-none">
+            <td colspan="6" class="py-2 px-3">
+              <div class="two-col-grid">
+                {% if log.before_state %}
+                <div>
+                  <div class="small fw-semibold text-secondary mb-1">Before</div>
+                  <div class="json-diff-panel">{{ log.before_state | tojson(indent=2) if log.before_state is mapping else log.before_state }}</div>
+                </div>
+                {% endif %}
+                {% if log.after_state %}
+                <div>
+                  <div class="small fw-semibold text-secondary mb-1">After</div>
+                  <div class="json-diff-panel">{{ log.after_state | tojson(indent=2) if log.after_state is mapping else log.after_state }}</div>
+                </div>
+                {% endif %}
+              </div>
+            </td>
+          </tr>
+          {% endif %}
+          {% endfor %}
+        {% else %}
+          <tr>
+            <td colspan="6" class="text-center text-secondary py-4">
+              {% if request.args %}
+                No audit events match your filters.
+                <a href="{{ url_for('audit.index') }}" class="ms-2">Clear filters</a>
+              {% else %}
+                No audit events recorded yet.
+              {% endif %}
+            </td>
+          </tr>
+        {% endif %}
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- Pagination -->
+{% if pagination and pagination.pages > 1 %}
+<nav class="bc-pagination" aria-label="Audit trail pagination">
+  <ul class="pagination pagination-sm justify-content-center">
+    <li class="page-item {% if not pagination.has_prev %}disabled{% endif %}">
+      <a class="page-link"
+         href="{{ url_for('audit.index', page=pagination.prev_num, **request.args) }}"
+         aria-label="Previous page">
+        <i class="bi bi-chevron-left" aria-hidden="true"></i>
+      </a>
+    </li>
+
+    {% for page_num in pagination.iter_pages(left_edge=1, right_edge=1, left_current=2, right_current=2) %}
+      {% if page_num %}
+        <li class="page-item {% if page_num == pagination.page %}active{% endif %}">
+          <a class="page-link"
+             href="{{ url_for('audit.index', page=page_num, **request.args) }}"
+             {% if page_num == pagination.page %}aria-current="page"{% endif %}>
+            {{ page_num }}
+          </a>
+        </li>
+      {% else %}
+        <li class="page-item disabled"><span class="page-link">…</span></li>
+      {% endif %}
+    {% endfor %}
+
+    <li class="page-item {% if not pagination.has_next %}disabled{% endif %}">
+      <a class="page-link"
+         href="{{ url_for('audit.index', page=pagination.next_num, **request.args) }}"
+         aria-label="Next page">
+        <i class="bi bi-chevron-right" aria-hidden="true"></i>
+      </a>
+    </li>
+  </ul>
+</nav>
+{% endif %}
+
+{% endblock %}

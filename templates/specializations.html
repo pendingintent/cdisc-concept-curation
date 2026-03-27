@@ -1,0 +1,353 @@
+{% extends "base.html" %}
+
+{% block title %}Specializations — CDISC BC Curation{% endblock %}
+{% block page_title %}Dataset Specializations{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <h1 class="page-title">Dataset Specializations</h1>
+  <span class="page-meta">SDTM and CDASH variable mappings derived from BC DECs</span>
+  <div class="page-actions">
+    <button type="button" class="btn btn-sm btn-primary"
+            data-bs-toggle="collapse" data-bs-target="#specialization-form-panel"
+            aria-expanded="false" aria-controls="specialization-form-panel">
+      <i class="bi bi-plus-lg" aria-hidden="true"></i> Add Specialization
+    </button>
+  </div>
+</div>
+
+<!-- Add specialization form (collapsed by default) -->
+<div class="collapse mb-3" id="specialization-form-panel">
+  <div class="bc-card">
+    <div class="bc-card-header">
+      <h2 class="bc-card-title">
+        {% if editing_spec %}Edit Specialization{% else %}New Specialization{% endif %}
+      </h2>
+    </div>
+
+    <form method="POST"
+          action="{{ url_for('specializations.index') }}"
+          novalidate>
+      {{ form.hidden_tag() if form else '' }}
+
+      <div class="row g-3 mb-3">
+        <div class="col-md-5">
+          <label for="bc_selector" class="form-label small fw-semibold">Biomedical Concept <span class="text-danger" aria-hidden="true">*</span></label>
+          <select id="bc_selector" name="bc_id" class="form-select form-select-sm" required
+                  aria-label="Select a Biomedical Concept">
+            <option value="">— Select BC —</option>
+            {% if available_bcs %}
+              {% for bc in available_bcs %}
+                <option value="{{ bc.bc_id }}"
+                        {% if editing_spec and editing_spec.bc_id == bc.bc_id %}selected{% endif %}>
+                  {{ bc.short_name }} ({{ bc.bc_id }})
+                </option>
+              {% endfor %}
+            {% endif %}
+          </select>
+        </div>
+
+        <div class="col-md-3">
+          <fieldset>
+            <legend class="form-label small fw-semibold">Domain <span class="text-danger" aria-hidden="true">*</span></legend>
+            <div class="d-flex gap-3">
+              <div class="form-check">
+                <input class="form-check-input" type="radio" name="domain" id="domain-sdtm" value="SDTM"
+                       {% if not editing_spec or editing_spec.domain == 'SDTM' %}checked{% endif %}>
+                <label class="form-check-label small" for="domain-sdtm">SDTM</label>
+              </div>
+              <div class="form-check">
+                <input class="form-check-input" type="radio" name="domain" id="domain-cdash" value="CDASH"
+                       {% if editing_spec and editing_spec.domain == 'CDASH' %}checked{% endif %}>
+                <label class="form-check-label small" for="domain-cdash">CDASH</label>
+              </div>
+            </div>
+          </fieldset>
+        </div>
+
+        <div class="col-md-4">
+          <label for="spec_short_name" class="form-label small fw-semibold">Short Name <span class="text-danger" aria-hidden="true">*</span></label>
+          <input type="text" id="spec_short_name" name="short_name" class="form-control form-control-sm"
+                 value="{{ editing_spec.short_name if editing_spec else '' }}"
+                 placeholder="e.g. Serum Creatinine SDTM" required>
+        </div>
+      </div>
+
+      <!-- Variables table -->
+      <h3 class="form-section-title">Variables</h3>
+      <div class="table-responsive mb-3">
+        <table class="dec-table" aria-label="Specialization variables">
+          <thead>
+            <tr>
+              <th scope="col">Variable Name</th>
+              <th scope="col">Label</th>
+              <th scope="col">Data Type</th>
+              <th scope="col" class="text-center">Required</th>
+              <th scope="col" style="width: 40px;"></th>
+            </tr>
+          </thead>
+          <tbody id="spec-variables-body">
+            {% if editing_spec and editing_spec.variables %}
+              {% for var in editing_spec.variables %}
+              <tr>
+                <td>
+                  <input type="text" class="form-control form-control-sm"
+                         name="variables[{{ loop.index0 }}][name]"
+                         value="{{ var.name }}"
+                         placeholder="e.g. LBTESTCD" aria-label="Variable name">
+                </td>
+                <td>
+                  <input type="text" class="form-control form-control-sm"
+                         name="variables[{{ loop.index0 }}][label]"
+                         value="{{ var.label }}"
+                         placeholder="e.g. Lab Test Short Name" aria-label="Variable label">
+                </td>
+                <td>
+                  <select class="form-select form-select-sm"
+                          name="variables[{{ loop.index0 }}][data_type]"
+                          aria-label="Data type">
+                    {% for dtype in ['string','decimal','integer','boolean','date','datetime'] %}
+                      <option value="{{ dtype }}" {% if var.data_type == dtype %}selected{% endif %}>{{ dtype }}</option>
+                    {% endfor %}
+                  </select>
+                </td>
+                <td class="text-center">
+                  <input type="checkbox" class="form-check-input"
+                         name="variables[{{ loop.index0 }}][required]"
+                         value="1"
+                         {% if var.required %}checked{% endif %}
+                         aria-label="Required">
+                </td>
+                <td>
+                  <button type="button" class="btn btn-sm btn-outline-danger spec-var-delete-btn"
+                          aria-label="Delete variable row">
+                    <i class="bi bi-trash" aria-hidden="true"></i>
+                  </button>
+                </td>
+              </tr>
+              {% endfor %}
+            {% endif %}
+          </tbody>
+        </table>
+      </div>
+
+      <div class="d-flex gap-2 flex-wrap">
+        <button type="submit" class="btn btn-sm btn-primary">
+          <i class="bi bi-floppy" aria-hidden="true"></i> Save Specialization
+        </button>
+        <button type="button" id="generate-from-dec-btn" class="btn btn-sm btn-outline-secondary">
+          <i class="bi bi-lightning" aria-hidden="true"></i> Generate from DEC Templates
+        </button>
+        <button type="button" id="add-spec-var-btn" class="btn btn-sm btn-outline-secondary">
+          <i class="bi bi-plus-lg" aria-hidden="true"></i> Add Variable Row
+        </button>
+        <button type="button" class="btn btn-sm btn-outline-secondary"
+                data-bs-toggle="collapse" data-bs-target="#specialization-form-panel">
+          Cancel
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Specializations list table -->
+<div class="bc-card">
+  <div class="bc-card-header">
+    <h2 class="bc-card-title">All Specializations</h2>
+  </div>
+
+  {% if specializations %}
+  <div class="table-responsive">
+    <table class="bc-table" aria-label="Dataset specializations list">
+      <thead>
+        <tr>
+          <th scope="col">VLM Group ID</th>
+          <th scope="col">BC Name</th>
+          <th scope="col">Domain</th>
+          <th scope="col">Short Name</th>
+          <th scope="col">Variables</th>
+          <th scope="col">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for spec in specializations %}
+        <tr>
+          <td><code>{{ spec.vlm_group_id | default('—') }}</code></td>
+          <td class="fw-medium">
+            <a href="{{ url_for('bc.detail', bc_id=spec.bc_id) }}" class="text-decoration-none">
+              {{ spec.bc_name | default(spec.bc_id) }}
+            </a>
+          </td>
+          <td>
+            <span class="bc-badge {% if spec.domain == 'SDTM' %}bc-badge-cdisc-approval{% else %}bc-badge-sme-review{% endif %}">
+              {{ spec.domain }}
+            </span>
+          </td>
+          <td>{{ spec.short_name }}</td>
+          <td class="text-secondary small">
+            {{ spec.variable_count | default(0) }} variable{{ 's' if spec.variable_count != 1 else '' }}
+          </td>
+          <td>
+            <div class="d-flex gap-1">
+              <a href="{{ url_for('specializations.index') }}?edit={{ spec.id }}"
+                 class="btn btn-sm btn-outline-secondary"
+                 aria-label="Edit {{ spec.short_name }}">
+                <i class="bi bi-pencil" aria-hidden="true"></i> Edit
+              </a>
+              <form method="POST" action="{{ url_for('specializations.index') }}"
+                    onsubmit="return confirm('Delete this specialization?');"
+                    style="display:inline;">
+                {{ form.hidden_tag() if form else '' }}
+                <input type="hidden" name="action" value="delete">
+                <input type="hidden" name="spec_id" value="{{ spec.id }}">
+                <button type="submit" class="btn btn-sm btn-outline-danger"
+                        aria-label="Delete {{ spec.short_name }}">
+                  <i class="bi bi-trash" aria-hidden="true"></i>
+                </button>
+              </form>
+            </div>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% else %}
+  <div class="text-center text-secondary py-4">
+    No specializations yet.
+    <button type="button" class="btn btn-sm btn-primary ms-2"
+            data-bs-toggle="collapse" data-bs-target="#specialization-form-panel">
+      Add the first one
+    </button>
+  </div>
+  {% endif %}
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+(function () {
+  let varRowIndex = {{ (editing_spec.variables | length) if editing_spec and editing_spec.variables else 0 }};
+
+  // Add variable row
+  const addVarBtn = document.getElementById('add-spec-var-btn');
+  const varBody = document.getElementById('spec-variables-body');
+  if (addVarBtn && varBody) {
+    addVarBtn.addEventListener('click', function () {
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td>
+          <input type="text" class="form-control form-control-sm"
+                 name="variables[${varRowIndex}][name]"
+                 placeholder="e.g. LBTESTCD" aria-label="Variable name">
+        </td>
+        <td>
+          <input type="text" class="form-control form-control-sm"
+                 name="variables[${varRowIndex}][label]"
+                 placeholder="e.g. Lab Test Short Name" aria-label="Variable label">
+        </td>
+        <td>
+          <select class="form-select form-select-sm"
+                  name="variables[${varRowIndex}][data_type]"
+                  aria-label="Data type">
+            <option value="string">string</option>
+            <option value="decimal">decimal</option>
+            <option value="integer">integer</option>
+            <option value="boolean">boolean</option>
+            <option value="date">date</option>
+            <option value="datetime">datetime</option>
+          </select>
+        </td>
+        <td class="text-center">
+          <input type="checkbox" class="form-check-input"
+                 name="variables[${varRowIndex}][required]"
+                 value="1" aria-label="Required">
+        </td>
+        <td>
+          <button type="button" class="btn btn-sm btn-outline-danger spec-var-delete-btn"
+                  aria-label="Delete variable row">
+            <i class="bi bi-trash" aria-hidden="true"></i>
+          </button>
+        </td>
+      `;
+      varBody.appendChild(tr);
+      varRowIndex++;
+    });
+  }
+
+  // Delete variable rows via delegation
+  if (varBody) {
+    varBody.addEventListener('click', function (e) {
+      const btn = e.target.closest('.spec-var-delete-btn');
+      if (btn) btn.closest('tr').remove();
+    });
+  }
+
+  // Generate from DEC templates: POST to backend endpoint
+  const generateBtn = document.getElementById('generate-from-dec-btn');
+  if (generateBtn) {
+    generateBtn.addEventListener('click', async function () {
+      const bcId = document.getElementById('bc_selector').value;
+      const domain = document.querySelector('input[name="domain"]:checked');
+      if (!bcId || !domain) {
+        alert('Please select a BC and domain before generating from templates.');
+        return;
+      }
+
+      generateBtn.disabled = true;
+      generateBtn.textContent = 'Generating…';
+
+      try {
+        const resp = await fetch('/specializations/generate-from-dec', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ bc_id: bcId, domain: domain.value })
+        });
+
+        if (!resp.ok) throw new Error('Generation failed');
+
+        const data = await resp.json();
+        if (data.variables && varBody) {
+          varBody.innerHTML = '';
+          varRowIndex = 0;
+          data.variables.forEach(function (v) {
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+              <td><input type="text" class="form-control form-control-sm"
+                         name="variables[${varRowIndex}][name]" value="${v.name || ''}" aria-label="Variable name"></td>
+              <td><input type="text" class="form-control form-control-sm"
+                         name="variables[${varRowIndex}][label]" value="${v.label || ''}" aria-label="Variable label"></td>
+              <td>
+                <select class="form-select form-select-sm" name="variables[${varRowIndex}][data_type]" aria-label="Data type">
+                  ${['string','decimal','integer','boolean','date','datetime'].map(function(dt) {
+                    return `<option value="${dt}" ${v.data_type === dt ? 'selected' : ''}>${dt}</option>`;
+                  }).join('')}
+                </select>
+              </td>
+              <td class="text-center">
+                <input type="checkbox" class="form-check-input" name="variables[${varRowIndex}][required]"
+                       value="1" ${v.required ? 'checked' : ''} aria-label="Required">
+              </td>
+              <td>
+                <button type="button" class="btn btn-sm btn-outline-danger spec-var-delete-btn" aria-label="Delete variable row">
+                  <i class="bi bi-trash" aria-hidden="true"></i>
+                </button>
+              </td>
+            `;
+            varBody.appendChild(tr);
+            varRowIndex++;
+          });
+        }
+      } catch (err) {
+        alert('Could not generate template variables. Please try again.');
+        console.error('Generate from DEC error:', err);
+      } finally {
+        generateBtn.disabled = false;
+        generateBtn.innerHTML = '<i class="bi bi-lightning" aria-hidden="true"></i> Generate from DEC Templates';
+      }
+    });
+  }
+})();
+</script>
+{% endblock %}

@@ -1,0 +1,217 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard — CDISC BC Curation{% endblock %}
+{% block page_title %}Dashboard{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <h1 class="page-title">Curation Dashboard</h1>
+  <div class="page-actions">
+    <a href="{{ url_for('bc.new_bc') }}" class="btn btn-sm btn-outline-secondary">
+      <i class="bi bi-plus-lg" aria-hidden="true"></i> Add New BC
+    </a>
+    <a href="{{ url_for('ingestion.index') }}" class="btn btn-sm btn-outline-secondary">
+      <i class="bi bi-cloud-upload" aria-hidden="true"></i> Upload File
+    </a>
+    <a href="{{ url_for('governance.board') }}" class="btn btn-sm btn-primary">
+      <i class="bi bi-kanban" aria-hidden="true"></i> Governance Board
+    </a>
+  </div>
+</div>
+
+<!-- KPI cards -->
+<div class="metric-grid" role="list" aria-label="Key performance indicators">
+
+  <div class="metric-card metric-card-green" role="listitem">
+    <div class="metric-val metric-val-green">{{ stats.total_bcs | default('—') }}</div>
+    <div class="metric-lbl">Total BCs Published</div>
+    <div class="metric-progress">
+      <div class="metric-progress-fill" style="width: 100%; background: var(--teal400);" role="presentation"></div>
+    </div>
+  </div>
+
+  <div class="metric-card metric-card-amber" role="listitem">
+    <div class="metric-val metric-val-amber">{{ stats.pending_review | default('—') }}</div>
+    <div class="metric-lbl">Pending Review</div>
+    <div class="metric-progress">
+      <div class="metric-progress-fill" style="width: 18%; background: var(--amber400);" role="presentation"></div>
+    </div>
+  </div>
+
+  <div class="metric-card metric-card-blue" role="listitem">
+    <div class="metric-val metric-val-blue">{{ stats.published | default('—') }}</div>
+    <div class="metric-lbl">Published This Cycle</div>
+    <div class="metric-progress">
+      <div class="metric-progress-fill" style="width: 60%; background: var(--blue400);" role="presentation"></div>
+    </div>
+  </div>
+
+  <div class="metric-card metric-card-purple" role="listitem">
+    <div class="metric-val metric-val-purple">{{ stats.recent_additions | default('—') }}</div>
+    <div class="metric-lbl">Recent Additions (7d)</div>
+    <div class="metric-progress">
+      <div class="metric-progress-fill" style="width: 40%; background: var(--purple400);" role="presentation"></div>
+    </div>
+  </div>
+
+</div>
+
+<!-- Main content two-column grid -->
+<div class="two-col-grid">
+
+  <!-- Recent submissions -->
+  <div class="bc-card">
+    <div class="bc-card-header">
+      <h2 class="bc-card-title">Recent Submissions</h2>
+      <a href="{{ url_for('bc.index') }}" class="btn btn-sm btn-outline-secondary">View all</a>
+    </div>
+    <table class="bc-table" aria-label="Recent BC submissions">
+      <thead>
+        <tr>
+          <th scope="col">BC Name</th>
+          <th scope="col">Submitter</th>
+          <th scope="col">Date</th>
+          <th scope="col">Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% if recent_submissions %}
+          {% for bc in recent_submissions %}
+          <tr onclick="window.location='{{ url_for('bc.detail', bc_id=bc.bc_id) }}'">
+            <td class="fw-medium">{{ bc.short_name }}</td>
+            <td>{{ bc.submitter | default('—') }}</td>
+            <td>{{ bc.package_date | default('—') }}</td>
+            <td>
+              {% if bc.status == 'provisional' %}
+                <span class="bc-badge bc-badge-provisional">Provisional</span>
+              {% elif bc.status == 'sme_review' %}
+                <span class="bc-badge bc-badge-sme-review">SME Review</span>
+              {% elif bc.status == 'cdisc_approval' %}
+                <span class="bc-badge bc-badge-cdisc-approval">CDISC Approval</span>
+              {% elif bc.status == 'published' %}
+                <span class="bc-badge bc-badge-published">Published</span>
+              {% else %}
+                <span class="bc-badge bc-badge-new">{{ bc.status | default('New') }}</span>
+              {% endif %}
+            </td>
+          </tr>
+          {% endfor %}
+        {% else %}
+          <tr>
+            <td colspan="4" class="text-center text-secondary py-3">No recent submissions.</td>
+          </tr>
+        {% endif %}
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Governance pipeline -->
+  <div class="bc-card">
+    <div class="bc-card-header">
+      <h2 class="bc-card-title">Governance Pipeline</h2>
+      <a href="{{ url_for('governance.board') }}" class="btn btn-sm btn-outline-secondary">Open board</a>
+    </div>
+    <table class="bc-table" aria-label="Governance pipeline status">
+      <thead>
+        <tr>
+          <th scope="col">BC Name</th>
+          <th scope="col">Status</th>
+          <th scope="col">Stage</th>
+          <th scope="col">Last Updated</th>
+          <th scope="col">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% if governance_items %}
+          {% for item in governance_items %}
+          <tr>
+            <td class="fw-medium">
+              <a href="{{ url_for('bc.detail', bc_id=item.bc_id) }}" class="text-decoration-none">{{ item.short_name }}</a>
+            </td>
+            <td>
+              {% if item.status == 'provisional' %}
+                <span class="bc-badge bc-badge-provisional">Provisional</span>
+              {% elif item.status == 'sme_review' %}
+                <span class="bc-badge bc-badge-sme-review">SME Review</span>
+              {% elif item.status == 'cdisc_approval' %}
+                <span class="bc-badge bc-badge-cdisc-approval">CDISC Approval</span>
+              {% elif item.status == 'published' %}
+                <span class="bc-badge bc-badge-published">Published</span>
+              {% endif %}
+            </td>
+            <td>{{ item.stage | default('—') }}</td>
+            <td>{{ item.updated_at | default('—') }}</td>
+            <td>
+              <a href="{{ url_for('bc.detail', bc_id=item.bc_id) }}" class="btn btn-sm btn-outline-secondary">Open</a>
+            </td>
+          </tr>
+          {% endfor %}
+        {% else %}
+          <tr>
+            <td colspan="5" class="text-center text-secondary py-3">No items in pipeline.</td>
+          </tr>
+        {% endif %}
+      </tbody>
+    </table>
+  </div>
+
+</div>
+
+<!-- AI curation pipeline status -->
+<div class="bc-card">
+  <div class="bc-card-header">
+    <h2 class="bc-card-title">AI Curation Pipeline Status</h2>
+  </div>
+  <div class="step-flow" role="list" aria-label="Pipeline stages">
+    <div class="pipeline-step step-done" role="listitem">
+      <span class="step-dot" aria-hidden="true"></span> Ingest &amp; Parse
+    </div>
+    <div class="pipeline-step step-done" role="listitem">
+      <span class="step-dot" aria-hidden="true"></span> Deduplication
+    </div>
+    <div class="pipeline-step step-done" role="listitem">
+      <span class="step-dot" aria-hidden="true"></span> NCIT Matching
+    </div>
+    <div class="pipeline-step step-active" role="listitem">
+      <span class="step-dot" aria-hidden="true"></span> Provisional Curation
+    </div>
+    <div class="pipeline-step" role="listitem">
+      <span class="step-dot" aria-hidden="true"></span> SME Review
+    </div>
+    <div class="pipeline-step" role="listitem">
+      <span class="step-dot" aria-hidden="true"></span> CDISC Approval
+    </div>
+    <div class="pipeline-step" role="listitem">
+      <span class="step-dot" aria-hidden="true"></span> Specializations
+    </div>
+    <div class="pipeline-step" role="listitem">
+      <span class="step-dot" aria-hidden="true"></span> Published
+    </div>
+  </div>
+  <p class="small text-secondary mb-0">
+    {{ stats.pending_review | default(0) }} BCs currently in provisional curation &mdash;
+    {{ stats.total_bcs | default(0) }} total BCs in the system.
+  </p>
+</div>
+
+<!-- Quick actions -->
+<div class="bc-card">
+  <div class="bc-card-header">
+    <h2 class="bc-card-title">Quick Actions</h2>
+  </div>
+  <div class="d-flex gap-2 flex-wrap">
+    <a href="{{ url_for('bc.new_bc') }}" class="btn btn-primary btn-sm">
+      <i class="bi bi-plus-lg" aria-hidden="true"></i> Add New BC
+    </a>
+    <a href="{{ url_for('ingestion.index') }}" class="btn btn-outline-secondary btn-sm">
+      <i class="bi bi-cloud-upload" aria-hidden="true"></i> Upload File
+    </a>
+    <a href="{{ url_for('governance.board') }}" class="btn btn-outline-secondary btn-sm">
+      <i class="bi bi-kanban" aria-hidden="true"></i> View Governance Board
+    </a>
+    <a href="{{ url_for('audit.index') }}" class="btn btn-outline-secondary btn-sm">
+      <i class="bi bi-clock-history" aria-hidden="true"></i> Audit Trail
+    </a>
+  </div>
+</div>
+{% endblock %}

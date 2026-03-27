@@ -1,0 +1,174 @@
+{% extends "base.html" %}
+
+{% block title %}Ingestion — CDISC BC Curation{% endblock %}
+{% block page_title %}Ingest &amp; Parse{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <h1 class="page-title">Ingest &amp; Parse BCs</h1>
+  <span class="page-meta">Upload a file to parse and ingest Biomedical Concepts</span>
+</div>
+
+<!-- Upload card -->
+<div class="bc-card">
+  <div class="bc-card-header">
+    <h2 class="bc-card-title">Upload File</h2>
+  </div>
+
+  <form method="POST" action="{{ url_for('ingestion.upload') }}" enctype="multipart/form-data" novalidate>
+    <div id="upload-zone" class="upload-zone" role="button" tabindex="0"
+         aria-label="Drop file here or click to upload">
+      <div class="upload-zone-icon" aria-hidden="true">
+        <i class="bi bi-cloud-upload"></i>
+      </div>
+      <div class="upload-zone-title">Drop files here or click to upload</div>
+      <div class="upload-zone-hint">
+        AI will parse, normalize, and compare against existing BCs and NCIT terminology.
+      </div>
+      <div class="format-chips" aria-label="Accepted file formats">
+        <span class="format-chip">XLSX</span>
+        <span class="format-chip">CSV</span>
+        <span class="format-chip">JSON</span>
+      </div>
+    </div>
+
+    <input type="file" id="file-input" name="file"
+           accept=".xlsx,.csv,.json"
+           class="d-none" aria-label="Select file to upload">
+
+    <div id="file-name-display" class="d-none mb-3 small text-secondary">
+      <i class="bi bi-file-earmark" aria-hidden="true"></i>
+      <span id="file-name-text"></span>
+    </div>
+
+    <div class="d-flex gap-2 align-items-center mt-3">
+      <button type="submit" class="btn btn-primary btn-sm">
+        <i class="bi bi-play-circle" aria-hidden="true"></i> Parse &amp; Ingest
+      </button>
+      <span class="small text-secondary">Accepts .xlsx, .csv, .json</span>
+    </div>
+  </form>
+</div>
+
+{% if queue %}
+<!-- Parsed results table -->
+<div class="bc-card">
+  <div class="bc-card-header">
+    <h2 class="bc-card-title">
+      Parsed Results
+      <span class="bc-badge bc-badge-new ms-2">{{ queue | length }} records</span>
+    </h2>
+    <form method="POST" action="{{ url_for('ingestion.approve_all') }}" class="form-inline">
+      <button type="submit" class="btn btn-sm btn-success">
+        <i class="bi bi-check-all"></i> Approve All Valid
+      </button>
+    </form>
+  </div>
+
+  <div class="table-responsive">
+    <table class="bc-table" aria-label="Parsed BC results">
+      <thead>
+        <tr>
+          <th scope="col">BC Name</th>
+          <th scope="col">NCIt Code</th>
+          <th scope="col">Categories</th>
+          <th scope="col">Sheet</th>
+          <th scope="col">Confidence</th>
+          <th scope="col">Validation</th>
+          <th scope="col">Dup?</th>
+          <th scope="col">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for ir in queue %}
+        {% set m = ir.mapped %}
+        <tr>
+          <td class="fw-medium">{{ m.short_name or '—' }}</td>
+          <td><code>{{ m.ncit_code or m.bc_id or '—' }}</code></td>
+          <td>{{ m.bc_categories or '—' }}</td>
+          <td><small class="text-secondary">{{ ir.source_sheet or '—' }}</small></td>
+          <td>
+            {% set conf = ir.avg_confidence %}
+            {% if conf >= 80 %}
+              <span class="confidence-badge confidence-high">{{ conf }}%</span>
+            {% elif conf >= 60 %}
+              <span class="confidence-badge confidence-mid">{{ conf }}%</span>
+            {% else %}
+              <span class="confidence-badge confidence-low">{{ conf }}%</span>
+            {% endif %}
+          </td>
+          <td>
+            {% if ir.errors %}
+              <span class="bc-badge bc-badge-conflict" title="{{ ir.errors | join(', ') }}">
+                <i class="bi bi-x-circle"></i> {{ ir.errors | length }} error(s)
+              </span>
+            {% else %}
+              <span class="bc-badge bc-badge-published">
+                <i class="bi bi-check-circle"></i> Valid
+              </span>
+            {% endif %}
+          </td>
+          <td>
+            {% if ir.duplicate %}
+              <span class="bc-badge bc-badge-provisional">Dup</span>
+            {% else %}
+              <span class="text-secondary">—</span>
+            {% endif %}
+          </td>
+          <td>
+            <div class="d-flex gap-1">
+              <form method="POST" action="{{ url_for('ingestion.approve', record_id=ir.id) }}" class="form-inline">
+                <button type="submit" class="btn btn-sm btn-outline-success">
+                  <i class="bi bi-check"></i> Approve
+                </button>
+              </form>
+              <form method="POST" action="{{ url_for('ingestion.reject', record_id=ir.id) }}" class="form-inline">
+                <button type="submit" class="btn btn-sm btn-outline-danger">
+                  <i class="bi bi-x"></i> Reject
+                </button>
+              </form>
+            </div>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endif %}
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+(function () {
+  const uploadZone = document.getElementById('upload-zone');
+  const fileInput = document.getElementById('file-input');
+  const fileNameDisplay = document.getElementById('file-name-display');
+  const fileNameText = document.getElementById('file-name-text');
+
+  if (uploadZone && fileInput) {
+    uploadZone.addEventListener('click', () => fileInput.click());
+    uploadZone.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') fileInput.click(); });
+    uploadZone.addEventListener('dragover', e => { e.preventDefault(); uploadZone.classList.add('drag-over'); });
+    uploadZone.addEventListener('dragleave', () => uploadZone.classList.remove('drag-over'));
+    uploadZone.addEventListener('drop', e => {
+      e.preventDefault();
+      uploadZone.classList.remove('drag-over');
+      if (e.dataTransfer.files[0]) {
+        const dt = new DataTransfer();
+        dt.items.add(e.dataTransfer.files[0]);
+        fileInput.files = dt.files;
+        fileInput.dispatchEvent(new Event('change'));
+      }
+    });
+    fileInput.addEventListener('change', () => {
+      if (fileInput.files[0]) {
+        fileNameText.textContent = fileInput.files[0].name;
+        fileNameDisplay.classList.remove('d-none');
+      }
+    });
+  }
+})();
+</script>
+{% endblock %}

@@ -1,0 +1,290 @@
+{% extends "base.html" %}
+
+{% set is_new = bc is not defined or bc is none or not bc.bc_id %}
+
+{% block title %}
+  {% if is_new %}New BC{% else %}{{ bc.short_name }}{% endif %} — CDISC BC Curation
+{% endblock %}
+
+{% block page_title %}
+  {% if is_new %}New Biomedical Concept{% else %}{{ bc.short_name }}{% endif %}
+{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <h1 class="page-title">
+    {% if is_new %}New Biomedical Concept{% else %}{{ bc.short_name }}{% endif %}
+  </h1>
+  {% if not is_new %}
+    {% if bc.status == 'provisional' %}
+      <span class="bc-badge bc-badge-provisional">Provisional</span>
+    {% elif bc.status == 'sme_review' %}
+      <span class="bc-badge bc-badge-sme-review">SME Review</span>
+    {% elif bc.status == 'cdisc_approval' %}
+      <span class="bc-badge bc-badge-cdisc-approval">CDISC Approval</span>
+    {% elif bc.status == 'published' %}
+      <span class="bc-badge bc-badge-published">Published</span>
+    {% endif %}
+    {% if bc.submitter %}
+      <span class="page-meta">Submitted by {{ bc.submitter }}</span>
+    {% endif %}
+  {% endif %}
+  <div class="page-actions">
+    <a href="{{ url_for('bc.index') }}" class="btn btn-sm btn-outline-secondary">
+      <i class="bi bi-arrow-left" aria-hidden="true"></i> Back to list
+    </a>
+    {% if not is_new %}
+      <button type="button" class="btn btn-sm btn-outline-secondary"
+              onclick="document.getElementById('bc-form').submit();">
+        <i class="bi bi-send" aria-hidden="true"></i> Submit for Review
+      </button>
+    {% endif %}
+  </div>
+</div>
+
+{% set form_action = url_for('bc.index') if is_new else url_for('bc.detail', bc_id=bc.bc_id) %}
+
+<form id="bc-form"
+      method="POST"
+      action="{{ form_action }}"
+      novalidate>
+  {{ form.hidden_tag() if form else '' }}
+
+  <div class="two-col-grid">
+
+    <!-- Left column: BC fields + DECs -->
+    <div>
+
+      <!-- Identification section -->
+      <div class="bc-card bc-card-sm mb-0">
+        <h2 class="form-section-title">Identification</h2>
+        <div class="row g-2 mb-2">
+          <div class="col-6">
+            <label for="bc_id" class="form-label small">BC ID</label>
+            <input type="text" id="bc_id" name="bc_id" class="form-control form-control-sm"
+                   value="{{ bc.bc_id if bc else '' }}"
+                   placeholder="e.g. C64849"
+                   {% if not is_new %}readonly{% endif %}>
+          </div>
+          <div class="col-6">
+            <label for="short_name" class="form-label small">Short Name <span class="text-danger" aria-hidden="true">*</span></label>
+            <input type="text" id="short_name" name="short_name" class="form-control form-control-sm"
+                   value="{{ bc.short_name if bc else '' }}"
+                   placeholder="e.g. HbA1c Percent"
+                   required>
+          </div>
+        </div>
+        <div class="row g-2 mb-2">
+          <div class="col-8">
+            <label for="ncit_code" class="form-label small">NCIt Code</label>
+            <div class="input-group input-group-sm">
+              <input type="text" id="ncit_code" name="ncit_code" class="form-control"
+                     value="{{ bc.ncit_code if bc else '' }}"
+                     placeholder="e.g. C64849"
+                     aria-describedby="ncit-lookup-btn">
+              <button type="button" id="ncit-lookup-btn" class="btn btn-outline-secondary">
+                <i class="bi bi-search" aria-hidden="true"></i> Look up NCIt
+              </button>
+            </div>
+          </div>
+          <div class="col-4">
+            <label for="parent_bc_id" class="form-label small">Parent BC ID</label>
+            <input type="text" id="parent_bc_id" name="parent_bc_id" class="form-control form-control-sm"
+                   value="{{ bc.parent_bc_id if bc else '' }}"
+                   placeholder="e.g. C45398">
+          </div>
+        </div>
+
+        <!-- NCIt lookup results panel (hidden until search) -->
+        <div id="ncit-results-panel" class="d-none" aria-live="polite" aria-label="NCIt lookup results">
+          <div class="ncit-result-panel">
+            <div class="d-flex align-items-center justify-content-between mb-2">
+              <span class="small fw-semibold text-secondary">NCIt Search Results</span>
+              <button type="button" class="btn-close btn-sm"
+                      onclick="document.getElementById('ncit-results-panel').classList.add('d-none')"
+                      aria-label="Close NCIt results"></button>
+            </div>
+            <div id="ncit-results-container"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Classification section -->
+      <div class="bc-card bc-card-sm mb-0 mt-3">
+        <h2 class="form-section-title">Classification</h2>
+        <div class="mb-2">
+          <label for="bc_categories" class="form-label small">BC Categories</label>
+          <input type="text" id="bc_categories" name="bc_categories" class="form-control form-control-sm"
+                 value="{{ bc.bc_categories if bc else '' }}"
+                 placeholder="e.g. Laboratory Tests; Diabetes">
+          <div class="form-text">Separate multiple categories with semicolons.</div>
+        </div>
+        <div class="row g-2">
+          <div class="col-6">
+            <label for="synonyms" class="form-label small">Synonyms</label>
+            <input type="text" id="synonyms" name="synonyms" class="form-control form-control-sm"
+                   value="{{ bc.synonyms if bc else '' }}"
+                   placeholder="e.g. A1C; Glycated Hb">
+          </div>
+          <div class="col-6">
+            <label for="result_scales" class="form-label small">Result Scales</label>
+            <input type="text" id="result_scales" name="result_scales" class="form-control form-control-sm"
+                   value="{{ bc.result_scales if bc else '' }}"
+                   placeholder="e.g. Quantitative">
+          </div>
+        </div>
+      </div>
+
+      <!-- External coding section -->
+      <div class="bc-card bc-card-sm mb-0 mt-3">
+        <h2 class="form-section-title">External Coding</h2>
+        <div class="row g-2">
+          <div class="col-4">
+            <label for="coding_system" class="form-label small">System</label>
+            <input type="text" id="coding_system" name="coding_system" class="form-control form-control-sm"
+                   value="{{ bc.coding_system if bc else '' }}"
+                   placeholder="e.g. LOINC">
+          </div>
+          <div class="col-4">
+            <label for="system_name" class="form-label small">System Name</label>
+            <input type="text" id="system_name" name="system_name" class="form-control form-control-sm"
+                   value="{{ bc.system_name if bc else '' }}"
+                   placeholder="e.g. LOINC">
+          </div>
+          <div class="col-4">
+            <label for="code" class="form-label small">Code</label>
+            <input type="text" id="code" name="code" class="form-control form-control-sm"
+                   value="{{ bc.code if bc else '' }}"
+                   placeholder="e.g. 4548-4">
+          </div>
+        </div>
+      </div>
+
+      <!-- Definition section -->
+      <div class="bc-card bc-card-sm mb-0 mt-3">
+        <h2 class="form-section-title">Definition</h2>
+        <label for="definition" class="form-label small visually-hidden">Definition</label>
+        <textarea id="definition" name="definition" class="form-control form-control-sm"
+                  rows="4"
+                  placeholder="Provide a precise, unambiguous definition aligned with NCI preferred term definition…">{{ bc.definition if bc else '' }}</textarea>
+      </div>
+
+      <!-- Metadata section -->
+      <div class="bc-card bc-card-sm mb-0 mt-3">
+        <h2 class="form-section-title">Metadata</h2>
+        <div class="row g-2">
+          <div class="col-6">
+            <label for="package_date" class="form-label small">Package Date</label>
+            <input type="date" id="package_date" name="package_date" class="form-control form-control-sm"
+                   value="{{ bc.package_date if bc else '' }}">
+          </div>
+          <div class="col-6">
+            <label for="submitter" class="form-label small">Submitter</label>
+            <input type="text" id="submitter" name="submitter" class="form-control form-control-sm"
+                   value="{{ bc.submitter if bc else '' }}"
+                   placeholder="e.g. Pfizer BAG">
+          </div>
+        </div>
+        {% if not is_new %}
+        <div class="mt-2">
+          <span class="form-label small d-block">Status</span>
+          {% if bc.status == 'provisional' %}
+            <span class="bc-badge bc-badge-provisional">Provisional</span>
+          {% elif bc.status == 'sme_review' %}
+            <span class="bc-badge bc-badge-sme-review">SME Review</span>
+          {% elif bc.status == 'cdisc_approval' %}
+            <span class="bc-badge bc-badge-cdisc-approval">CDISC Approval</span>
+          {% elif bc.status == 'published' %}
+            <span class="bc-badge bc-badge-published">Published</span>
+          {% endif %}
+          <input type="hidden" name="status" value="{{ bc.status if bc else 'provisional' }}">
+        </div>
+        {% endif %}
+      </div>
+
+      <!-- Form submit buttons -->
+      <div class="d-flex gap-2 mt-3 flex-wrap">
+        <button type="submit" name="action" value="save" class="btn btn-primary btn-sm">
+          <i class="bi bi-floppy" aria-hidden="true"></i> Save
+        </button>
+        <button type="submit" name="action" value="submit_review" class="btn btn-sm btn-outline-secondary">
+          <i class="bi bi-send" aria-hidden="true"></i> Submit for Review
+        </button>
+        <a href="{{ url_for('bc.index') }}" class="btn btn-sm btn-outline-secondary">Cancel</a>
+      </div>
+
+    </div><!-- /left column -->
+
+    <!-- Right column: DECs -->
+    <div>
+
+      <div class="bc-card bc-card-sm">
+        <div class="bc-card-header">
+          <h2 class="bc-card-title">Data Element Concepts (DECs)</h2>
+          <button type="button" id="add-dec-btn" class="btn btn-sm btn-outline-primary">
+            <i class="bi bi-plus-lg" aria-hidden="true"></i> Add DEC
+          </button>
+        </div>
+
+        <div class="table-responsive">
+          <table class="dec-table" aria-label="Data element concepts">
+            <thead>
+              <tr>
+                <th scope="col">DEC Label</th>
+                <th scope="col">Data Type</th>
+                <th scope="col">Example Values</th>
+                <th scope="col" class="text-center">Required</th>
+                <th scope="col" style="width: 40px;"></th>
+              </tr>
+            </thead>
+            <tbody id="dec-table-body">
+              {% if bc and bc.decs %}
+                {% for dec in bc.decs %}
+                <tr>
+                  <td>
+                    <input type="text" class="form-control form-control-sm"
+                           name="decs[{{ loop.index0 }}][dec_label]"
+                           value="{{ dec.dec_label }}"
+                           aria-label="DEC label">
+                  </td>
+                  <td>
+                    <select class="form-select form-select-sm"
+                            name="decs[{{ loop.index0 }}][data_type]"
+                            aria-label="Data type">
+                      {% for dtype in ['string', 'decimal', 'integer', 'boolean', 'date', 'datetime'] %}
+                        <option value="{{ dtype }}" {% if dec.data_type == dtype %}selected{% endif %}>{{ dtype }}</option>
+                      {% endfor %}
+                    </select>
+                  </td>
+                  <td>
+                    <input type="text" class="form-control form-control-sm"
+                           name="decs[{{ loop.index0 }}][example_set]"
+                           value="{{ dec.example_set | default('') }}"
+                           aria-label="Example values">
+                  </td>
+                  <td class="text-center">
+                    <input type="checkbox" class="form-check-input"
+                           name="decs[{{ loop.index0 }}][required]"
+                           value="1"
+                           {% if dec.required %}checked{% endif %}
+                           aria-label="Required">
+                  </td>
+                  <td>
+                    <button type="button" class="btn btn-sm btn-outline-danger dec-delete-btn"
+                            aria-label="Delete DEC row">
+                      <i class="bi bi-trash" aria-hidden="true"></i>
+                    </button>
+                  </td>
+                </tr>
+                {% endfor %}
+              {% endif %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </div><!-- /right column -->
+
+  </div><!-- /two-col-grid -->
+</form>
+{% endblock %}
