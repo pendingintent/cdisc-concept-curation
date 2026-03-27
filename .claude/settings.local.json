@@ -12,7 +12,10 @@
       "Bash(.venv/bin/python -c \"from app import create_app; app = create_app\\(\\); print\\(''OK''\\)\")",
       "Bash(curl -s http://127.0.0.1:5000/ingestion/)",
       "Bash(curl -s -o /dev/null -w \"%{http_code}\" http://127.0.0.1:5000/ingestion/)",
-      "Bash(curl -s -o /dev/null -w \"%{http_code}\" http://127.0.0.1:5000/)"
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\" http://127.0.0.1:5000/)",
+      "Bash(git -C /Users/dmoreland/projects/cdisc-concept-curation status --short)",
+      "Bash(git -C /Users/dmoreland/projects/cdisc-concept-curation log --oneline -5)",
+      "Bash(git -C /Users/dmoreland/projects/cdisc-concept-curation status)"
     ]
   }
 }
