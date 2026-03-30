@@ -28,7 +28,7 @@ def index():
         BiomedicalConcept.status.in_(['provisional', 'sme_review', 'cdisc_approval'])
     ).count()
     recent_additions = BiomedicalConcept.query.filter(
-        BiomedicalConcept.created_at >= datetime.utcnow() - timedelta(days=30)
+        BiomedicalConcept.created_at >= datetime.utcnow() - timedelta(days=7)
     ).count()
 
     governance_items = (
