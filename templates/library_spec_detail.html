@@ -1,0 +1,105 @@
+{% extends "base.html" %}
+
+{% block title %}{{ spec.shortName or spec.datasetSpecializationId or 'Specialization' }} — CDISC BC Curation{% endblock %}
+
+{% block page_title %}{{ spec.shortName or spec.datasetSpecializationId or 'Dataset Specialization' }}{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <h1 class="page-title">{{ spec.shortName or spec.datasetSpecializationId }}</h1>
+  <span class="bc-badge bc-badge-published">CDISC Library</span>
+  <div class="page-actions">
+    <a href="{{ url_for('dashboard.index') }}" class="btn btn-sm btn-outline-secondary">
+      <i class="bi bi-arrow-left" aria-hidden="true"></i> Back to Dashboard
+    </a>
+  </div>
+</div>
+
+<div class="two-col-grid">
+
+  <!-- Left column -->
+  <div>
+
+    <!-- Identification -->
+    <div class="bc-card bc-card-sm mb-0">
+      <h2 class="form-section-title">Identification</h2>
+      <div class="row g-2">
+        <div class="col-6">
+          <label class="form-label form-label-sm">Specialization ID</label>
+          <div class="form-control form-control-sm bg-light">{{ spec.datasetSpecializationId | default('—') }}</div>
+        </div>
+        <div class="col-6">
+          <label class="form-label form-label-sm">Short Name</label>
+          <div class="form-control form-control-sm bg-light">{{ spec.shortName | default('—') }}</div>
+        </div>
+        <div class="col-6">
+          <label class="form-label form-label-sm">Domain</label>
+          <div class="form-control form-control-sm bg-light">{{ spec.domain | default('—') }}</div>
+        </div>
+        {% if spec.biomedicalConceptId %}
+        <div class="col-6">
+          <label class="form-label form-label-sm">Biomedical Concept ID</label>
+          <div class="form-control form-control-sm bg-light">{{ spec.biomedicalConceptId }}</div>
+        </div>
+        {% endif %}
+      </div>
+    </div>
+
+    <!-- Metadata -->
+    <div class="bc-card bc-card-sm mb-0 mt-3">
+      <h2 class="form-section-title">Metadata</h2>
+      <div class="row g-2">
+        {% if spec.packageDate %}
+        <div class="col-6">
+          <label class="form-label form-label-sm">Package Date</label>
+          <div class="form-control form-control-sm bg-light">{{ spec.packageDate }}</div>
+        </div>
+        {% endif %}
+        {% if spec.href %}
+        <div class="col-12">
+          <label class="form-label form-label-sm">CDISC Library Href</label>
+          <div class="form-control form-control-sm bg-light text-break">{{ spec.href }}</div>
+        </div>
+        {% endif %}
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Right column: Variables -->
+  <div>
+    <div class="bc-card bc-card-sm">
+      <h2 class="form-section-title">Variables</h2>
+      {% if spec.variables %}
+      <table class="bc-table" aria-label="Specialization variables">
+        <thead>
+          <tr>
+            <th scope="col">Name</th>
+            <th scope="col">Data Type</th>
+            <th scope="col">Required</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for v in spec.variables %}
+          <tr>
+            <td class="fw-medium">{{ v.name | default(v.get('shortName', '—')) }}</td>
+            <td><span class="text-secondary small">{{ v.dataType | default('—') }}</span></td>
+            <td>
+              {% if v.required %}
+                <i class="bi bi-check-circle-fill text-success" aria-label="Required"></i>
+              {% else %}
+                <span class="text-secondary small">—</span>
+              {% endif %}
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+      {% else %}
+      <p class="text-secondary small mb-0">No variables defined.</p>
+      {% endif %}
+    </div>
+  </div>
+
+</div>
+{% endblock %}

@@ -69,6 +69,13 @@ class CDISCApiClient:
         except Exception as e:
             return {"error": str(e)}
 
+    def get_specialization(self, href):
+        """Fetch a single dataset specialization by its href path."""
+        try:
+            return self._get(href)
+        except Exception as e:
+            return {"error": str(e)}
+
     def get_dataset_specializations(self):
         """
         List all dataset specializations from the CDISC Library.
