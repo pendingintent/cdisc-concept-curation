@@ -21,9 +21,7 @@ def _cached(cache_key, fn):
 class CDISCApiClient:
     def __init__(self):
         try:
-            self.api_key = current_app.config.get("CDISC_API_KEY") or os.environ.get(
-                "CDISC_API_KEY", ""
-            )
+            self.api_key = current_app.config.get("CDISC_API_KEY") or os.environ.get("CDISC_API_KEY", "")
             self.base_url = current_app.config.get(
                 "CDISC_API_BASE_URL",
                 "https://api.library.cdisc.org/api/cosmos/v2",
@@ -36,9 +34,7 @@ class CDISCApiClient:
             "Accept": "application/json",
         }
         # Stable, non-secret digest of the api_key for use in cache keys
-        self._key_digest = hashlib.sha256(
-            self.api_key.encode()
-        ).hexdigest()[:8]
+        self._key_digest = hashlib.sha256(self.api_key.encode()).hexdigest()[:8]
 
     def _cache_key(self, endpoint):
         return (self.base_url, self._key_digest, endpoint)
@@ -84,11 +80,7 @@ class CDISCApiClient:
         def _fetch():
             try:
                 data = self._get("/mdr/specializations/datasetspecializations")
-                sdtm = (
-                    data.get("_links", {})
-                    .get("datasetSpecializations", {})
-                    .get("sdtm", [])
-                )
+                sdtm = data.get("_links", {}).get("datasetSpecializations", {}).get("sdtm", [])
                 return sdtm
             except Exception as e:
                 return [{"error": str(e)}]
