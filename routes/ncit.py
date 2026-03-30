@@ -32,6 +32,7 @@ def search_ncit():
     is_ajax = (
         request.headers.get('X-Requested-With') == 'XMLHttpRequest'
         or request.args.get('format') == 'json'
+        or 'application/json' in request.headers.get('Accept', '')
     )
     if not term:
         if is_ajax:
