@@ -78,7 +78,11 @@
         {% if recent_submissions %}
           {% for bc in recent_submissions %}
           <tr data-href="{{ url_for('bc.detail', bc_id=bc.bc_id) }}" style="cursor: pointer;">
-            <td class="fw-medium">{{ bc.short_name }}</td>
+            <td class="fw-medium">
+              <a href="{{ url_for('bc.detail', bc_id=bc.bc_id) }}" aria-label="View details for {{ bc.short_name }}">
+                {{ bc.short_name }}
+              </a>
+            </td>
             <td>{{ bc.submitter | default('—') }}</td>
             <td>{{ bc.package_date | default('—') }}</td>
             <td>
