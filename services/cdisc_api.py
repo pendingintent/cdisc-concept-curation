@@ -41,7 +41,7 @@ class CDISCApiClient:
 
     def _get(self, path, params=None):
         url = f"{self.base_url}{path}"
-        response = requests.get(url, headers=self.headers, params=params, timeout=30)
+        response = requests.get(url, headers=self.headers, params=params, timeout=10)
         response.raise_for_status()
         return response.json()
 
@@ -100,6 +100,6 @@ class CDISCApiClient:
     def publish_bc(self, bc_data):
         """POST a new BC to the CDISC Library (requires write permission)."""
         url = f"{self.base_url}/mdr/bc/biomedicalconcepts"
-        response = requests.post(url, headers=self.headers, json=bc_data, timeout=15)
+        response = requests.post(url, headers=self.headers, json=bc_data, timeout=10)
         response.raise_for_status()
         return response.json()
