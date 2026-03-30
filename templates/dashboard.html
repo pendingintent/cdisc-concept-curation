@@ -23,8 +23,8 @@
 <div class="metric-grid" role="list" aria-label="Key performance indicators">
 
   <div class="metric-card metric-card-green" role="listitem">
-    <div class="metric-val metric-val-green">{{ stats.total_bcs | default('—') }}</div>
-    <div class="metric-lbl">Total BCs Published</div>
+    <div class="metric-val metric-val-green">{{ stats.api_total_bcs | default('—') }}</div>
+    <div class="metric-lbl">BCs in CDISC Library</div>
     <div class="metric-progress">
       <div class="metric-progress-fill" style="width: 100%; background: var(--teal400);" role="presentation"></div>
     </div>
@@ -39,8 +39,8 @@
   </div>
 
   <div class="metric-card metric-card-blue" role="listitem">
-    <div class="metric-val metric-val-blue">{{ stats.published | default('—') }}</div>
-    <div class="metric-lbl">Published This Cycle</div>
+    <div class="metric-val metric-val-blue">{{ stats.api_total_specializations | default('—') }}</div>
+    <div class="metric-lbl">Dataset Specializations</div>
     <div class="metric-progress">
       <div class="metric-progress-fill" style="width: 60%; background: var(--blue400);" role="presentation"></div>
     </div>
@@ -77,8 +77,12 @@
       <tbody>
         {% if recent_submissions %}
           {% for bc in recent_submissions %}
-          <tr onclick="window.location='{{ url_for('bc.detail', bc_id=bc.bc_id) }}'">
-            <td class="fw-medium">{{ bc.short_name }}</td>
+          <tr data-href="{{ url_for('bc.detail', bc_id=bc.bc_id) }}" style="cursor: pointer;">
+            <td class="fw-medium">
+              <a href="{{ url_for('bc.detail', bc_id=bc.bc_id) }}" aria-label="View details for {{ bc.short_name }}">
+                {{ bc.short_name }}
+              </a>
+            </td>
             <td>{{ bc.submitter | default('—') }}</td>
             <td>{{ bc.package_date | default('—') }}</td>
             <td>
@@ -157,6 +161,92 @@
 
 </div>
 
+<!-- CDISC Library BCs -->
+<div class="bc-card">
+  <div class="bc-card-header">
+    <h2 class="bc-card-title">
+      CDISC Library — Biomedical Concepts
+      <span class="bc-badge bc-badge-published ms-2">{{ api_bc_count }} total</span>
+    </h2>
+    <a href="{{ url_for('bc.index') }}" class="btn btn-sm btn-outline-secondary">Local BCs</a>
+  </div>
+  <table class="bc-table" aria-label="CDISC Library biomedical concepts">
+    <thead>
+      <tr>
+        <th scope="col">Name</th>
+        <th scope="col">Type</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% if api_bc_error %}
+        <tr>
+          <td colspan="2" class="text-center text-secondary py-3">
+            <i class="bi bi-exclamation-triangle" aria-hidden="true"></i>
+            Unable to load data: {{ api_bc_error }}
+          </td>
+        </tr>
+      {% else %}
+        {% for bc in api_bcs %}
+        <tr>
+          <td class="fw-medium">{{ bc.title }}</td>
+          <td><span class="text-secondary small">{{ bc.type | default('—') }}</span></td>
+        </tr>
+        {% else %}
+        <tr>
+          <td colspan="2" class="text-center text-secondary py-3">No data returned.</td>
+        </tr>
+        {% endfor %}
+      {% endif %}
+    </tbody>
+  </table>
+  {% if api_bc_count > 50 %}
+  <p class="small text-secondary mt-2 mb-0">Showing 50 of {{ api_bc_count }} BCs.</p>
+  {% endif %}
+</div>
+
+<!-- CDISC Library Dataset Specializations -->
+<div class="bc-card">
+  <div class="bc-card-header">
+    <h2 class="bc-card-title">
+      CDISC Library — Dataset Specializations
+      <span class="bc-badge bc-badge-provisional ms-2">{{ api_spec_count }} total</span>
+    </h2>
+    <a href="{{ url_for('specializations.index') }}" class="btn btn-sm btn-outline-secondary">Local Specs</a>
+  </div>
+  <table class="bc-table" aria-label="CDISC Library dataset specializations">
+    <thead>
+      <tr>
+        <th scope="col">Name</th>
+        <th scope="col">Type</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% if api_spec_error %}
+        <tr>
+          <td colspan="2" class="text-center text-secondary py-3">
+            <i class="bi bi-exclamation-triangle" aria-hidden="true"></i>
+            Unable to load data: {{ api_spec_error }}
+          </td>
+        </tr>
+      {% else %}
+        {% for spec in api_specs %}
+        <tr>
+          <td class="fw-medium">{{ spec.title }}</td>
+          <td><span class="text-secondary small">{{ spec.type | default('—') }}</span></td>
+        </tr>
+        {% else %}
+        <tr>
+          <td colspan="2" class="text-center text-secondary py-3">No data returned.</td>
+        </tr>
+        {% endfor %}
+      {% endif %}
+    </tbody>
+  </table>
+  {% if api_spec_count > 50 %}
+  <p class="small text-secondary mt-2 mb-0">Showing 50 of {{ api_spec_count }} specializations.</p>
+  {% endif %}
+</div>
+
 <!-- AI curation pipeline status -->
 <div class="bc-card">
   <div class="bc-card-header">
@@ -190,7 +280,7 @@
   </div>
   <p class="small text-secondary mb-0">
     {{ stats.pending_review | default(0) }} BCs currently in provisional curation &mdash;
-    {{ stats.total_bcs | default(0) }} total BCs in the system.
+    {{ stats.local_total_bcs | default(0) }} total BCs in the local system.
   </p>
 </div>
 

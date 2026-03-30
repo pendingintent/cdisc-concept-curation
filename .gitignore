@@ -91,5 +91,7 @@ normalized/*.json
 # App specific
 files/cdisc_bc_ai_platform.html
 files/cdisc_smart_goals_infographic.html
+.claude/settings.json
+.claude/settings.local.json
 
 # End of file
