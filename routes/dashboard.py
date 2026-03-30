@@ -15,12 +15,10 @@ def index():
     api_bcs = client.get_biomedical_concepts()
     api_specs = client.get_dataset_specializations()
 
-    api_bc_count = (
-        len(api_bcs) if api_bcs and 'error' not in api_bcs[0] else 0
-    )
-    api_spec_count = (
-        len(api_specs) if api_specs and 'error' not in api_specs[0] else 0
-    )
+    api_bc_error = api_bcs[0].get('error') if api_bcs and 'error' in api_bcs[0] else None
+    api_spec_error = api_specs[0].get('error') if api_specs and 'error' in api_specs[0] else None
+    api_bc_count = len(api_bcs) if not api_bc_error else 0
+    api_spec_count = len(api_specs) if not api_spec_error else 0
 
     # --- Local DB stats ---
     local_total_bcs = BiomedicalConcept.query.count()
@@ -50,8 +48,10 @@ def index():
     return render_template(
         'dashboard.html',
         stats=stats,
-        api_bcs=api_bcs[:50],
-        api_specs=api_specs[:50],
+        api_bcs=api_bcs[:50] if not api_bc_error else [],
+        api_specs=api_specs[:50] if not api_spec_error else [],
+        api_bc_error=api_bc_error,
+        api_spec_error=api_spec_error,
         api_bc_count=api_bc_count,
         api_spec_count=api_spec_count,
         recent_submissions=BiomedicalConcept.query.order_by(

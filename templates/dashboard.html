@@ -174,18 +174,25 @@
       </tr>
     </thead>
     <tbody>
-      {% for bc in api_bcs if 'error' not in bc %}
+      {% if api_bc_error %}
+        <tr>
+          <td colspan="2" class="text-center text-secondary py-3">
+            <i class="bi bi-exclamation-triangle"></i>
+            Unable to load data: {{ api_bc_error }}
+          </td>
+        </tr>
+      {% else %}
+        {% for bc in api_bcs %}
         <tr>
           <td class="fw-medium">{{ bc.title }}</td>
           <td><span class="text-secondary small">{{ bc.type | default('—') }}</span></td>
         </tr>
-      {% else %}
+        {% else %}
         <tr>
-          <td colspan="2" class="text-center text-secondary py-3">
-            No data — check CDISC_API_KEY is set.
-          </td>
+          <td colspan="2" class="text-center text-secondary py-3">No data returned.</td>
         </tr>
-      {% endfor %}
+        {% endfor %}
+      {% endif %}
     </tbody>
   </table>
   {% if api_bc_count > 50 %}
@@ -210,18 +217,25 @@
       </tr>
     </thead>
     <tbody>
-      {% for spec in api_specs if 'error' not in spec %}
+      {% if api_spec_error %}
+        <tr>
+          <td colspan="2" class="text-center text-secondary py-3">
+            <i class="bi bi-exclamation-triangle"></i>
+            Unable to load data: {{ api_spec_error }}
+          </td>
+        </tr>
+      {% else %}
+        {% for spec in api_specs %}
         <tr>
           <td class="fw-medium">{{ spec.title }}</td>
           <td><span class="text-secondary small">{{ spec.type | default('—') }}</span></td>
         </tr>
-      {% else %}
+        {% else %}
         <tr>
-          <td colspan="2" class="text-center text-secondary py-3">
-            No data — check CDISC_API_KEY is set.
-          </td>
+          <td colspan="2" class="text-center text-secondary py-3">No data returned.</td>
         </tr>
-      {% endfor %}
+        {% endfor %}
+      {% endif %}
     </tbody>
   </table>
   {% if api_spec_count > 50 %}
