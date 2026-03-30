@@ -151,6 +151,7 @@ code, .mono {
   border-left: 2px solid transparent;
   text-decoration: none;
   transition: all 0.12s;
+  -webkit-user-select: none; /* Safari 3+ and Safari on iOS 3+ */
   user-select: none;
 }
 

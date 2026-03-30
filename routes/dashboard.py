@@ -1,37 +1,61 @@
+from datetime import datetime, timedelta
 from flask import Blueprint, render_template
 from models.bc import BiomedicalConcept
+from models.specialization import DatasetSpecialization
 from models.audit import AuditLog
+from services.cdisc_api import CDISCApiClient
 
 bp = Blueprint('dashboard', __name__)
 
 
 @bp.route('/')
 def index():
-    total_bcs = BiomedicalConcept.query.count()
-    pending = BiomedicalConcept.query.filter(
+    # --- CDISC Library API data ---
+    client = CDISCApiClient()
+    api_bcs = client.get_biomedical_concepts()
+    api_specs = client.get_dataset_specializations()
+
+    api_bc_count = (
+        len(api_bcs) if api_bcs and 'error' not in api_bcs[0] else 0
+    )
+    api_spec_count = (
+        len(api_specs) if api_specs and 'error' not in api_specs[0] else 0
+    )
+
+    # --- Local DB stats ---
+    local_pending = BiomedicalConcept.query.filter(
         BiomedicalConcept.status.in_(['provisional', 'sme_review', 'cdisc_approval'])
     ).count()
-    published = BiomedicalConcept.query.filter_by(status='published').count()
-    recent = BiomedicalConcept.query.order_by(BiomedicalConcept.created_at.desc()).limit(10).all()
-    recent_audits = AuditLog.query.order_by(AuditLog.timestamp.desc()).limit(10).all()
-    pipeline = BiomedicalConcept.query.filter(
-        BiomedicalConcept.status != 'published'
-    ).order_by(BiomedicalConcept.updated_at.desc()).limit(10).all()
-    from datetime import datetime, timedelta
     recent_additions = BiomedicalConcept.query.filter(
         BiomedicalConcept.created_at >= datetime.utcnow() - timedelta(days=30)
     ).count()
+
+    governance_items = (
+        BiomedicalConcept.query
+        .filter(BiomedicalConcept.status != 'published')
+        .order_by(BiomedicalConcept.updated_at.desc())
+        .limit(10).all()
+    )
+    recent_audits = AuditLog.query.order_by(AuditLog.timestamp.desc()).limit(10).all()
+
     stats = {
-        'total_bcs': total_bcs,
-        'pending_review': pending,
-        'published': published,
+        'total_bcs': api_bc_count,
+        'total_specializations': api_spec_count,
+        'pending_review': local_pending,
         'recent_additions': recent_additions,
     }
+
     return render_template(
         'dashboard.html',
         stats=stats,
-        recent_bcs=recent,
+        api_bcs=api_bcs[:50],
+        api_specs=api_specs[:50],
+        api_bc_count=api_bc_count,
+        api_spec_count=api_spec_count,
+        recent_submissions=BiomedicalConcept.query.order_by(
+            BiomedicalConcept.created_at.desc()
+        ).limit(10).all(),
+        governance_items=governance_items,
         recent_audits=recent_audits,
-        pipeline=pipeline,
         page_title='Dashboard',
     )

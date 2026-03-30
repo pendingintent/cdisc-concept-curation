@@ -10,7 +10,7 @@ CDISC Biomedical Concept Curation — a Flask/Jinja web application for curating
 |--------|--------|---------|
 | Flask App Foundation | ✅ Complete | `app.py`, `extensions.py`, `config.py` |
 | Database Models | ✅ Complete | BC, DEC, Governance, Audit, Ingestion, Specialization |
-| Dashboard | ✅ Complete | KPI stats, route `/` |
+| Dashboard | ✅ Complete | KPI stats, live CDISC Library API counts + BC/Spec panels, route `/` |
 | Ingestion (Upload + Parse) | ✅ Complete | XLSX/CSV/JSON upload, AI field mapping, BC/DEC grouping |
 | BC CRUD + Export | ✅ Complete | JSON/XLSX/ODM-XML export |
 | NCIt Mapping | ✅ Complete | EVS REST API search + mapping resolution |
@@ -23,6 +23,20 @@ CDISC Biomedical Concept Curation — a Flask/Jinja web application for curating
 | UI (Bootstrap 5) | ✅ Complete | Sidebar layout, custom CDISC design tokens |
 
 ## Daily Changelog
+
+### 2026-03-30
+
+#### Dashboard: API Integration + BC/Specialization Display
+
+- Fixed variable name mismatches in `routes/dashboard.py` (`recent_bcs` -> `recent_submissions`, `pipeline` -> `governance_items`) that were causing empty dashboard tables
+- Added `DatasetSpecialization` query to `routes/dashboard.py` so the dashboard reflects locally stored specializations
+- `routes/dashboard.py` now calls the CDISC Library API for live BC and specialization counts and lists on every dashboard load (with cache)
+- Fixed `services/cdisc_api.py` `get_biomedical_concepts()` to correctly parse the `_links.biomedicalConcepts` array from the API response (~1127 BCs returned)
+- Added `get_dataset_specializations()` to `services/cdisc_api.py` using the correct endpoint `/mdr/specializations/datasetspecializations` (~1123 specs returned)
+- Added 5-minute in-memory cache to `services/cdisc_api.py` to avoid redundant API calls on rapid page refreshes
+- Fixed `check_duplicate()` in `services/cdisc_api.py` to use the `title` field from link objects (was using wrong key)
+- Added two new panels to `templates/dashboard.html`: "CDISC Library - Biomedical Concepts" (first 50 of ~1127) and "CDISC Library - Dataset Specializations" (first 50 of ~1123)
+- Updated KPI cards in `templates/dashboard.html`: "BCs in CDISC Library" and "Dataset Specializations" now display live counts from the API rather than static zeros
 
 ### 2026-03-27
 - ✅ Built complete Flask/Jinja web application from scratch for CDISC BC curation
