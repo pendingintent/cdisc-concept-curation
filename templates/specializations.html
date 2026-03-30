@@ -86,7 +86,7 @@
               <th scope="col" style="width: 40px;"></th>
             </tr>
           </thead>
-          <tbody id="spec-variables-body">
+          <tbody id="spec-variables-body" data-row-count="{{ (editing_spec.variables | length) if editing_spec and editing_spec.variables else 0 }}">
             {% if editing_spec and editing_spec.variables %}
               {% for var in editing_spec.variables %}
               <tr>
@@ -228,7 +228,10 @@
 {% block extra_js %}
 <script>
 (function () {
-  let varRowIndex = {{ (editing_spec.variables | length) if editing_spec and editing_spec.variables else 0 }};
+  'use strict';
+  
+  // Initialize variable row counter from server-rendered data
+  let varRowIndex = parseInt(document.getElementById('spec-variables-body').dataset.rowCount || '0', 10);
 
   // Add variable row
   const addVarBtn = document.getElementById('add-spec-var-btn');
