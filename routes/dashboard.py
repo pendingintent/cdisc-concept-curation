@@ -23,6 +23,7 @@ def index():
     )
 
     # --- Local DB stats ---
+    local_total_bcs = BiomedicalConcept.query.count()
     local_pending = BiomedicalConcept.query.filter(
         BiomedicalConcept.status.in_(['provisional', 'sme_review', 'cdisc_approval'])
     ).count()
@@ -39,8 +40,9 @@ def index():
     recent_audits = AuditLog.query.order_by(AuditLog.timestamp.desc()).limit(10).all()
 
     stats = {
-        'total_bcs': api_bc_count,
-        'total_specializations': api_spec_count,
+        'api_total_bcs': api_bc_count,
+        'api_total_specializations': api_spec_count,
+        'local_total_bcs': local_total_bcs,
         'pending_review': local_pending,
         'recent_additions': recent_additions,
     }

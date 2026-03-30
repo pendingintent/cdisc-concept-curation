@@ -23,7 +23,7 @@
 <div class="metric-grid" role="list" aria-label="Key performance indicators">
 
   <div class="metric-card metric-card-green" role="listitem">
-    <div class="metric-val metric-val-green">{{ stats.total_bcs | default('—') }}</div>
+    <div class="metric-val metric-val-green">{{ stats.api_total_bcs | default('—') }}</div>
     <div class="metric-lbl">BCs in CDISC Library</div>
     <div class="metric-progress">
       <div class="metric-progress-fill" style="width: 100%; background: var(--teal400);" role="presentation"></div>
@@ -39,7 +39,7 @@
   </div>
 
   <div class="metric-card metric-card-blue" role="listitem">
-    <div class="metric-val metric-val-blue">{{ stats.total_specializations | default('—') }}</div>
+    <div class="metric-val metric-val-blue">{{ stats.api_total_specializations | default('—') }}</div>
     <div class="metric-lbl">Dataset Specializations</div>
     <div class="metric-progress">
       <div class="metric-progress-fill" style="width: 60%; background: var(--blue400);" role="presentation"></div>
@@ -262,7 +262,7 @@
   </div>
   <p class="small text-secondary mb-0">
     {{ stats.pending_review | default(0) }} BCs currently in provisional curation &mdash;
-    {{ stats.total_bcs | default(0) }} total BCs in the system.
+    {{ stats.local_total_bcs | default(0) }} total BCs in the local system.
   </p>
 </div>
 
