@@ -2,6 +2,7 @@ from flask import Blueprint, render_template, request, redirect, url_for, flash
 from models.bc import BiomedicalConcept, DataElementConcept
 from models.specialization import DatasetSpecialization
 from extensions import db
+from services.cdisc_api import CDISCApiClient
 
 bp = Blueprint('specializations', __name__)
 
@@ -15,6 +16,20 @@ def index():
         specs=specs,
         bcs=bcs,
         page_title='Specializations',
+    )
+
+
+@bp.route('/library/<path:spec_path>')
+def library_detail(spec_path):
+    client = CDISCApiClient()
+    spec = client.get_specialization('/' + spec_path)
+    if 'error' in spec:
+        flash(f'Could not load specialization: {spec["error"]}', 'danger')
+        return redirect(url_for('dashboard.index'))
+    return render_template(
+        'library_spec_detail.html',
+        spec=spec,
+        page_title=spec.get('shortName') or spec.get('datasetSpecializationId') or spec_path.split('/')[-1],
     )
 
 

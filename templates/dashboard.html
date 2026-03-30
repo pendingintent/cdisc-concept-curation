@@ -187,7 +187,10 @@
         </tr>
       {% else %}
         {% for bc in api_bcs %}
-        <tr>
+        {% set concept_id = bc.href.split('/')[-1] if bc.href else '' %}
+        <tr class="{% if concept_id %}table-row-link{% endif %}"
+            {% if concept_id %}onclick="window.location='{{ url_for('bc.library_detail', concept_id=concept_id) }}'"
+            style="cursor:pointer;"{% endif %}>
           <td class="fw-medium">{{ bc.title }}</td>
           <td><span class="text-secondary small">{{ bc.type | default('—') }}</span></td>
         </tr>
@@ -230,7 +233,10 @@
         </tr>
       {% else %}
         {% for spec in api_specs %}
-        <tr>
+        {% set spec_path = spec.href.lstrip('/') if spec.href else '' %}
+        <tr class="{% if spec_path %}table-row-link{% endif %}"
+            {% if spec_path %}onclick="window.location='{{ url_for('specializations.library_detail', spec_path=spec_path) }}'"
+            style="cursor:pointer;"{% endif %}>
           <td class="fw-medium">{{ spec.title }}</td>
           <td><span class="text-secondary small">{{ spec.type | default('—') }}</span></td>
         </tr>
