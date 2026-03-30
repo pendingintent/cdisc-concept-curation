@@ -1,0 +1,1 @@
+- [CDISC API Endpoints & Response Structure](reference_api_endpoints.md) -- verified endpoint paths, response shapes, no pagination, field names for BCs and dataset specializations
