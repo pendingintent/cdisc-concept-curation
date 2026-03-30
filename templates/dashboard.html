@@ -77,7 +77,7 @@
       <tbody>
         {% if recent_submissions %}
           {% for bc in recent_submissions %}
-          <tr onclick="window.location='{{ url_for('bc.detail', bc_id=bc.bc_id) }}'">
+          <tr data-href="{{ url_for('bc.detail', bc_id=bc.bc_id) }}" style="cursor: pointer;">
             <td class="fw-medium">{{ bc.short_name }}</td>
             <td>{{ bc.submitter | default('—') }}</td>
             <td>{{ bc.package_date | default('—') }}</td>

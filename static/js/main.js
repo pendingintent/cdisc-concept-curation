@@ -479,6 +479,17 @@
   }
 
   /* ─────────────────────────────────────────────
+     Clickable table rows with data-href
+  ───────────────────────────────────────────── */
+  function initClickableRows() {
+    document.querySelectorAll('tr[data-href]').forEach(function (row) {
+      row.addEventListener('click', function () {
+        window.location.href = row.dataset.href;
+      });
+    });
+  }
+
+  /* ─────────────────────────────────────────────
      Init all modules on DOM ready
   ───────────────────────────────────────────── */
   document.addEventListener('DOMContentLoaded', function () {
@@ -489,6 +500,7 @@
     initKanban();
     initAuditDiff();
     initNcitSearch();
+    initClickableRows();
   });
 
 })();
