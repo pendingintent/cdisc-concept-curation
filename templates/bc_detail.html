@@ -33,16 +33,17 @@
     <a href="{{ url_for('bc.index') }}" class="btn btn-sm btn-outline-secondary">
       <i class="bi bi-arrow-left" aria-hidden="true"></i> Back to list
     </a>
-    {% if not is_new %}
-      <button type="button" class="btn btn-sm btn-outline-secondary"
-              onclick="document.getElementById('bc-form').submit();">
+    {% if not is_new and bc.status == 'provisional' %}
+      <button type="submit" form="bc-form"
+              formaction="{{ url_for('bc.submit_for_review', bc_id=bc.bc_id) }}"
+              class="btn btn-sm btn-outline-secondary">
         <i class="bi bi-send" aria-hidden="true"></i> Submit for Review
       </button>
     {% endif %}
   </div>
 </div>
 
-{% set form_action = url_for('bc.index') if is_new else url_for('bc.detail', bc_id=bc.bc_id) %}
+{% set form_action = url_for('bc.create') if is_new else url_for('bc.edit', bc_id=bc.bc_id) %}
 
 <form id="bc-form"
       method="POST"
@@ -206,9 +207,6 @@
       <div class="d-flex gap-2 mt-3 flex-wrap">
         <button type="submit" name="action" value="save" class="btn btn-primary btn-sm">
           <i class="bi bi-floppy" aria-hidden="true"></i> Save
-        </button>
-        <button type="submit" name="action" value="submit_review" class="btn btn-sm btn-outline-secondary">
-          <i class="bi bi-send" aria-hidden="true"></i> Submit for Review
         </button>
         <a href="{{ url_for('bc.index') }}" class="btn btn-sm btn-outline-secondary">Cancel</a>
       </div>

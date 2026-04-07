@@ -38,6 +38,8 @@ pip install -r requirements.txt
 | openpyxl | 3.1.2 | Excel file I/O |
 | requests | 2.32.3 | HTTP client for CDISC and NCIt APIs |
 | lxml | 5.2.2 | ODM-XML export |
+| pytest | 8.3.5 | Unit and integration tests |
+| pytest-flask | 1.3.0 | Flask test client fixture |
 
 ---
 
@@ -69,6 +71,28 @@ python app.py
 The Flask development server starts on `http://localhost:5000`. The SQLite database file (`cdisc_curation.db`) is created automatically on first run.
 
 > **Note:** `python app.py` uses Flask's built-in development server. Do not use this in production. Use a WSGI server such as gunicorn instead.
+
+---
+
+## Running Tests
+
+```bash
+python -m pytest tests/ -v
+```
+
+Tests use an in-memory SQLite database and the Flask test client. No environment variables are required to run tests.
+
+To run a single test file:
+
+```bash
+python -m pytest tests/test_ingestion_service.py -v
+```
+
+To run a single test:
+
+```bash
+python -m pytest tests/test_bc_routes.py::TestCreateBc::test_creates_bc_and_redirects -v
+```
 
 ---
 

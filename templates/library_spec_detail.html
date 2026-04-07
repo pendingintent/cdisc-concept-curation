@@ -1,0 +1,197 @@
+{% extends "base.html" %}
+
+{% block title %}{{ spec.shortName or spec.datasetSpecializationId or 'Specialization' }} — CDISC BC Curation{% endblock %}
+
+{% block page_title %}{{ spec.shortName or spec.datasetSpecializationId or 'Dataset Specialization' }}{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <h1 class="page-title">{{ spec.shortName or spec.datasetSpecializationId }}</h1>
+  <span class="bc-badge bc-badge-published">CDISC Library</span>
+  <div class="page-actions">
+    <a href="{{ url_for('dashboard.index') }}" class="btn btn-sm btn-outline-secondary">
+      <i class="bi bi-arrow-left" aria-hidden="true"></i> Back to Dashboard
+    </a>
+  </div>
+</div>
+
+<div class="two-col-grid">
+
+  <!-- Left column -->
+  <div>
+
+    <!-- Identification -->
+    <div class="bc-card bc-card-sm mb-0">
+      <h2 class="form-section-title">Identification</h2>
+      <div class="row g-2">
+        <div class="col-6">
+          <label class="form-label form-label-sm">Specialization ID</label>
+          <div class="form-control form-control-sm bg-light">{{ spec.datasetSpecializationId | default('—') }}</div>
+        </div>
+        <div class="col-6">
+          <label class="form-label form-label-sm">Short Name</label>
+          <div class="form-control form-control-sm bg-light">{{ spec.shortName | default('—') }}</div>
+        </div>
+        <div class="col-6">
+          <label class="form-label form-label-sm">Domain</label>
+          <div class="form-control form-control-sm bg-light">{{ spec.domain | default('—') }}</div>
+        </div>
+        {% if spec.biomedicalConceptId %}
+        <div class="col-6">
+          <label class="form-label form-label-sm">Biomedical Concept ID</label>
+          <div class="form-control form-control-sm bg-light">{{ spec.biomedicalConceptId }}</div>
+        </div>
+        {% endif %}
+      </div>
+    </div>
+
+    <!-- Metadata -->
+    <div class="bc-card bc-card-sm mb-0 mt-3">
+      <h2 class="form-section-title">Metadata</h2>
+      <div class="row g-2">
+        {% if spec.packageDate %}
+        <div class="col-6">
+          <label class="form-label form-label-sm">Package Date</label>
+          <div class="form-control form-control-sm bg-light">{{ spec.packageDate }}</div>
+        </div>
+        {% endif %}
+        {% if spec.href %}
+        <div class="col-12">
+          <label class="form-label form-label-sm">CDISC Library Href</label>
+          <div class="form-control form-control-sm bg-light text-break">{{ spec.href }}</div>
+        </div>
+        {% endif %}
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Right column: summary counts -->
+  <div>
+    <div class="bc-card bc-card-sm mb-0">
+      <h2 class="form-section-title">Summary</h2>
+      <div class="row g-2">
+        <div class="col-6">
+          <label class="form-label form-label-sm">Total Variables</label>
+          <div class="form-control form-control-sm bg-light">
+            {{ spec.variables | length if spec.variables else 0 }}
+          </div>
+        </div>
+        <div class="col-6">
+          <label class="form-label form-label-sm">Mandatory Variables</label>
+          <div class="form-control form-control-sm bg-light">
+            {{ spec.variables | selectattr('mandatoryVariable') | list | length if spec.variables else 0 }}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- Full-width Variables pane -->
+<div class="bc-card mt-3">
+  <div class="bc-card-header">
+    <h2 class="bc-card-title">Variables</h2>
+    <span class="text-secondary small">
+      {{ spec.variables | length if spec.variables else 0 }} variable{{ 's' if (spec.variables | length) != 1 else '' }}
+    </span>
+  </div>
+
+  {% if spec.variables %}
+  <div class="table-responsive">
+    <table class="bc-table" aria-label="Specialization variables">
+      <thead>
+        <tr>
+          <th scope="col">Name</th>
+          <th scope="col">Role</th>
+          <th scope="col">Codelist</th>
+          <th scope="col">Assigned Term</th>
+          <th scope="col" class="text-center">Mandatory<br>Variable</th>
+          <th scope="col" class="text-center">Mandatory<br>Value</th>
+          <th scope="col">Comparator</th>
+          <th scope="col">Relationship</th>
+          <th scope="col">DEC ID</th>
+          <th scope="col" class="text-center">Non-<br>Standard</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for var in spec.variables %}
+        <tr>
+          <td><code class="fw-semibold">{{ var.name | default('—') }}</code></td>
+
+          <td class="small text-secondary">{{ var.role | default('—') }}</td>
+
+          <td class="small">
+            {% if var.codelist and var.codelist.conceptId %}
+              <code>{{ var.codelist.conceptId }}</code>
+            {% else %}
+              <span class="text-secondary">—</span>
+            {% endif %}
+          </td>
+
+          <td class="small">
+            {% if var.assignedTerm %}
+              {% if var.assignedTerm.conceptId %}
+                <code>{{ var.assignedTerm.conceptId }}</code>
+              {% endif %}
+              {% if var.assignedTerm.value %}
+                <span class="text-secondary"> {{ var.assignedTerm.value }}</span>
+              {% endif %}
+              {% if not var.assignedTerm.conceptId and not var.assignedTerm.value %}
+                <span class="text-secondary">—</span>
+              {% endif %}
+            {% else %}
+              <span class="text-secondary">—</span>
+            {% endif %}
+          </td>
+
+          <td class="text-center">
+            {% if var.mandatoryVariable %}
+              <i class="bi bi-check-circle-fill text-success" aria-label="Yes"></i>
+            {% else %}
+              <span class="text-secondary">—</span>
+            {% endif %}
+          </td>
+
+          <td class="text-center">
+            {% if var.mandatoryValue %}
+              <i class="bi bi-check-circle-fill text-success" aria-label="Yes"></i>
+            {% else %}
+              <span class="text-secondary">—</span>
+            {% endif %}
+          </td>
+
+          <td class="small text-secondary">{{ var.comparator | default('—') }}</td>
+
+          <td class="small">
+            {% if var.relationship %}
+              <span class="text-muted">{{ var.relationship.subject | default('') }}</span>
+              {% if var.relationship.linkingPhrase %}
+                <em class="text-secondary"> {{ var.relationship.linkingPhrase }} </em>
+              {% endif %}
+              <span>{{ var.relationship.object | default('') }}</span>
+            {% else %}
+              <span class="text-secondary">—</span>
+            {% endif %}
+          </td>
+
+          <td class="small text-secondary">{{ var.dataElementConceptId | default('—') }}</td>
+
+          <td class="text-center">
+            {% if var.isNonStandard %}
+              <i class="bi bi-exclamation-triangle-fill text-warning" aria-label="Non-standard"></i>
+            {% else %}
+              <span class="text-secondary">—</span>
+            {% endif %}
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% else %}
+  <p class="text-secondary small px-3 py-3 mb-0">No variables defined for this specialization.</p>
+  {% endif %}
+</div>
+{% endblock %}

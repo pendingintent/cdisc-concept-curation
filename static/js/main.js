@@ -260,16 +260,14 @@
         try {
           const resp = await postJson(`/governance/advance/${encodeURIComponent(bcId)}`);
           if (resp.ok) {
-            const card = btn.closest('.kanban-card');
-            if (card) card.remove();
-            showInlineToast('BC advanced to next stage.');
+            location.reload();
           } else {
             showInlineToast('Could not advance BC — check the audit trail.', 'error');
+            btn.disabled = false;
           }
         } catch (err) {
           showInlineToast('Network error — please try again.', 'error');
           console.error('Kanban advance error:', err);
-        } finally {
           btn.disabled = false;
         }
       });
@@ -288,16 +286,14 @@
         try {
           const resp = await postJson(`/governance/reject/${encodeURIComponent(bcId)}`);
           if (resp.ok) {
-            const card = btn.closest('.kanban-card');
-            if (card) card.remove();
-            showInlineToast('BC rejected and removed from board.');
+            location.reload();
           } else {
             showInlineToast('Could not reject BC — check the audit trail.', 'error');
+            btn.disabled = false;
           }
         } catch (err) {
           showInlineToast('Network error — please try again.', 'error');
           console.error('Kanban reject error:', err);
-        } finally {
           btn.disabled = false;
         }
       });

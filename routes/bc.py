@@ -3,6 +3,7 @@ from models.bc import BiomedicalConcept, DataElementConcept
 from models.audit import AuditLog
 from extensions import db
 from services.export import export_json, export_xlsx, export_odm_xml
+from services.cdisc_api import CDISCApiClient
 from datetime import datetime
 
 bp = Blueprint('bc', __name__)
@@ -70,6 +71,20 @@ def export():
             mimetype='application/json',
             headers={'Content-Disposition': 'attachment; filename=bcs.json'},
         )
+
+
+@bp.route('/library/<concept_id>')
+def library_detail(concept_id):
+    client = CDISCApiClient()
+    bc = client.get_bc(concept_id)
+    if 'error' in bc:
+        flash(f'Could not load concept {concept_id}: {bc["error"]}', 'danger')
+        return redirect(url_for('dashboard.index'))
+    return render_template(
+        'library_bc_detail.html',
+        bc=bc,
+        page_title=bc.get('shortName') or bc.get('name') or concept_id,
+    )
 
 
 @bp.route('/<bc_id>')

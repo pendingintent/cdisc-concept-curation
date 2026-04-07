@@ -22,7 +22,7 @@ def board():
         )
     return render_template(
         'governance.html',
-        bcs_by_status=bcs_by_status,
+        columns=bcs_by_status,
         status_order=STATUS_ORDER,
         page_title='Governance Board',
     )

@@ -73,7 +73,8 @@ def export_odm_xml(bc_list):
             'DataType': 'text',
         })
         desc = etree.SubElement(item_def, 'Description')
-        translated = etree.SubElement(desc, 'TranslatedText', attrib={'xml:lang': 'en'})
+        XML_NS = 'http://www.w3.org/XML/1998/namespace'
+        translated = etree.SubElement(desc, 'TranslatedText', attrib={f'{{{XML_NS}}}lang': 'en'})
         translated.text = bc.get('definition', '')
         if bc.get('ncit_code'):
             etree.SubElement(item_def, 'Alias', attrib={
