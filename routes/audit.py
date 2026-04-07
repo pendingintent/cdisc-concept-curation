@@ -30,7 +30,8 @@ def index():
     )
     return render_template(
         'audit.html',
-        logs=logs,
+        audit_logs=logs,
+        pagination=logs,
         entity_type=entity_type,
         action=action,
         actor=actor,
