@@ -63,6 +63,17 @@ def search_ncit():
     )
 
 
+@bp.route('/concept/<ncit_code>')
+def concept_detail(ncit_code):
+    """Return full NCIt concept details as JSON."""
+    client = NCItApiClient()
+    result = client.get_concept(ncit_code)
+    if 'error' in result:
+        from flask import abort
+        abort(404)
+    return jsonify(result)
+
+
 @bp.route('/resolve/<bc_id>', methods=['POST'])
 def resolve(bc_id):
     bc = BiomedicalConcept.query.get_or_404(bc_id)

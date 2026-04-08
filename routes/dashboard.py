@@ -1,3 +1,4 @@
+from concurrent.futures import ThreadPoolExecutor, as_completed
 from datetime import datetime, timedelta
 from flask import Blueprint, render_template
 from models.bc import BiomedicalConcept
@@ -9,10 +10,13 @@ bp = Blueprint("dashboard", __name__)
 
 @bp.route("/")
 def index():
-    # --- CDISC Library API data ---
+    # --- CDISC Library API data (fetched concurrently) ---
     client = CDISCApiClient()
-    api_bcs = client.get_biomedical_concepts()
-    api_specs = client.get_dataset_specializations()
+    with ThreadPoolExecutor(max_workers=2) as pool:
+        fut_bcs   = pool.submit(client.get_biomedical_concepts)
+        fut_specs = pool.submit(client.get_dataset_specializations)
+        api_bcs   = fut_bcs.result()
+        api_specs = fut_specs.result()
 
     api_bc_error = (
         api_bcs[0].get("error") if api_bcs and "error" in api_bcs[0] else None

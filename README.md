@@ -52,6 +52,8 @@ The application is configured entirely through environment variables.
 | `CDISC_API_KEY` | Yes | _(empty)_ | API key for the CDISC Library. All CDISC API calls will fail without it. |
 | `SECRET_KEY` | No | `dev-secret-key-change-in-prod` | Flask session secret. Set a strong value in production. |
 | `DATABASE_URL` | No | `sqlite:///cdisc_curation.db` | SQLAlchemy database URI. Defaults to a local SQLite file. |
+| `LOINC_USER` | No | _(empty)_ | Optional Basic Auth username for the NLM Clinical Tables API. If set, `LOINC_PASSWORD` must also be set. |
+| `LOINC_PASSWORD` | No | _(empty)_ | Optional Basic Auth password for the NLM Clinical Tables API. If set, `LOINC_USER` must also be set. |
 
 Set environment variables before running the app:
 
@@ -102,9 +104,9 @@ The sidebar navigation exposes seven screens, accessible at these URL prefixes:
 
 | Screen | URL | What it does |
 |--------|-----|-------------|
-| Dashboard | `/` | KPI cards (total BCs, pending review, published), governance pipeline chart, recent submissions table |
+| Dashboard | `/` | KPI cards (total BCs, pending review, published), governance pipeline chart with concurrent CDISC API fetches (ThreadPoolExecutor), recent submissions table |
 | Ingestion | `/ingestion` | Upload XLSX, CSV, or JSON files; AI field mapper assigns confidence scores; approve or reject rows to the database |
-| BCs | `/bc` | Browse, create, edit, and delete Biomedical Concepts including all CDISC fields and Data Element Concept sub-records |
+| BCs | `/bc` | Browse, create, edit, and delete Biomedical Concepts; LOINC code entry with live search and automatic metadata population from NLM Clinical Tables API (LONG_COMMON_NAME, SHORTNAME, COMPONENT, units, etc.); NCIt concept selection with full metadata display (definitions, parents, semantic type); Data Element Concept sub-records |
 | NCIT Mapping | `/ncit` | Search the NCI Thesaurus, resolve low-confidence mappings, and confirm NCIt codes for each BC |
 | Specializations | `/specializations` | View and generate SDTM/CDASH dataset specializations and CRF variable mappings |
 | Governance | `/governance` | 4-stage Kanban board (Provisional > SME Review > CDISC Approval > Published) with advance and reject actions |
@@ -121,21 +123,23 @@ cdisc-concept-curation/
 ├── extensions.py                 # db + migrate instances (avoids circular imports)
 ├── requirements.txt
 ├── models/
-│   ├── bc.py                     # BiomedicalConcept, DataElementConcept
+│   ├── bc.py                     # BiomedicalConcept (loinc_metadata and ncit_metadata store API responses as JSON), DataElementConcept
 │   ├── specialization.py         # DatasetSpecialization
 │   ├── governance.py             # GovernanceRecord
 │   └── audit.py                  # AuditLog
-├── routes/                       # 7 Flask blueprints
-│   ├── dashboard.py
-│   ├── ingestion.py
-│   ├── bc.py
-│   ├── ncit.py
-│   ├── specializations.py
-│   ├── governance.py
-│   └── audit.py
+├── routes/                       # 8 Flask blueprints
+│   ├── dashboard.py              # Concurrent CDISC API fetches (ThreadPoolExecutor), KPI cards
+│   ├── ingestion.py              # File upload and AI field mapper
+│   ├── bc.py                     # Create, edit, detail views with LOINC and NCIt API integration
+│   ├── ncit.py                   # GET /ncit/search and GET /ncit/concept/<code> JSON endpoints with full metadata
+│   ├── loinc.py                  # GET /loinc/search JSON API endpoint
+│   ├── specializations.py        # Dataset specializations and CRF mappings
+│   ├── governance.py             # Kanban board and status workflows
+│   └── audit.py                  # Immutable change log with filters
 ├── services/
-│   ├── cdisc_api.py              # CDISC Library API client
-│   ├── ncit_api.py               # NCI EVS REST API client (no key required)
+│   ├── cdisc_api.py              # CDISC Library API client with stale-while-refresh caching (5-min fresh TTL, 1-hour stale fallback)
+│   ├── ncit_api.py               # NCI EVS REST API client (full concept detail with definitions, parents, semantic type)
+│   ├── loinc_api.py              # NLM Clinical Tables API client (optional Basic Auth, metadata caching)
 │   ├── ingestion.py              # File parser and AI field mapper
 │   └── export.py                 # XLSX, JSON, ODM-XML export
 ├── templates/
@@ -153,5 +157,8 @@ cdisc-concept-curation/
 
 ## External APIs
 
-- **CDISC Library** — `https://api.library.cdisc.org/api/cosmos/v2` — requires `CDISC_API_KEY`
-- **NCI EVS REST API** — `https://api-evsrest.nci.nih.gov/api/v1` — no key required
+The platform integrates with three external APIs to provide rich concept metadata:
+
+- **CDISC Library** (`https://api.library.cdisc.org/api/cosmos/v2`) — Requires `CDISC_API_KEY`. Used in Dashboard and BC Library detail views. Implements stale-while-refresh caching to gracefully handle transient failures.
+- **NCI EVS REST API** (`https://api-evsrest.nci.nih.gov/api/v1`) — No authentication required. Returns NCIt concept definitions, parent concepts, and semantic types. Integrated into BC detail views via `/ncit/concept/<code>` endpoint.
+- **NLM Clinical Tables API (LOINC)** (`https://clinicaltables.nlm.nih.gov/api/loinc_items/v3/search`) — Optional Basic Auth via `LOINC_USER` / `LOINC_PASSWORD`. Returns LOINC metadata including LONG_COMMON_NAME, SHORTNAME, COMPONENT, METHOD_TYP, units, datatype, and copyright notices. Integrated into BC detail views via `/loinc/search` endpoint.

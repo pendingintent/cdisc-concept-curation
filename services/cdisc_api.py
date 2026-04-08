@@ -4,18 +4,33 @@ import time
 import requests
 from flask import current_app
 
-# Simple in-memory cache: {(base_url, api_key_digest, endpoint): (timestamp, data)}
+# In-memory cache: {key: (timestamp, data)}
+# Entries are never evicted — stale data is served while a refresh is attempted,
+# so a timeout never blocks the request with an empty response.
 _cache = {}
-_CACHE_TTL = 300  # 5 minutes
+_CACHE_TTL = 300        # serve fresh data for 5 minutes
+_CACHE_STALE_TTL = 3600  # serve stale data for up to 1 hour while refresh fails
 
 
 def _cached(cache_key, fn):
+    """Return cached data if fresh. If stale, attempt a refresh but fall back
+    to the stale entry rather than propagating an error or blocking indefinitely."""
     now = time.time()
-    if cache_key in _cache and now - _cache[cache_key][0] < _CACHE_TTL:
-        return _cache[cache_key][1]
-    data = fn()
-    _cache[cache_key] = (now, data)
-    return data
+    entry = _cache.get(cache_key)
+
+    if entry and now - entry[0] < _CACHE_TTL:
+        return entry[1]  # fresh — serve immediately
+
+    # Attempt a refresh
+    try:
+        data = fn()
+        _cache[cache_key] = (now, data)
+        return data
+    except Exception:
+        if entry and now - entry[0] < _CACHE_STALE_TTL:
+            # Serve stale rather than an error
+            return entry[1]
+        raise  # genuinely no data at all — let caller handle
 
 
 class CDISCApiClient:

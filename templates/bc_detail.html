@@ -110,6 +110,45 @@
         </div>
       </div>
 
+      <!-- NCIt metadata section -->
+      <input type="hidden" id="ncit_metadata" name="ncit_metadata" value="{{ bc.ncit_metadata if bc and bc.ncit_metadata else '' }}">
+      <div id="ncit-meta-display" class="bc-card bc-card-sm mb-0 mt-3{% if not ncit_data %} d-none{% endif %}">
+        <h2 class="form-section-title">NCIt</h2>
+        {% if ncit_data %}
+        {% set ncit_fields = [
+          ('code',          'Code'),
+          ('preferred_name','Preferred Name'),
+          ('synonyms',      'Source Synonyms'),
+          ('definitions',   'Definitions'),
+          ('parents',       'Parent Concepts'),
+          ('semantic_type', 'Semantic Type'),
+        ] %}
+        <div class="loinc-meta-grid">
+          {% for key, label in ncit_fields %}
+          {% set val = ncit_data.get(key) %}
+          {% if val %}
+          <div class="loinc-meta-item">
+            <span class="loinc-meta-label">{{ label }}</span>
+            <span class="loinc-meta-value">
+              {% if val is iterable and val is not string %}
+                {% if key == 'definitions' %}
+                  {% for d in val %}{{ d.definition }}{% if not loop.last %}; {% endif %}{% endfor %}
+                {% elif key == 'parents' %}
+                  {% for p in val %}{{ p.name }} ({{ p.code }}){% if not loop.last %}; {% endif %}{% endfor %}
+                {% else %}
+                  {{ val | join('; ') }}
+                {% endif %}
+              {% else %}
+                {{ val }}
+              {% endif %}
+            </span>
+          </div>
+          {% endif %}
+          {% endfor %}
+        </div>
+        {% endif %}
+      </div>
+
       <!-- Classification section -->
       <div class="bc-card bc-card-sm mb-0 mt-3">
         <h2 class="form-section-title">Classification</h2>
@@ -136,28 +175,62 @@
         </div>
       </div>
 
-      <!-- External coding section -->
+      <!-- LOINC section -->
       <div class="bc-card bc-card-sm mb-0 mt-3">
-        <h2 class="form-section-title">External Coding</h2>
-        <div class="row g-2">
+        <h2 class="form-section-title">LOINC</h2>
+        <input type="hidden" name="system" value="http://loinc.org/">
+        <input type="hidden" id="loinc_metadata" name="loinc_metadata" value="{{ bc.loinc_metadata if bc and bc.loinc_metadata else '' }}">
+        <div class="row g-2 align-items-end">
           <div class="col-4">
-            <label for="coding_system" class="form-label small">System</label>
-            <input type="text" id="coding_system" name="coding_system" class="form-control form-control-sm"
-                   value="{{ bc.coding_system if bc else '' }}"
-                   placeholder="e.g. LOINC">
-          </div>
-          <div class="col-4">
-            <label for="system_name" class="form-label small">System Name</label>
-            <input type="text" id="system_name" name="system_name" class="form-control form-control-sm"
-                   value="{{ bc.system_name if bc else '' }}"
-                   placeholder="e.g. LOINC">
-          </div>
-          <div class="col-4">
-            <label for="code" class="form-label small">Code</label>
-            <input type="text" id="code" name="code" class="form-control form-control-sm"
+            <label for="loinc_code" class="form-label small">LOINC Code</label>
+            <input type="text" id="loinc_code" name="code" class="form-control form-control-sm"
                    value="{{ bc.code if bc else '' }}"
                    placeholder="e.g. 4548-4">
           </div>
+          <div class="col">
+            <label for="loinc_name" class="form-label small">Long Common Name</label>
+            <input type="text" id="loinc_name" name="system_name" class="form-control form-control-sm"
+                   value="{{ bc.system_name if bc else '' }}"
+                   placeholder="e.g. Hemoglobin A1c/Hemoglobin.total in Blood">
+          </div>
+          <div class="col-auto">
+            <button type="button" id="loinc-lookup-btn" class="btn btn-sm btn-outline-secondary">Search LOINC</button>
+          </div>
+        </div>
+
+        {# Saved LOINC metadata fields (read-only display) — always present so JS can update it #}
+        {% set loinc = loinc_data %}
+        <div id="loinc-meta-display" class="loinc-meta-grid mt-3{% if not loinc %} d-none{% endif %}">
+          {% if loinc %}
+          {% set loinc_fields = [
+            ('LONG_COMMON_NAME',          'Long Common Name'),
+            ('SHORTNAME',                 'Short Name'),
+            ('COMPONENT',                 'Component'),
+            ('PROPERTY',                  'Property'),
+            ('METHOD_TYP',                'Method Type'),
+            ('units',                     'Units'),
+            ('datatype',                  'Data Type'),
+            ('CONSUMER_NAME',             'Consumer Name'),
+            ('RELATEDNAMES2',             'Related Names'),
+            ('AnswerLists',               'Answer Lists'),
+            ('isCopyrighted',             'Is Copyrighted'),
+            ('containsCopyrighted',       'Contains Copyrighted'),
+            ('EXTERNAL_COPYRIGHT_NOTICE', 'Copyright Notice'),
+            ('EXTERNAL_COPYRIGHT_LINK',   'Copyright Link'),
+          ] %}
+          {% for key, label in loinc_fields %}
+          {% if loinc.get(key) %}
+          <div class="loinc-meta-item">
+            <span class="loinc-meta-label">{{ label }}</span>
+            <span class="loinc-meta-value">{{ loinc[key] }}</span>
+          </div>
+          {% endif %}
+          {% endfor %}
+          {% endif %}
+        </div>
+
+        <div id="loinc-results-panel" class="mt-2 d-none">
+          <div id="loinc-results-container"></div>
         </div>
       </div>
 

@@ -33,21 +33,32 @@ class NCItApiClient:
             return [{'error': str(e)}]
 
     def get_concept(self, ncit_code):
-        """Fetch full concept details including synonyms."""
+        """Fetch full concept details including synonyms, definitions, parents, and semantic type."""
         try:
             result = self._get(f'/concept/ncit/{ncit_code}', params={'include': 'full'})
             return {
                 'code': result.get('code'),
                 'name': result.get('name'),
+                'preferred_name': result.get('name'),
                 'definition': next(
                     (d.get('definition') for d in result.get('definitions', []) if d.get('source') == 'NCI'),
                     ''
                 ),
+                'definitions': [
+                    {'definition': d.get('definition'), 'source': d.get('source')}
+                    for d in result.get('definitions', [])
+                ],
                 'synonyms': [
                     s.get('name') for s in result.get('synonyms', [])
                     if s.get('termType') in ('SY', 'AB', 'PT')
                 ],
-                'preferred_name': result.get('name'),
+                'parents': [
+                    {'code': p.get('code'), 'name': p.get('name')}
+                    for p in result.get('parents', [])
+                ],
+                'semantic_type': [
+                    st.get('name') for st in result.get('semanticType', [])
+                ],
             }
         except Exception as e:
             return {'error': str(e)}

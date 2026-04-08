@@ -14,6 +14,7 @@ def create_app(config_class=Config):
     from routes.ingestion import bp as ingestion_bp
     from routes.bc import bp as bc_bp
     from routes.ncit import bp as ncit_bp
+    from routes.loinc import bp as loinc_bp
     from routes.specializations import bp as specializations_bp
     from routes.governance import bp as governance_bp
     from routes.audit import bp as audit_bp
@@ -22,6 +23,7 @@ def create_app(config_class=Config):
     app.register_blueprint(ingestion_bp, url_prefix='/ingestion')
     app.register_blueprint(bc_bp, url_prefix='/bc')
     app.register_blueprint(ncit_bp, url_prefix='/ncit')
+    app.register_blueprint(loinc_bp, url_prefix='/loinc')
     app.register_blueprint(specializations_bp, url_prefix='/specializations')
     app.register_blueprint(governance_bp, url_prefix='/governance')
     app.register_blueprint(audit_bp, url_prefix='/audit')

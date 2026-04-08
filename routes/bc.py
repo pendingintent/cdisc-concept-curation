@@ -1,9 +1,12 @@
+import json
 from flask import Blueprint, render_template, request, redirect, url_for, flash, Response
 from models.bc import BiomedicalConcept, DataElementConcept
 from models.audit import AuditLog
 from extensions import db
 from services.export import export_json, export_xlsx, export_odm_xml
 from services.cdisc_api import CDISCApiClient
+from services.loinc_api import LoincApiClient
+from services.ncit_api import NCItApiClient
 from datetime import datetime
 
 bp = Blueprint('bc', __name__)
@@ -43,6 +46,8 @@ def new_bc():
         bc=bc,
         decs=[],
         is_new=True,
+        loinc_data={},
+        ncit_data={},
         page_title='New Biomedical Concept',
     )
 
@@ -80,9 +85,24 @@ def library_detail(concept_id):
     if 'error' in bc:
         flash(f'Could not load concept {concept_id}: {bc["error"]}', 'danger')
         return redirect(url_for('dashboard.index'))
+
+    # Look for a LOINC coding entry in the CDISC API response
+    loinc_code = None
+    for c in bc.get('coding', []):
+        if (c.get('systemName') or '').upper() == 'LOINC' and c.get('code'):
+            loinc_code = c['code']
+            break
+
+    loinc_data = {}
+    if loinc_code:
+        results = LoincApiClient().search(loinc_code, size=1)
+        if results and not results[0].get('error'):
+            loinc_data = results[0]
+
     return render_template(
         'library_bc_detail.html',
         bc=bc,
+        loinc_data=loinc_data,
         page_title=bc.get('shortName') or bc.get('name') or concept_id,
     )
 
@@ -96,11 +116,35 @@ def detail(bc_id):
         .order_by(DataElementConcept.sort_order)
         .all()
     )
+    loinc_data = {}
+    if bc.code:
+        results = LoincApiClient().search(bc.code, size=1)
+        if results and not results[0].get('error'):
+            loinc_data = results[0]
+    elif bc.loinc_metadata:
+        try:
+            loinc_data = json.loads(bc.loinc_metadata)
+        except (ValueError, TypeError):
+            pass
+
+    ncit_data = {}
+    if bc.ncit_code:
+        result = NCItApiClient().get_concept(bc.ncit_code)
+        if not result.get('error'):
+            ncit_data = result
+    elif bc.ncit_metadata:
+        try:
+            ncit_data = json.loads(bc.ncit_metadata)
+        except (ValueError, TypeError):
+            pass
+
     return render_template(
         'bc_detail.html',
         bc=bc,
         decs=decs,
         is_new=False,
+        loinc_data=loinc_data,
+        ncit_data=ncit_data,
         page_title=bc.short_name,
     )
 
@@ -126,6 +170,8 @@ def create():
         system=request.form.get('system', ''),
         system_name=request.form.get('system_name', ''),
         code=request.form.get('code', ''),
+        loinc_metadata=request.form.get('loinc_metadata', '') or None,
+        ncit_metadata=request.form.get('ncit_metadata', '') or None,
         package_date=request.form.get('package_date', ''),
         status='provisional',
         submitter=request.form.get('submitter', 'unknown'),
@@ -159,6 +205,8 @@ def edit(bc_id):
     bc.system = request.form.get('system', bc.system)
     bc.system_name = request.form.get('system_name', bc.system_name)
     bc.code = request.form.get('code', bc.code)
+    bc.loinc_metadata = request.form.get('loinc_metadata', '') or bc.loinc_metadata
+    bc.ncit_metadata = request.form.get('ncit_metadata', '') or bc.ncit_metadata
     bc.package_date = request.form.get('package_date', bc.package_date)
     bc.updated_at = datetime.utcnow()
     log = AuditLog(

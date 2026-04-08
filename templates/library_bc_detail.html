@@ -53,28 +53,54 @@
       <div class="form-control form-control-sm bg-light" style="min-height:80px;white-space:pre-wrap;">{{ bc.definition | default('No definition available.') }}</div>
     </div>
 
-    <!-- External Coding -->
-    {% if bc.coding %}
+    <!-- LOINC -->
+    {% set loinc_coding = bc.coding | selectattr('systemName', 'equalto', 'LOINC') | list if bc.coding else [] %}
     <div class="bc-card bc-card-sm mb-0 mt-3">
-      <h2 class="form-section-title">External Coding</h2>
-      {% for c in bc.coding %}
-      <div class="row g-2 {% if not loop.first %}mt-1{% endif %}">
+      <h2 class="form-section-title">LOINC</h2>
+      {% if loinc_coding %}
+      {% set lc = loinc_coding[0] %}
+      <div class="row g-2">
         <div class="col-4">
-          <label class="form-label form-label-sm">System</label>
-          <div class="form-control form-control-sm bg-light">{{ c.system | default('—') }}</div>
+          <label class="form-label form-label-sm">LOINC Code</label>
+          <div class="form-control form-control-sm bg-light">{{ lc.code | default('—') }}</div>
         </div>
-        <div class="col-4">
-          <label class="form-label form-label-sm">System Name</label>
-          <div class="form-control form-control-sm bg-light">{{ c.systemName | default('—') }}</div>
-        </div>
-        <div class="col-4">
-          <label class="form-label form-label-sm">Code</label>
-          <div class="form-control form-control-sm bg-light">{{ c.code | default('—') }}</div>
+        <div class="col">
+          <label class="form-label form-label-sm">Long Common Name</label>
+          <div class="form-control form-control-sm bg-light">{{ loinc_data.get('LONG_COMMON_NAME') or lc.system | default('—') }}</div>
         </div>
       </div>
-      {% endfor %}
+      {% if loinc_data %}
+      {% set loinc_fields = [
+        ('LONG_COMMON_NAME',          'Long Common Name'),
+        ('SHORTNAME',                 'Short Name'),
+        ('COMPONENT',                 'Component'),
+        ('PROPERTY',                  'Property'),
+        ('METHOD_TYP',                'Method Type'),
+        ('units',                     'Units'),
+        ('datatype',                  'Data Type'),
+        ('CONSUMER_NAME',             'Consumer Name'),
+        ('RELATEDNAMES2',             'Related Names'),
+        ('AnswerLists',               'Answer Lists'),
+        ('isCopyrighted',             'Is Copyrighted'),
+        ('containsCopyrighted',       'Contains Copyrighted'),
+        ('EXTERNAL_COPYRIGHT_NOTICE', 'Copyright Notice'),
+        ('EXTERNAL_COPYRIGHT_LINK',   'Copyright Link'),
+      ] %}
+      <div class="loinc-meta-grid mt-3">
+        {% for key, label in loinc_fields %}
+        {% if loinc_data.get(key) %}
+        <div class="loinc-meta-item">
+          <span class="loinc-meta-label">{{ label }}</span>
+          <span class="loinc-meta-value">{{ loinc_data[key] }}</span>
+        </div>
+        {% endif %}
+        {% endfor %}
+      </div>
+      {% endif %}
+      {% else %}
+      <p class="text-secondary small mb-0">No LOINC code assigned in the CDISC Library for this concept.</p>
+      {% endif %}
     </div>
-    {% endif %}
 
     <!-- Metadata -->
     <div class="bc-card bc-card-sm mb-0 mt-3">

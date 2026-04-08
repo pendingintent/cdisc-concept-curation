@@ -164,7 +164,7 @@
 
     // Wire up "Use this concept" buttons
     container.querySelectorAll('.use-ncit-btn').forEach(function (btn) {
-      btn.addEventListener('click', function () {
+      btn.addEventListener('click', async function () {
         const code = btn.dataset.code;
         if (ncitCodeInput) ncitCodeInput.value = code;
         // Also fill short_name if empty
@@ -175,8 +175,67 @@
         // Hide the panel after selection
         const panel = document.getElementById('ncit-results-panel');
         if (panel) panel.classList.add('d-none');
+
+        // Fetch full concept detail and render the NCIt metadata grid
+        try {
+          const url = new URL(`/ncit/concept/${encodeURIComponent(code)}`, window.location.origin);
+          const response = await fetch(url.toString(), { headers: { 'Accept': 'application/json' } });
+          if (response.ok) {
+            const data = await response.json();
+            renderNcitMetaDisplay(data);
+            const metaInput = document.getElementById('ncit_metadata');
+            if (metaInput) metaInput.value = JSON.stringify(data);
+          }
+        } catch (err) {
+          console.error('NCIt concept detail fetch error:', err);
+        }
       });
     });
+  }
+
+  /**
+   * Populates #ncit-meta-display grid with fields from a selected NCIt concept.
+   * Fields: code, preferred_name, synonyms, definitions, parents, semantic_type.
+   */
+  function renderNcitMetaDisplay(item) {
+    var display = document.getElementById('ncit-meta-display');
+    if (!display) return;
+
+    var fields = [
+      { key: 'code',          label: 'Code' },
+      { key: 'preferred_name',label: 'Preferred Name' },
+      { key: 'synonyms',      label: 'Source Synonyms' },
+      { key: 'definitions',   label: 'Definitions' },
+      { key: 'parents',       label: 'Parent Concepts' },
+      { key: 'semantic_type', label: 'Semantic Type' },
+    ];
+
+    var html = fields.filter(function (f) {
+      var v = item[f.key];
+      return v && (!Array.isArray(v) || v.length > 0);
+    }).map(function (f) {
+      var v = item[f.key];
+      var text;
+      if (f.key === 'definitions') {
+        text = v.map(function (d) { return d.definition || ''; }).filter(Boolean).join('; ');
+      } else if (f.key === 'parents') {
+        text = v.map(function (p) { return `${p.name} (${p.code})`; }).join('; ');
+      } else if (Array.isArray(v)) {
+        text = v.join('; ');
+      } else {
+        text = String(v);
+      }
+      return `<div class="loinc-meta-item">
+        <span class="loinc-meta-label">${escapeHtml(f.label)}</span>
+        <span class="loinc-meta-value">${escapeHtml(text)}</span>
+      </div>`;
+    }).join('');
+
+    // Replace inner content but keep the section heading
+    var heading = display.querySelector('.form-section-title');
+    display.innerHTML = (heading ? heading.outerHTML : '<h2 class="form-section-title">NCIt</h2>') +
+      '<div class="loinc-meta-grid">' + html + '</div>';
+    display.classList.toggle('d-none', !html);
   }
 
   /* ─────────────────────────────────────────────
@@ -486,12 +545,205 @@
   }
 
   /* ─────────────────────────────────────────────
+     LOINC lookup
+     On click of #loinc-lookup-btn, fetches
+     /loinc/search?term=<value of #loinc_code> and
+     renders results into #loinc-results-panel.
+  ───────────────────────────────────────────── */
+  function initLoincLookup() {
+    const lookupBtn = document.getElementById('loinc-lookup-btn');
+    const codeInput = document.getElementById('loinc_code');
+    const nameInput = document.getElementById('loinc_name');
+    const resultsPanel = document.getElementById('loinc-results-panel');
+    const resultsContainer = document.getElementById('loinc-results-container');
+
+    if (!lookupBtn || !codeInput || !resultsPanel) return;
+
+    async function doLoincSearch(term) {
+      if (!term) return;
+      lookupBtn.disabled = true;
+      lookupBtn.textContent = 'Searching…';
+      try {
+        const url = new URL('/loinc/search', window.location.origin);
+        url.searchParams.set('term', term);
+        const response = await fetch(url.toString(), { headers: { 'Accept': 'application/json' } });
+        if (!response.ok) throw new Error('LOINC search failed: ' + response.status);
+        const data = await response.json();
+        renderLoincResults(data, resultsContainer);
+        resultsPanel.classList.remove('d-none');
+      } catch (err) {
+        if (resultsContainer) {
+          resultsContainer.innerHTML = '<p class="text-danger small mb-0">Error fetching LOINC results. Please try again.</p>';
+        }
+        resultsPanel.classList.remove('d-none');
+        console.error('LOINC lookup error:', err);
+      } finally {
+        lookupBtn.disabled = false;
+        lookupBtn.textContent = 'Search LOINC';
+      }
+    }
+
+    // Button searches using whichever field has a value (code takes priority)
+    lookupBtn.addEventListener('click', function () {
+      var term = codeInput.value.trim() || (nameInput && nameInput.value.trim());
+      if (!term) { codeInput.focus(); return; }
+      doLoincSearch(term);
+    });
+
+    // Enter key on code field triggers search
+    codeInput.addEventListener('keydown', function (e) {
+      if (e.key === 'Enter') { e.preventDefault(); doLoincSearch(codeInput.value.trim()); }
+    });
+
+    // Debounced autocomplete on the Long Common Name field
+    if (nameInput) {
+      var nameDebounceTimer;
+      nameInput.addEventListener('input', function () {
+        clearTimeout(nameDebounceTimer);
+        var term = nameInput.value.trim();
+        if (!term) { resultsPanel.classList.add('d-none'); return; }
+        nameDebounceTimer = setTimeout(function () { doLoincSearch(term); }, 400);
+      });
+      nameInput.addEventListener('keydown', function (e) {
+        if (e.key === 'Enter') {
+          e.preventDefault();
+          clearTimeout(nameDebounceTimer);
+          doLoincSearch(nameInput.value.trim());
+        }
+      });
+    }
+  }
+
+  // LOINC field labels for display in results and saved metadata grid.
+  var LOINC_FIELD_LABELS = {
+    LOINC_NUM:                 'LOINC Code',
+    SHORTNAME:                 'Short Name',
+    LONG_COMMON_NAME:          'Long Common Name',
+    COMPONENT:                 'Component',
+    PROPERTY:                  'Property',
+    METHOD_TYP:                'Method Type',
+    units:                     'Units',
+    datatype:                  'Data Type',
+    CONSUMER_NAME:             'Consumer Name',
+    RELATEDNAMES2:             'Related Names',
+    AnswerLists:               'Answer Lists',
+    isCopyrighted:             'Is Copyrighted',
+    containsCopyrighted:       'Contains Copyrighted',
+    EXTERNAL_COPYRIGHT_NOTICE: 'Copyright Notice',
+    EXTERNAL_COPYRIGHT_LINK:   'Copyright Link',
+  };
+
+  /**
+   * Renders LOINC search results into the container element.
+   * Expects data: Array of objects with LOINC ef fields
+   * (LOINC_NUM, SHORTNAME, LONG_COMMON_NAME, PROPERTY, …)
+   */
+  function renderLoincResults(data, container) {
+    if (!container) return;
+
+    if (!data || data.length === 0) {
+      container.innerHTML = '<p class="text-secondary small mb-0">No results found.</p>';
+      return;
+    }
+
+    if (data[0] && data[0].error) {
+      container.innerHTML = `<p class="text-danger small mb-0">Error: ${escapeHtml(data[0].error)}</p>`;
+      return;
+    }
+
+    container.innerHTML = data.map(function (item, idx) {
+      const safeCode = escapeHtml(item.LOINC_NUM || '');
+      const safeName = escapeHtml(item.LONG_COMMON_NAME || '');
+
+      // Build metadata rows for all non-empty fields except LOINC_NUM
+      // (shown in the header row; LONG_COMMON_NAME is included in the grid)
+      var metaRows = Object.keys(LOINC_FIELD_LABELS)
+        .filter(function (k) { return k !== 'LOINC_NUM' && item[k]; })
+        .map(function (k) {
+          return `<div class="loinc-meta-item">
+            <span class="loinc-meta-label">${escapeHtml(LOINC_FIELD_LABELS[k])}</span>
+            <span class="loinc-meta-value">${escapeHtml(String(item[k]))}</span>
+          </div>`;
+        }).join('');
+
+      return `
+        <div class="ncit-result-card" data-idx="${idx}">
+          <div class="d-flex align-items-center justify-content-between mb-1">
+            <span class="ncit-code">${safeCode}</span>
+            <button type="button"
+                    class="btn btn-sm btn-outline-primary use-loinc-btn"
+                    data-idx="${idx}">
+              Use this code
+            </button>
+          </div>
+          <div class="ncit-preferred-name">${safeName}</div>
+          ${metaRows ? `<div class="loinc-meta-grid mt-2">${metaRows}</div>` : ''}
+        </div>
+      `;
+    }).join('');
+
+    // Store the raw result objects on the container so the "use" handler can access them
+    container._loincResults = data;
+
+    // Wire up "Use this code" buttons
+    container.querySelectorAll('.use-loinc-btn').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        var idx = parseInt(btn.dataset.idx, 10);
+        var item = container._loincResults && container._loincResults[idx];
+        if (!item) return;
+
+        var codeInput = document.getElementById('loinc_code');
+        var nameInput = document.getElementById('loinc_name');
+        var metaInput = document.getElementById('loinc_metadata');
+
+        if (codeInput) codeInput.value = item.LOINC_NUM || '';
+        if (nameInput) nameInput.value = item.LONG_COMMON_NAME || '';
+        if (metaInput) metaInput.value = JSON.stringify(item);
+
+        renderLoincMetaDisplay(item);
+
+        var panel = document.getElementById('loinc-results-panel');
+        if (panel) panel.classList.add('d-none');
+      });
+    });
+  }
+
+  /**
+   * Populates the #loinc-meta-display grid with fields from a selected LOINC item.
+   * Called immediately after the user clicks "Use this code" so they see the
+   * properties without needing to save and reload the page.
+   */
+  function renderLoincMetaDisplay(item) {
+    var display = document.getElementById('loinc-meta-display');
+    if (!display) return;
+
+    var displayFields = [
+      'LONG_COMMON_NAME', 'SHORTNAME', 'COMPONENT', 'PROPERTY', 'METHOD_TYP', 'units', 'datatype',
+      'CONSUMER_NAME', 'RELATEDNAMES2', 'AnswerLists', 'isCopyrighted',
+      'containsCopyrighted', 'EXTERNAL_COPYRIGHT_NOTICE', 'EXTERNAL_COPYRIGHT_LINK',
+    ];
+
+    var html = displayFields
+      .filter(function (k) { return item[k]; })
+      .map(function (k) {
+        return `<div class="loinc-meta-item">
+          <span class="loinc-meta-label">${escapeHtml(LOINC_FIELD_LABELS[k] || k)}</span>
+          <span class="loinc-meta-value">${escapeHtml(String(item[k]))}</span>
+        </div>`;
+      }).join('');
+
+    display.innerHTML = html;
+    display.classList.toggle('d-none', !html);
+  }
+
+  /* ─────────────────────────────────────────────
      Init all modules on DOM ready
   ───────────────────────────────────────────── */
   document.addEventListener('DOMContentLoaded', function () {
     initFlashDismiss();
     initFileUpload();
     initNcitLookup();
+    initLoincLookup();
     initDecTable();
     initKanban();
     initAuditDiff();

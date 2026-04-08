@@ -13,8 +13,10 @@ class BiomedicalConcept(db.Model):
     synonyms = db.Column(db.Text)
     result_scales = db.Column(db.String(255))  # e.g. "Quantitative; Ordinal"
     system = db.Column(db.String(255))  # e.g. http://loinc.org/
-    system_name = db.Column(db.String(100))  # e.g. LOINC
-    code = db.Column(db.String(50))  # code in external system
+    system_name = db.Column(db.String(100))  # LOINC LONG_COMMON_NAME
+    code = db.Column(db.String(50))  # LOINC_NUM
+    loinc_metadata = db.Column(db.Text)  # JSON blob of all LOINC ef fields
+    ncit_metadata = db.Column(db.Text)   # JSON blob of NCIt concept detail
     package_date = db.Column(db.String(20))
     status = db.Column(db.String(50), default='provisional')  # provisional/sme_review/cdisc_approval/published
     submitter = db.Column(db.String(100))
@@ -40,6 +42,8 @@ class BiomedicalConcept(db.Model):
             'system': self.system,
             'system_name': self.system_name,
             'code': self.code,
+            'loinc_metadata': self.loinc_metadata,
+            'ncit_metadata': self.ncit_metadata,
             'package_date': self.package_date,
             'status': self.status,
             'submitter': self.submitter,
