@@ -106,7 +106,7 @@ The sidebar navigation exposes seven screens, accessible at these URL prefixes:
 |--------|-----|-------------|
 | Dashboard | `/` | KPI cards (total BCs, pending review, published), governance pipeline chart with concurrent CDISC API fetches (ThreadPoolExecutor), recent submissions table |
 | Ingestion | `/ingestion` | Upload XLSX, CSV, or JSON files; AI field mapper assigns confidence scores; approve or reject rows to the database |
-| BCs | `/bc` | Browse, create, edit, and delete Biomedical Concepts; LOINC code entry with live search and automatic metadata population from NLM Clinical Tables API (LONG_COMMON_NAME, SHORTNAME, COMPONENT, units, etc.); NCIt concept selection with full metadata display (definitions, parents, semantic type); Data Element Concept sub-records |
+| BCs | `/bc` | Browse, create, edit, and delete Biomedical Concepts; LOINC code entry with live search and automatic metadata population from NLM Clinical Tables API (LONG_COMMON_NAME, SHORTNAME, COMPONENT, units, etc.); NCIt concept selection with full metadata display (definitions, parents, semantic type); concurrent LOINC and NCIt API fetches with stored metadata prioritization; Data Element Concept sub-records |
 | NCIT Mapping | `/ncit` | Search the NCI Thesaurus, resolve low-confidence mappings, and confirm NCIt codes for each BC |
 | Specializations | `/specializations` | View and generate SDTM/CDASH dataset specializations and CRF variable mappings |
 | Governance | `/governance` | 4-stage Kanban board (Provisional > SME Review > CDISC Approval > Published) with advance and reject actions |
@@ -130,7 +130,7 @@ cdisc-concept-curation/
 ├── routes/                       # 8 Flask blueprints
 │   ├── dashboard.py              # Concurrent CDISC API fetches (ThreadPoolExecutor), KPI cards
 │   ├── ingestion.py              # File upload and AI field mapper
-│   ├── bc.py                     # Create, edit, detail views with LOINC and NCIt API integration
+│   ├── bc.py                     # Create, edit, detail views; concurrent LOINC and NCIt API fetches (ThreadPoolExecutor) with stored metadata prioritization
 │   ├── ncit.py                   # GET /ncit/search and GET /ncit/concept/<code> JSON endpoints with full metadata
 │   ├── loinc.py                  # GET /loinc/search JSON API endpoint
 │   ├── specializations.py        # Dataset specializations and CRF mappings
@@ -138,7 +138,7 @@ cdisc-concept-curation/
 │   └── audit.py                  # Immutable change log with filters
 ├── services/
 │   ├── cdisc_api.py              # CDISC Library API client with stale-while-refresh caching (5-min fresh TTL, 1-hour stale fallback)
-│   ├── ncit_api.py               # NCI EVS REST API client (full concept detail with definitions, parents, semantic type)
+│   ├── ncit_api.py               # NCI EVS REST API client with in-memory caching (5-min fresh TTL, 1-hour stale fallback); full concept detail with definitions, parents, semantic type
 │   ├── loinc_api.py              # NLM Clinical Tables API client (optional Basic Auth, metadata caching)
 │   ├── ingestion.py              # File parser and AI field mapper
 │   └── export.py                 # XLSX, JSON, ODM-XML export
@@ -159,6 +159,6 @@ cdisc-concept-curation/
 
 The platform integrates with three external APIs to provide rich concept metadata:
 
-- **CDISC Library** (`https://api.library.cdisc.org/api/cosmos/v2`) — Requires `CDISC_API_KEY`. Used in Dashboard and BC Library detail views. Implements stale-while-refresh caching to gracefully handle transient failures.
-- **NCI EVS REST API** (`https://api-evsrest.nci.nih.gov/api/v1`) — No authentication required. Returns NCIt concept definitions, parent concepts, and semantic types. Integrated into BC detail views via `/ncit/concept/<code>` endpoint.
+- **CDISC Library** (`https://api.library.cdisc.org/api/cosmos/v2`) — Requires `CDISC_API_KEY`. Used in Dashboard and BC Library detail views. Implements stale-while-refresh caching (5-min fresh TTL, 1-hour stale fallback) to gracefully handle transient failures.
+- **NCI EVS REST API** (`https://api-evsrest.nci.nih.gov/api/v1`) — No authentication required. Returns NCIt concept definitions, parent concepts, and semantic types. Integrated into BC detail views via `/ncit/concept/<code>` endpoint. Implements in-memory caching (5-min fresh TTL, 1-hour stale fallback) to serve cached data rapidly and degrade gracefully when the service is unavailable.
 - **NLM Clinical Tables API (LOINC)** (`https://clinicaltables.nlm.nih.gov/api/loinc_items/v3/search`) — Optional Basic Auth via `LOINC_USER` / `LOINC_PASSWORD`. Returns LOINC metadata including LONG_COMMON_NAME, SHORTNAME, COMPONENT, METHOD_TYP, units, datatype, and copyright notices. Integrated into BC detail views via `/loinc/search` endpoint.

@@ -1,4 +1,9 @@
+import time
 import requests
+
+_ncit_cache = {}
+_NCIT_TTL = 300        # serve fresh data for 5 minutes
+_NCIT_STALE_TTL = 3600  # serve stale data for up to 1 hour while refresh fails
 
 
 class NCItApiClient:
@@ -34,9 +39,15 @@ class NCItApiClient:
 
     def get_concept(self, ncit_code):
         """Fetch full concept details including synonyms, definitions, parents, and semantic type."""
+        cache_key = ('concept', ncit_code)
+        now = time.time()
+        entry = _ncit_cache.get(cache_key)
+        if entry and now - entry[0] < _NCIT_TTL:
+            return entry[1]
+
         try:
             result = self._get(f'/concept/ncit/{ncit_code}', params={'include': 'full'})
-            return {
+            data = {
                 'code': result.get('code'),
                 'name': result.get('name'),
                 'preferred_name': result.get('name'),
@@ -60,7 +71,11 @@ class NCItApiClient:
                     st.get('name') for st in result.get('semanticType', [])
                 ],
             }
+            _ncit_cache[cache_key] = (now, data)
+            return data
         except Exception as e:
+            if entry and now - entry[0] < _NCIT_STALE_TTL:
+                return entry[1]
             return {'error': str(e)}
 
     def get_preferred_name(self, ncit_code):

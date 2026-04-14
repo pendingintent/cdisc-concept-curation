@@ -112,8 +112,15 @@
 
       <!-- NCIt metadata section -->
       <input type="hidden" id="ncit_metadata" name="ncit_metadata" value="{{ bc.ncit_metadata if bc and bc.ncit_metadata else '' }}">
-      <div id="ncit-meta-display" class="bc-card bc-card-sm mb-0 mt-3{% if not ncit_data %} d-none{% endif %}">
-        <h2 class="form-section-title">NCIt</h2>
+      <div id="ncit-meta-display" class="bc-card bc-card-sm mb-0 mt-3{% if not ncit_data and not needs_ncit_fetch %} d-none{% endif %}">
+        <h2 class="form-section-title">
+          NCIt
+          {% if needs_ncit_fetch %}
+          <span id="ncit-loading-indicator" class="small fw-normal text-muted ms-2">
+            <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Loading…
+          </span>
+          {% endif %}
+        </h2>
         {% if ncit_data %}
         {% set ncit_fields = [
           ('code',          'Code'),
@@ -177,7 +184,14 @@
 
       <!-- LOINC section -->
       <div class="bc-card bc-card-sm mb-0 mt-3">
-        <h2 class="form-section-title">LOINC</h2>
+        <h2 class="form-section-title">
+          LOINC
+          {% if needs_loinc_fetch %}
+          <span id="loinc-loading-indicator" class="small fw-normal text-muted ms-2">
+            <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Loading…
+          </span>
+          {% endif %}
+        </h2>
         <input type="hidden" name="system" value="http://loinc.org/">
         <input type="hidden" id="loinc_metadata" name="loinc_metadata" value="{{ bc.loinc_metadata if bc and bc.loinc_metadata else '' }}">
         <div class="row g-2 align-items-end">
@@ -359,3 +373,101 @@
   </div><!-- /two-col-grid -->
 </form>
 {% endblock %}
+
+{% if needs_loinc_fetch or needs_ncit_fetch %}
+{% block extra_js %}
+<script>
+(function () {
+  const LOINC_FIELDS = [
+    ['LONG_COMMON_NAME', 'Long Common Name'],
+    ['SHORTNAME', 'Short Name'],
+    ['COMPONENT', 'Component'],
+    ['PROPERTY', 'Property'],
+    ['METHOD_TYP', 'Method Type'],
+    ['units', 'Units'],
+    ['datatype', 'Data Type'],
+    ['CONSUMER_NAME', 'Consumer Name'],
+    ['RELATEDNAMES2', 'Related Names'],
+    ['AnswerLists', 'Answer Lists'],
+    ['isCopyrighted', 'Is Copyrighted'],
+    ['containsCopyrighted', 'Contains Copyrighted'],
+    ['EXTERNAL_COPYRIGHT_NOTICE', 'Copyright Notice'],
+    ['EXTERNAL_COPYRIGHT_LINK', 'Copyright Link'],
+  ];
+
+  const NCIT_FIELDS = [
+    ['code', 'Code'],
+    ['preferred_name', 'Preferred Name'],
+    ['synonyms', 'Source Synonyms'],
+    ['definitions', 'Definitions'],
+    ['parents', 'Parent Concepts'],
+    ['semantic_type', 'Semantic Type'],
+  ];
+
+  function formatNcitValue(key, val) {
+    if (!Array.isArray(val)) return val;
+    if (key === 'definitions') return val.map(function (d) { return d.definition; }).filter(Boolean).join('; ');
+    if (key === 'parents') return val.map(function (p) { return p.name + ' (' + p.code + ')'; }).join('; ');
+    return val.join('; ');
+  }
+
+  function buildGrid(fields, data, formatValue) {
+    const grid = document.createElement('div');
+    grid.className = 'loinc-meta-grid';
+    fields.forEach(function (pair) {
+      const key = pair[0], label = pair[1];
+      const val = data[key];
+      if (!val || (Array.isArray(val) && val.length === 0)) return;
+      const item = document.createElement('div');
+      item.className = 'loinc-meta-item';
+      const labelEl = document.createElement('span');
+      labelEl.className = 'loinc-meta-label';
+      labelEl.textContent = label;
+      const valueEl = document.createElement('span');
+      valueEl.className = 'loinc-meta-value';
+      valueEl.textContent = formatValue(key, val);
+      item.appendChild(labelEl);
+      item.appendChild(valueEl);
+      grid.appendChild(item);
+    });
+    return grid;
+  }
+
+  fetch('{{ url_for("bc.fetch_metadata", bc_id=bc.bc_id) }}')
+    .then(function (r) { return r.json(); })
+    .then(function (data) {
+      {% if needs_ncit_fetch %}
+      var ncitDisplay = document.getElementById('ncit-meta-display');
+      var ncitLoading = document.getElementById('ncit-loading-indicator');
+      if (data.ncit && Object.keys(data.ncit).length) {
+        ncitDisplay.appendChild(buildGrid(NCIT_FIELDS, data.ncit, formatNcitValue));
+        ncitDisplay.classList.remove('d-none');
+        document.getElementById('ncit_metadata').value = JSON.stringify(data.ncit);
+      }
+      if (ncitLoading) ncitLoading.remove();
+      {% endif %}
+      {% if needs_loinc_fetch %}
+      var loincDisplay = document.getElementById('loinc-meta-display');
+      var loincLoading = document.getElementById('loinc-loading-indicator');
+      if (data.loinc && Object.keys(data.loinc).length) {
+        loincDisplay.appendChild(buildGrid(LOINC_FIELDS, data.loinc, function (k, v) { return v; }));
+        loincDisplay.classList.remove('d-none');
+        document.getElementById('loinc_metadata').value = JSON.stringify(data.loinc);
+      }
+      if (loincLoading) loincLoading.remove();
+      {% endif %}
+    })
+    .catch(function () {
+      {% if needs_ncit_fetch %}
+      var ncitLoading = document.getElementById('ncit-loading-indicator');
+      if (ncitLoading) { ncitLoading.querySelector('.spinner-border').remove(); ncitLoading.textContent = 'Failed to load'; }
+      {% endif %}
+      {% if needs_loinc_fetch %}
+      var loincLoading = document.getElementById('loinc-loading-indicator');
+      if (loincLoading) { loincLoading.querySelector('.spinner-border').remove(); loincLoading.textContent = 'Failed to load'; }
+      {% endif %}
+    });
+}());
+</script>
+{% endblock %}
+{% endif %}

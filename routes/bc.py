@@ -1,4 +1,5 @@
 import json
+from concurrent.futures import ThreadPoolExecutor
 from flask import Blueprint, render_template, request, redirect, url_for, flash, Response
 from models.bc import BiomedicalConcept, DataElementConcept
 from models.audit import AuditLog
@@ -117,22 +118,14 @@ def detail(bc_id):
         .all()
     )
     loinc_data = {}
-    if bc.code:
-        results = LoincApiClient().search(bc.code, size=1)
-        if results and not results[0].get('error'):
-            loinc_data = results[0]
-    elif bc.loinc_metadata:
+    if bc.loinc_metadata:
         try:
             loinc_data = json.loads(bc.loinc_metadata)
         except (ValueError, TypeError):
             pass
 
     ncit_data = {}
-    if bc.ncit_code:
-        result = NCItApiClient().get_concept(bc.ncit_code)
-        if not result.get('error'):
-            ncit_data = result
-    elif bc.ncit_metadata:
+    if bc.ncit_metadata:
         try:
             ncit_data = json.loads(bc.ncit_metadata)
         except (ValueError, TypeError):
@@ -145,8 +138,48 @@ def detail(bc_id):
         is_new=False,
         loinc_data=loinc_data,
         ncit_data=ncit_data,
+        needs_loinc_fetch=not loinc_data and bool(bc.code),
+        needs_ncit_fetch=not ncit_data and bool(bc.ncit_code),
         page_title=bc.short_name,
     )
+
+
+@bp.route('/<bc_id>/fetch-metadata')
+def fetch_metadata(bc_id):
+    """Fetch LOINC and NCIt data concurrently for a BC that has no stored metadata yet.
+    Saves results to the DB so subsequent visits use the fast stored-metadata path."""
+    from flask import jsonify
+    bc = BiomedicalConcept.query.get_or_404(bc_id)
+
+    def _fetch_loinc():
+        results = LoincApiClient().search(bc.code, size=1)
+        return results[0] if results and not results[0].get('error') else {}
+
+    def _fetch_ncit():
+        result = NCItApiClient().get_concept(bc.ncit_code)
+        return result if not result.get('error') else {}
+
+    loinc_data = {}
+    ncit_data = {}
+    with ThreadPoolExecutor(max_workers=2) as ex:
+        loinc_future = ex.submit(_fetch_loinc) if bc.code else None
+        ncit_future = ex.submit(_fetch_ncit) if bc.ncit_code else None
+        if loinc_future:
+            loinc_data = loinc_future.result()
+        if ncit_future:
+            ncit_data = ncit_future.result()
+
+    changed = False
+    if loinc_data and not bc.loinc_metadata:
+        bc.loinc_metadata = json.dumps(loinc_data)
+        changed = True
+    if ncit_data and not bc.ncit_metadata:
+        bc.ncit_metadata = json.dumps(ncit_data)
+        changed = True
+    if changed:
+        db.session.commit()
+
+    return jsonify(loinc=loinc_data, ncit=ncit_data)
 
 
 @bp.route('/', methods=['POST'])
