@@ -3,6 +3,7 @@ from concurrent.futures import ThreadPoolExecutor
 from flask import Blueprint, render_template, request, redirect, url_for, flash, Response
 from models.bc import BiomedicalConcept, DataElementConcept
 from models.audit import AuditLog
+from models.governance import GovernanceRecord
 from extensions import db
 from services.export import export_json, export_xlsx, export_odm_xml
 from services.cdisc_api import CDISCApiClient
@@ -270,6 +271,11 @@ def submit_for_review(bc_id):
 @bp.route("/<bc_id>/delete", methods=["POST"])
 def delete(bc_id):
     bc = BiomedicalConcept.query.get_or_404(bc_id)
+    # Nullify self-referential parent FK on child BCs; without this SQLAlchemy
+    # raises CircularDependencyError when flushing the delete.
+    BiomedicalConcept.query.filter_by(parent_bc_id=bc_id).update({"parent_bc_id": None}, synchronize_session="fetch")
+    # GovernanceRecord.bc_id is NOT NULL with no ORM cascade, so delete explicitly.
+    GovernanceRecord.query.filter_by(bc_id=bc_id).delete(synchronize_session="fetch")
     log = AuditLog(
         entity_type="BiomedicalConcept",
         entity_id=bc_id,
