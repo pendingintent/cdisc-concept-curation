@@ -25,7 +25,12 @@ source .venv/bin/activate        # macOS / Linux
 
 # 3. Install dependencies
 pip install -r requirements.txt
+
+# 4. Install git hooks for code quality
+pre-commit install
 ```
+
+Pre-commit hooks will now run automatically before each `git commit`, enforcing code formatting (black) and linting (flake8).
 
 ### Dependencies installed
 
@@ -40,10 +45,15 @@ pip install -r requirements.txt
 | lxml | 5.2.2 | ODM-XML export |
 | pytest | 8.3.5 | Unit and integration tests |
 | pytest-flask | 1.3.0 | Flask test client fixture |
+| pre-commit | 4.2.0 | Git hook framework for code quality checks |
+| black | 26.3.1 | Python code formatter (via pre-commit) |
+| flake8 | 7.3.0 | Python linter (via pre-commit) |
 
 ---
 
 ## Configuration
+
+### Environment Variables
 
 The application is configured entirely through environment variables.
 
@@ -59,6 +69,15 @@ Set environment variables before running the app:
 export CDISC_API_KEY=your_cdisc_api_key_here
 export SECRET_KEY=a-strong-random-secret           # recommended for non-dev use
 ```
+
+### Code Quality
+
+Code style and linting are enforced automatically via [pre-commit](https://pre-commit.com) hooks (configured in [`.pre-commit-config.yaml`](.pre-commit-config.yaml)):
+
+- **black** (26.3.1) — enforces consistent Python formatting with a line length of 200 characters (configured in `pyproject.toml`)
+- **flake8** (7.3.0) — enforces PEP8 linting rules (configured in [`.flake8`](.flake8))
+
+These hooks run automatically before each `git commit`. If black reformats any files, the commit is blocked and you must `git add` the reformatted files and retry the commit.
 
 ---
 

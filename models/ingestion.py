@@ -4,17 +4,17 @@ import json
 
 
 class IngestionRecord(db.Model):
-    __tablename__ = 'ingestion_records'
+    __tablename__ = "ingestion_records"
     id = db.Column(db.Integer, primary_key=True)
     session_key = db.Column(db.String(64), index=True)
     source_file = db.Column(db.String(255))
     source_sheet = db.Column(db.String(100))
-    _mapped = db.Column('mapped', db.Text)
-    _confidences = db.Column('confidences', db.Text)
-    _errors = db.Column('errors', db.Text)
-    _decs = db.Column('decs', db.Text)
+    _mapped = db.Column("mapped", db.Text)
+    _confidences = db.Column("confidences", db.Text)
+    _errors = db.Column("errors", db.Text)
+    _decs = db.Column("decs", db.Text)
     duplicate = db.Column(db.Boolean, default=False)
-    status = db.Column(db.String(20), default='pending')  # pending / approved / rejected
+    status = db.Column(db.String(20), default="pending")  # pending / approved / rejected
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
 
     @property
