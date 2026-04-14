@@ -9,16 +9,16 @@ from models.ingestion import IngestionRecord
 
 class TestConfig:
     TESTING = True
-    SQLALCHEMY_DATABASE_URI = 'sqlite:///:memory:'
-    SECRET_KEY = 'test-secret-key'
-    CDISC_API_KEY = ''
-    CDISC_API_BASE_URL = 'https://api.library.cdisc.org/api/cosmos/v2'
-    NCIT_API_BASE_URL = 'https://api-evsrest.nci.nih.gov/api/v1'
+    SQLALCHEMY_DATABASE_URI = "sqlite:///:memory:"
+    SECRET_KEY = "test-secret-key"
+    CDISC_API_KEY = ""
+    CDISC_API_BASE_URL = "https://api.library.cdisc.org/api/cosmos/v2"
+    NCIT_API_BASE_URL = "https://api-evsrest.nci.nih.gov/api/v1"
     MAX_CONTENT_LENGTH = 16 * 1024 * 1024
     WTF_CSRF_ENABLED = False
 
 
-@pytest.fixture(scope='session')
+@pytest.fixture(scope="session")
 def app():
     app = create_app(TestConfig)
     return app
@@ -44,12 +44,12 @@ def sample_bc(app):
     """A minimal BiomedicalConcept persisted to the test DB."""
     with app.app_context():
         bc = BiomedicalConcept(
-            bc_id='C12345',
-            short_name='Test Concept',
-            definition='A test BC definition.',
-            ncit_code='C12345',
-            status='provisional',
-            submitter='tester',
+            bc_id="C12345",
+            short_name="Test Concept",
+            definition="A test BC definition.",
+            ncit_code="C12345",
+            status="provisional",
+            submitter="tester",
         )
         _db.session.add(bc)
         _db.session.commit()

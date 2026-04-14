@@ -27,7 +27,7 @@
   </div>
   <div class="metric-card metric-card-green">
     <div class="metric-val metric-val-green">{{ columns.published | length if columns else 0 }}</div>
-    <div class="metric-lbl">Published</div>
+    <div class="metric-lbl">Ready to Publish</div>
   </div>
 </div>
 
@@ -62,12 +62,7 @@
                     aria-label="Advance {{ bc.short_name }} to SME Review">
               <i class="bi bi-arrow-right" aria-hidden="true"></i> Advance
             </button>
-            <button type="button"
-                    class="btn btn-sm btn-outline-danger kanban-reject-btn"
-                    data-bc-id="{{ bc.bc_id }}"
-                    aria-label="Reject {{ bc.short_name }}">
-              <i class="bi bi-x" aria-hidden="true"></i> Reject
-            </button>
+            
           </div>
         </div>
         {% endfor %}
@@ -165,7 +160,7 @@
   <!-- Published column -->
   <div class="kanban-column" role="list" aria-label="Published BCs">
     <div class="kanban-column-header kanban-header-published">
-      <span>Published</span>
+      <span>Ready to Publish</span>
       <span class="kanban-column-count kanban-count-published">
         {{ columns.published | length if columns else 0 }}
       </span>
@@ -181,11 +176,11 @@
             {% if bc.ncit_code %}<code>{{ bc.ncit_code }}</code>{% endif %}
             {% if bc.package_date %} &middot; Published {{ bc.package_date }}{% endif %}
           </div>
-          <span class="bc-badge bc-badge-published">Published</span>
+          <span class="bc-badge bc-badge-published">Ready to Publish</span>
         </div>
         {% endfor %}
       {% else %}
-        <div class="small text-secondary px-2 py-3 text-center">No published BCs yet.</div>
+        <div class="small text-secondary px-2 py-3 text-center">No BCs ready for publication yet.</div>
       {% endif %}
     </div>
   </div>
