@@ -42,8 +42,8 @@ def index():
     return render_template(
         "dashboard.html",
         stats=stats,
-        api_bcs=api_bcs[:50] if not api_bc_error else [],
-        api_specs=api_specs[:50] if not api_spec_error else [],
+        api_bcs=sorted(api_bcs, key=lambda x: (x.get("title") or "").lower()) if not api_bc_error else [],
+        api_specs=sorted(api_specs, key=lambda x: (x.get("title") or "").lower()) if not api_spec_error else [],
         api_bc_error=api_bc_error,
         api_spec_error=api_spec_error,
         api_bc_count=api_bc_count,

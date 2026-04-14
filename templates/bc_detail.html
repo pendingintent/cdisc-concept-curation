@@ -374,8 +374,8 @@
 </form>
 {% endblock %}
 
-{% if needs_loinc_fetch or needs_ncit_fetch %}
 {% block extra_js %}
+{% if bc.bc_id and (needs_loinc_fetch or needs_ncit_fetch) %}
 <script>
 (function () {
   const LOINC_FIELDS = [
@@ -469,5 +469,5 @@
     });
 }());
 </script>
-{% endblock %}
 {% endif %}
+{% endblock %}

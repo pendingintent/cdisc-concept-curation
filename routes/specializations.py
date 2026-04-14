@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, request, redirect, url_for, flash
+from flask import Blueprint, render_template, request, redirect, url_for, flash, jsonify
 from models.bc import BiomedicalConcept, DataElementConcept
 from models.specialization import DatasetSpecialization
 from extensions import db
@@ -7,14 +7,27 @@ from services.cdisc_api import CDISCApiClient
 bp = Blueprint("specializations", __name__)
 
 
+def _get_bc_options():
+    """Return (library_bcs, local_bcs) for the BC selector.
+
+    library_bcs — list of dicts with bc_id/short_name from the CDISC Library (cached).
+    local_bcs   — BiomedicalConcept ORM objects from the local governance pipeline.
+    """
+    links = CDISCApiClient().get_biomedical_concepts()
+    library_bcs = [{"bc_id": lnk["href"].rstrip("/").split("/")[-1], "short_name": lnk.get("title", "")} for lnk in links if "href" in lnk and "error" not in lnk]
+    local_bcs = BiomedicalConcept.query.order_by(BiomedicalConcept.short_name).all()
+    return library_bcs, local_bcs
+
+
 @bp.route("/")
 def index():
     specs = DatasetSpecialization.query.all()
-    bcs = BiomedicalConcept.query.order_by(BiomedicalConcept.short_name).all()
+    library_bcs, local_bcs = _get_bc_options()
     return render_template(
         "specializations.html",
         specs=specs,
-        bcs=bcs,
+        library_bcs=library_bcs,
+        local_bcs=local_bcs,
         page_title="Specializations",
     )
 
@@ -37,11 +50,12 @@ def library_detail(spec_path):
 def detail(vlm_group_id):
     spec = DatasetSpecialization.query.get_or_404(vlm_group_id)
     specs = DatasetSpecialization.query.all()
-    bcs = BiomedicalConcept.query.order_by(BiomedicalConcept.short_name).all()
+    library_bcs, local_bcs = _get_bc_options()
     return render_template(
         "specializations.html",
         specs=specs,
-        bcs=bcs,
+        library_bcs=library_bcs,
+        local_bcs=local_bcs,
         edit_spec=spec,
         page_title="Specializations",
     )
@@ -65,6 +79,18 @@ def create():
     db.session.commit()
     flash(f"Specialization {vlm_group_id} created", "success")
     return redirect(url_for("specializations.index"))
+
+
+@bp.route("/generate-from-dec", methods=["POST"])
+def generate_from_dec():
+    """Return DEC-derived variable rows as JSON for the specialization form."""
+    data = request.get_json(silent=True) or {}
+    bc_id = data.get("bc_id", "").strip()
+    if not bc_id:
+        return jsonify({"error": "bc_id required"}), 400
+    decs = DataElementConcept.query.filter_by(bc_id=bc_id).all()
+    variables = [{"name": d.dec_label or "", "label": d.dec_label or "", "data_type": d.data_type or "string", "required": bool(d.required)} for d in decs]
+    return jsonify({"variables": variables})
 
 
 @bp.route("/generate/<bc_id>", methods=["POST"])

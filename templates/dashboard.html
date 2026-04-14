@@ -206,9 +206,17 @@
       {% endif %}
     </tbody>
   </table>
-  {% if api_bc_count > 50 %}
-  <p class="small text-secondary mt-2 mb-0">Showing 50 of {{ api_bc_count }} BCs.</p>
-  {% endif %}
+  <div class="d-flex align-items-center justify-content-between mt-2">
+    <span id="bc-lib-info" class="small text-secondary"></span>
+    <div class="d-flex gap-1">
+      <button id="bc-lib-prev" class="btn btn-sm btn-outline-secondary" disabled aria-label="Previous page">
+        <i class="bi bi-chevron-left" aria-hidden="true"></i>
+      </button>
+      <button id="bc-lib-next" class="btn btn-sm btn-outline-secondary" aria-label="Next page">
+        <i class="bi bi-chevron-right" aria-hidden="true"></i>
+      </button>
+    </div>
+  </div>
 </div>
 
 <!-- CDISC Library Dataset Specializations -->
@@ -256,9 +264,17 @@
       {% endif %}
     </tbody>
   </table>
-  {% if api_spec_count > 50 %}
-  <p class="small text-secondary mt-2 mb-0">Showing 50 of {{ api_spec_count }} specializations.</p>
-  {% endif %}
+  <div class="d-flex align-items-center justify-content-between mt-2">
+    <span id="spec-lib-info" class="small text-secondary"></span>
+    <div class="d-flex gap-1">
+      <button id="spec-lib-prev" class="btn btn-sm btn-outline-secondary" disabled aria-label="Previous page">
+        <i class="bi bi-chevron-left" aria-hidden="true"></i>
+      </button>
+      <button id="spec-lib-next" class="btn btn-sm btn-outline-secondary" aria-label="Next page">
+        <i class="bi bi-chevron-right" aria-hidden="true"></i>
+      </button>
+    </div>
+  </div>
 </div>
 
 <!-- AI curation pipeline status -->
@@ -324,21 +340,53 @@
 <script>
 (function () {
   'use strict';
-  function initTableSearch(inputId, tbodyId) {
-    var input = document.getElementById(inputId);
-    var tbody = document.getElementById(tbodyId);
-    if (!input || !tbody) return;
-    input.addEventListener('input', function () {
-      var q = input.value.trim().toLowerCase();
-      var rows = tbody.querySelectorAll('tr');
-      rows.forEach(function (row) {
-        var text = row.textContent.toLowerCase();
-        row.style.display = (!q || text.includes(q)) ? '' : 'none';
+
+  var PAGE_SIZE = 20;
+
+  function initPaginatedSearch(inputId, tbodyId, prevId, nextId, infoId) {
+    var input  = document.getElementById(inputId);
+    var tbody  = document.getElementById(tbodyId);
+    var prev   = document.getElementById(prevId);
+    var next   = document.getElementById(nextId);
+    var info   = document.getElementById(infoId);
+    if (!tbody) return;
+
+    var allRows     = Array.from(tbody.querySelectorAll('tr'));
+    var filtered    = allRows;
+    var currentPage = 0;
+
+    function render() {
+      var start = currentPage * PAGE_SIZE;
+      var end   = start + PAGE_SIZE;
+      allRows.forEach(function (r) { r.style.display = 'none'; });
+      filtered.slice(start, end).forEach(function (r) { r.style.display = ''; });
+      if (prev) prev.disabled = currentPage === 0;
+      if (next) next.disabled = end >= filtered.length;
+      if (info) {
+        if (filtered.length === 0) {
+          info.textContent = 'No results';
+        } else {
+          info.textContent = 'Showing ' + (start + 1) + '–' + Math.min(end, filtered.length) + ' of ' + filtered.length;
+        }
+      }
+    }
+
+    if (input) {
+      input.addEventListener('input', function () {
+        var q = this.value.trim().toLowerCase();
+        filtered = q ? allRows.filter(function (r) { return r.textContent.toLowerCase().includes(q); }) : allRows;
+        currentPage = 0;
+        render();
       });
-    });
+    }
+    if (prev) prev.addEventListener('click', function () { if (currentPage > 0) { currentPage--; render(); } });
+    if (next) next.addEventListener('click', function () { if ((currentPage + 1) * PAGE_SIZE < filtered.length) { currentPage++; render(); } });
+
+    render();
   }
-  initTableSearch('bc-lib-search', 'bc-lib-tbody');
-  initTableSearch('spec-lib-search', 'spec-lib-tbody');
+
+  initPaginatedSearch('bc-lib-search',   'bc-lib-tbody',   'bc-lib-prev',   'bc-lib-next',   'bc-lib-info');
+  initPaginatedSearch('spec-lib-search', 'spec-lib-tbody', 'spec-lib-prev', 'spec-lib-next', 'spec-lib-info');
 })();
 </script>
 {% endblock %}

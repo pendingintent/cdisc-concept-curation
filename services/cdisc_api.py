@@ -8,7 +8,7 @@ from flask import current_app
 # Entries are never evicted — stale data is served while a refresh is attempted,
 # so a timeout never blocks the request with an empty response.
 _cache = {}
-_CACHE_TTL = 300        # serve fresh data for 5 minutes
+_CACHE_TTL = 300  # serve fresh data for 5 minutes
 _CACHE_STALE_TTL = 3600  # serve stale data for up to 1 hour while refresh fails
 
 
@@ -102,8 +102,11 @@ class CDISCApiClient:
         def _fetch():
             try:
                 data = self._get("/mdr/specializations/datasetspecializations")
-                sdtm = data.get("_links", {}).get("datasetSpecializations", {}).get("sdtm", [])
-                return sdtm
+                links = data.get("_links", {}).get("datasetSpecializations", [])
+                # API returns either a flat list or a domain-keyed dict (sdtm/cdash/…)
+                if isinstance(links, list):
+                    return links
+                return [item for v in links.values() if isinstance(v, list) for item in v]
             except Exception as e:
                 return [{"error": str(e)}]
 

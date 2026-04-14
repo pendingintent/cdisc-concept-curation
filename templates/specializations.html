@@ -21,7 +21,7 @@
   <div class="bc-card">
     <div class="bc-card-header">
       <h2 class="bc-card-title">
-        {% if editing_spec %}Edit Specialization{% else %}New Specialization{% endif %}
+        {% if edit_spec %}Edit Specialization{% else %}New Specialization{% endif %}
       </h2>
     </div>
 
@@ -31,18 +31,42 @@
       {{ form.hidden_tag() if form else '' }}
 
       <div class="row g-3 mb-3">
+        <div class="col-md-4">
+          <label for="vlm_group_id" class="form-label small fw-semibold">VLM Group ID <span class="text-danger" aria-hidden="true">*</span></label>
+          <input type="text" id="vlm_group_id" name="vlm_group_id" class="form-control form-control-sm"
+                 value="{{ edit_spec.vlm_group_id if edit_spec else '' }}"
+                 placeholder="e.g. C49237.SDTM" required>
+        </div>
+        <div class="col-md-8"><!-- spacer --></div>
+      </div>
+
+      <div class="row g-3 mb-3">
         <div class="col-md-5">
           <label for="bc_selector" class="form-label small fw-semibold">Biomedical Concept <span class="text-danger" aria-hidden="true">*</span></label>
+          <input type="search" id="bc_search" class="form-control form-control-sm mb-1"
+                 placeholder="Filter BCs…" aria-label="Filter biomedical concepts" autocomplete="off">
           <select id="bc_selector" name="bc_id" class="form-select form-select-sm" required
                   aria-label="Select a Biomedical Concept">
             <option value="">— Select BC —</option>
-            {% if available_bcs %}
-              {% for bc in available_bcs %}
-                <option value="{{ bc.bc_id }}"
-                        {% if editing_spec and editing_spec.bc_id == bc.bc_id %}selected{% endif %}>
-                  {{ bc.short_name }} ({{ bc.bc_id }})
-                </option>
+            {% if library_bcs %}
+            <optgroup label="CDISC Library ({{ library_bcs | length }})">
+              {% for bc in library_bcs %}
+              <option value="{{ bc.bc_id }}"
+                      {% if edit_spec and edit_spec.bc_id == bc.bc_id %}selected{% endif %}>
+                {{ bc.short_name }} ({{ bc.bc_id }})
+              </option>
               {% endfor %}
+            </optgroup>
+            {% endif %}
+            {% if local_bcs %}
+            <optgroup label="Local — Governance Pipeline ({{ local_bcs | length }})">
+              {% for bc in local_bcs %}
+              <option value="{{ bc.bc_id }}"
+                      {% if edit_spec and edit_spec.bc_id == bc.bc_id %}selected{% endif %}>
+                {{ bc.short_name }} ({{ bc.bc_id }})
+              </option>
+              {% endfor %}
+            </optgroup>
             {% endif %}
           </select>
         </div>
@@ -53,12 +77,12 @@
             <div class="d-flex gap-3">
               <div class="form-check">
                 <input class="form-check-input" type="radio" name="domain" id="domain-sdtm" value="SDTM"
-                       {% if not editing_spec or editing_spec.domain == 'SDTM' %}checked{% endif %}>
+                       {% if not edit_spec or edit_spec.domain == 'SDTM' %}checked{% endif %}>
                 <label class="form-check-label small" for="domain-sdtm">SDTM</label>
               </div>
               <div class="form-check">
                 <input class="form-check-input" type="radio" name="domain" id="domain-cdash" value="CDASH"
-                       {% if editing_spec and editing_spec.domain == 'CDASH' %}checked{% endif %}>
+                       {% if edit_spec and edit_spec.domain == 'CDASH' %}checked{% endif %}>
                 <label class="form-check-label small" for="domain-cdash">CDASH</label>
               </div>
             </div>
@@ -68,7 +92,7 @@
         <div class="col-md-4">
           <label for="spec_short_name" class="form-label small fw-semibold">Short Name <span class="text-danger" aria-hidden="true">*</span></label>
           <input type="text" id="spec_short_name" name="short_name" class="form-control form-control-sm"
-                 value="{{ editing_spec.short_name if editing_spec else '' }}"
+                 value="{{ edit_spec.short_name if edit_spec else '' }}"
                  placeholder="e.g. Serum Creatinine SDTM" required>
         </div>
       </div>
@@ -86,9 +110,9 @@
               <th scope="col" style="width: 40px;"></th>
             </tr>
           </thead>
-          <tbody id="spec-variables-body" data-row-count="{{ (editing_spec.variables | length) if editing_spec and editing_spec.variables else 0 }}">
-            {% if editing_spec and editing_spec.variables %}
-              {% for var in editing_spec.variables %}
+          <tbody id="spec-variables-body" data-row-count="{{ (edit_spec.variables | length) if edit_spec and edit_spec.variables else 0 }}">
+            {% if edit_spec and edit_spec.variables %}
+              {% for var in edit_spec.variables %}
               <tr>
                 <td>
                   <input type="text" class="form-control form-control-sm"
@@ -229,7 +253,23 @@
 <script>
 (function () {
   'use strict';
-  
+
+  // BC search filter
+  var bcSearch = document.getElementById('bc_search');
+  var bcSelect = document.getElementById('bc_selector');
+  if (bcSearch && bcSelect) {
+    var allOpts = Array.from(bcSelect.querySelectorAll('option'));
+    bcSearch.addEventListener('input', function () {
+      var q = this.value.trim().toLowerCase();
+      allOpts.forEach(function (opt) {
+        opt.hidden = q.length > 0 && opt.value !== '' && !opt.textContent.toLowerCase().includes(q);
+      });
+      Array.from(bcSelect.querySelectorAll('optgroup')).forEach(function (grp) {
+        grp.hidden = Array.from(grp.querySelectorAll('option')).every(function (o) { return o.hidden; });
+      });
+    });
+  }
+
   // Initialize variable row counter from server-rendered data
   let varRowIndex = parseInt(document.getElementById('spec-variables-body').dataset.rowCount || '0', 10);
 
