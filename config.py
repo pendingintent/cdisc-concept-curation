@@ -9,3 +9,4 @@ class Config:
     CDISC_API_BASE_URL = "https://api.library.cdisc.org/api/cosmos/v2"
     NCIT_API_BASE_URL = "https://api-evsrest.nci.nih.gov/api/v1"
     MAX_CONTENT_LENGTH = 16 * 1024 * 1024  # 16MB upload limit
+    PORT = int(os.environ.get("PORT", 8081))
