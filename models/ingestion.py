@@ -1,5 +1,5 @@
 from extensions import db
-from datetime import datetime
+from datetime import datetime, timezone
 import json
 
 
@@ -15,7 +15,7 @@ class IngestionRecord(db.Model):
     _decs = db.Column("decs", db.Text)
     duplicate = db.Column(db.Boolean, default=False)
     status = db.Column(db.String(20), default="pending")  # pending / approved / rejected
-    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    created_at = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc))
 
     @property
     def mapped(self):

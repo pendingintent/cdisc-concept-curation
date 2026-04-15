@@ -115,10 +115,10 @@ def upload():
 
 @bp.route("/approve/<int:record_id>", methods=["POST"])
 def approve(record_id):
-    ir = IngestionRecord.query.get_or_404(record_id)
+    ir = db.get_or_404(IngestionRecord, record_id)
     mapped = ir.mapped
     bc_id = mapped.get("bc_id") or mapped.get("ncit_code", f"IMPORT_{record_id}")
-    if not BiomedicalConcept.query.get(bc_id):
+    if not db.session.get(BiomedicalConcept, bc_id):
         bc = _bc_from_mapped(bc_id, mapped)
         db.session.add(bc)
         _create_decs(bc_id, ir.decs)
@@ -140,7 +140,7 @@ def approve(record_id):
 
 @bp.route("/reject/<int:record_id>", methods=["POST"])
 def reject(record_id):
-    ir = IngestionRecord.query.get_or_404(record_id)
+    ir = db.get_or_404(IngestionRecord, record_id)
     ir.status = "rejected"
     db.session.commit()
     return redirect(url_for("ingestion.index"))
@@ -159,7 +159,7 @@ def approve_all():
             continue
         mapped = ir.mapped
         bc_id = mapped.get("bc_id") or mapped.get("ncit_code", f"IMPORT_{ir.id}")
-        if not BiomedicalConcept.query.get(bc_id):
+        if not db.session.get(BiomedicalConcept, bc_id):
             bc = _bc_from_mapped(bc_id, mapped)
             db.session.add(bc)
             _create_decs(bc_id, ir.decs)

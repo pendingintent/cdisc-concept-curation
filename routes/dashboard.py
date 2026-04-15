@@ -1,5 +1,5 @@
 from concurrent.futures import ThreadPoolExecutor, as_completed
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from flask import Blueprint, render_template
 from models.bc import BiomedicalConcept
 from models.audit import AuditLog
@@ -26,7 +26,7 @@ def index():
     # --- Local DB stats ---
     local_total_bcs = BiomedicalConcept.query.count()
     local_pending = BiomedicalConcept.query.filter(BiomedicalConcept.status.in_(["provisional", "sme_review", "cdisc_approval"])).count()
-    recent_additions = BiomedicalConcept.query.filter(BiomedicalConcept.created_at >= datetime.utcnow() - timedelta(days=7)).count()
+    recent_additions = BiomedicalConcept.query.filter(BiomedicalConcept.created_at >= datetime.now(timezone.utc) - timedelta(days=7)).count()
 
     governance_items = BiomedicalConcept.query.filter(BiomedicalConcept.status != "published").order_by(BiomedicalConcept.updated_at.desc()).limit(10).all()
     recent_audits = AuditLog.query.order_by(AuditLog.timestamp.desc()).limit(10).all()

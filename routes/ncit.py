@@ -69,7 +69,7 @@ def concept_detail(ncit_code):
 
 @bp.route("/resolve/<bc_id>", methods=["POST"])
 def resolve(bc_id):
-    bc = BiomedicalConcept.query.get_or_404(bc_id)
+    bc = db.get_or_404(BiomedicalConcept, bc_id)
     ncit_code = request.form.get("ncit_code", "").strip()
     if ncit_code:
         bc.ncit_code = ncit_code

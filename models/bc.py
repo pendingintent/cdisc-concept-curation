@@ -1,5 +1,5 @@
 from extensions import db
-from datetime import datetime
+from datetime import datetime, timezone
 
 
 class BiomedicalConcept(db.Model):
@@ -21,8 +21,8 @@ class BiomedicalConcept(db.Model):
     package_date = db.Column(db.String(20))
     status = db.Column(db.String(50), default="provisional")  # provisional/sme_review/cdisc_approval/published
     submitter = db.Column(db.String(100))
-    created_at = db.Column(db.DateTime, default=datetime.utcnow)
-    updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+    created_at = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc))
+    updated_at = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc), onupdate=lambda: datetime.now(timezone.utc))
     history_of_change = db.Column(db.Text)
     source = db.Column(db.String(50), default="local")  # 'local' or 'cdisc_api'
 

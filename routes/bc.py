@@ -8,7 +8,7 @@ from services.export import export_json, export_xlsx, export_odm_xml
 from services.cdisc_api import CDISCApiClient
 from services.loinc_api import LoincApiClient
 from services.ncit_api import NCItApiClient
-from datetime import datetime
+from datetime import datetime, timezone
 
 bp = Blueprint("bc", __name__)
 
@@ -110,7 +110,7 @@ def library_detail(concept_id):
 
 @bp.route("/<bc_id>")
 def detail(bc_id):
-    bc = BiomedicalConcept.query.get_or_404(bc_id)
+    bc = db.get_or_404(BiomedicalConcept, bc_id)
     decs = DataElementConcept.query.filter_by(bc_id=bc_id).order_by(DataElementConcept.sort_order).all()
     loinc_data = {}
     if bc.loinc_metadata:
@@ -149,7 +149,7 @@ def fetch_metadata(bc_id):
     Saves results to the DB so subsequent visits use the fast stored-metadata path."""
     from flask import jsonify
 
-    bc = BiomedicalConcept.query.get_or_404(bc_id)
+    bc = db.get_or_404(BiomedicalConcept, bc_id)
 
     def _fetch_ncit():
         result = NCItApiClient().get_concept(bc.ncit_code)
@@ -180,7 +180,7 @@ def create():
     if not bc_id:
         flash("BC ID is required", "danger")
         return redirect(url_for("bc.new_bc"))
-    if BiomedicalConcept.query.get(bc_id):
+    if db.session.get(BiomedicalConcept, bc_id):
         flash(f"BC {bc_id} already exists", "danger")
         return redirect(url_for("bc.new_bc"))
     bc = BiomedicalConcept(
@@ -218,7 +218,7 @@ def create():
 
 @bp.route("/<bc_id>/edit", methods=["POST"])
 def edit(bc_id):
-    bc = BiomedicalConcept.query.get_or_404(bc_id)
+    bc = db.get_or_404(BiomedicalConcept, bc_id)
     before = bc.to_dict()
     bc.short_name = request.form.get("short_name", bc.short_name)
     bc.definition = request.form.get("definition", bc.definition)
@@ -233,7 +233,7 @@ def edit(bc_id):
     bc.loinc_metadata = request.form.get("loinc_metadata", "") or bc.loinc_metadata
     bc.ncit_metadata = request.form.get("ncit_metadata", "") or bc.ncit_metadata
     bc.package_date = request.form.get("package_date", bc.package_date)
-    bc.updated_at = datetime.utcnow()
+    bc.updated_at = datetime.now(timezone.utc)
     log = AuditLog(
         entity_type="BiomedicalConcept",
         entity_id=bc_id,
@@ -251,10 +251,10 @@ def edit(bc_id):
 
 @bp.route("/<bc_id>/submit", methods=["POST"])
 def submit_for_review(bc_id):
-    bc = BiomedicalConcept.query.get_or_404(bc_id)
+    bc = db.get_or_404(BiomedicalConcept, bc_id)
     before = bc.to_dict()
     bc.status = "sme_review"
-    bc.updated_at = datetime.utcnow()
+    bc.updated_at = datetime.now(timezone.utc)
     log = AuditLog(
         entity_type="BiomedicalConcept",
         entity_id=bc_id,
@@ -271,7 +271,7 @@ def submit_for_review(bc_id):
 
 @bp.route("/<bc_id>/delete", methods=["POST"])
 def delete(bc_id):
-    bc = BiomedicalConcept.query.get_or_404(bc_id)
+    bc = db.get_or_404(BiomedicalConcept, bc_id)
     # Nullify self-referential parent FK on child BCs; without this SQLAlchemy
     # raises CircularDependencyError when flushing the delete.
     BiomedicalConcept.query.filter_by(parent_bc_id=bc_id).update({"parent_bc_id": None}, synchronize_session="fetch")

@@ -100,13 +100,13 @@ class TestApprove:
         assert record_id is not None
         client.post(f"/ingestion/approve/{record_id}")
         with app.app_context():
-            assert BiomedicalConcept.query.get("C001") is not None
+            assert db.session.get(BiomedicalConcept, "C001") is not None
 
     def test_approve_sets_status_approved(self, client, app):
         record_id = self._upload_and_get_record_id(client, app)
         client.post(f"/ingestion/approve/{record_id}")
         with app.app_context():
-            ir = IngestionRecord.query.get(record_id)
+            ir = db.session.get(IngestionRecord, record_id)
             assert ir.status == "approved"
 
     def test_approve_nonexistent_record_returns_404(self, client):
@@ -145,7 +145,7 @@ class TestReject:
 
         client.post(f"/ingestion/reject/{record_id}")
         with app.app_context():
-            ir = IngestionRecord.query.get(record_id)
+            ir = db.session.get(IngestionRecord, record_id)
             assert ir.status == "rejected"
 
     def test_reject_does_not_create_bc(self, client, app):
@@ -162,7 +162,7 @@ class TestReject:
 
         client.post(f"/ingestion/reject/{record_id}")
         with app.app_context():
-            assert BiomedicalConcept.query.get("C001") is None
+            assert db.session.get(BiomedicalConcept, "C001") is None
 
     def test_reject_nonexistent_record_returns_404(self, client):
         r = client.post("/ingestion/reject/99999")
@@ -184,4 +184,4 @@ class TestApproveAll:
         )
         client.post("/ingestion/approve_all")
         with app.app_context():
-            assert BiomedicalConcept.query.get("C001") is None
+            assert db.session.get(BiomedicalConcept, "C001") is None

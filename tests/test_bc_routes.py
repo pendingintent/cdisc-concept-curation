@@ -64,7 +64,7 @@ class TestCreateBc:
         r = client.post("/bc/", data=_bc_form(), follow_redirects=False)
         assert r.status_code == 302
         with app.app_context():
-            assert BiomedicalConcept.query.get("C00001") is not None
+            assert db.session.get(BiomedicalConcept, "C00001") is not None
 
     def test_missing_bc_id_redirects_with_error(self, client):
         r = client.post("/bc/", data=_bc_form(bc_id=""), follow_redirects=True)
@@ -177,7 +177,7 @@ class TestEditBc:
     def test_updates_short_name(self, client, app, sample_bc):
         client.post("/bc/C12345/edit", data={"short_name": "Updated Name"})
         with app.app_context():
-            bc = BiomedicalConcept.query.get("C12345")
+            bc = db.session.get(BiomedicalConcept, "C12345")
             assert bc.short_name == "Updated Name"
 
     def test_edit_writes_audit_log(self, client, app, sample_bc):
@@ -201,7 +201,7 @@ class TestSubmitForReview:
     def test_advances_status_to_sme_review(self, client, app, sample_bc):
         client.post("/bc/C12345/submit")
         with app.app_context():
-            bc = BiomedicalConcept.query.get("C12345")
+            bc = db.session.get(BiomedicalConcept, "C12345")
             assert bc.status == "sme_review"
 
     def test_submit_writes_audit_log(self, client, app, sample_bc):
@@ -220,7 +220,7 @@ class TestDeleteBc:
     def test_deletes_bc(self, client, app, sample_bc):
         client.post("/bc/C12345/delete")
         with app.app_context():
-            assert BiomedicalConcept.query.get("C12345") is None
+            assert db.session.get(BiomedicalConcept, "C12345") is None
 
     def test_delete_writes_audit_log(self, client, app, sample_bc):
         client.post("/bc/C12345/delete")

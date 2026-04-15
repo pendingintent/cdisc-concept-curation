@@ -3,7 +3,7 @@ from models.bc import BiomedicalConcept
 from models.governance import GovernanceRecord
 from models.audit import AuditLog
 from extensions import db
-from datetime import datetime
+from datetime import datetime, timezone
 
 bp = Blueprint("governance", __name__)
 
@@ -25,12 +25,12 @@ def board():
 
 @bp.route("/advance/<bc_id>", methods=["POST"])
 def advance(bc_id):
-    bc = BiomedicalConcept.query.get_or_404(bc_id)
+    bc = db.get_or_404(BiomedicalConcept, bc_id)
     before_status = bc.status
     current_idx = STATUS_ORDER.index(bc.status) if bc.status in STATUS_ORDER else 0
     if current_idx < len(STATUS_ORDER) - 1:
         bc.status = STATUS_ORDER[current_idx + 1]
-        bc.updated_at = datetime.utcnow()
+        bc.updated_at = datetime.now(timezone.utc)
         rec = GovernanceRecord(
             bc_id=bc_id,
             stage=current_idx + 1,
@@ -59,10 +59,10 @@ def advance(bc_id):
 
 @bp.route("/reject/<bc_id>", methods=["POST"])
 def reject_bc(bc_id):
-    bc = BiomedicalConcept.query.get_or_404(bc_id)
+    bc = db.get_or_404(BiomedicalConcept, bc_id)
     before_status = bc.status
     bc.status = "provisional"
-    bc.updated_at = datetime.utcnow()
+    bc.updated_at = datetime.now(timezone.utc)
     rec = GovernanceRecord(
         bc_id=bc_id,
         stage=0,

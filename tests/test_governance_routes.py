@@ -19,14 +19,14 @@ class TestAdvance:
     def test_advances_provisional_to_sme_review(self, client, app, sample_bc):
         client.post("/governance/advance/C12345")
         with app.app_context():
-            bc = BiomedicalConcept.query.get("C12345")
+            bc = db.session.get(BiomedicalConcept, "C12345")
             assert bc.status == "sme_review"
 
     def test_advance_through_all_stages(self, client, app, sample_bc):
         for expected in ["sme_review", "cdisc_approval", "published"]:
             client.post("/governance/advance/C12345")
         with app.app_context():
-            bc = BiomedicalConcept.query.get("C12345")
+            bc = db.session.get(BiomedicalConcept, "C12345")
             assert bc.status == "published"
 
     def test_already_published_stays_published(self, client, app, sample_bc):
@@ -37,7 +37,7 @@ class TestAdvance:
         r = client.post("/governance/advance/C12345", follow_redirects=True)
         assert r.status_code == 200
         with app.app_context():
-            bc = BiomedicalConcept.query.get("C12345")
+            bc = db.session.get(BiomedicalConcept, "C12345")
             assert bc.status == "published"
 
     def test_advance_creates_governance_record(self, client, app, sample_bc):
@@ -75,7 +75,7 @@ class TestReject:
         client.post("/governance/advance/C12345")
         client.post("/governance/reject/C12345")
         with app.app_context():
-            bc = BiomedicalConcept.query.get("C12345")
+            bc = db.session.get(BiomedicalConcept, "C12345")
             assert bc.status == "provisional"
 
     def test_reject_creates_governance_record(self, client, app, sample_bc):

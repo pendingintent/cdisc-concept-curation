@@ -1,5 +1,5 @@
 from extensions import db
-from datetime import datetime
+from datetime import datetime, timezone
 import json
 
 
@@ -12,7 +12,7 @@ class AuditLog(db.Model):
     actor = db.Column(db.String(100), default="system")
     _before_state = db.Column("before_state", db.Text)
     _after_state = db.Column("after_state", db.Text)
-    timestamp = db.Column(db.DateTime, default=datetime.utcnow)
+    timestamp = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc))
 
     @property
     def before_state(self):

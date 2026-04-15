@@ -48,7 +48,7 @@ def library_detail(spec_path):
 
 @bp.route("/<vlm_group_id>")
 def detail(vlm_group_id):
-    spec = DatasetSpecialization.query.get_or_404(vlm_group_id)
+    spec = db.get_or_404(DatasetSpecialization, vlm_group_id)
     specs = DatasetSpecialization.query.all()
     library_bcs, local_bcs = _get_bc_options()
     return render_template(
@@ -96,11 +96,11 @@ def generate_from_dec():
 @bp.route("/generate/<bc_id>", methods=["POST"])
 def generate(bc_id):
     """Generate a specialization from DEC templates for a BC."""
-    bc = BiomedicalConcept.query.get_or_404(bc_id)
+    bc = db.get_or_404(BiomedicalConcept, bc_id)
     decs = DataElementConcept.query.filter_by(bc_id=bc_id).all()
     domain = request.form.get("domain", "SDTM")
     vlm_group_id = f"{bc_id}.{domain}"
-    existing = DatasetSpecialization.query.get(vlm_group_id)
+    existing = db.session.get(DatasetSpecialization, vlm_group_id)
     if existing:
         flash(f"Specialization {vlm_group_id} already exists", "warning")
         return redirect(url_for("specializations.index"))

@@ -1,6 +1,6 @@
 import io
 import json
-from datetime import datetime
+from datetime import datetime, timezone
 
 try:
     import openpyxl
@@ -74,8 +74,8 @@ def export_odm_xml(bc_list):
         attrib={
             "xmlns": "http://www.cdisc.org/ns/odm/v1.3",
             "FileType": "Snapshot",
-            "FileOID": f'CDISC.BC.Export.{datetime.utcnow().strftime("%Y%m%d%H%M%S")}',
-            "CreationDateTime": datetime.utcnow().isoformat(),
+            "FileOID": f'CDISC.BC.Export.{datetime.now(timezone.utc).strftime("%Y%m%d%H%M%S")}',
+            "CreationDateTime": datetime.now(timezone.utc).isoformat(),
         },
     )
 

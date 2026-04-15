@@ -1,5 +1,5 @@
 from extensions import db
-from datetime import datetime
+from datetime import datetime, timezone
 
 
 class GovernanceRecord(db.Model):
@@ -10,6 +10,6 @@ class GovernanceRecord(db.Model):
     action = db.Column(db.String(100))  # submitted, advanced, rejected, approved, published
     actor = db.Column(db.String(100))
     comment = db.Column(db.Text)
-    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    created_at = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc))
 
     bc = db.relationship("BiomedicalConcept", backref=db.backref("governance_records", lazy="dynamic"))
