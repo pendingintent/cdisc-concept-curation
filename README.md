@@ -125,7 +125,7 @@ The sidebar navigation exposes seven screens, accessible at these URL prefixes:
 |--------|-----|-------------|
 | Dashboard | `/` | KPI cards (total BCs, pending review, published), governance pipeline chart with concurrent CDISC API fetches (ThreadPoolExecutor), recent submissions table |
 | Ingestion | `/ingestion` | Upload XLSX, CSV, or JSON files; AI field mapper assigns confidence scores; approve or reject rows to the database |
-| BCs | `/bc` | Browse, create, edit, and delete Biomedical Concepts; LOINC code entry with live search and automatic metadata population from NLM Clinical Tables API (LONG_COMMON_NAME, SHORTNAME, COMPONENT, units, etc.); NCIt concept selection with full metadata display (definitions, parents, semantic type); concurrent LOINC and NCIt API fetches with stored metadata prioritization; Data Element Concept sub-records |
+| BCs | `/bc` | Browse, create, edit, and delete Biomedical Concepts; LOINC code entry with live search and automatic metadata population from NLM Clinical Tables API (LONG_COMMON_NAME, SHORTNAME, COMPONENT, units, etc.); NCIt concept selection with live search and one-click integration — click "Use this concept" to fetch full metadata asynchronously (preferred name, synonyms, description, parent concepts, child concepts, semantic type, and NCIt Browser link); all available definitions displayed with source attribution as `[SOURCE] definition text` in the References section; query parameters `/bc/new?ncit_code=...&ncit_name=...&ncit_definition=...` pre-populate BC fields on page load; `parent_bc_id` auto-filled from first parent concept's code; Data Element Concept sub-records |
 | NCIT Mapping | `/ncit` | Search the NCI Thesaurus, resolve low-confidence mappings, and confirm NCIt codes for each BC |
 | Specializations | `/specializations` | View and generate SDTM/CDASH dataset specializations and CRF variable mappings |
 | Governance | `/governance` | 4-stage Kanban board (Provisional > SME Review > CDISC Approval > Published) with advance and reject actions |
@@ -149,15 +149,15 @@ cdisc-concept-curation/
 ├── routes/                       # 8 Flask blueprints
 │   ├── dashboard.py              # Concurrent CDISC API fetches (ThreadPoolExecutor), KPI cards
 │   ├── ingestion.py              # File upload and AI field mapper
-│   ├── bc.py                     # Create, edit, detail views; concurrent LOINC and NCIt API fetches (ThreadPoolExecutor) with stored metadata prioritization
-│   ├── ncit.py                   # GET /ncit/search and GET /ncit/concept/<code> JSON endpoints with full metadata
+│   ├── bc.py                     # Create, edit, detail views; `/bc/new` accepts query parameters (`ncit_code`, `ncit_name`, `ncit_definition`) to pre-populate BC fields on page load; NCIt metadata fetch on demand; auto-fills `parent_bc_id` from first parent concept code
+│   ├── ncit.py                   # GET /ncit/search and GET /ncit/concept/<code> JSON endpoints with full metadata, children, and NCIt Browser links
 │   ├── loinc.py                  # GET /loinc/search JSON API endpoint
 │   ├── specializations.py        # Dataset specializations and CRF mappings
 │   ├── governance.py             # Kanban board and status workflows
 │   └── audit.py                  # Immutable change log with filters
 ├── services/
 │   ├── cdisc_api.py              # CDISC Library API client with stale-while-refresh caching (5-min fresh TTL, 1-hour stale fallback)
-│   ├── ncit_api.py               # NCI EVS REST API client with in-memory caching (5-min fresh TTL, 1-hour stale fallback); full concept detail with definitions, parents, semantic type
+│   ├── ncit_api.py               # NCI EVS REST API client with in-memory caching (5-min fresh TTL, 1-hour stale fallback); search uses include="summary" for richer metadata; full concept detail with all definitions prioritized by source via `_pick_definition()` helper (CDISC > NCI > first available), parent and child concepts with codes, semantic type, and NCIt Browser reference links
 │   ├── loinc_api.py              # NLM Clinical Tables API client (optional Basic Auth, metadata caching)
 │   ├── ingestion.py              # File parser and AI field mapper
 │   └── export.py                 # XLSX, JSON, ODM-XML export
@@ -179,5 +179,5 @@ cdisc-concept-curation/
 The platform integrates with three external APIs to provide rich concept metadata:
 
 - **CDISC Library** (`https://api.library.cdisc.org/api/cosmos/v2`) — Requires `CDISC_API_KEY`. Used in Dashboard and BC Library detail views. Implements stale-while-refresh caching (5-min fresh TTL, 1-hour stale fallback) to gracefully handle transient failures.
-- **NCI EVS REST API** (`https://api-evsrest.nci.nih.gov/api/v1`) — No authentication required. Returns NCIt concept definitions, parent concepts, and semantic types. Integrated into BC detail views via `/ncit/concept/<code>` endpoint. Implements in-memory caching (5-min fresh TTL, 1-hour stale fallback) to serve cached data rapidly and degrade gracefully when the service is unavailable.
+- **NCI EVS REST API** (`https://api-evsrest.nci.nih.gov/api/v1`) — No authentication required. Returns NCIt concept definitions with source attribution, parent and child concepts, semantic types, and browser links. Search requests use `include=summary` for richer metadata. Integrated into BC detail views via `/bc/fetch_metadata` endpoint with on-demand asynchronous full-concept fetch (no LOINC concurrent fetches). Prioritizes definitions by source using `_pick_definition()` helper: CDISC > NCI > first available. Displays all available definitions with source attribution as `[SOURCE] definition text` in the References section. Displays parent and child concepts with codes. Includes direct links to the NCIt Browser (via `https://ncithesaurus.nci.nih.gov/ncitbrowser/ConceptReport.jsp?dictionary=NCI_Thesaurus&code=<code>`) for each concept. Auto-fills `parent_bc_id` from first parent concept code. Implements in-memory caching (5-min fresh TTL, 1-hour stale fallback) to serve cached data rapidly and degrade gracefully when the service is unavailable.
 - **NLM Clinical Tables API (LOINC)** (`https://clinicaltables.nlm.nih.gov/api/loinc_items/v3/search`) — Optional Basic Auth via `LOINC_USER` / `LOINC_PASSWORD`. Returns LOINC metadata including LONG_COMMON_NAME, SHORTNAME, COMPONENT, METHOD_TYP, units, datatype, and copyright notices. Integrated into BC detail views via `/loinc/search` endpoint.

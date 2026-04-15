@@ -14,15 +14,38 @@ CDISC Biomedical Concept Curation — a Flask/Jinja web application for curating
 | Ingestion (Upload + Parse) | ✅ Complete | XLSX/CSV/JSON upload, AI field mapping, BC/DEC grouping |
 | BC CRUD + Export | ✅ Complete | JSON/XLSX/ODM-XML export |
 | NCIt Mapping | ✅ Complete | EVS REST API search + mapping resolution |
-| Dataset Specializations | ✅ Complete | Full CRUD management |
+| LOINC API Explorer | ✅ Complete | LOINC search + BC metadata integration, `routes/loinc.py` |
+| Dataset Specializations | ✅ Complete | Full CRUD, BC selection, fixed search |
 | Governance Workflow | ✅ Complete | 4-stage Kanban board |
 | Audit Trail | ✅ Complete | Filterable audit log |
 | CDISC Library API Client | ✅ Complete | `services/cdisc_api.py` |
 | NCIt EVS API Client | ✅ Complete | `services/ncit_api.py` |
+| LOINC API Client | ✅ Complete | `services/loinc_api.py` |
 | Export Service | ✅ Complete | XLSX, JSON, ODM-XML |
 | UI (Bootstrap 5) | ✅ Complete | Sidebar layout, custom CDISC design tokens |
+| Pre-commit Hooks | ✅ Complete | flake8 + black enforced on commit |
+| Test Suite | 🚧 In Progress | BC routes, LOINC, NCIt coverage added |
 
 ## Daily Changelog
+
+### 2026-04-14
+
+#### LOINC API Explorer + BC Detail Performance + Specializations + Config
+
+- Added `routes/loinc.py` blueprint — LOINC concept search integrated into the app
+- Added `services/loinc_api.py` — LOINC REST API client
+- Added DB migrations for NCIt and LOINC metadata fields on `BiomedicalConcept` (`models/bc.py`)
+- Extended `routes/bc.py` with LOINC/NCIt metadata display and BC detail improvements
+- Performance improvements to BC detail page — optimized `routes/bc.py` and `routes/dashboard.py` queries, reduced redundant API calls
+- Enhanced `templates/bc_detail.html` with NCIt and LOINC metadata panels and improved layout
+- Fixed BC deletion — added delete route to `routes/bc.py` and updated `templates/bc_list.html` with confirmation UI
+- Added BC selection to specializations — `routes/specializations.py` updated with BC association logic
+- Fixed specialization search in `routes/specializations.py` and `services/cdisc_api.py`
+- Added pagination to dashboard (`templates/dashboard.html` redesigned, `routes/dashboard.py` updated)
+- HTTP listening port now configurable via `config.py` env var (updated `app.py`)
+- Added `tests/test_bc_routes.py`, `tests/test_loinc.py`, `tests/test_ncit.py` — initial test coverage
+- Configured pre-commit hooks with flake8 and black enforcement
+- Updated `templates/library_bc_detail.html` and `static/js/main.js` with LOINC/NCIt explorer UX
 
 ### 2026-03-30
 

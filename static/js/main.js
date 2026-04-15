@@ -97,7 +97,7 @@
       }
 
       lookupBtn.disabled = true;
-      lookupBtn.textContent = 'Searching…';
+      lookupBtn.innerHTML = '<span class="spinner-border spinner-border-sm" aria-hidden="true"></span> Searching…';
 
       try {
         const url = new URL('/ncit/search', window.location.origin);
@@ -120,7 +120,7 @@
         console.error('NCIt lookup error:', err);
       } finally {
         lookupBtn.disabled = false;
-        lookupBtn.textContent = 'Look up NCIt';
+        lookupBtn.innerHTML = '<i class="bi bi-search" aria-hidden="true"></i> Look up NCIt';
       }
     });
   }
@@ -177,6 +177,11 @@
         if (panel) panel.classList.add('d-none');
 
         // Fetch full concept detail and render the NCIt metadata grid
+        const metaDisplay = document.getElementById('ncit-meta-display');
+        if (metaDisplay) {
+          metaDisplay.innerHTML = '<span class="spinner-border spinner-border-sm me-1" aria-hidden="true"></span> Loading…';
+          metaDisplay.classList.remove('d-none');
+        }
         try {
           const url = new URL(`/ncit/concept/${encodeURIComponent(code)}`, window.location.origin);
           const response = await fetch(url.toString(), { headers: { 'Accept': 'application/json' } });
@@ -185,8 +190,11 @@
             renderNcitMetaDisplay(data);
             const metaInput = document.getElementById('ncit_metadata');
             if (metaInput) metaInput.value = JSON.stringify(data);
+          } else {
+            if (metaDisplay) metaDisplay.innerHTML = '<p class="text-danger small mb-0">Failed to load concept detail.</p>';
           }
         } catch (err) {
+          if (metaDisplay) metaDisplay.innerHTML = '<p class="text-danger small mb-0">Error loading concept detail.</p>';
           console.error('NCIt concept detail fetch error:', err);
         }
       });
@@ -195,47 +203,61 @@
 
   /**
    * Populates #ncit-meta-display grid with fields from a selected NCIt concept.
-   * Fields: code, preferred_name, synonyms, definitions, parents, semantic_type.
+   * Also populates parent_bc_id from the first parent code.
    */
   function renderNcitMetaDisplay(item) {
     var display = document.getElementById('ncit-meta-display');
     if (!display) return;
 
     var fields = [
-      { key: 'code',          label: 'Code' },
-      { key: 'preferred_name',label: 'Preferred Name' },
-      { key: 'synonyms',      label: 'Source Synonyms' },
-      { key: 'definitions',   label: 'Definitions' },
-      { key: 'parents',       label: 'Parent Concepts' },
-      { key: 'semantic_type', label: 'Semantic Type' },
+      { key: 'preferred_name', label: 'Preferred Name' },
+      { key: 'synonyms',       label: 'Synonyms' },
+      { key: 'definition',     label: 'Description' },
+      { key: 'parents',        label: 'Parent Concepts' },
+      { key: 'children',       label: 'Children' },
+      { key: 'definitions',    label: 'References' },
+      { key: 'semantic_type',  label: 'Semantic Type' },
     ];
 
-    var html = fields.filter(function (f) {
+    var items = fields.filter(function (f) {
       var v = item[f.key];
       return v && (!Array.isArray(v) || v.length > 0);
     }).map(function (f) {
       var v = item[f.key];
       var text;
       if (f.key === 'definitions') {
-        text = v.map(function (d) { return d.definition || ''; }).filter(Boolean).join('; ');
-      } else if (f.key === 'parents') {
-        text = v.map(function (p) { return `${p.name} (${p.code})`; }).join('; ');
+        text = v.map(function (d) { return '[' + (d.source || '') + '] ' + (d.definition || ''); }).filter(Boolean).join('; ');
+      } else if (f.key === 'parents' || f.key === 'children') {
+        text = v.map(function (p) { return p.name + ' (' + p.code + ')'; }).join('; ');
       } else if (Array.isArray(v)) {
         text = v.join('; ');
       } else {
         text = String(v);
       }
-      return `<div class="loinc-meta-item">
-        <span class="loinc-meta-label">${escapeHtml(f.label)}</span>
-        <span class="loinc-meta-value">${escapeHtml(text)}</span>
-      </div>`;
-    }).join('');
+      return '<div class="loinc-meta-item">' +
+        '<span class="loinc-meta-label">' + escapeHtml(f.label) + '</span>' +
+        '<span class="loinc-meta-value">' + escapeHtml(text) + '</span>' +
+        '</div>';
+    });
 
-    // Replace inner content but keep the section heading
-    var heading = display.querySelector('.form-section-title');
-    display.innerHTML = (heading ? heading.outerHTML : '<h2 class="form-section-title">NCIt</h2>') +
-      '<div class="loinc-meta-grid">' + html + '</div>';
-    display.classList.toggle('d-none', !html);
+    // NCIt browser link
+    if (item.reference) {
+      items.push('<div class="loinc-meta-item">' +
+        '<span class="loinc-meta-label">NCIt Link</span>' +
+        '<span class="loinc-meta-value"><a href="' + escapeHtml(item.reference) + '" target="_blank" rel="noopener">View in NCIt Browser</a></span>' +
+        '</div>');
+    }
+
+    display.innerHTML = items.length
+      ? '<div class="loinc-meta-grid mt-2">' + items.join('') + '</div>'
+      : '';
+    display.classList.toggle('d-none', !items.length);
+
+    // Populate parent_bc_id from first parent code
+    var parentInput = document.getElementById('parent_bc_id');
+    if (parentInput && !parentInput.value.trim() && Array.isArray(item.parents) && item.parents.length > 0) {
+      parentInput.value = item.parents[0].code || '';
+    }
   }
 
   /* ─────────────────────────────────────────────
@@ -450,18 +472,36 @@
           <button type="button"
                   class="btn btn-sm btn-primary use-ncit-in-search-btn"
                   data-code="${safeCode}"
-                  data-name="${safeName}">
+                  data-name="${safeName}"
+                  data-definition="${safeDef}">
             Use this concept
           </button>
         </div>
       `;
     }).join('');
 
-    // "Use this concept" — navigates to a new BC pre-filled with the NCIt code
+    // "Use this concept" — fetches full concept detail, stores in sessionStorage, then navigates
     container.querySelectorAll('.use-ncit-in-search-btn').forEach(function (btn) {
-      btn.addEventListener('click', function () {
-        const code = encodeURIComponent(btn.dataset.code || '');
-        window.location.href = `/bc/new?ncit_code=${code}`;
+      btn.addEventListener('click', async function () {
+        const code = btn.dataset.code || '';
+        const name = btn.dataset.name || '';
+        const def  = btn.dataset.definition || '';
+
+        btn.disabled = true;
+        btn.innerHTML = '<span class="spinner-border spinner-border-sm" aria-hidden="true"></span> Loading…';
+
+        try {
+          const url = new URL(`/ncit/concept/${encodeURIComponent(code)}`, window.location.origin);
+          const response = await fetch(url.toString(), { headers: { 'Accept': 'application/json' } });
+          if (response.ok) {
+            const data = await response.json();
+            sessionStorage.setItem('pendingNcitConcept', JSON.stringify(data));
+          }
+        } catch (err) {
+          console.error('NCIt concept prefetch error:', err);
+        }
+
+        window.location.href = `/bc/new?ncit_code=${encodeURIComponent(code)}&ncit_name=${encodeURIComponent(name)}&ncit_definition=${encodeURIComponent(def)}`;
       });
     });
   }
@@ -737,11 +777,36 @@
   }
 
   /* ─────────────────────────────────────────────
+     Pending NCIt concept: auto-populate on new BC
+     page when navigated from the NCIt search page.
+  ───────────────────────────────────────────── */
+  function initPendingNcitConcept() {
+    var raw = sessionStorage.getItem('pendingNcitConcept');
+    if (!raw) return;
+
+    var ncitCodeInput = document.getElementById('ncit_code');
+    var metaDisplay = document.getElementById('ncit-meta-display');
+    // Only consume on a page that has the NCIt metadata display (i.e. bc_detail)
+    if (!metaDisplay || !ncitCodeInput) return;
+
+    sessionStorage.removeItem('pendingNcitConcept');
+
+    var data;
+    try { data = JSON.parse(raw); } catch (e) { return; }
+
+    renderNcitMetaDisplay(data);
+
+    var metaInput = document.getElementById('ncit_metadata');
+    if (metaInput) metaInput.value = JSON.stringify(data);
+  }
+
+  /* ─────────────────────────────────────────────
      Init all modules on DOM ready
   ───────────────────────────────────────────── */
   document.addEventListener('DOMContentLoaded', function () {
     initFlashDismiss();
     initFileUpload();
+    initPendingNcitConcept();
     initNcitLookup();
     initLoincLookup();
     initDecTable();

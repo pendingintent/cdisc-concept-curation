@@ -1,5 +1,4 @@
 import json
-from concurrent.futures import ThreadPoolExecutor
 from flask import Blueprint, render_template, request, redirect, url_for, flash, Response
 from models.bc import BiomedicalConcept, DataElementConcept
 from models.audit import AuditLog
@@ -37,6 +36,12 @@ def index():
 @bp.route("/new")
 def new_bc():
     bc = BiomedicalConcept()
+    ncit_code = request.args.get("ncit_code", "").strip()
+    if ncit_code:
+        bc.bc_id = ncit_code
+        bc.ncit_code = ncit_code
+        bc.short_name = request.args.get("ncit_name", "").strip()
+        bc.definition = request.args.get("ncit_definition", "").strip()
     return render_template(
         "bc_detail.html",
         bc=bc,
@@ -128,7 +133,6 @@ def detail(bc_id):
         is_new=False,
         loinc_data=loinc_data,
         ncit_data=ncit_data,
-        needs_loinc_fetch=not loinc_data and bool(bc.code),
         needs_ncit_fetch=not ncit_data and bool(bc.ncit_code),
         page_title=bc.short_name,
     )
@@ -142,35 +146,19 @@ def fetch_metadata(bc_id):
 
     bc = BiomedicalConcept.query.get_or_404(bc_id)
 
-    def _fetch_loinc():
-        results = LoincApiClient().search(bc.code, size=1)
-        return results[0] if results and not results[0].get("error") else {}
-
     def _fetch_ncit():
         result = NCItApiClient().get_concept(bc.ncit_code)
         return result if not result.get("error") else {}
 
-    loinc_data = {}
     ncit_data = {}
-    with ThreadPoolExecutor(max_workers=2) as ex:
-        loinc_future = ex.submit(_fetch_loinc) if bc.code else None
-        ncit_future = ex.submit(_fetch_ncit) if bc.ncit_code else None
-        if loinc_future:
-            loinc_data = loinc_future.result()
-        if ncit_future:
-            ncit_data = ncit_future.result()
+    if bc.ncit_code:
+        ncit_data = _fetch_ncit()
 
-    changed = False
-    if loinc_data and not bc.loinc_metadata:
-        bc.loinc_metadata = json.dumps(loinc_data)
-        changed = True
     if ncit_data and not bc.ncit_metadata:
         bc.ncit_metadata = json.dumps(ncit_data)
-        changed = True
-    if changed:
         db.session.commit()
 
-    return jsonify(loinc=loinc_data, ncit=ncit_data)
+    return jsonify(ncit=ncit_data)
 
 
 @bp.route("/", methods=["POST"])
