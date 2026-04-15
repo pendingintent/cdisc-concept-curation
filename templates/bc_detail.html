@@ -210,15 +210,16 @@
         <div class="row g-2 align-items-end">
           <div class="col-4">
             <label for="loinc_code" class="form-label small">LOINC Code</label>
-            <input type="text" id="loinc_code" name="code" class="form-control form-control-sm"
-                   value="{{ bc.code if bc else '' }}"
+            <input type="text" id="loinc_code" name="loinc_code" class="form-control form-control-sm"
+                   value="{{ bc.loinc_code or '' }}"
                    placeholder="e.g. 4548-4">
           </div>
           <div class="col">
             <label for="loinc_name" class="form-label small">Long Common Name</label>
-            <input type="text" id="loinc_name" name="system_name" class="form-control form-control-sm"
-                   value="{{ bc.system_name if bc else '' }}"
-                   placeholder="e.g. Hemoglobin A1c/Hemoglobin.total in Blood">
+            <input type="text" id="loinc_name" class="form-control form-control-sm"
+                   value="{{ loinc_data.get('LONG_COMMON_NAME', '') }}"
+                   readonly
+                   placeholder="Retrieved from LOINC API">
           </div>
           <div class="col-auto">
             <button type="button" id="loinc-lookup-btn" class="btn btn-sm btn-outline-secondary">Search LOINC</button>
@@ -388,9 +389,12 @@
 {% endblock %}
 
 {% block extra_js %}
-{% if bc.bc_id and needs_ncit_fetch %}
+{% if bc.bc_id and (needs_ncit_fetch or needs_loinc_fetch) %}
 <script>
 (function () {
+  var NEEDS_NCIT = {{ 'true' if needs_ncit_fetch else 'false' }};
+  var NEEDS_LOINC = {{ 'true' if needs_loinc_fetch else 'false' }};
+
   const NCIT_FIELDS = [
     ['preferred_name', 'Preferred Name'],
     ['synonyms',       'Synonyms'],
@@ -401,6 +405,23 @@
     ['semantic_type',  'Semantic Type'],
   ];
 
+  const LOINC_FIELDS = [
+    ['LONG_COMMON_NAME',          'Long Common Name'],
+    ['SHORTNAME',                 'Short Name'],
+    ['COMPONENT',                 'Component'],
+    ['PROPERTY',                  'Property'],
+    ['METHOD_TYP',                'Method Type'],
+    ['units',                     'Units'],
+    ['datatype',                  'Data Type'],
+    ['CONSUMER_NAME',             'Consumer Name'],
+    ['RELATEDNAMES2',             'Related Names'],
+    ['AnswerLists',               'Answer Lists'],
+    ['isCopyrighted',             'Is Copyrighted'],
+    ['containsCopyrighted',       'Contains Copyrighted'],
+    ['EXTERNAL_COPYRIGHT_NOTICE', 'Copyright Notice'],
+    ['EXTERNAL_COPYRIGHT_LINK',   'Copyright Link'],
+  ];
+
   function formatNcitValue(key, val) {
     if (!Array.isArray(val)) return val;
     if (key === 'definitions') return val.map(function (d) { return '[' + d.source + '] ' + d.definition; }).filter(Boolean).join('; ');
@@ -408,7 +429,7 @@
     return val.join('; ');
   }
 
-  function buildGrid(fields, data, extraClass) {
+  function buildGrid(fields, data, formatFn, extraClass) {
     const grid = document.createElement('div');
     grid.className = 'loinc-meta-grid' + (extraClass ? ' ' + extraClass : '');
     fields.forEach(function (pair) {
@@ -422,7 +443,7 @@
       labelEl.textContent = label;
       const valueEl = document.createElement('span');
       valueEl.className = 'loinc-meta-value';
-      valueEl.textContent = formatNcitValue(key, val);
+      valueEl.textContent = formatFn ? formatFn(key, val) : (Array.isArray(val) ? val.join('; ') : val);
       item.appendChild(labelEl);
       item.appendChild(valueEl);
       grid.appendChild(item);
@@ -433,36 +454,55 @@
   fetch('{{ url_for("bc.fetch_metadata", bc_id=bc.bc_id) }}')
     .then(function (r) { return r.json(); })
     .then(function (data) {
-      var ncitDisplay = document.getElementById('ncit-meta-display');
-      var ncitLoading = document.getElementById('ncit-loading-indicator');
-      if (data.ncit && Object.keys(data.ncit).length) {
-        ncitDisplay.appendChild(buildGrid(NCIT_FIELDS, data.ncit, 'mt-2'));
-        if (data.ncit.reference) {
-          var linkItem = document.createElement('div');
-          linkItem.className = 'loinc-meta-item';
-          var linkLabel = document.createElement('span');
-          linkLabel.className = 'loinc-meta-label';
-          linkLabel.textContent = 'NCIt Link';
-          var linkValue = document.createElement('span');
-          linkValue.className = 'loinc-meta-value';
-          var a = document.createElement('a');
-          a.href = data.ncit.reference;
-          a.target = '_blank';
-          a.rel = 'noopener';
-          a.textContent = 'View in NCIt Browser';
-          linkValue.appendChild(a);
-          linkItem.appendChild(linkLabel);
-          linkItem.appendChild(linkValue);
-          ncitDisplay.querySelector('.loinc-meta-grid').appendChild(linkItem);
+      if (NEEDS_NCIT) {
+        var ncitDisplay = document.getElementById('ncit-meta-display');
+        var ncitLoading = document.getElementById('ncit-loading-indicator');
+        if (data.ncit && Object.keys(data.ncit).length) {
+          ncitDisplay.appendChild(buildGrid(NCIT_FIELDS, data.ncit, formatNcitValue, 'mt-2'));
+          if (data.ncit.reference) {
+            var linkItem = document.createElement('div');
+            linkItem.className = 'loinc-meta-item';
+            var linkLabel = document.createElement('span');
+            linkLabel.className = 'loinc-meta-label';
+            linkLabel.textContent = 'NCIt Link';
+            var linkValue = document.createElement('span');
+            linkValue.className = 'loinc-meta-value';
+            var a = document.createElement('a');
+            a.href = data.ncit.reference;
+            a.target = '_blank';
+            a.rel = 'noopener';
+            a.textContent = 'View in NCIt Browser';
+            linkValue.appendChild(a);
+            linkItem.appendChild(linkLabel);
+            linkItem.appendChild(linkValue);
+            ncitDisplay.querySelector('.loinc-meta-grid').appendChild(linkItem);
+          }
+          ncitDisplay.classList.remove('d-none');
+          document.getElementById('ncit_metadata').value = JSON.stringify(data.ncit);
         }
-        ncitDisplay.classList.remove('d-none');
-        document.getElementById('ncit_metadata').value = JSON.stringify(data.ncit);
+        if (ncitLoading) ncitLoading.remove();
       }
-      if (ncitLoading) ncitLoading.remove();
+
+      if (NEEDS_LOINC) {
+        var loincDisplay = document.getElementById('loinc-meta-display');
+        var loincLoading = document.getElementById('loinc-loading-indicator');
+        var loincNameInput = document.getElementById('loinc_name');
+        var loincMetaInput = document.getElementById('loinc_metadata');
+        if (data.loinc && Object.keys(data.loinc).length) {
+          loincDisplay.innerHTML = '';
+          loincDisplay.appendChild(buildGrid(LOINC_FIELDS, data.loinc, null, ''));
+          loincDisplay.classList.remove('d-none');
+          if (loincNameInput) loincNameInput.value = data.loinc.LONG_COMMON_NAME || '';
+          if (loincMetaInput) loincMetaInput.value = JSON.stringify(data.loinc);
+        }
+        if (loincLoading) loincLoading.remove();
+      }
     })
     .catch(function () {
       var ncitLoading = document.getElementById('ncit-loading-indicator');
       if (ncitLoading) { ncitLoading.querySelector('.spinner-border').remove(); ncitLoading.textContent = 'Failed to load'; }
+      var loincLoading = document.getElementById('loinc-loading-indicator');
+      if (loincLoading) { loincLoading.querySelector('.spinner-border').remove(); loincLoading.textContent = 'Failed to load'; }
     });
 }());
 </script>

@@ -134,6 +134,7 @@ def detail(bc_id):
         loinc_data=loinc_data,
         ncit_data=ncit_data,
         needs_ncit_fetch=not ncit_data and bool(bc.ncit_code),
+        needs_loinc_fetch=not bc.loinc_metadata and bool(bc.loinc_code),
         page_title=bc.short_name,
     )
 
@@ -158,7 +159,15 @@ def fetch_metadata(bc_id):
         bc.ncit_metadata = json.dumps(ncit_data)
         db.session.commit()
 
-    return jsonify(ncit=ncit_data)
+    loinc_data = {}
+    if bc.loinc_code and not bc.loinc_metadata:
+        results = LoincApiClient().search(bc.loinc_code, size=1)
+        if results and not results[0].get("error"):
+            loinc_data = results[0]
+            bc.loinc_metadata = json.dumps(loinc_data)
+            db.session.commit()
+
+    return jsonify(ncit=ncit_data, loinc=loinc_data)
 
 
 @bp.route("/", methods=["POST"])
@@ -181,7 +190,7 @@ def create():
         result_scales=request.form.get("result_scales", ""),
         system=request.form.get("system", ""),
         system_name=request.form.get("system_name", ""),
-        code=request.form.get("code", ""),
+        loinc_code=request.form.get("loinc_code", ""),
         loinc_metadata=request.form.get("loinc_metadata", "") or None,
         ncit_metadata=request.form.get("ncit_metadata", "") or None,
         package_date=request.form.get("package_date", ""),
@@ -216,7 +225,7 @@ def edit(bc_id):
     bc.result_scales = request.form.get("result_scales", bc.result_scales)
     bc.system = request.form.get("system", bc.system)
     bc.system_name = request.form.get("system_name", bc.system_name)
-    bc.code = request.form.get("code", bc.code)
+    bc.loinc_code = request.form.get("loinc_code", bc.loinc_code)
     bc.loinc_metadata = request.form.get("loinc_metadata", "") or bc.loinc_metadata
     bc.ncit_metadata = request.form.get("ncit_metadata", "") or bc.ncit_metadata
     bc.package_date = request.form.get("package_date", bc.package_date)
