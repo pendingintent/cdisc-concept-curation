@@ -15,6 +15,7 @@ class BiomedicalConcept(db.Model):
     system = db.Column(db.String(255))  # e.g. http://loinc.org/
     system_name = db.Column(db.String(100))  # coding system name e.g. LOINC
     loinc_code = db.Column(db.String(50))  # LOINC_NUM
+    code = db.Column(db.String(50))  # generic coding value from ingestion
     loinc_metadata = db.Column(db.Text)  # JSON blob of all LOINC ef fields
     ncit_metadata = db.Column(db.Text)  # JSON blob of NCIt concept detail
     package_date = db.Column(db.String(20))

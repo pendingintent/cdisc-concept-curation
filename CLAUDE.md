@@ -31,7 +31,7 @@ black --check .
 
 Line length is set to 200 (black) / 999 (flake8). Flake8 ignores F401, F841, E711 — see `.flake8` for full ignore list.
 
-There is no test suite.
+All tests are defined in the tests directory.
 
 ## Architecture
 
@@ -41,6 +41,7 @@ There is no test suite.
 - `models/` — SQLAlchemy ORM models
 - `templates/` — Jinja2 + Bootstrap 5
 - `extensions.py` — Shared `db` and `migrate` instances (avoids circular imports — always import from here)
+- `tests/` - Unit tests
 
 **7 blueprints** registered in `app.py`:
 
@@ -81,3 +82,9 @@ All configuration is in `config.py` via environment variables:
 
 CDISC API base: `https://api.library.cdisc.org/api/cosmos/v2`
 NCIt API base: `https://api-evsrest.nci.nih.gov/api/v1`
+
+
+## Conventions
+- Always follow test driven development principles.
+- When updating Python code, ensure the associated unit tests are updated accordingly.
+- Execute the appropriate unit tests after updating Python code. 

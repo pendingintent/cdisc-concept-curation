@@ -118,6 +118,10 @@ def detail(bc_id):
             loinc_data = json.loads(bc.loinc_metadata)
         except (ValueError, TypeError):
             pass
+    elif bc.loinc_code:
+        results = LoincApiClient().search(bc.loinc_code, size=1)
+        if results and not results[0].get("error"):
+            loinc_data = results[0]
 
     ncit_data = {}
     if bc.ncit_metadata:

@@ -118,7 +118,7 @@ class TestBcDetail:
                 short_name="HbA1c",
                 status="provisional",
                 submitter="tester",
-                code="4548-4",
+                loinc_code="4548-4",
             )
             db.session.add(bc)
             db.session.commit()
@@ -156,7 +156,7 @@ class TestBcDetail:
                 short_name="LOINC Error BC",
                 status="provisional",
                 submitter="tester",
-                code="4548-4",
+                loinc_code="4548-4",
             )
             db.session.add(bc)
             db.session.commit()
