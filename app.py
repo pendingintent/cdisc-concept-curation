@@ -23,6 +23,7 @@ def create_app(config_class=Config):
     app.register_blueprint(ingestion_bp, url_prefix="/ingestion")
     app.register_blueprint(bc_bp, url_prefix="/bc")
     app.register_blueprint(ncit_bp, url_prefix="/ncit")
+    app.register_blueprint(loinc_bp, url_prefix="/loinc")
     app.register_blueprint(specializations_bp, url_prefix="/specializations")
     app.register_blueprint(governance_bp, url_prefix="/governance")
     app.register_blueprint(audit_bp, url_prefix="/audit")
