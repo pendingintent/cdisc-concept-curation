@@ -167,6 +167,48 @@ class TestBcDetail:
 
         assert r.status_code == 200
 
+    def test_loinc_spinner_not_shown_when_loinc_fetched_server_side(self, client, app):
+        with app.app_context():
+            bc = BiomedicalConcept(
+                bc_id="C99904",
+                short_name="LOINC Spinner BC",
+                status="provisional",
+                submitter="tester",
+                loinc_code="4548-4",
+            )
+            db.session.add(bc)
+            db.session.commit()
+
+        loinc_result = {"LOINC_NUM": "4548-4", "LONG_COMMON_NAME": "Hemoglobin A1c/Hemoglobin.total in Blood"}
+        with patch("routes.bc.LoincApiClient") as MockLoinc:
+            MockLoinc.return_value.search.return_value = [loinc_result]
+            r = client.get("/bc/C99904")
+
+        assert r.status_code == 200
+        assert b"loinc-loading-indicator" not in r.data
+
+    def test_loinc_metadata_saved_when_fetched_in_detail(self, client, app):
+        with app.app_context():
+            bc = BiomedicalConcept(
+                bc_id="C99905",
+                short_name="LOINC Save BC",
+                status="provisional",
+                submitter="tester",
+                loinc_code="4548-4",
+            )
+            db.session.add(bc)
+            db.session.commit()
+
+        loinc_result = {"LOINC_NUM": "4548-4", "LONG_COMMON_NAME": "Hemoglobin A1c/Hemoglobin.total in Blood"}
+        with patch("routes.bc.LoincApiClient") as MockLoinc:
+            MockLoinc.return_value.search.return_value = [loinc_result]
+            client.get("/bc/C99905")
+
+        with app.app_context():
+            bc = db.session.get(BiomedicalConcept, "C99905")
+            assert bc.loinc_metadata is not None
+            assert "4548-4" in bc.loinc_metadata
+
 
 # ---------------------------------------------------------------------------
 # POST /bc/<bc_id>/edit
@@ -189,6 +231,135 @@ class TestEditBc:
 
     def test_nonexistent_bc_returns_404(self, client):
         r = client.post("/bc/NOPE/edit", data={"short_name": "X"})
+        assert r.status_code == 404
+
+    def test_edit_clears_ncit_code_when_submitted_empty(self, client, app, sample_bc):
+        client.post("/bc/C12345/edit", data={"ncit_code": ""})
+        with app.app_context():
+            bc = db.session.get(BiomedicalConcept, "C12345")
+            assert bc.ncit_code is None
+
+    def test_edit_clears_ncit_metadata_when_ncit_code_cleared(self, client, app, sample_bc):
+        with app.app_context():
+            bc = db.session.get(BiomedicalConcept, "C12345")
+            bc.ncit_metadata = '{"preferred_name": "Test"}'
+            db.session.commit()
+        client.post("/bc/C12345/edit", data={"ncit_code": "", "ncit_metadata": '{"preferred_name": "Test"}'})
+        with app.app_context():
+            bc = db.session.get(BiomedicalConcept, "C12345")
+            assert bc.ncit_metadata is None
+
+    def test_edit_clears_parent_bc_id_when_submitted_empty(self, client, app, sample_bc):
+        with app.app_context():
+            bc = db.session.get(BiomedicalConcept, "C12345")
+            bc.parent_bc_id = "C99999"
+            db.session.commit()
+        client.post("/bc/C12345/edit", data={"parent_bc_id": ""})
+        with app.app_context():
+            bc = db.session.get(BiomedicalConcept, "C12345")
+            assert bc.parent_bc_id is None
+
+    def test_edit_clears_loinc_code_and_metadata_when_submitted_empty(self, client, app, sample_bc):
+        with app.app_context():
+            bc = db.session.get(BiomedicalConcept, "C12345")
+            bc.loinc_code = "4548-4"
+            bc.loinc_metadata = '{"LONG_COMMON_NAME": "HbA1c"}'
+            db.session.commit()
+        client.post("/bc/C12345/edit", data={"loinc_code": "", "loinc_metadata": '{"LONG_COMMON_NAME": "HbA1c"}'})
+        with app.app_context():
+            bc = db.session.get(BiomedicalConcept, "C12345")
+            assert bc.loinc_code is None
+            assert bc.loinc_metadata is None
+
+    def test_edit_strips_whitespace_from_ncit_code(self, client, app, sample_bc):
+        client.post("/bc/C12345/edit", data={"ncit_code": "   "})
+        with app.app_context():
+            bc = db.session.get(BiomedicalConcept, "C12345")
+            assert bc.ncit_code is None
+
+    def test_detail_renders_empty_ncit_code_when_none(self, client, app, sample_bc):
+        """Regression: Jinja2 renders Python None as 'None' in HTML attributes.
+        When bc.ncit_code is None the input must have value='' not value='None',
+        otherwise the browser re-submits 'None' causing a spurious NCIt fetch spinner."""
+        with app.app_context():
+            bc = db.session.get(BiomedicalConcept, "C12345")
+            bc.ncit_code = None
+            db.session.commit()
+        with patch("routes.bc.LoincApiClient") as MockLoinc:
+            MockLoinc.return_value.search.return_value = []
+            r = client.get("/bc/C12345")
+        assert b'value="None"' not in r.data
+        assert b'name="ncit_code"' in r.data
+
+
+# ---------------------------------------------------------------------------
+# POST /bc/<bc_id>/clear-ncit
+# ---------------------------------------------------------------------------
+
+
+class TestClearNcitCode:
+    def test_clears_ncit_code_and_metadata(self, client, app, sample_bc):
+        with app.app_context():
+            bc = db.session.get(BiomedicalConcept, "C12345")
+            bc.ncit_metadata = '{"preferred_name": "Test"}'
+            db.session.commit()
+        client.post("/bc/C12345/clear-ncit", follow_redirects=False)
+        with app.app_context():
+            bc = db.session.get(BiomedicalConcept, "C12345")
+            assert bc.ncit_code is None
+            assert bc.ncit_metadata is None
+
+    def test_clear_ncit_writes_audit_log(self, client, app, sample_bc):
+        client.post("/bc/C12345/clear-ncit")
+        with app.app_context():
+            log = AuditLog.query.filter_by(entity_id="C12345", action="ncit_cleared").first()
+            assert log is not None
+
+    def test_clear_ncit_nonexistent_bc_returns_404(self, client):
+        r = client.post("/bc/NOTREAL/clear-ncit")
+        assert r.status_code == 404
+
+    def test_clear_ncit_also_clears_parent_bc_id(self, client, app, sample_bc):
+        with app.app_context():
+            bc = db.session.get(BiomedicalConcept, "C12345")
+            bc.parent_bc_id = "C99999"
+            db.session.commit()
+        client.post("/bc/C12345/clear-ncit", follow_redirects=False)
+        with app.app_context():
+            bc = db.session.get(BiomedicalConcept, "C12345")
+            assert bc.parent_bc_id is None
+
+
+# ---------------------------------------------------------------------------
+# POST /bc/<bc_id>/clear-loinc
+# ---------------------------------------------------------------------------
+
+
+class TestClearLoincCode:
+    def test_clears_loinc_code_and_metadata(self, client, app, sample_bc):
+        with app.app_context():
+            bc = db.session.get(BiomedicalConcept, "C12345")
+            bc.loinc_code = "4548-4"
+            bc.loinc_metadata = '{"LONG_COMMON_NAME": "HbA1c"}'
+            db.session.commit()
+        client.post("/bc/C12345/clear-loinc", follow_redirects=False)
+        with app.app_context():
+            bc = db.session.get(BiomedicalConcept, "C12345")
+            assert bc.loinc_code is None
+            assert bc.loinc_metadata is None
+
+    def test_clear_loinc_writes_audit_log(self, client, app, sample_bc):
+        with app.app_context():
+            bc = db.session.get(BiomedicalConcept, "C12345")
+            bc.loinc_code = "4548-4"
+            db.session.commit()
+        client.post("/bc/C12345/clear-loinc")
+        with app.app_context():
+            log = AuditLog.query.filter_by(entity_id="C12345", action="loinc_cleared").first()
+            assert log is not None
+
+    def test_clear_loinc_nonexistent_bc_returns_404(self, client):
+        r = client.post("/bc/NOTREAL/clear-loinc")
         assert r.status_code == 404
 
 

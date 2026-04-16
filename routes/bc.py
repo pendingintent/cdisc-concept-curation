@@ -122,6 +122,8 @@ def detail(bc_id):
         results = LoincApiClient().search(bc.loinc_code, size=1)
         if results and not results[0].get("error"):
             loinc_data = results[0]
+            bc.loinc_metadata = json.dumps(loinc_data)
+            db.session.commit()
 
     ncit_data = {}
     if bc.ncit_metadata:
@@ -138,7 +140,7 @@ def detail(bc_id):
         loinc_data=loinc_data,
         ncit_data=ncit_data,
         needs_ncit_fetch=not ncit_data and bool(bc.ncit_code),
-        needs_loinc_fetch=not bc.loinc_metadata and bool(bc.loinc_code),
+        needs_loinc_fetch=not loinc_data and bool(bc.loinc_code),
         page_title=bc.short_name,
     )
 
@@ -222,16 +224,18 @@ def edit(bc_id):
     before = bc.to_dict()
     bc.short_name = request.form.get("short_name", bc.short_name)
     bc.definition = request.form.get("definition", bc.definition)
-    bc.ncit_code = request.form.get("ncit_code", bc.ncit_code)
-    bc.parent_bc_id = request.form.get("parent_bc_id") or bc.parent_bc_id
+    new_ncit_code = (request.form.get("ncit_code", "") or "").strip() or None
+    bc.ncit_code = new_ncit_code
+    bc.ncit_metadata = (request.form.get("ncit_metadata", "") or bc.ncit_metadata) if new_ncit_code else None
+    bc.parent_bc_id = (request.form.get("parent_bc_id", "") or "").strip() or None
     bc.bc_categories = request.form.get("bc_categories", bc.bc_categories)
     bc.synonyms = request.form.get("synonyms", bc.synonyms)
     bc.result_scales = request.form.get("result_scales", bc.result_scales)
     bc.system = request.form.get("system", bc.system)
     bc.system_name = request.form.get("system_name", bc.system_name)
-    bc.loinc_code = request.form.get("loinc_code", bc.loinc_code)
-    bc.loinc_metadata = request.form.get("loinc_metadata", "") or bc.loinc_metadata
-    bc.ncit_metadata = request.form.get("ncit_metadata", "") or bc.ncit_metadata
+    new_loinc_code = (request.form.get("loinc_code", "") or "").strip() or None
+    bc.loinc_code = new_loinc_code
+    bc.loinc_metadata = (request.form.get("loinc_metadata", "") or bc.loinc_metadata) if new_loinc_code else None
     bc.package_date = request.form.get("package_date", bc.package_date)
     bc.updated_at = datetime.now(timezone.utc)
     log = AuditLog(
@@ -246,6 +250,51 @@ def edit(bc_id):
     db.session.commit()
     _save_decs(bc_id, request.form)
     flash(f"BC {bc_id} updated", "success")
+    return redirect(url_for("bc.detail", bc_id=bc_id))
+
+
+@bp.route("/<bc_id>/clear-ncit", methods=["POST"])
+def clear_ncit(bc_id):
+    bc = db.get_or_404(BiomedicalConcept, bc_id)
+    before = bc.to_dict()
+    bc.ncit_code = None
+    bc.ncit_metadata = None
+    bc.parent_bc_id = None
+    bc.updated_at = datetime.now(timezone.utc)
+    db.session.add(
+        AuditLog(
+            entity_type="BiomedicalConcept",
+            entity_id=bc_id,
+            action="ncit_cleared",
+            actor="user",
+            before_state=before,
+            after_state=bc.to_dict(),
+        )
+    )
+    db.session.commit()
+    flash(f"NCIt code cleared from {bc_id}", "success")
+    return redirect(url_for("bc.detail", bc_id=bc_id))
+
+
+@bp.route("/<bc_id>/clear-loinc", methods=["POST"])
+def clear_loinc(bc_id):
+    bc = db.get_or_404(BiomedicalConcept, bc_id)
+    before = bc.to_dict()
+    bc.loinc_code = None
+    bc.loinc_metadata = None
+    bc.updated_at = datetime.now(timezone.utc)
+    db.session.add(
+        AuditLog(
+            entity_type="BiomedicalConcept",
+            entity_id=bc_id,
+            action="loinc_cleared",
+            actor="user",
+            before_state=before,
+            after_state=bc.to_dict(),
+        )
+    )
+    db.session.commit()
+    flash(f"LOINC code cleared from {bc_id}", "success")
     return redirect(url_for("bc.detail", bc_id=bc_id))
 
 

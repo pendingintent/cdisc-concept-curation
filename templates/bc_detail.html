@@ -61,14 +61,14 @@
           <div class="col-6">
             <label for="bc_id" class="form-label small">BC ID</label>
             <input type="text" id="bc_id" name="bc_id" class="form-control form-control-sm"
-                   value="{{ bc.bc_id if bc else '' }}"
+                   value="{{ bc.bc_id or '' }}"
                    placeholder="e.g. C64849"
                    {% if not is_new %}readonly{% endif %}>
           </div>
           <div class="col-6">
             <label for="short_name" class="form-label small">Short Name <span class="text-danger" aria-hidden="true">*</span></label>
             <input type="text" id="short_name" name="short_name" class="form-control form-control-sm"
-                   value="{{ bc.short_name if bc else '' }}"
+                   value="{{ bc.short_name or '' }}"
                    placeholder="e.g. HbA1c Percent"
                    required>
           </div>
@@ -93,12 +93,19 @@
             <label for="ncit_code" class="form-label small">NCIt Code</label>
             <div class="input-group input-group-sm">
               <input type="text" id="ncit_code" name="ncit_code" class="form-control"
-                     value="{{ bc.ncit_code if bc else '' }}"
+                     value="{{ bc.ncit_code or '' }}"
                      placeholder="e.g. C64849"
                      aria-describedby="ncit-lookup-btn">
               <button type="button" id="ncit-lookup-btn" class="btn btn-outline-secondary">
                 <i class="bi bi-search" aria-hidden="true"></i> Look up NCIt
               </button>
+              {% if bc and bc.ncit_code %}
+              <button type="button" class="btn btn-outline-danger"
+                      onclick="document.getElementById('clear-ncit-form').submit()"
+                      title="Clear NCIt code">
+                <i class="bi bi-x-lg" aria-hidden="true"></i> Clear
+              </button>
+              {% endif %}
             </div>
           </div>
           <div class="col-4">
@@ -168,14 +175,13 @@
           {% endif %}
         </div>
       </div>
-
       <!-- Classification section -->
       <div class="bc-card bc-card-sm mb-0 mt-3">
         <h2 class="form-section-title">Classification</h2>
         <div class="mb-2">
           <label for="bc_categories" class="form-label small">BC Categories</label>
           <input type="text" id="bc_categories" name="bc_categories" class="form-control form-control-sm"
-                 value="{{ bc.bc_categories if bc else '' }}"
+                 value="{{ bc.bc_categories or '' }}"
                  placeholder="e.g. Laboratory Tests; Diabetes">
           <div class="form-text">Separate multiple categories with semicolons.</div>
         </div>
@@ -183,13 +189,13 @@
           <div class="col-6">
             <label for="synonyms" class="form-label small">Synonyms</label>
             <input type="text" id="synonyms" name="synonyms" class="form-control form-control-sm"
-                   value="{{ bc.synonyms if bc else '' }}"
+                   value="{{ bc.synonyms or '' }}"
                    placeholder="e.g. A1C; Glycated Hb">
           </div>
           <div class="col-6">
             <label for="result_scales" class="form-label small">Result Scales</label>
             <input type="text" id="result_scales" name="result_scales" class="form-control form-control-sm"
-                   value="{{ bc.result_scales if bc else '' }}"
+                   value="{{ bc.result_scales or '' }}"
                    placeholder="e.g. Quantitative">
           </div>
         </div>
@@ -223,6 +229,13 @@
           </div>
           <div class="col-auto">
             <button type="button" id="loinc-lookup-btn" class="btn btn-sm btn-outline-secondary">Search LOINC</button>
+            {% if bc and bc.loinc_code %}
+            <button type="button" class="btn btn-sm btn-outline-danger"
+                    onclick="document.getElementById('clear-loinc-form').submit()"
+                    title="Clear LOINC code">
+              <i class="bi bi-x-lg" aria-hidden="true"></i> Clear
+            </button>
+            {% endif %}
           </div>
         </div>
 
@@ -261,14 +274,13 @@
           <div id="loinc-results-container"></div>
         </div>
       </div>
-
       <!-- Definition section -->
       <div class="bc-card bc-card-sm mb-0 mt-3">
         <h2 class="form-section-title">Definition</h2>
         <label for="definition" class="form-label small visually-hidden">Definition</label>
         <textarea id="definition" name="definition" class="form-control form-control-sm"
                   rows="4"
-                  placeholder="Provide a precise, unambiguous definition aligned with NCI preferred term definition…">{{ bc.definition if bc else '' }}</textarea>
+                  placeholder="Provide a precise, unambiguous definition aligned with NCI preferred term definition…">{{ bc.definition or '' }}</textarea>
       </div>
 
       <!-- Metadata section -->
@@ -278,12 +290,12 @@
           <div class="col-6">
             <label for="package_date" class="form-label small">Package Date</label>
             <input type="date" id="package_date" name="package_date" class="form-control form-control-sm"
-                   value="{{ bc.package_date if bc else '' }}">
+                   value="{{ bc.package_date or '' }}">
           </div>
           <div class="col-6">
             <label for="submitter" class="form-label small">Submitter</label>
             <input type="text" id="submitter" name="submitter" class="form-control form-control-sm"
-                   value="{{ bc.submitter if bc else '' }}"
+                   value="{{ bc.submitter or '' }}"
                    placeholder="e.g. Pfizer BAG">
           </div>
         </div>
@@ -386,6 +398,17 @@
 
   </div><!-- /two-col-grid -->
 </form>
+{% if bc and bc.bc_id %}
+{% if bc.ncit_code %}
+<form id="clear-ncit-form" method="post"
+      action="{{ url_for('bc.clear_ncit', bc_id=bc.bc_id) }}"></form>
+{% endif %}
+{% if bc.loinc_code %}
+<form id="clear-loinc-form" method="post"
+      action="{{ url_for('bc.clear_loinc', bc_id=bc.bc_id) }}"></form>
+{% endif %}
+{% endif %}
+
 {% endblock %}
 
 {% block extra_js %}
