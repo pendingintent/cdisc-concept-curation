@@ -128,7 +128,7 @@ The sidebar navigation exposes seven screens, accessible at these URL prefixes:
 | BCs | `/bc` | Browse, create, edit, and delete Biomedical Concepts; LOINC code entry with asynchronous metadata fetch — fetch triggers automatically on page load if a LOINC code is set and no cached metadata exists, stores result in database for fast future loads; click "Search LOINC" button to manually trigger fresh fetch; click "Clear" button to remove LOINC code, metadata, and spinner; NCIt concept selection with live search and one-click integration — click "Use this concept" to fetch full metadata asynchronously (preferred name, synonyms, description, parent concepts, child concepts, semantic type, and NCIt Browser link); click "Clear" button to remove NCIt code, metadata, and parent BC ID; all available definitions displayed with source attribution as `[SOURCE] definition text` in the References section; query parameters `/bc/new?ncit_code=...&ncit_name=...&ncit_definition=...` pre-populate BC fields on page load; `parent_bc_id` auto-filled from first parent concept's code; form inputs use Jinja2 `or ''` pattern to prevent rendering Python `None` as literal string `"None"` in HTML attributes; Data Element Concept sub-records |
 | NCIT Mapping | `/ncit` | Search the NCI Thesaurus, resolve low-confidence mappings, and confirm NCIt codes for each BC |
 | Specializations | `/specializations` | View and generate SDTM/CDASH dataset specializations and CRF variable mappings |
-| Governance | `/governance` | 4-stage Kanban board (Provisional > SME Review > CDISC Approval > Published) with advance and reject actions |
+| Governance | `/governance` | 4-stage Kanban board (Provisional > SME Review > CDISC Approval > Published) with advance and reject actions; export published BCs as XLSX (BC_LB worksheet format with 18 columns) via "Export Published BCs" button |
 | Audit Trail | `/audit` | Immutable log of every create, update, and status change with before/after state, filterable by entity, action, actor, and date |
 
 ---
@@ -153,14 +153,14 @@ cdisc-concept-curation/
 │   ├── ncit.py                   # GET /ncit/search and GET /ncit/concept/<code> JSON endpoints with full metadata, children, and NCIt Browser links
 │   ├── loinc.py                  # GET /loinc/search JSON API endpoint
 │   ├── specializations.py        # Dataset specializations and CRF mappings
-│   ├── governance.py             # Kanban board and status workflows
+│   ├── governance.py             # Kanban board and status workflows; `/governance/export` route for exporting published BCs as XLSX
 │   └── audit.py                  # Immutable change log with filters
 ├── services/
 │   ├── cdisc_api.py              # CDISC Library API client with stale-while-refresh caching (5-min fresh TTL, 1-hour stale fallback)
 │   ├── ncit_api.py               # NCI EVS REST API client with in-memory caching (5-min fresh TTL, 1-hour stale fallback); search uses include="summary" for richer metadata; full concept detail with all definitions prioritized by source via `_pick_definition()` helper (CDISC > NCI > first available), parent and child concepts with codes, semantic type, and NCIt Browser reference links
 │   ├── loinc_api.py              # NLM Clinical Tables API client (optional Basic Auth, metadata caching)
 │   ├── ingestion.py              # File parser and AI field mapper
-│   └── export.py                 # XLSX, JSON, ODM-XML export
+│   └── export.py                 # XLSX, JSON, ODM-XML export; `export_governance_xlsx()` exports stage-3 BCs in BC_LB worksheet format (BC fields, DEC fields, History of Change)
 ├── templates/
 │   ├── base.html                 # Bootstrap 5 sidebar layout
 │   └── *.html                    # One template per screen

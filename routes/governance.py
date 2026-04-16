@@ -1,9 +1,10 @@
-from flask import Blueprint, render_template, request, redirect, url_for, flash, jsonify
+from flask import Blueprint, render_template, request, redirect, url_for, flash, jsonify, Response
 from models.bc import BiomedicalConcept
 from models.governance import GovernanceRecord
 from models.audit import AuditLog
 from extensions import db
 from datetime import datetime, timezone
+from services.export import export_governance_xlsx
 
 bp = Blueprint("governance", __name__)
 
@@ -20,6 +21,23 @@ def board():
         columns=bcs_by_status,
         status_order=STATUS_ORDER,
         page_title="Governance Board",
+    )
+
+
+@bp.route("/export")
+def export():
+    filename = request.args.get("filename", "governance_export").strip() or "governance_export"
+    base = filename.rsplit(".", 1)[0] if "." in filename else filename
+    safe_filename = f"{base}.xlsx"
+
+    stage3_bc_ids = db.session.query(GovernanceRecord.bc_id).filter(GovernanceRecord.stage == 3).distinct()
+    bcs = BiomedicalConcept.query.filter(BiomedicalConcept.bc_id.in_(stage3_bc_ids)).all()
+
+    buf = export_governance_xlsx(bcs)
+    return Response(
+        buf,
+        mimetype="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        headers={"Content-Disposition": f'attachment; filename="{safe_filename}"'},
     )
 
 

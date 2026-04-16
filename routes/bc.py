@@ -194,9 +194,9 @@ def create():
         bc_categories=request.form.get("bc_categories", ""),
         synonyms=request.form.get("synonyms", ""),
         result_scales=request.form.get("result_scales", ""),
-        system=request.form.get("system", ""),
-        system_name=request.form.get("system_name", ""),
         loinc_code=request.form.get("loinc_code", ""),
+        system=request.form.get("system", "") if request.form.get("loinc_code", "").strip() else "",
+        system_name=request.form.get("system_name", "") if request.form.get("loinc_code", "").strip() else "",
         loinc_metadata=request.form.get("loinc_metadata", "") or None,
         ncit_metadata=request.form.get("ncit_metadata", "") or None,
         package_date=request.form.get("package_date", ""),
@@ -231,10 +231,10 @@ def edit(bc_id):
     bc.bc_categories = request.form.get("bc_categories", bc.bc_categories)
     bc.synonyms = request.form.get("synonyms", bc.synonyms)
     bc.result_scales = request.form.get("result_scales", bc.result_scales)
-    bc.system = request.form.get("system", bc.system)
-    bc.system_name = request.form.get("system_name", bc.system_name)
     new_loinc_code = (request.form.get("loinc_code", "") or "").strip() or None
     bc.loinc_code = new_loinc_code
+    bc.system = request.form.get("system", bc.system) if new_loinc_code else ""
+    bc.system_name = request.form.get("system_name", bc.system_name) if new_loinc_code else ""
     bc.loinc_metadata = (request.form.get("loinc_metadata", "") or bc.loinc_metadata) if new_loinc_code else None
     bc.package_date = request.form.get("package_date", bc.package_date)
     bc.updated_at = datetime.now(timezone.utc)
@@ -282,6 +282,8 @@ def clear_loinc(bc_id):
     before = bc.to_dict()
     bc.loinc_code = None
     bc.loinc_metadata = None
+    bc.system = ""
+    bc.system_name = ""
     bc.updated_at = datetime.now(timezone.utc)
     db.session.add(
         AuditLog(

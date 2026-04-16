@@ -81,6 +81,20 @@ class TestCreateBc:
             log = AuditLog.query.filter_by(entity_id="C00001", action="created").first()
             assert log is not None
 
+    def test_create_does_not_set_system_without_loinc_code(self, client, app):
+        client.post("/bc/", data=_bc_form(system="http://loinc.org/", system_name="LOINC", loinc_code=""))
+        with app.app_context():
+            bc = db.session.get(BiomedicalConcept, "C00001")
+            assert bc.system in (None, "")
+            assert bc.system_name in (None, "")
+
+    def test_create_sets_system_when_loinc_code_provided(self, client, app):
+        client.post("/bc/", data=_bc_form(system="http://loinc.org/", system_name="LOINC", loinc_code="4548-4"))
+        with app.app_context():
+            bc = db.session.get(BiomedicalConcept, "C00001")
+            assert bc.system == "http://loinc.org/"
+            assert bc.system_name == "LOINC"
+
     def test_create_with_decs(self, client, app):
         data = _bc_form()
         data["dec_label[]"] = ["Systolic", "Diastolic"]
@@ -271,6 +285,32 @@ class TestEditBc:
             assert bc.loinc_code is None
             assert bc.loinc_metadata is None
 
+    def test_edit_clears_system_and_system_name_when_loinc_code_cleared(self, client, app, sample_bc):
+        with app.app_context():
+            bc = db.session.get(BiomedicalConcept, "C12345")
+            bc.loinc_code = "4548-4"
+            bc.system = "http://loinc.org/"
+            bc.system_name = "LOINC"
+            db.session.commit()
+        client.post("/bc/C12345/edit", data={"loinc_code": ""})
+        with app.app_context():
+            bc = db.session.get(BiomedicalConcept, "C12345")
+            assert bc.system in (None, "")
+            assert bc.system_name in (None, "")
+
+    def test_edit_preserves_system_when_loinc_code_present(self, client, app, sample_bc):
+        with app.app_context():
+            bc = db.session.get(BiomedicalConcept, "C12345")
+            bc.loinc_code = "4548-4"
+            bc.system = "http://loinc.org/"
+            bc.system_name = "LOINC"
+            db.session.commit()
+        client.post("/bc/C12345/edit", data={"loinc_code": "4548-4", "system": "http://loinc.org/", "system_name": "LOINC"})
+        with app.app_context():
+            bc = db.session.get(BiomedicalConcept, "C12345")
+            assert bc.system == "http://loinc.org/"
+            assert bc.system_name == "LOINC"
+
     def test_edit_strips_whitespace_from_ncit_code(self, client, app, sample_bc):
         client.post("/bc/C12345/edit", data={"ncit_code": "   "})
         with app.app_context():
@@ -357,6 +397,19 @@ class TestClearLoincCode:
         with app.app_context():
             log = AuditLog.query.filter_by(entity_id="C12345", action="loinc_cleared").first()
             assert log is not None
+
+    def test_clear_loinc_also_clears_system_and_system_name(self, client, app, sample_bc):
+        with app.app_context():
+            bc = db.session.get(BiomedicalConcept, "C12345")
+            bc.loinc_code = "4548-4"
+            bc.system = "http://loinc.org/"
+            bc.system_name = "LOINC"
+            db.session.commit()
+        client.post("/bc/C12345/clear-loinc", follow_redirects=False)
+        with app.app_context():
+            bc = db.session.get(BiomedicalConcept, "C12345")
+            assert bc.system in (None, "")
+            assert bc.system_name in (None, "")
 
     def test_clear_loinc_nonexistent_bc_returns_404(self, client):
         r = client.post("/bc/NOTREAL/clear-loinc")
