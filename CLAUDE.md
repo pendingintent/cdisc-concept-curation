@@ -17,7 +17,7 @@ pip install -r requirements.txt
 export CDISC_API_KEY=your_key_here
 
 # Start dev server
-python app.py  # runs on http://localhost:5000
+python app.py  # runs on http://localhost:8081 (override with PORT env var)
 ```
 
 Database (`instance/cdisc_curation.db`) is auto-created on first run via `db.create_all()`.
@@ -31,7 +31,19 @@ black --check .
 
 Line length is set to 200 (black) / 999 (flake8). Flake8 ignores F401, F841, E711 — see `.flake8` for full ignore list.
 
-All tests are defined in the tests directory.
+## Testing
+
+```bash
+pytest --tb=short              # full suite (same command CI runs)
+pytest tests/test_bc_routes.py -v   # single file
+```
+
+- Tests use an in-memory SQLite database via `TestConfig` in
+  `tests/conftest.py`; an autouse `clean_db` fixture drops/creates all tables
+  around every test. No env vars required; external API clients are mocked.
+- Pre-commit (`.pre-commit-config.yaml`) runs black, flake8, and pytest on
+  every commit.
+- CI (`.github/workflows/ci.yml`) runs `pytest --tb=short` on Python 3.12.
 
 ## Architecture
 
@@ -43,7 +55,7 @@ All tests are defined in the tests directory.
 - `extensions.py` — Shared `db` and `migrate` instances (avoids circular imports — always import from here)
 - `tests/` - Unit tests
 
-**7 blueprints** registered in `app.py`:
+**8 blueprints** registered in `app.py`:
 
 | Blueprint | Prefix | Purpose |
 |-----------|--------|---------|
@@ -51,6 +63,7 @@ All tests are defined in the tests directory.
 | `ingestion` | `/ingestion` | File upload → parse → queue → approve |
 | `bc` | `/bc` | BC CRUD, export (XLSX/JSON/ODM-XML) |
 | `ncit` | `/ncit` | NCI Thesaurus search & mapping |
+| `loinc` | `/loinc` | LOINC code search (NLM Clinical Tables) |
 | `specializations` | `/specializations` | Dataset specialization management |
 | `governance` | `/governance` | 4-stage Kanban board |
 | `audit` | `/audit` | Immutable change log |
@@ -58,6 +71,7 @@ All tests are defined in the tests directory.
 **Key services:**
 - `services/cdisc_api.py` — CDISC Library REST client with 5-min in-memory cache
 - `services/ncit_api.py` — NCI EVS client (no auth required)
+- `services/loinc_api.py` — NLM Clinical Tables LOINC search (optional Basic Auth via `LOINC_USER`/`LOINC_PASSWORD`)
 - `services/ingestion.py` — XLSX/CSV/JSON parser + fuzzy field mapper (`SequenceMatcher` similarity scoring)
 - `services/export.py` — XLSX/JSON/ODM-XML exporter
 
@@ -78,7 +92,9 @@ All configuration is in `config.py` via environment variables:
 |-----|---------|---------|
 | `CDISC_API_KEY` | `''` | CDISC Library API authentication |
 | `SECRET_KEY` | `'dev-secret-key-change-in-prod'` | Flask session secret |
-| `DATABASE_URL` | `sqlite:///cdisc_curation.db` | Database connection string |
+| `DATABASE_URL` | `sqlite:///cdisc_curation.db` | Database connection string (resolves to `instance/cdisc_curation.db`) |
+| `PORT` | `8081` | Dev server port |
+| `LOINC_USER` / `LOINC_PASSWORD` | unset | Optional Basic Auth for the NLM LOINC API |
 
 CDISC API base: `https://api.library.cdisc.org/api/cosmos/v2`
 NCIt API base: `https://api-evsrest.nci.nih.gov/api/v1`
