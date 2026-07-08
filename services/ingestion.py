@@ -1,7 +1,10 @@
 import io
 import json
+import logging
 import pandas as pd
 from difflib import SequenceMatcher
+
+logger = logging.getLogger(__name__)
 
 # Canonical BC field names and known aliases for fuzzy field mapping
 FIELD_MAP = {
@@ -152,6 +155,9 @@ def parse_xlsx(file_obj):
                     rows.append((mapped, confs))
             results.extend(_group_by_bc(rows, sheet=sheet))
     except Exception as e:
+        # Broad by design: user-supplied files can fail in arbitrary ways
+        # and the error is surfaced to the review queue via the record.
+        logger.error("XLSX ingestion parse failed: %s", e, exc_info=True)
         results.append({"error": str(e), "mapped": {}, "confidences": {}, "decs": [], "errors": [str(e)]})
     return results
 
@@ -176,6 +182,8 @@ def parse_csv(file_obj):
                 }
             )
     except Exception as e:
+        # Broad by design — see parse_xlsx.
+        logger.error("CSV ingestion parse failed: %s", e, exc_info=True)
         results.append({"error": str(e), "raw": {}, "mapped": {}, "confidences": {}, "errors": [str(e)]})
     return results
 
@@ -201,6 +209,8 @@ def parse_json(file_obj):
                 }
             )
     except Exception as e:
+        # Broad by design — see parse_xlsx.
+        logger.error("JSON ingestion parse failed: %s", e, exc_info=True)
         results.append({"error": str(e), "raw": {}, "mapped": {}, "confidences": {}, "errors": [str(e)]})
     return results
 

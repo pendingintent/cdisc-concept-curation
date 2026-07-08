@@ -4,6 +4,7 @@ import json
 from unittest.mock import MagicMock, patch
 
 import pytest
+import requests
 
 from services.ncit_api import NCItApiClient
 
@@ -106,7 +107,7 @@ class TestNcitGetConceptExtended:
         assert result["semantic_type"] == []
 
     def test_error_returns_error_dict(self):
-        with patch("services.ncit_api.requests.get", side_effect=Exception("timeout")):
+        with patch("services.ncit_api.requests.get", side_effect=requests.RequestException("timeout")):
             result = NCItApiClient().get_concept("C64849")
 
         assert "error" in result

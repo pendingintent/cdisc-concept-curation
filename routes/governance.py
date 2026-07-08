@@ -1,9 +1,9 @@
 from flask import Blueprint, render_template, request, redirect, url_for, flash, jsonify, Response
 from models.bc import BiomedicalConcept
 from models.governance import GovernanceRecord
-from models.audit import AuditLog
 from extensions import db
 from datetime import datetime, timezone
+from services.audit import log_change
 from services.export import export_governance_xlsx
 
 bp = Blueprint("governance", __name__)
@@ -56,16 +56,8 @@ def advance(bc_id):
             actor="user",
             comment=request.form.get("comment", ""),
         )
-        log = AuditLog(
-            entity_type="BiomedicalConcept",
-            entity_id=bc_id,
-            action="status_changed",
-            actor="user",
-            before_state={"status": before_status},
-            after_state={"status": bc.status},
-        )
         db.session.add(rec)
-        db.session.add(log)
+        log_change("BiomedicalConcept", bc_id, "status_changed", actor="user", before={"status": before_status}, after={"status": bc.status})
         db.session.commit()
         if request.headers.get("X-Requested-With") == "XMLHttpRequest":
             return jsonify({"status": bc.status, "bc_id": bc_id})
@@ -88,16 +80,8 @@ def reject_bc(bc_id):
         actor="user",
         comment=request.form.get("comment", ""),
     )
-    log = AuditLog(
-        entity_type="BiomedicalConcept",
-        entity_id=bc_id,
-        action="rejected",
-        actor="user",
-        before_state={"status": before_status},
-        after_state={"status": "provisional"},
-    )
     db.session.add(rec)
-    db.session.add(log)
+    log_change("BiomedicalConcept", bc_id, "rejected", actor="user", before={"status": before_status}, after={"status": "provisional"})
     db.session.commit()
     if request.headers.get("X-Requested-With") == "XMLHttpRequest":
         return jsonify({"status": "provisional", "bc_id": bc_id})

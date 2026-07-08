@@ -1,9 +1,26 @@
+import logging
+
 from flask import Flask
 from config import Config
 from extensions import db, migrate
 
 
+def _configure_logging():
+    """Attach a handler to the app's logger namespace once.
+
+    Configures the root logger only if nothing else has (pytest, gunicorn,
+    and the MCP server may install their own handlers first).
+    """
+    root = logging.getLogger()
+    if not root.handlers:
+        logging.basicConfig(
+            level=logging.INFO,
+            format="%(asctime)s %(levelname)s %(name)s: %(message)s",
+        )
+
+
 def create_app(config_class=Config):
+    _configure_logging()
     app = Flask(__name__)
     app.config.from_object(config_class)
 

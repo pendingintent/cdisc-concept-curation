@@ -77,9 +77,10 @@ class TestClientCacheKeys:
 
     def test_get_biomedical_concepts_error_encoded_not_raised(self, app, monkeypatch):
         """API failure is captured as [{'error': ...}] and cached, not raised."""
+        import requests
 
         def boom(*args, **kwargs):
-            raise ConnectionError("no network")
+            raise requests.ConnectionError("no network")
 
         monkeypatch.setattr(cdisc_api.requests, "get", boom)
         with app.app_context():
@@ -89,11 +90,13 @@ class TestClientCacheKeys:
 
     def test_error_result_replaced_after_ttl(self, app, monkeypatch):
         """A cached error list refreshes to real data once the TTL passes."""
+        import requests
+
         with app.app_context():
             client = CDISCApiClient()
 
         def boom(*args, **kwargs):
-            raise ConnectionError("no network")
+            raise requests.ConnectionError("no network")
 
         monkeypatch.setattr(cdisc_api.requests, "get", boom)
         with app.app_context():

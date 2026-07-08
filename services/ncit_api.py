@@ -1,5 +1,8 @@
+import logging
 import time
 import requests
+
+logger = logging.getLogger(__name__)
 
 _ncit_cache = {}
 _NCIT_TTL = 300  # serve fresh data for 5 minutes
@@ -39,7 +42,8 @@ class NCItApiClient:
                 }
                 for c in concepts
             ]
-        except Exception as e:
+        except (requests.RequestException, ValueError) as e:
+            logger.error("NCIt search failed for term %r: %s", term, e)
             return [{"error": str(e)}]
 
     def get_concept(self, ncit_code):
@@ -67,7 +71,8 @@ class NCItApiClient:
             }
             _ncit_cache[cache_key] = (now, data)
             return data
-        except Exception as e:
+        except (requests.RequestException, ValueError) as e:
+            logger.error("NCIt concept fetch failed for %s: %s", ncit_code, e)
             return {"error": str(e)}
 
     def get_preferred_name(self, ncit_code):

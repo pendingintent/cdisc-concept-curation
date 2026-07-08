@@ -1,8 +1,11 @@
 import hashlib
+import logging
 import os
 import time
 import requests
 from flask import current_app
+
+logger = logging.getLogger(__name__)
 
 # In-memory cache: {key: (timestamp, data)}
 # Entries are never evicted — stale data is served while a refresh is attempted,
@@ -21,15 +24,17 @@ def _cached(cache_key, fn):
     if entry and now - entry[0] < _CACHE_TTL:
         return entry[1]  # fresh — serve immediately
 
-    # Attempt a refresh
+    # Attempt a refresh. Broad catch is intentional: this is a resilience
+    # seam and any refresh failure must fall back to stale data.
     try:
         data = fn()
         _cache[cache_key] = (now, data)
         return data
     except Exception:
         if entry and now - entry[0] < _CACHE_STALE_TTL:
-            # Serve stale rather than an error
+            logger.warning("Cache refresh failed for %s; serving stale entry", cache_key, exc_info=True)
             return entry[1]
+        logger.error("Cache refresh failed for %s with no stale fallback", cache_key, exc_info=True)
         raise  # genuinely no data at all — let caller handle
 
 
@@ -72,7 +77,8 @@ class CDISCApiClient:
             try:
                 data = self._get("/mdr/bc/biomedicalconcepts")
                 return data.get("_links", {}).get("biomedicalConcepts", [])
-            except Exception as e:
+            except (requests.RequestException, ValueError) as e:
+                logger.error("CDISC Library BC list fetch failed (%s): %s", self.base_url, e)
                 return [{"error": str(e)}]
 
         return _cached(self._cache_key("biomedical_concepts"), _fetch)
@@ -81,14 +87,16 @@ class CDISCApiClient:
         """Fetch a single BC by conceptId."""
         try:
             return self._get(f"/mdr/bc/biomedicalconcepts/{concept_id}")
-        except Exception as e:
+        except (requests.RequestException, ValueError) as e:
+            logger.error("CDISC Library BC fetch failed for %s: %s", concept_id, e)
             return {"error": str(e)}
 
     def get_specialization(self, href):
         """Fetch a single dataset specialization by its href path."""
         try:
             return self._get(href)
-        except Exception as e:
+        except (requests.RequestException, ValueError) as e:
+            logger.error("CDISC Library specialization fetch failed for %s: %s", href, e)
             return {"error": str(e)}
 
     def get_dataset_specializations(self):
@@ -107,7 +115,8 @@ class CDISCApiClient:
                 if isinstance(links, list):
                     return links
                 return [item for v in links.values() if isinstance(v, list) for item in v]
-            except Exception as e:
+            except (requests.RequestException, ValueError) as e:
+                logger.error("CDISC Library specialization list fetch failed (%s): %s", self.base_url, e)
                 return [{"error": str(e)}]
 
         return _cached(self._cache_key("dataset_specializations"), _fetch)
@@ -119,7 +128,8 @@ class CDISCApiClient:
         try:
             bcs = self.get_biomedical_concepts()
             return any(bc.get("title", "").lower() == short_name.lower() for bc in bcs)
-        except Exception:
+        except (requests.RequestException, ValueError) as e:
+            logger.error("CDISC Library duplicate check failed for %r: %s", short_name, e)
             return False
 
     def publish_bc(self, bc_data):

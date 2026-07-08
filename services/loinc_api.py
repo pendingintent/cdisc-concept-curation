@@ -1,20 +1,23 @@
+import logging
 import os
 import requests
 
+logger = logging.getLogger(__name__)
+
 LOINC_EF_FIELDS = (
-    'LOINC_NUM,SHORTNAME,LONG_COMMON_NAME,RELATEDNAMES2,PROPERTY,'
-    'METHOD_TYP,AnswerLists,units,datatype,isCopyrighted,'
-    'containsCopyrighted,CONSUMER_NAME,COMPONENT,'
-    'EXTERNAL_COPYRIGHT_NOTICE,EXTERNAL_COPYRIGHT_LINK'
+    "LOINC_NUM,SHORTNAME,LONG_COMMON_NAME,RELATEDNAMES2,PROPERTY,"
+    "METHOD_TYP,AnswerLists,units,datatype,isCopyrighted,"
+    "containsCopyrighted,CONSUMER_NAME,COMPONENT,"
+    "EXTERNAL_COPYRIGHT_NOTICE,EXTERNAL_COPYRIGHT_LINK"
 )
 
 
 class LoincApiClient:
-    BASE_URL = 'https://clinicaltables.nlm.nih.gov/api/loinc_items/v3/search'
+    BASE_URL = "https://clinicaltables.nlm.nih.gov/api/loinc_items/v3/search"
 
     def _auth(self):
-        user = os.environ.get('LOINC_USER')
-        password = os.environ.get('LOINC_PASSWORD')
+        user = os.environ.get("LOINC_USER")
+        password = os.environ.get("LOINC_PASSWORD")
         if user and password:
             return (user, password)
         return None
@@ -28,7 +31,7 @@ class LoincApiClient:
         try:
             response = requests.get(
                 self.BASE_URL,
-                params={'ef': LOINC_EF_FIELDS, 'terms': term, 'maxList': size},
+                params={"ef": LOINC_EF_FIELDS, "terms": term, "maxList": size},
                 auth=self._auth(),
                 timeout=15,
             )
@@ -45,5 +48,8 @@ class LoincApiClient:
                     item[field] = values[i] if values and i < len(values) else None
                 results.append(item)
             return results
-        except Exception as e:
-            return [{'error': str(e)}]
+        except (requests.RequestException, ValueError, IndexError, TypeError) as e:
+            # Index/Type errors cover the positional parsing of the NLM
+            # array response ([total, [codes], {field: values}, ...]).
+            logger.error("LOINC search failed for term %r: %s", term, e)
+            return [{"error": str(e)}]

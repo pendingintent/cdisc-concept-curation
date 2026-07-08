@@ -1,16 +1,53 @@
 import json
+import logging
 from flask import Blueprint, render_template, request, redirect, url_for, flash, Response
 from models.bc import BiomedicalConcept, DataElementConcept
-from models.audit import AuditLog
 from models.governance import GovernanceRecord
 from extensions import db
+from services.audit import log_change
 from services.export import export_json, export_xlsx, export_odm_xml
 from services.cdisc_api import CDISCApiClient
 from services.loinc_api import LoincApiClient
 from services.ncit_api import NCItApiClient
 from datetime import datetime, timezone
 
+logger = logging.getLogger(__name__)
+
 bp = Blueprint("bc", __name__)
+
+# Plain-text fields copied verbatim from the form onto the model.
+_BC_TEXT_FIELDS = ("short_name", "definition", "bc_categories", "synonyms", "result_scales", "package_date")
+
+
+def _apply_bc_form(bc, form, is_new):
+    """Copy BC fields from a submitted form onto the model.
+
+    Create keeps raw form values (empty strings allowed); edit
+    normalizes ncit/parent/loinc to None when cleared and preserves the
+    existing value for any field omitted from the form.
+    """
+    for field in _BC_TEXT_FIELDS:
+        setattr(bc, field, form.get(field, "" if is_new else getattr(bc, field)))
+    if is_new:
+        bc.ncit_code = form.get("ncit_code", "")
+        bc.parent_bc_id = form.get("parent_bc_id") or None
+        bc.loinc_code = form.get("loinc_code", "")
+        has_loinc = bool(form.get("loinc_code", "").strip())
+        bc.system = form.get("system", "") if has_loinc else ""
+        bc.system_name = form.get("system_name", "") if has_loinc else ""
+        bc.loinc_metadata = form.get("loinc_metadata", "") or None
+        bc.ncit_metadata = form.get("ncit_metadata", "") or None
+    else:
+        new_ncit_code = (form.get("ncit_code", "") or "").strip() or None
+        bc.ncit_code = new_ncit_code
+        bc.ncit_metadata = (form.get("ncit_metadata", "") or bc.ncit_metadata) if new_ncit_code else None
+        bc.parent_bc_id = (form.get("parent_bc_id", "") or "").strip() or None
+        new_loinc_code = (form.get("loinc_code", "") or "").strip() or None
+        bc.loinc_code = new_loinc_code
+        bc.system = form.get("system", bc.system) if new_loinc_code else ""
+        bc.system_name = form.get("system_name", bc.system_name) if new_loinc_code else ""
+        bc.loinc_metadata = (form.get("loinc_metadata", "") or bc.loinc_metadata) if new_loinc_code else None
+        bc.updated_at = datetime.now(timezone.utc)
 
 
 @bp.route("/")
@@ -187,31 +224,12 @@ def create():
         return redirect(url_for("bc.new_bc"))
     bc = BiomedicalConcept(
         bc_id=bc_id,
-        short_name=request.form.get("short_name", ""),
-        definition=request.form.get("definition", ""),
-        ncit_code=request.form.get("ncit_code", ""),
-        parent_bc_id=request.form.get("parent_bc_id") or None,
-        bc_categories=request.form.get("bc_categories", ""),
-        synonyms=request.form.get("synonyms", ""),
-        result_scales=request.form.get("result_scales", ""),
-        loinc_code=request.form.get("loinc_code", ""),
-        system=request.form.get("system", "") if request.form.get("loinc_code", "").strip() else "",
-        system_name=request.form.get("system_name", "") if request.form.get("loinc_code", "").strip() else "",
-        loinc_metadata=request.form.get("loinc_metadata", "") or None,
-        ncit_metadata=request.form.get("ncit_metadata", "") or None,
-        package_date=request.form.get("package_date", ""),
         status="provisional",
         submitter=request.form.get("submitter", "unknown"),
     )
+    _apply_bc_form(bc, request.form, is_new=True)
     db.session.add(bc)
-    log = AuditLog(
-        entity_type="BiomedicalConcept",
-        entity_id=bc_id,
-        action="created",
-        actor=bc.submitter,
-        after_state=bc.to_dict(),
-    )
-    db.session.add(log)
+    log_change("BiomedicalConcept", bc_id, "created", actor=bc.submitter, after=bc.to_dict())
     db.session.commit()
     _save_decs(bc_id, request.form)
     flash(f"BC {bc_id} created", "success")
@@ -222,31 +240,8 @@ def create():
 def edit(bc_id):
     bc = db.get_or_404(BiomedicalConcept, bc_id)
     before = bc.to_dict()
-    bc.short_name = request.form.get("short_name", bc.short_name)
-    bc.definition = request.form.get("definition", bc.definition)
-    new_ncit_code = (request.form.get("ncit_code", "") or "").strip() or None
-    bc.ncit_code = new_ncit_code
-    bc.ncit_metadata = (request.form.get("ncit_metadata", "") or bc.ncit_metadata) if new_ncit_code else None
-    bc.parent_bc_id = (request.form.get("parent_bc_id", "") or "").strip() or None
-    bc.bc_categories = request.form.get("bc_categories", bc.bc_categories)
-    bc.synonyms = request.form.get("synonyms", bc.synonyms)
-    bc.result_scales = request.form.get("result_scales", bc.result_scales)
-    new_loinc_code = (request.form.get("loinc_code", "") or "").strip() or None
-    bc.loinc_code = new_loinc_code
-    bc.system = request.form.get("system", bc.system) if new_loinc_code else ""
-    bc.system_name = request.form.get("system_name", bc.system_name) if new_loinc_code else ""
-    bc.loinc_metadata = (request.form.get("loinc_metadata", "") or bc.loinc_metadata) if new_loinc_code else None
-    bc.package_date = request.form.get("package_date", bc.package_date)
-    bc.updated_at = datetime.now(timezone.utc)
-    log = AuditLog(
-        entity_type="BiomedicalConcept",
-        entity_id=bc_id,
-        action="updated",
-        actor="user",
-        before_state=before,
-        after_state=bc.to_dict(),
-    )
-    db.session.add(log)
+    _apply_bc_form(bc, request.form, is_new=False)
+    log_change("BiomedicalConcept", bc_id, "updated", actor="user", before=before, after=bc.to_dict())
     db.session.commit()
     _save_decs(bc_id, request.form)
     flash(f"BC {bc_id} updated", "success")
@@ -261,16 +256,7 @@ def clear_ncit(bc_id):
     bc.ncit_metadata = None
     bc.parent_bc_id = None
     bc.updated_at = datetime.now(timezone.utc)
-    db.session.add(
-        AuditLog(
-            entity_type="BiomedicalConcept",
-            entity_id=bc_id,
-            action="ncit_cleared",
-            actor="user",
-            before_state=before,
-            after_state=bc.to_dict(),
-        )
-    )
+    log_change("BiomedicalConcept", bc_id, "ncit_cleared", actor="user", before=before, after=bc.to_dict())
     db.session.commit()
     flash(f"NCIt code cleared from {bc_id}", "success")
     return redirect(url_for("bc.detail", bc_id=bc_id))
@@ -285,16 +271,7 @@ def clear_loinc(bc_id):
     bc.system = ""
     bc.system_name = ""
     bc.updated_at = datetime.now(timezone.utc)
-    db.session.add(
-        AuditLog(
-            entity_type="BiomedicalConcept",
-            entity_id=bc_id,
-            action="loinc_cleared",
-            actor="user",
-            before_state=before,
-            after_state=bc.to_dict(),
-        )
-    )
+    log_change("BiomedicalConcept", bc_id, "loinc_cleared", actor="user", before=before, after=bc.to_dict())
     db.session.commit()
     flash(f"LOINC code cleared from {bc_id}", "success")
     return redirect(url_for("bc.detail", bc_id=bc_id))
@@ -306,15 +283,7 @@ def submit_for_review(bc_id):
     before = bc.to_dict()
     bc.status = "sme_review"
     bc.updated_at = datetime.now(timezone.utc)
-    log = AuditLog(
-        entity_type="BiomedicalConcept",
-        entity_id=bc_id,
-        action="submitted_for_review",
-        actor="user",
-        before_state=before,
-        after_state=bc.to_dict(),
-    )
-    db.session.add(log)
+    log_change("BiomedicalConcept", bc_id, "submitted_for_review", actor="user", before=before, after=bc.to_dict())
     db.session.commit()
     flash(f"BC {bc_id} submitted for SME review", "success")
     return redirect(url_for("bc.detail", bc_id=bc_id))
@@ -328,14 +297,7 @@ def delete(bc_id):
     BiomedicalConcept.query.filter_by(parent_bc_id=bc_id).update({"parent_bc_id": None}, synchronize_session="fetch")
     # GovernanceRecord.bc_id is NOT NULL with no ORM cascade, so delete explicitly.
     GovernanceRecord.query.filter_by(bc_id=bc_id).delete(synchronize_session="fetch")
-    log = AuditLog(
-        entity_type="BiomedicalConcept",
-        entity_id=bc_id,
-        action="deleted",
-        actor="user",
-        before_state=bc.to_dict(),
-    )
-    db.session.add(log)
+    log_change("BiomedicalConcept", bc_id, "deleted", actor="user", before=bc.to_dict())
     db.session.delete(bc)
     db.session.commit()
     flash(f"BC {bc_id} deleted", "success")
