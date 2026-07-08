@@ -25,7 +25,7 @@ def index():
     library_bcs, local_bcs = _get_bc_options()
     return render_template(
         "specializations.html",
-        specs=specs,
+        specializations=specs,
         library_bcs=library_bcs,
         local_bcs=local_bcs,
         page_title="Specializations",
@@ -53,7 +53,7 @@ def detail(vlm_group_id):
     library_bcs, local_bcs = _get_bc_options()
     return render_template(
         "specializations.html",
-        specs=specs,
+        specializations=specs,
         library_bcs=library_bcs,
         local_bcs=local_bcs,
         edit_spec=spec,

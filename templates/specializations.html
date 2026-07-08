@@ -213,7 +213,7 @@
           </td>
           <td>
             <div class="d-flex gap-1">
-              <a href="{{ url_for('specializations.index') }}?edit={{ spec.id }}"
+              <a href="{{ url_for('specializations.detail', vlm_group_id=spec.vlm_group_id) }}"
                  class="btn btn-sm btn-outline-secondary"
                  aria-label="Edit {{ spec.short_name }}">
                 <i class="bi bi-pencil" aria-hidden="true"></i> Edit
