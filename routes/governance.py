@@ -1,16 +1,13 @@
-from datetime import datetime, timezone
-
 from flask import Blueprint, Response, flash, jsonify, redirect, render_template, request, url_for
 
 from extensions import db
 from models.bc import BiomedicalConcept
 from models.governance import GovernanceRecord
-from services.audit import log_change
+from services import governance_service
 from services.export import export_governance_xlsx
+from services.governance_service import STATUS_ORDER
 
 bp = Blueprint("governance", __name__)
-
-STATUS_ORDER = ["provisional", "sme_review", "cdisc_approval", "published"]
 
 
 @bp.route("/board")
@@ -45,47 +42,22 @@ def export():
 
 @bp.route("/advance/<bc_id>", methods=["POST"])
 def advance(bc_id):
-    bc = db.get_or_404(BiomedicalConcept, bc_id)
-    before_status = bc.status
-    current_idx = STATUS_ORDER.index(bc.status) if bc.status in STATUS_ORDER else 0
-    if current_idx < len(STATUS_ORDER) - 1:
-        bc.status = STATUS_ORDER[current_idx + 1]
-        bc.updated_at = datetime.now(timezone.utc)
-        rec = GovernanceRecord(
-            bc_id=bc_id,
-            stage=current_idx + 1,
-            action="advanced",
-            actor="user",
-            comment=request.form.get("comment", ""),
-        )
-        db.session.add(rec)
-        log_change("BiomedicalConcept", bc_id, "status_changed", actor="user", before={"status": before_status}, after={"status": bc.status})
-        db.session.commit()
+    db.get_or_404(BiomedicalConcept, bc_id)
+    result = governance_service.advance_governance(bc_id, actor="user", comment=request.form.get("comment", ""))
+    if result["advanced"]:
         if request.headers.get("X-Requested-With") == "XMLHttpRequest":
-            return jsonify({"status": bc.status, "bc_id": bc_id})
-        flash(f"{bc.short_name} advanced to {bc.status}", "success")
+            return jsonify({"status": result["status"], "bc_id": bc_id})
+        flash(f'{result["short_name"]} advanced to {result["status"]}', "success")
     else:
-        flash(f"{bc.short_name} is already published", "info")
+        flash(f'{result["short_name"]} is already published', "info")
     return redirect(url_for("governance.board"))
 
 
 @bp.route("/reject/<bc_id>", methods=["POST"])
 def reject_bc(bc_id):
-    bc = db.get_or_404(BiomedicalConcept, bc_id)
-    before_status = bc.status
-    bc.status = "provisional"
-    bc.updated_at = datetime.now(timezone.utc)
-    rec = GovernanceRecord(
-        bc_id=bc_id,
-        stage=0,
-        action="rejected",
-        actor="user",
-        comment=request.form.get("comment", ""),
-    )
-    db.session.add(rec)
-    log_change("BiomedicalConcept", bc_id, "rejected", actor="user", before={"status": before_status}, after={"status": "provisional"})
-    db.session.commit()
+    db.get_or_404(BiomedicalConcept, bc_id)
+    result = governance_service.reject_bc(bc_id, actor="user", comment=request.form.get("comment", ""))
     if request.headers.get("X-Requested-With") == "XMLHttpRequest":
         return jsonify({"status": "provisional", "bc_id": bc_id})
-    flash(f"{bc.short_name} rejected and returned to provisional", "warning")
+    flash(f'{result["short_name"]} rejected and returned to provisional', "warning")
     return redirect(url_for("governance.board"))

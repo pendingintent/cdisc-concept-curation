@@ -2,6 +2,7 @@ from flask import Blueprint, flash, jsonify, redirect, render_template, request,
 
 from extensions import db
 from models.bc import BiomedicalConcept
+from services import bc_service
 from services.ncit_api import NCItApiClient
 
 bp = Blueprint("ncit", __name__)
@@ -73,10 +74,6 @@ def resolve(bc_id):
     bc = db.get_or_404(BiomedicalConcept, bc_id)
     ncit_code = request.form.get("ncit_code", "").strip()
     if ncit_code:
-        bc.ncit_code = ncit_code
-        # Promote temporary IMPORT_ IDs to their resolved NCIt code
-        if not bc.bc_id or bc.bc_id.startswith("IMPORT_"):
-            bc.bc_id = ncit_code
-        db.session.commit()
+        bc = bc_service.map_ncit_to_bc(bc_id, ncit_code, actor="user")
         flash(f"NCIt mapping updated for {bc.short_name}", "success")
     return redirect(url_for("ncit.mapping"))

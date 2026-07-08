@@ -10,6 +10,7 @@ import pytest
 
 import mcp_server.server as mcp_srv
 from extensions import db
+from models.audit import AuditLog
 from models.bc import BiomedicalConcept, DataElementConcept
 from models.governance import GovernanceRecord
 from models.ingestion import IngestionRecord
@@ -34,17 +35,23 @@ class TestDispatch:
             _dispatch("nope")
 
     def test_all_declared_tools_are_dispatchable(self):
-        for tool in mcp_srv._TOOLS:
-            assert tool.name in {
-                "list_bcs",
-                "get_bc",
-                "search_ncit",
-                "get_ncit_concept",
-                "search_loinc",
-                "search_cdisc_library",
-                "get_library_bc",
-                "list_review_queue",
-            }
+        expected = {
+            "list_bcs",
+            "get_bc",
+            "search_ncit",
+            "get_ncit_concept",
+            "search_loinc",
+            "search_cdisc_library",
+            "get_library_bc",
+            "list_review_queue",
+            "create_bc",
+            "update_bc",
+            "map_ncit_to_bc",
+            "submit_bc_for_review",
+            "advance_governance",
+            "reject_bc",
+        }
+        assert {tool.name for tool in mcp_srv._TOOLS} == expected
 
 
 class TestListBcs:
@@ -145,6 +152,112 @@ class TestExternalApiTools:
         with patch("services.cdisc_api.CDISCApiClient.get_bc", return_value={"conceptId": "C64849"}):
             result = _dispatch("get_library_bc", {"concept_id": "C64849"})
         assert result["conceptId"] == "C64849"
+
+
+def _audit_rows(app, action):
+    with app.app_context():
+        return AuditLog.query.filter_by(action=action).all()
+
+
+class TestCreateBc:
+    def test_creates_with_decs_and_audit(self, app):
+        result = _dispatch(
+            "create_bc",
+            {
+                "bc_id": "C64849",
+                "short_name": "Hemoglobin A1c Measurement",
+                "definition": "HbA1c quantitative measurement",
+                "ncit_code": "C64849",
+                "decs": [{"dec_label": "Result Value", "data_type": "decimal"}],
+            },
+        )
+        assert result["bc_id"] == "C64849"
+        assert result["status"] == "provisional"
+        assert result["decs"][0]["dec_label"] == "Result Value"
+        rows = _audit_rows(app, "created")
+        assert len(rows) == 1
+        assert rows[0].actor == "mcp"
+        assert rows[0].after_state["bc_id"] == "C64849"
+
+    def test_duplicate_raises(self, sample_bc):
+        with pytest.raises(ValueError, match="already exists"):
+            _dispatch("create_bc", {"bc_id": sample_bc, "short_name": "Dup"})
+
+    def test_missing_bc_id_raises(self):
+        with pytest.raises(ValueError, match="BC ID is required"):
+            _dispatch("create_bc", {"bc_id": "", "short_name": "X"})
+
+
+class TestUpdateBc:
+    def test_updates_and_audits_before_after(self, app, sample_bc):
+        result = _dispatch("update_bc", {"bc_id": sample_bc, "short_name": "Renamed Concept", "ncit_code": "C12345"})
+        assert result["short_name"] == "Renamed Concept"
+        rows = _audit_rows(app, "updated")
+        assert len(rows) == 1
+        assert rows[0].actor == "mcp"
+        assert rows[0].before_state["short_name"] == "Test Concept"
+        assert rows[0].after_state["short_name"] == "Renamed Concept"
+
+    def test_missing_bc_raises(self):
+        with pytest.raises(ValueError, match="not found"):
+            _dispatch("update_bc", {"bc_id": "NOPE", "short_name": "X"})
+
+
+class TestMapNcit:
+    def test_maps_and_audits(self, app, sample_bc):
+        result = _dispatch("map_ncit_to_bc", {"bc_id": sample_bc, "ncit_code": "C77777"})
+        assert result["ncit_code"] == "C77777"
+        rows = _audit_rows(app, "ncit_mapped")
+        assert len(rows) == 1
+        assert rows[0].actor == "mcp"
+
+    def test_promotes_import_id(self, app):
+        with app.app_context():
+            db.session.add(BiomedicalConcept(bc_id="IMPORT_1", short_name="Imported", status="provisional"))
+            db.session.commit()
+        result = _dispatch("map_ncit_to_bc", {"bc_id": "IMPORT_1", "ncit_code": "C55555"})
+        assert result["bc_id"] == "C55555"
+        with app.app_context():
+            assert db.session.get(BiomedicalConcept, "IMPORT_1") is None
+            assert db.session.get(BiomedicalConcept, "C55555") is not None
+
+    def test_empty_code_raises(self, sample_bc):
+        with pytest.raises(ValueError, match="ncit_code is required"):
+            _dispatch("map_ncit_to_bc", {"bc_id": sample_bc, "ncit_code": " "})
+
+
+class TestGovernanceWrites:
+    def test_submit_then_advance_to_published(self, app, sample_bc):
+        submitted = _dispatch("submit_bc_for_review", {"bc_id": sample_bc})
+        assert submitted["status"] == "sme_review"
+
+        first = _dispatch("advance_governance", {"bc_id": sample_bc, "comment": "looks good"})
+        assert first == {"bc_id": sample_bc, "short_name": "Test Concept", "status": "cdisc_approval", "advanced": True}
+
+        second = _dispatch("advance_governance", {"bc_id": sample_bc})
+        assert second["status"] == "published"
+
+        third = _dispatch("advance_governance", {"bc_id": sample_bc})
+        assert third["advanced"] is False
+        assert third["status"] == "published"
+
+        with app.app_context():
+            recs = GovernanceRecord.query.filter_by(bc_id=sample_bc).order_by(GovernanceRecord.id).all()
+            assert [r.action for r in recs] == ["advanced", "advanced"]
+            assert recs[0].actor == "mcp"
+            assert recs[0].comment == "looks good"
+        assert len(_audit_rows(app, "status_changed")) == 2
+        assert len(_audit_rows(app, "submitted_for_review")) == 1
+
+    def test_reject_returns_to_provisional(self, app, sample_bc):
+        _dispatch("submit_bc_for_review", {"bc_id": sample_bc})
+        result = _dispatch("reject_bc", {"bc_id": sample_bc, "comment": "needs work"})
+        assert result["status"] == "provisional"
+        with app.app_context():
+            rec = GovernanceRecord.query.filter_by(bc_id=sample_bc, action="rejected").one()
+            assert rec.stage == 0
+            assert rec.actor == "mcp"
+        assert len(_audit_rows(app, "rejected")) == 1
 
 
 class TestReviewQueue:

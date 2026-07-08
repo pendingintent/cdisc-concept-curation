@@ -7,6 +7,7 @@ from flask import Blueprint, Response, flash, redirect, render_template, request
 from extensions import db
 from models.bc import BiomedicalConcept, DataElementConcept
 from models.governance import GovernanceRecord
+from services import bc_service
 from services.audit import log_change
 from services.cdisc_api import CDISCApiClient
 from services.export import export_json, export_odm_xml, export_xlsx
@@ -16,40 +17,6 @@ from services.ncit_api import NCItApiClient
 logger = logging.getLogger(__name__)
 
 bp = Blueprint("bc", __name__)
-
-# Plain-text fields copied verbatim from the form onto the model.
-_BC_TEXT_FIELDS = ("short_name", "definition", "bc_categories", "synonyms", "result_scales", "package_date")
-
-
-def _apply_bc_form(bc, form, is_new):
-    """Copy BC fields from a submitted form onto the model.
-
-    Create keeps raw form values (empty strings allowed); edit
-    normalizes ncit/parent/loinc to None when cleared and preserves the
-    existing value for any field omitted from the form.
-    """
-    for field in _BC_TEXT_FIELDS:
-        setattr(bc, field, form.get(field, "" if is_new else getattr(bc, field)))
-    if is_new:
-        bc.ncit_code = form.get("ncit_code", "")
-        bc.parent_bc_id = form.get("parent_bc_id") or None
-        bc.loinc_code = form.get("loinc_code", "")
-        has_loinc = bool(form.get("loinc_code", "").strip())
-        bc.system = form.get("system", "") if has_loinc else ""
-        bc.system_name = form.get("system_name", "") if has_loinc else ""
-        bc.loinc_metadata = form.get("loinc_metadata", "") or None
-        bc.ncit_metadata = form.get("ncit_metadata", "") or None
-    else:
-        new_ncit_code = (form.get("ncit_code", "") or "").strip() or None
-        bc.ncit_code = new_ncit_code
-        bc.ncit_metadata = (form.get("ncit_metadata", "") or bc.ncit_metadata) if new_ncit_code else None
-        bc.parent_bc_id = (form.get("parent_bc_id", "") or "").strip() or None
-        new_loinc_code = (form.get("loinc_code", "") or "").strip() or None
-        bc.loinc_code = new_loinc_code
-        bc.system = form.get("system", bc.system) if new_loinc_code else ""
-        bc.system_name = form.get("system_name", bc.system_name) if new_loinc_code else ""
-        bc.loinc_metadata = (form.get("loinc_metadata", "") or bc.loinc_metadata) if new_loinc_code else None
-        bc.updated_at = datetime.now(timezone.utc)
 
 
 @bp.route("/")
@@ -217,35 +184,21 @@ def fetch_metadata(bc_id):
 
 @bp.route("/", methods=["POST"])
 def create():
-    bc_id = request.form.get("bc_id", "").strip()
-    if not bc_id:
-        flash("BC ID is required", "danger")
+    try:
+        bc = bc_service.create_bc(request.form)
+    except ValueError as e:
+        flash(str(e), "danger")
         return redirect(url_for("bc.new_bc"))
-    if db.session.get(BiomedicalConcept, bc_id):
-        flash(f"BC {bc_id} already exists", "danger")
-        return redirect(url_for("bc.new_bc"))
-    bc = BiomedicalConcept(
-        bc_id=bc_id,
-        status="provisional",
-        submitter=request.form.get("submitter", "unknown"),
-    )
-    _apply_bc_form(bc, request.form, is_new=True)
-    db.session.add(bc)
-    log_change("BiomedicalConcept", bc_id, "created", actor=bc.submitter, after=bc.to_dict())
-    db.session.commit()
-    _save_decs(bc_id, request.form)
-    flash(f"BC {bc_id} created", "success")
-    return redirect(url_for("bc.detail", bc_id=bc_id))
+    bc_service.save_decs(bc.bc_id, _decs_from_form(request.form))
+    flash(f"BC {bc.bc_id} created", "success")
+    return redirect(url_for("bc.detail", bc_id=bc.bc_id))
 
 
 @bp.route("/<bc_id>/edit", methods=["POST"])
 def edit(bc_id):
-    bc = db.get_or_404(BiomedicalConcept, bc_id)
-    before = bc.to_dict()
-    _apply_bc_form(bc, request.form, is_new=False)
-    log_change("BiomedicalConcept", bc_id, "updated", actor="user", before=before, after=bc.to_dict())
-    db.session.commit()
-    _save_decs(bc_id, request.form)
+    db.get_or_404(BiomedicalConcept, bc_id)
+    bc_service.update_bc(bc_id, request.form, actor="user")
+    bc_service.save_decs(bc_id, _decs_from_form(request.form))
     flash(f"BC {bc_id} updated", "success")
     return redirect(url_for("bc.detail", bc_id=bc_id))
 
@@ -281,12 +234,8 @@ def clear_loinc(bc_id):
 
 @bp.route("/<bc_id>/submit", methods=["POST"])
 def submit_for_review(bc_id):
-    bc = db.get_or_404(BiomedicalConcept, bc_id)
-    before = bc.to_dict()
-    bc.status = "sme_review"
-    bc.updated_at = datetime.now(timezone.utc)
-    log_change("BiomedicalConcept", bc_id, "submitted_for_review", actor="user", before=before, after=bc.to_dict())
-    db.session.commit()
+    db.get_or_404(BiomedicalConcept, bc_id)
+    bc_service.submit_bc_for_review(bc_id, actor="user")
     flash(f"BC {bc_id} submitted for SME review", "success")
     return redirect(url_for("bc.detail", bc_id=bc_id))
 
@@ -306,32 +255,22 @@ def delete(bc_id):
     return redirect(url_for("bc.index"))
 
 
-def _save_decs(bc_id, form):
-    """Persist Data Element Concepts from a submitted form.
-
-    Expects parallel lists posted as dec_label[], dec_data_type[],
-    dec_example_set[], dec_id[], dec_ncit_code[]. Any existing DECs for the
-    BC are replaced on every call so that deletions are honoured.
-    """
+def _decs_from_form(form):
+    """Convert the parallel dec_*[] form lists into a list of dicts for
+    bc_service.save_decs, preserving row positions (blank labels keep
+    their slot so default dec_id numbering matches the form rows)."""
     labels = form.getlist("dec_label[]")
     dtypes = form.getlist("dec_data_type[]")
     examples = form.getlist("dec_example_set[]")
     dec_ids = form.getlist("dec_id[]")
     ncit_codes = form.getlist("dec_ncit_code[]")
-    if not labels:
-        return
-    DataElementConcept.query.filter_by(bc_id=bc_id).delete()
-    for i, label in enumerate(labels):
-        if not label.strip():
-            continue
-        dec = DataElementConcept(
-            dec_id=dec_ids[i] if i < len(dec_ids) and dec_ids[i] else f"{bc_id}.DEC.{i + 1}",
-            bc_id=bc_id,
-            ncit_dec_code=ncit_codes[i] if i < len(ncit_codes) else "",
-            dec_label=label.strip(),
-            data_type=dtypes[i] if i < len(dtypes) else "string",
-            example_set=examples[i] if i < len(examples) else "",
-            sort_order=i,
-        )
-        db.session.add(dec)
-    db.session.commit()
+    return [
+        {
+            "dec_id": dec_ids[i] if i < len(dec_ids) else "",
+            "ncit_dec_code": ncit_codes[i] if i < len(ncit_codes) else "",
+            "dec_label": label,
+            "data_type": dtypes[i] if i < len(dtypes) else "string",
+            "example_set": examples[i] if i < len(examples) else "",
+        }
+        for i, label in enumerate(labels)
+    ]

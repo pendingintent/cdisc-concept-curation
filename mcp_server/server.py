@@ -7,7 +7,7 @@ Handlers run inside a Flask app context (the app factory is shared with
 the web app, so both processes resolve the same instance/ SQLite file)
 and use the same ORM models and service clients as the routes.
 
-Tools (8, all read-only — milestone 1):
+Read tools (8):
   list_bcs              Search/paginate curated Biomedical Concepts
   get_bc                Full BC detail incl. DECs, specializations, governance
   search_ncit           Search the NCI Thesaurus (EVS)
@@ -16,6 +16,15 @@ Tools (8, all read-only — milestone 1):
   search_cdisc_library  Search published BCs in the CDISC Library
   get_library_bc        Fetch one published BC from the CDISC Library
   list_review_queue     Governance board summary + pending ingestion count
+
+Write tools (6) — same service code path as the web routes, every write
+audited; actor defaults to "mcp" so agent writes are distinguishable:
+  create_bc             Create a provisional BC (optionally with DECs)
+  update_bc             Update BC fields
+  map_ncit_to_bc        Attach an NCIt code (promotes IMPORT_ ids)
+  submit_bc_for_review  provisional -> sme_review
+  advance_governance    Advance one governance stage
+  reject_bc             Reject back to provisional
 """
 
 import asyncio
@@ -150,6 +159,116 @@ _TOOLS = [
         description=("Summarize work awaiting review: BCs in sme_review and cdisc_approval (governance board columns) plus counts of pending ingestion records."),
         inputSchema={"type": "object", "properties": {}},
     ),
+    types.Tool(
+        name="create_bc",
+        description=("Create a new provisional Biomedical Concept. bc_id should be the NCIt C-code. Optionally include decs, a list of Data Element Concept objects. The write is audit-logged."),
+        inputSchema={
+            "type": "object",
+            "properties": {
+                "bc_id": {"type": "string", "description": "Primary key (NCIt C-code)"},
+                "short_name": {"type": "string"},
+                "definition": {"type": "string"},
+                "ncit_code": {"type": "string"},
+                "parent_bc_id": {"type": "string"},
+                "bc_categories": {"type": "string", "description": "Semicolon-separated"},
+                "synonyms": {"type": "string"},
+                "result_scales": {"type": "string"},
+                "loinc_code": {"type": "string"},
+                "package_date": {"type": "string"},
+                "submitter": {"type": "string"},
+                "actor": {"type": "string", "default": "mcp"},
+                "decs": {
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "dec_id": {"type": "string"},
+                            "ncit_dec_code": {"type": "string"},
+                            "dec_label": {"type": "string"},
+                            "data_type": {"type": "string"},
+                            "example_set": {"type": "string"},
+                        },
+                        "required": ["dec_label"],
+                    },
+                },
+            },
+            "required": ["bc_id", "short_name"],
+        },
+    ),
+    types.Tool(
+        name="update_bc",
+        description=(
+            "Update fields on an existing BC. Only supplied fields change; clearing ncit_code/loinc_code/parent_bc_id requires passing an empty string. Audit-logged with before/after state."
+        ),
+        inputSchema={
+            "type": "object",
+            "properties": {
+                "bc_id": {"type": "string"},
+                "short_name": {"type": "string"},
+                "definition": {"type": "string"},
+                "ncit_code": {"type": "string"},
+                "parent_bc_id": {"type": "string"},
+                "bc_categories": {"type": "string"},
+                "synonyms": {"type": "string"},
+                "result_scales": {"type": "string"},
+                "loinc_code": {"type": "string"},
+                "package_date": {"type": "string"},
+                "actor": {"type": "string", "default": "mcp"},
+            },
+            "required": ["bc_id"],
+        },
+    ),
+    types.Tool(
+        name="map_ncit_to_bc",
+        description=("Attach an NCIt C-code to a BC. Temporary IMPORT_ ids are promoted to the resolved code (the primary key changes). Audit-logged."),
+        inputSchema={
+            "type": "object",
+            "properties": {
+                "bc_id": {"type": "string"},
+                "ncit_code": {"type": "string"},
+                "actor": {"type": "string", "default": "mcp"},
+            },
+            "required": ["bc_id", "ncit_code"],
+        },
+    ),
+    types.Tool(
+        name="submit_bc_for_review",
+        description="Move a BC from provisional to sme_review. Audit-logged.",
+        inputSchema={
+            "type": "object",
+            "properties": {
+                "bc_id": {"type": "string"},
+                "actor": {"type": "string", "default": "mcp"},
+            },
+            "required": ["bc_id"],
+        },
+    ),
+    types.Tool(
+        name="advance_governance",
+        description=("Advance a BC one stage (provisional -> sme_review -> cdisc_approval -> published). Writes a GovernanceRecord and an audit entry; returns advanced=false if already published."),
+        inputSchema={
+            "type": "object",
+            "properties": {
+                "bc_id": {"type": "string"},
+                "comment": {"type": "string"},
+                "actor": {"type": "string", "default": "mcp"},
+            },
+            "required": ["bc_id"],
+        },
+    ),
+    types.Tool(
+        name="reject_bc",
+        description="Reject a BC back to provisional (stage 0). Writes a GovernanceRecord and an audit entry.",
+        inputSchema={
+            "type": "object",
+            "properties": {
+                "bc_id": {"type": "string"},
+                "comment": {"type": "string"},
+                "actor": {"type": "string", "default": "mcp"},
+            },
+            "required": ["bc_id"],
+        },
+    ),
 ]
 
 
@@ -180,6 +299,12 @@ def _dispatch(name: str, args: dict) -> Any:
         "search_cdisc_library": _search_cdisc_library,
         "get_library_bc": _get_library_bc,
         "list_review_queue": _list_review_queue,
+        "create_bc": _create_bc,
+        "update_bc": _update_bc,
+        "map_ncit_to_bc": _map_ncit_to_bc,
+        "submit_bc_for_review": _submit_bc_for_review,
+        "advance_governance": _advance_governance,
+        "reject_bc": _reject_bc,
     }
     fn = handlers.get(name)
     if fn is None:
@@ -350,6 +475,82 @@ def _list_review_queue(_args: dict) -> dict:
         "cdisc_approval": queue["cdisc_approval"],
         "pending_ingestion_records": pending_ingestion,
     }
+
+
+# ---------------------------------------------------------------------------
+# Tool handlers (writes — shared service code path, audit-logged)
+# ---------------------------------------------------------------------------
+
+
+@_with_app_context
+def _create_bc(args: dict) -> dict:
+    from services import bc_service
+
+    actor = str(args.get("actor") or "mcp")
+    bc = bc_service.create_bc(args, actor=actor)
+    decs = args.get("decs") or []
+    if decs:
+        bc_service.save_decs(bc.bc_id, decs)
+    return _get_bc.__wrapped__({"bc_id": bc.bc_id})
+
+
+@_with_app_context
+def _update_bc(args: dict) -> dict:
+    from services import bc_service
+
+    bc_id = str(args.get("bc_id") or "").strip()
+    if not bc_id:
+        raise ValueError("bc_id is required")
+    actor = str(args.get("actor") or "mcp")
+    # Only fields present in args change; absent fields keep their value
+    bc = bc_service.update_bc(bc_id, args, actor=actor)
+    return _bc_full_dict(bc)
+
+
+@_with_app_context
+def _map_ncit_to_bc(args: dict) -> dict:
+    from services import bc_service
+
+    bc_id = str(args.get("bc_id") or "").strip()
+    if not bc_id:
+        raise ValueError("bc_id is required")
+    actor = str(args.get("actor") or "mcp")
+    bc = bc_service.map_ncit_to_bc(bc_id, args.get("ncit_code"), actor=actor)
+    return _bc_full_dict(bc)
+
+
+@_with_app_context
+def _submit_bc_for_review(args: dict) -> dict:
+    from services import bc_service
+
+    bc_id = str(args.get("bc_id") or "").strip()
+    if not bc_id:
+        raise ValueError("bc_id is required")
+    actor = str(args.get("actor") or "mcp")
+    bc = bc_service.submit_bc_for_review(bc_id, actor=actor)
+    return _bc_full_dict(bc)
+
+
+@_with_app_context
+def _advance_governance(args: dict) -> dict:
+    from services import governance_service
+
+    bc_id = str(args.get("bc_id") or "").strip()
+    if not bc_id:
+        raise ValueError("bc_id is required")
+    actor = str(args.get("actor") or "mcp")
+    return governance_service.advance_governance(bc_id, actor=actor, comment=str(args.get("comment") or ""))
+
+
+@_with_app_context
+def _reject_bc(args: dict) -> dict:
+    from services import governance_service
+
+    bc_id = str(args.get("bc_id") or "").strip()
+    if not bc_id:
+        raise ValueError("bc_id is required")
+    actor = str(args.get("actor") or "mcp")
+    return governance_service.reject_bc(bc_id, actor=actor, comment=str(args.get("comment") or ""))
 
 
 # ---------------------------------------------------------------------------
