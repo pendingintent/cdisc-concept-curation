@@ -1,10 +1,11 @@
 import pytest
+
 from app import create_app
 from extensions import db as _db
-from models.bc import BiomedicalConcept, DataElementConcept
-from models.governance import GovernanceRecord
-from models.audit import AuditLog
-from models.ingestion import IngestionRecord
+from models.audit import AuditLog  # noqa: F401  (registers table metadata)
+from models.bc import BiomedicalConcept, DataElementConcept  # noqa: F401
+from models.governance import GovernanceRecord  # noqa: F401
+from models.ingestion import IngestionRecord  # noqa: F401
 
 
 class TestConfig:
@@ -12,6 +13,7 @@ class TestConfig:
     SQLALCHEMY_DATABASE_URI = "sqlite:///:memory:"
     SECRET_KEY = "test-secret-key"
     CDISC_API_KEY = ""
+    CDISC_SUBSCRIPTION_KEY = ""
     CDISC_API_BASE_URL = "https://api.library.cdisc.org/api/cosmos/v2"
     NCIT_API_BASE_URL = "https://api-evsrest.nci.nih.gov/api/v1"
     MAX_CONTENT_LENGTH = 16 * 1024 * 1024
@@ -37,6 +39,16 @@ def clean_db(app):
         _db.create_all()
         yield
         _db.session.remove()
+
+
+@pytest.fixture(autouse=True)
+def clear_api_cache():
+    """Reset the shared external-API cache so tests never see each other's
+    (or a failure's) cached responses."""
+    from services import api_cache
+
+    api_cache._cache.clear()
+    yield
 
 
 @pytest.fixture()

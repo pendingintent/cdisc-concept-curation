@@ -3,7 +3,6 @@
 import json
 
 import openpyxl
-import pytest
 from lxml import etree
 
 from extensions import db

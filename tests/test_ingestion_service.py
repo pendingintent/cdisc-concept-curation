@@ -2,16 +2,16 @@
 
 import io
 import json
-import pytest
+
 from services.ingestion import (
-    _similarity,
+    _group_by_bc,
     _match_field,
-    map_fields,
-    validate_bc,
+    _similarity,
     deduplicate,
+    map_fields,
     parse_csv,
     parse_json,
-    _group_by_bc,
+    validate_bc,
 )
 
 # ---------------------------------------------------------------------------

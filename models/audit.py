@@ -1,6 +1,7 @@
-from extensions import db
-from datetime import datetime, timezone
 import json
+from datetime import datetime, timezone
+
+from extensions import db
 
 
 class AuditLog(db.Model):

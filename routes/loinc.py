@@ -1,17 +1,14 @@
 from flask import Blueprint, jsonify, request
+
 from services.loinc_api import LoincApiClient
 
-bp = Blueprint('loinc', __name__)
+bp = Blueprint("loinc", __name__)
 
 
-@bp.route('/search')
+@bp.route("/search")
 def search():
-    term = request.args.get('term', '').strip()
-    is_ajax = (
-        request.headers.get('X-Requested-With') == 'XMLHttpRequest'
-        or request.args.get('format') == 'json'
-        or 'application/json' in request.headers.get('Accept', '')
-    )
+    term = request.args.get("term", "").strip()
+    is_ajax = request.headers.get("X-Requested-With") == "XMLHttpRequest" or request.args.get("format") == "json" or "application/json" in request.headers.get("Accept", "")
     if not term:
         if is_ajax:
             return jsonify([])

@@ -1,6 +1,9 @@
 import logging
 import os
+
 import requests
+
+from services.api_cache import cached
 
 logger = logging.getLogger(__name__)
 
@@ -28,7 +31,8 @@ class LoincApiClient:
         Uses the ef (extra fields) parameter so all field values are returned.
         Response format: [total, [codes], {field: [values, ...]}, display_data]
         """
-        try:
+
+        def _fetch():
             response = requests.get(
                 self.BASE_URL,
                 params={"ef": LOINC_EF_FIELDS, "terms": term, "maxList": size},
@@ -48,6 +52,9 @@ class LoincApiClient:
                     item[field] = values[i] if values and i < len(values) else None
                 results.append(item)
             return results
+
+        try:
+            return cached(("loinc_search", term, size), _fetch)
         except (requests.RequestException, ValueError, IndexError, TypeError) as e:
             # Index/Type errors cover the positional parsing of the NLM
             # array response ([total, [codes], {field: values}, ...]).

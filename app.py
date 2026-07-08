@@ -1,6 +1,8 @@
 import logging
+import os
 
 from flask import Flask
+
 from config import Config
 from extensions import db, migrate
 
@@ -27,14 +29,14 @@ def create_app(config_class=Config):
     db.init_app(app)
     migrate.init_app(app, db)
 
-    from routes.dashboard import bp as dashboard_bp
-    from routes.ingestion import bp as ingestion_bp
-    from routes.bc import bp as bc_bp
-    from routes.ncit import bp as ncit_bp
-    from routes.loinc import bp as loinc_bp
-    from routes.specializations import bp as specializations_bp
-    from routes.governance import bp as governance_bp
     from routes.audit import bp as audit_bp
+    from routes.bc import bp as bc_bp
+    from routes.dashboard import bp as dashboard_bp
+    from routes.governance import bp as governance_bp
+    from routes.ingestion import bp as ingestion_bp
+    from routes.loinc import bp as loinc_bp
+    from routes.ncit import bp as ncit_bp
+    from routes.specializations import bp as specializations_bp
 
     app.register_blueprint(dashboard_bp, url_prefix="/")
     app.register_blueprint(ingestion_bp, url_prefix="/ingestion")
@@ -53,4 +55,5 @@ if __name__ == "__main__":
 
     app = create_app()
     ensure_db(app)
-    app.run(debug=True, port=app.config["PORT"])
+    # Dev-friendly default; set FLASK_DEBUG=0 to disable the debugger/reloader
+    app.run(debug=os.environ.get("FLASK_DEBUG", "1") == "1", port=app.config["PORT"])

@@ -1,12 +1,12 @@
 """Tests for routes/ingestion.py — upload, approve, reject."""
 
+import csv
 import io
 import json
-import csv
-import pytest
+
+from extensions import db
 from models.bc import BiomedicalConcept
 from models.ingestion import IngestionRecord
-from extensions import db
 
 
 def _csv_file(rows):

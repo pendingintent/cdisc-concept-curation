@@ -1,60 +1,47 @@
 import hashlib
 import logging
 import os
-import time
+
 import requests
 from flask import current_app
 
+from services.api_cache import CACHE_STALE_TTL as _CACHE_STALE_TTL  # noqa: F401
+from services.api_cache import CACHE_TTL as _CACHE_TTL  # noqa: F401
+from services.api_cache import _cache, cached  # noqa: F401  (_cache re-exported for tests)
+
 logger = logging.getLogger(__name__)
 
-# In-memory cache: {key: (timestamp, data)}
-# Entries are never evicted — stale data is served while a refresh is attempted,
-# so a timeout never blocks the request with an empty response.
-_cache = {}
-_CACHE_TTL = 300  # serve fresh data for 5 minutes
-_CACHE_STALE_TTL = 3600  # serve stale data for up to 1 hour while refresh fails
+# Backward-compatible alias — the shared implementation lives in
+# services/api_cache.py and is used by all three API clients.
+_cached = cached
 
 
-def _cached(cache_key, fn):
-    """Return cached data if fresh. If stale, attempt a refresh but fall back
-    to the stale entry rather than propagating an error or blocking indefinitely."""
-    now = time.time()
-    entry = _cache.get(cache_key)
-
-    if entry and now - entry[0] < _CACHE_TTL:
-        return entry[1]  # fresh — serve immediately
-
-    # Attempt a refresh. Broad catch is intentional: this is a resilience
-    # seam and any refresh failure must fall back to stale data.
+def _config_value(name, default=""):
+    """Read a config value from the Flask app when a context is active,
+    falling back to the environment (the MCP server and scripts run
+    without a request context)."""
     try:
-        data = fn()
-        _cache[cache_key] = (now, data)
-        return data
-    except Exception:
-        if entry and now - entry[0] < _CACHE_STALE_TTL:
-            logger.warning("Cache refresh failed for %s; serving stale entry", cache_key, exc_info=True)
-            return entry[1]
-        logger.error("Cache refresh failed for %s with no stale fallback", cache_key, exc_info=True)
-        raise  # genuinely no data at all — let caller handle
+        return current_app.config.get(name) or os.environ.get(name, default)
+    except RuntimeError:
+        return os.environ.get(name, default)
 
 
 class CDISCApiClient:
     def __init__(self):
-        try:
-            self.api_key = current_app.config.get("CDISC_API_KEY") or os.environ.get("CDISC_API_KEY", "")
-            self.base_url = current_app.config.get(
-                "CDISC_API_BASE_URL",
-                "https://api.library.cdisc.org/api/cosmos/v2",
-            )
-        except RuntimeError:
-            self.api_key = os.environ.get("CDISC_API_KEY", "")
-            self.base_url = "https://api.library.cdisc.org/api/cosmos/v2"
-        self.headers = {
-            "api-key": self.api_key,
-            "Accept": "application/json",
-        }
-        # Stable, non-secret digest of the api_key for use in cache keys
-        self._key_digest = hashlib.sha256(self.api_key.encode()).hexdigest()[:8]
+        self.api_key = _config_value("CDISC_API_KEY")
+        self.subscription_key = _config_value("CDISC_SUBSCRIPTION_KEY")
+        self.base_url = _config_value("CDISC_API_BASE_URL", "https://api.library.cdisc.org/api/cosmos/v2")
+        # Auth parity with soa-workbench: prefer the subscription key with
+        # its Ocp header, fall back to the classic api-key header.
+        if self.subscription_key:
+            auth_header = {"Ocp-Apim-Subscription-Key": self.subscription_key}
+            key_material = self.subscription_key
+        else:
+            auth_header = {"api-key": self.api_key}
+            key_material = self.api_key
+        self.headers = {**auth_header, "Accept": "application/json"}
+        # Stable, non-secret digest of the active key for use in cache keys
+        self._key_digest = hashlib.sha256(key_material.encode()).hexdigest()[:8]
 
     def _cache_key(self, endpoint):
         return (self.base_url, self._key_digest, endpoint)

@@ -1,10 +1,10 @@
 """Tests for routes/bc.py — CRUD, export, submission."""
 
-import pytest
 from unittest.mock import patch
-from models.bc import BiomedicalConcept, DataElementConcept
-from models.audit import AuditLog
+
 from extensions import db
+from models.audit import AuditLog
+from models.bc import BiomedicalConcept, DataElementConcept
 
 
 def _bc_form(**kwargs):

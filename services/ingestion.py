@@ -1,8 +1,8 @@
-import io
 import json
 import logging
-import pandas as pd
 from difflib import SequenceMatcher
+
+import pandas as pd
 
 logger = logging.getLogger(__name__)
 

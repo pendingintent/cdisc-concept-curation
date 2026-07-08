@@ -29,11 +29,15 @@ built via `flask db upgrade`; pre-baseline DBs are stamped in place).
 ## Linting
 
 ```bash
+isort .
+black .
 flake8 .
-black --check .
 ```
 
-Line length is set to 200 (black) / 999 (flake8). Flake8 ignores F401, F841, E711 — see `.flake8` for full ignore list.
+Line length is 200 (black, isort, flake8). Flake8 ignores only E203/W503
+(black conflicts) and E711 (SQLAlchemy `== None` filters); unused imports
+(F401) and unused locals (F841) are errors. Dev tools are pinned in
+`requirements-dev.txt`; CI runs the same lint + test steps.
 
 ## Testing
 

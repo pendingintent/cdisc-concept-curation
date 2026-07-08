@@ -1,5 +1,6 @@
-from extensions import db
 import json
+
+from extensions import db
 
 
 class DatasetSpecialization(db.Model):

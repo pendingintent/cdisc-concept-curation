@@ -1,8 +1,7 @@
 """Tests for routes/audit.py — log listing and filtering."""
 
-import pytest
-from models.audit import AuditLog
 from extensions import db
+from models.audit import AuditLog
 
 
 def _add_log(app, entity_type="BiomedicalConcept", entity_id="C001", action="created", actor="alice"):

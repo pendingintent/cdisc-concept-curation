@@ -3,7 +3,6 @@
 import json
 from unittest.mock import MagicMock, patch
 
-import pytest
 import requests
 
 from services.ncit_api import NCItApiClient
@@ -43,9 +42,9 @@ EVS_FULL_CONCEPT = {
 
 class TestNcitGetConceptExtended:
     def setup_method(self):
-        import services.ncit_api
+        from services import api_cache
 
-        services.ncit_api._ncit_cache.clear()
+        api_cache._cache.clear()
 
     def _mock_get(self, data):
         mock = MagicMock()

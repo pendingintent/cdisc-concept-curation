@@ -1,18 +1,20 @@
 import uuid
+
 from flask import (
     Blueprint,
+    flash,
+    redirect,
     render_template,
     request,
-    redirect,
-    url_for,
-    flash,
     session,
+    url_for,
 )
+
+from extensions import db
+from models.audit import AuditLog
 from models.bc import BiomedicalConcept, DataElementConcept
 from models.ingestion import IngestionRecord
-from models.audit import AuditLog
-from extensions import db
-from services.ingestion import parse_xlsx, parse_csv, parse_json, deduplicate
+from services.ingestion import deduplicate, parse_csv, parse_json, parse_xlsx
 
 bp = Blueprint("ingestion", __name__)
 

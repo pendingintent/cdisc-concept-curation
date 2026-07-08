@@ -1,10 +1,9 @@
 """Tests for model property serialization and helper methods."""
 
-import pytest
-from models.audit import AuditLog
-from models.ingestion import IngestionRecord
-from models.bc import BiomedicalConcept, DataElementConcept
 from extensions import db
+from models.audit import AuditLog
+from models.bc import BiomedicalConcept
+from models.ingestion import IngestionRecord
 
 
 class TestAuditLogJsonProperties:

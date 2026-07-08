@@ -1,4 +1,5 @@
 from flask import Blueprint, render_template, request
+
 from models.audit import AuditLog
 
 bp = Blueprint("audit", __name__)

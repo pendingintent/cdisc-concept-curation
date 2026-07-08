@@ -1,10 +1,9 @@
 """Tests for routes/governance.py — Kanban advance and reject."""
 
-import pytest
+from extensions import db
+from models.audit import AuditLog
 from models.bc import BiomedicalConcept
 from models.governance import GovernanceRecord
-from models.audit import AuditLog
-from extensions import db
 
 STATUS_ORDER = ["provisional", "sme_review", "cdisc_approval", "published"]
 
@@ -131,6 +130,7 @@ class TestGovernanceExport:
         r = client.get("/governance/export")
         assert r.status_code == 200
         import io
+
         import openpyxl
 
         wb = openpyxl.load_workbook(io.BytesIO(r.data))
@@ -142,6 +142,7 @@ class TestGovernanceExport:
             client.post("/governance/advance/C12345")
         r = client.get("/governance/export")
         import io
+
         import openpyxl
 
         wb = openpyxl.load_workbook(io.BytesIO(r.data))
@@ -166,6 +167,7 @@ class TestGovernanceExport:
             client.post("/governance/advance/C99998")
         r = client.get("/governance/export")
         import io
+
         import openpyxl
 
         wb = openpyxl.load_workbook(io.BytesIO(r.data))
@@ -195,6 +197,7 @@ class TestGovernanceExport:
             client.post("/governance/advance/C99997")
         r = client.get("/governance/export")
         import io
+
         import openpyxl
 
         wb = openpyxl.load_workbook(io.BytesIO(r.data))
@@ -222,6 +225,7 @@ class TestGovernanceExport:
             client.post("/governance/advance/C99999")
         r = client.get("/governance/export")
         import io
+
         import openpyxl
 
         wb = openpyxl.load_workbook(io.BytesIO(r.data))

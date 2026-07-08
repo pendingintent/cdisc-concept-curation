@@ -1,6 +1,7 @@
-from flask import Blueprint, render_template, request, redirect, url_for, flash, jsonify
-from models.bc import BiomedicalConcept
+from flask import Blueprint, flash, jsonify, redirect, render_template, request, url_for
+
 from extensions import db
+from models.bc import BiomedicalConcept
 from services.ncit_api import NCItApiClient
 
 bp = Blueprint("ncit", __name__)

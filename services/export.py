@@ -4,7 +4,7 @@ from datetime import datetime, timezone
 
 try:
     import openpyxl
-    from openpyxl.styles import Font, PatternFill, Alignment
+    from openpyxl.styles import Alignment, Font, PatternFill
 except ImportError:
     openpyxl = None
 
@@ -44,7 +44,6 @@ def export_xlsx(bc_list):
     ws = wb.active
     ws.title = "Biomedical Concepts"
 
-    header_font = Font(bold=True)
     header_fill = PatternFill("solid", fgColor="003366")
     header_font_white = Font(bold=True, color="FFFFFF")
 

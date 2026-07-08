@@ -3,10 +3,9 @@
 import json
 from unittest.mock import MagicMock, patch
 
-import pytest
 import requests
 
-from services.loinc_api import LoincApiClient, LOINC_EF_FIELDS
+from services.loinc_api import LOINC_EF_FIELDS, LoincApiClient
 
 # ---------------------------------------------------------------------------
 # Sample NLM response using ef parameter

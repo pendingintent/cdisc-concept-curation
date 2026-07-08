@@ -1,12 +1,14 @@
 import logging
-import time
+import os
+
 import requests
+from flask import current_app
+
+from services.api_cache import cached
 
 logger = logging.getLogger(__name__)
 
-_ncit_cache = {}
-_NCIT_TTL = 300  # serve fresh data for 5 minutes
-_NCIT_STALE_TTL = 3600  # serve stale data for up to 1 hour while refresh fails
+_DEFAULT_BASE_URL = "https://api-evsrest.nci.nih.gov/api/v1"
 
 
 def _pick_definition(definitions):
@@ -20,10 +22,16 @@ def _pick_definition(definitions):
 
 
 class NCItApiClient:
-    BASE_URL = "https://api-evsrest.nci.nih.gov/api/v1"
+    def __init__(self):
+        # Honor NCIT_API_BASE_URL from Flask config, falling back to the
+        # environment when no app context is active (MCP server, scripts).
+        try:
+            self.base_url = current_app.config.get("NCIT_API_BASE_URL") or os.environ.get("NCIT_API_BASE_URL", _DEFAULT_BASE_URL)
+        except RuntimeError:
+            self.base_url = os.environ.get("NCIT_API_BASE_URL", _DEFAULT_BASE_URL)
 
     def _get(self, path, params=None):
-        url = f"{self.BASE_URL}{path}"
+        url = f"{self.base_url}{path}"
         response = requests.get(url, params=params, timeout=15)
         response.raise_for_status()
         return response.json()
@@ -48,16 +56,11 @@ class NCItApiClient:
 
     def get_concept(self, ncit_code):
         """Fetch full concept details including synonyms, definitions, parents, and semantic type."""
-        cache_key = ("concept", ncit_code)
-        now = time.time()
-        entry = _ncit_cache.get(cache_key)
-        if entry and now - entry[0] < _NCIT_TTL:
-            return entry[1]
 
-        try:
+        def _fetch():
             result = self._get(f"/concept/ncit/{ncit_code}", params={"include": "full"})
             code = result.get("code")
-            data = {
+            return {
                 "code": code,
                 "name": result.get("name"),
                 "preferred_name": result.get("name"),
@@ -69,8 +72,9 @@ class NCItApiClient:
                 "semantic_type": [st.get("name") for st in result.get("semanticType", [])],
                 "reference": f"https://ncithesaurus.nci.nih.gov/ncitbrowser/ConceptReport.jsp?dictionary=NCI_Thesaurus&code={code}" if code else "",
             }
-            _ncit_cache[cache_key] = (now, data)
-            return data
+
+        try:
+            return cached(("ncit_concept", self.base_url, ncit_code), _fetch)
         except (requests.RequestException, ValueError) as e:
             logger.error("NCIt concept fetch failed for %s: %s", ncit_code, e)
             return {"error": str(e)}
