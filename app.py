@@ -45,12 +45,12 @@ def create_app(config_class=Config):
     app.register_blueprint(governance_bp, url_prefix="/governance")
     app.register_blueprint(audit_bp, url_prefix="/audit")
 
-    with app.app_context():
-        db.create_all()
-
     return app
 
 
 if __name__ == "__main__":
+    from db_bootstrap import ensure_db
+
     app = create_app()
+    ensure_db(app)
     app.run(debug=True, port=app.config["PORT"])

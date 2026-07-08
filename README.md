@@ -89,7 +89,9 @@ These hooks run automatically before each `git commit`. If black reformats any f
 python app.py
 ```
 
-The Flask development server starts on `http://localhost:5000`. The SQLite database file (`cdisc_curation.db`) is created automatically on first run.
+The Flask development server starts on `http://localhost:8081` (override with the `PORT` env var). On startup the app brings the SQLite database (`instance/cdisc_curation.db`) to the current Alembic migration head automatically: fresh databases are built with `flask db upgrade`, and databases created before the migration baseline was squashed (2026-07-08) are stamped in place. If startup reports a schema that cannot be auto-migrated, recreate the database or run `flask db stamp head` after bringing it up to date manually.
+
+Schema changes are managed exclusively through Flask-Migrate/Alembic — edit the model, then run `flask db migrate -m "describe change"` and commit the generated revision.
 
 > **Note:** `python app.py` uses Flask's built-in development server. Do not use this in production. Use a WSGI server such as gunicorn instead.
 

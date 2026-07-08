@@ -20,7 +20,11 @@ export CDISC_API_KEY=your_key_here
 python app.py  # runs on http://localhost:8081 (override with PORT env var)
 ```
 
-Database (`instance/cdisc_curation.db`) is auto-created on first run via `db.create_all()`.
+Database (`instance/cdisc_curation.db`) is brought to the Alembic migration
+head automatically on startup by `db_bootstrap.ensure_db()` (fresh DBs are
+built via `flask db upgrade`; pre-baseline DBs are stamped in place).
+**Schema changes require an Alembic revision**: edit the model, then
+`flask db migrate -m "..."` — `db.create_all()` is used only by tests.
 
 ## Linting
 
