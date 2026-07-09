@@ -3,6 +3,7 @@ from flask import Blueprint, flash, jsonify, redirect, render_template, request,
 from extensions import db
 from models.bc import BiomedicalConcept, DataElementConcept
 from models.specialization import DatasetSpecialization
+from services.audit import log_change
 from services.cdisc_api import CDISCApiClient
 
 bp = Blueprint("specializations", __name__)
@@ -77,8 +78,19 @@ def create():
     )
     spec.variables = []
     db.session.add(spec)
+    log_change("DatasetSpecialization", vlm_group_id, "created", actor="user", after=spec.to_dict())
     db.session.commit()
     flash(f"Specialization {vlm_group_id} created", "success")
+    return redirect(url_for("specializations.index"))
+
+
+@bp.route("/<vlm_group_id>/delete", methods=["POST"])
+def delete(vlm_group_id):
+    spec = db.get_or_404(DatasetSpecialization, vlm_group_id)
+    log_change("DatasetSpecialization", vlm_group_id, "deleted", actor="user", before=spec.to_dict())
+    db.session.delete(spec)
+    db.session.commit()
+    flash(f"Specialization {vlm_group_id} deleted", "success")
     return redirect(url_for("specializations.index"))
 
 
@@ -114,6 +126,7 @@ def generate(bc_id):
     )
     spec.variables = variables
     db.session.add(spec)
+    log_change("DatasetSpecialization", vlm_group_id, "created", actor="user", after=spec.to_dict())
     db.session.commit()
     flash(f"Specialization {vlm_group_id} generated", "success")
     return redirect(url_for("specializations.index"))

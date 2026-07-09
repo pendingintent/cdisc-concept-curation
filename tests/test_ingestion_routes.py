@@ -5,6 +5,7 @@ import io
 import json
 
 from extensions import db
+from models.audit import AuditLog
 from models.bc import BiomedicalConcept
 from models.ingestion import IngestionRecord
 
@@ -185,3 +186,19 @@ class TestApproveAll:
         client.post("/ingestion/approve_all")
         with app.app_context():
             assert db.session.get(BiomedicalConcept, "C001") is None
+
+    def test_approve_all_writes_audit_log_per_bc(self, client, app):
+        rows = [{"bc_id": "C001", "short_name": "HR", "definition": "Heart Rate"}]
+        file_obj, filename = _csv_file(rows)
+        with client.session_transaction() as sess:
+            sess["ingestion_key"] = "testkey"
+        client.post(
+            "/ingestion/upload",
+            data={"file": (file_obj, filename)},
+            content_type="multipart/form-data",
+        )
+        client.post("/ingestion/approve_all")
+        with app.app_context():
+            assert db.session.get(BiomedicalConcept, "C001") is not None
+            log = AuditLog.query.filter_by(entity_type="BiomedicalConcept", entity_id="C001", action="created_via_ingestion").first()
+            assert log is not None

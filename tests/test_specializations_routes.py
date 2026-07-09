@@ -3,6 +3,7 @@
 from unittest.mock import MagicMock, patch
 
 from extensions import db
+from models.audit import AuditLog
 from models.bc import DataElementConcept
 from models.specialization import DatasetSpecialization
 
@@ -61,6 +62,49 @@ class TestCreate:
         assert resp.status_code == 302
         with app.app_context():
             assert DatasetSpecialization.query.count() == 0
+
+    def test_create_writes_audit_log(self, client, app, sample_bc):
+        patcher, _ = _patch_client()
+        with patcher:
+            client.post(
+                "/specializations/",
+                data={"vlm_group_id": "VLM1", "bc_id": sample_bc, "domain": "SDTM", "short_name": "Manual Spec"},
+            )
+        with app.app_context():
+            log = AuditLog.query.filter_by(entity_type="DatasetSpecialization", entity_id="VLM1", action="created").first()
+            assert log is not None
+            assert log.after_state["short_name"] == "Manual Spec"
+
+
+class TestDelete:
+    def test_delete_removes_spec(self, client, app, sample_bc):
+        with app.app_context():
+            db.session.add(DatasetSpecialization(vlm_group_id="VLM1", bc_id=sample_bc, domain="SDTM"))
+            db.session.commit()
+        patcher, _ = _patch_client()
+        with patcher:
+            resp = client.post("/specializations/VLM1/delete")
+        assert resp.status_code == 302
+        with app.app_context():
+            assert db.session.get(DatasetSpecialization, "VLM1") is None
+
+    def test_delete_writes_audit_log(self, client, app, sample_bc):
+        with app.app_context():
+            db.session.add(DatasetSpecialization(vlm_group_id="VLM1", bc_id=sample_bc, domain="SDTM", short_name="Doomed Spec"))
+            db.session.commit()
+        patcher, _ = _patch_client()
+        with patcher:
+            client.post("/specializations/VLM1/delete")
+        with app.app_context():
+            log = AuditLog.query.filter_by(entity_type="DatasetSpecialization", entity_id="VLM1", action="deleted").first()
+            assert log is not None
+            assert log.before_state["short_name"] == "Doomed Spec"
+
+    def test_delete_unknown_404(self, client):
+        patcher, _ = _patch_client()
+        with patcher:
+            resp = client.post("/specializations/NOPE/delete")
+        assert resp.status_code == 404
 
 
 class TestDetail:
@@ -127,6 +171,13 @@ class TestGenerate:
     def test_generate_unknown_bc_404(self, client):
         resp = client.post("/specializations/generate/NOPE", data={"domain": "SDTM"})
         assert resp.status_code == 404
+
+    def test_generate_writes_audit_log(self, client, app, sample_bc):
+        self._add_decs(app, sample_bc)
+        client.post(f"/specializations/generate/{sample_bc}", data={"domain": "SDTM"})
+        with app.app_context():
+            log = AuditLog.query.filter_by(entity_type="DatasetSpecialization", entity_id=f"{sample_bc}.SDTM", action="created").first()
+            assert log is not None
 
 
 class TestGenerateFromDec:

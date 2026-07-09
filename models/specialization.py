@@ -19,3 +19,12 @@ class DatasetSpecialization(db.Model):
     @variables.setter
     def variables(self, value):
         self._variables = json.dumps(value)
+
+    def to_dict(self):
+        return {
+            "vlm_group_id": self.vlm_group_id,
+            "bc_id": self.bc_id,
+            "domain": self.domain,
+            "short_name": self.short_name,
+            "variables": self.variables,
+        }

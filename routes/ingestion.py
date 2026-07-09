@@ -165,6 +165,15 @@ def approve_all():
             bc = _bc_from_mapped(bc_id, mapped)
             db.session.add(bc)
             _create_decs(bc_id, ir.decs)
+            db.session.add(
+                AuditLog(
+                    entity_type="BiomedicalConcept",
+                    entity_id=bc_id,
+                    action="created_via_ingestion",
+                    actor="system",
+                    after_state=mapped,
+                )
+            )
             ir.status = "approved"
             added += 1
         else:

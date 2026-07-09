@@ -28,6 +28,18 @@ CDISC Biomedical Concept Curation — a Flask/Jinja web application for curating
 
 ## Daily Changelog
 
+### 2026-04-15
+
+#### Audit Trail Coverage Completion + Specialization Delete Route
+
+- Fixed `templates/specializations.html:221` — Delete form now POSTs to proper `specializations.delete` route keyed on `vlm_group_id` (removed broken `action=delete`/`spec.id` inputs)
+- Added `models/specialization.py` — `to_dict()` method for clean audit log serialization
+- Added `POST /<vlm_group_id>/delete` route to `routes/specializations.py` — fully audited delete operation
+- Updated `routes/specializations.py` — `log_change()` calls on create/generate/delete operations (actor="user")
+- Updated `routes/ingestion.py` — `approve_all()` now writes one `AuditLog` per created BiomedicalConcept (action="created_via_ingestion", actor="system")
+- Added comprehensive test coverage: 5 new tests in `tests/test_specializations_routes.py` and `tests/test_ingestion_routes.py` (audit logging for create/delete/generate, 404 handling, etc.)
+- All 239 tests passing, isort/black/flake8 clean ✅
+
 ### 2026-04-14
 
 #### LOINC API Explorer + BC Detail Performance + Specializations + Config

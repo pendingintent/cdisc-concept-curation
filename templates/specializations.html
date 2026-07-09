@@ -218,12 +218,10 @@
                  aria-label="Edit {{ spec.short_name }}">
                 <i class="bi bi-pencil" aria-hidden="true"></i> Edit
               </a>
-              <form method="POST" action="{{ url_for('specializations.index') }}"
+              <form method="POST" action="{{ url_for('specializations.delete', vlm_group_id=spec.vlm_group_id) }}"
                     onsubmit="return confirm('Delete this specialization?');"
                     style="display:inline;">
                 {{ form.hidden_tag() if form else '' }}
-                <input type="hidden" name="action" value="delete">
-                <input type="hidden" name="spec_id" value="{{ spec.id }}">
                 <button type="submit" class="btn btn-sm btn-outline-danger"
                         aria-label="Delete {{ spec.short_name }}">
                   <i class="bi bi-trash" aria-hidden="true"></i>
