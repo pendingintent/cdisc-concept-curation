@@ -125,4 +125,5 @@ NCIt API base: `https://api-evsrest.nci.nih.gov/api/v1`
 ## Conventions
 - Always follow test driven development principles.
 - When updating Python code, ensure the associated unit tests are updated accordingly.
-- Execute the appropriate unit tests after updating Python code. 
+- Execute the appropriate unit tests after updating Python code.
+- Any front-end/UI work — the `frontend-design` skill, the `cdisc-frontend-dev` agent, or hand-written templates/CSS — MUST apply the `cdisc-brand-guidelines` skill (CDISC Blue `#134678`, Purple `#553278`, Orange `#D57E00`, Green `#286040`; Arial). Invoke it before creating or updating any UI, not just when the user says "on-brand." 
