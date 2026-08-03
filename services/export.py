@@ -120,8 +120,9 @@ def export_governance_xlsx(bc_objects):
         row_idx += 1
 
         # One row per DEC, repeating BC fields
-        for dec in bc.decs.order_by("sort_order"):
-            for col_idx, header in enumerate(GOVERNANCE_HEADERS, start=1):
+        from models.bc import DataElementConcept
+
+        for dec in bc.decs.order_by(DataElementConcept.sort_order):
                 if header in GOVERNANCE_BC_FIELDS:
                     val = bc_vals[header]
                 elif header == "History of Change":
