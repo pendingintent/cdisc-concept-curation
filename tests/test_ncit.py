@@ -148,7 +148,7 @@ class TestNcitConceptRoute:
 
         MockClient.return_value.get_concept.assert_called_once_with("C64849")
 
-    def test_error_from_service_returns_500(self, client):
+    def test_error_from_service_returns_404(self, client):
         with patch("routes.ncit.NCItApiClient") as MockClient:
             MockClient.return_value.get_concept.return_value = {"error": "Not found"}
             r = client.get("/ncit/concept/CXXXXX")
