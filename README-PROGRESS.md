@@ -45,6 +45,14 @@ CDISC Biomedical Concept Curation — a Flask/Jinja web application for curating
 - Added 3 tests to `tests/test_mcp_server.py::TestMapNcit` covering dependent-row re-pointing, child-BC `parent_bc_id` re-pointing, and the collision case
 - All 242 tests passing, isort/black/flake8 clean ✅
 
+#### Resolved Remaining Copilot Review Comments on PR #39
+
+- Relabeled the "NCI Thesaurus HREF" field in `templates/library_bc_detail.html` to "CDISC Library HREF" — `bc.href` is the CDISC Library API's own self-link, not an NCIt URL
+- Fixed `routes/specializations.py` `create()` — POSTing an existing `vlm_group_id` (the "Edit Specialization" flow) now updates the existing row and logs an `"updated"` audit action instead of attempting a duplicate INSERT and raising an `IntegrityError`/500
+- Added `_variables_from_form()` to `routes/specializations.py` to parse the `variables[i][name/label/data_type/required]` form rows, which `create()` previously discarded entirely (always saved `variables = []`)
+- Added 3 tests to `tests/test_specializations_routes.py` (`TestCreate.test_create_persists_variable_rows_from_form`, `TestEditUpsert.test_posting_existing_vlm_group_id_updates_instead_of_duplicating`, `TestEditUpsert.test_edit_writes_updated_audit_log`)
+- All 245 tests passing, isort/black/flake8 clean ✅
+
 ### 2026-04-15
 
 #### Audit Trail Coverage Completion + Specialization Delete Route

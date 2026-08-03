@@ -63,6 +63,26 @@ def detail(vlm_group_id):
     )
 
 
+def _variables_from_form(form):
+    """Convert the bracketed variables[i][field] form inputs into a list of dicts."""
+    variables = []
+    i = 0
+    while f"variables[{i}][name]" in form:
+        name = (form.get(f"variables[{i}][name]") or "").strip()
+        label = (form.get(f"variables[{i}][label]") or "").strip()
+        if name or label:
+            variables.append(
+                {
+                    "name": name,
+                    "label": label,
+                    "data_type": form.get(f"variables[{i}][data_type]") or "string",
+                    "required": form.get(f"variables[{i}][required]") == "on",
+                }
+            )
+        i += 1
+    return variables
+
+
 @bp.route("/", methods=["POST"])
 def create():
     vlm_group_id = request.form.get("vlm_group_id", "").strip()
@@ -70,13 +90,29 @@ def create():
     if not vlm_group_id or not bc_id:
         flash("VLM Group ID and BC are required", "danger")
         return redirect(url_for("specializations.index"))
+    domain = request.form.get("domain", "SDTM")
+    short_name = request.form.get("short_name", "")
+    variables = _variables_from_form(request.form)
+
+    spec = db.session.get(DatasetSpecialization, vlm_group_id)
+    if spec:
+        before = spec.to_dict()
+        spec.bc_id = bc_id
+        spec.domain = domain
+        spec.short_name = short_name
+        spec.variables = variables
+        log_change("DatasetSpecialization", vlm_group_id, "updated", actor="user", before=before, after=spec.to_dict())
+        db.session.commit()
+        flash(f"Specialization {vlm_group_id} updated", "success")
+        return redirect(url_for("specializations.index"))
+
     spec = DatasetSpecialization(
         vlm_group_id=vlm_group_id,
         bc_id=bc_id,
-        domain=request.form.get("domain", "SDTM"),
-        short_name=request.form.get("short_name", ""),
+        domain=domain,
+        short_name=short_name,
     )
-    spec.variables = []
+    spec.variables = variables
     db.session.add(spec)
     log_change("DatasetSpecialization", vlm_group_id, "created", actor="user", after=spec.to_dict())
     db.session.commit()

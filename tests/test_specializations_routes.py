@@ -75,6 +75,71 @@ class TestCreate:
             assert log is not None
             assert log.after_state["short_name"] == "Manual Spec"
 
+    def test_create_persists_variable_rows_from_form(self, client, app, sample_bc):
+        patcher, _ = _patch_client()
+        with patcher:
+            resp = client.post(
+                "/specializations/",
+                data={
+                    "vlm_group_id": "VLM1",
+                    "bc_id": sample_bc,
+                    "domain": "SDTM",
+                    "short_name": "Manual Spec",
+                    "variables[0][name]": "RESULT",
+                    "variables[0][label]": "Result",
+                    "variables[0][data_type]": "decimal",
+                    "variables[0][required]": "on",
+                },
+            )
+        assert resp.status_code == 302
+        with app.app_context():
+            spec = db.session.get(DatasetSpecialization, "VLM1")
+            assert spec.variables == [{"name": "RESULT", "label": "Result", "data_type": "decimal", "required": True}]
+
+
+class TestEditUpsert:
+    def test_posting_existing_vlm_group_id_updates_instead_of_duplicating(self, client, app, sample_bc):
+        with app.app_context():
+            db.session.add(DatasetSpecialization(vlm_group_id="VLM1", bc_id=sample_bc, domain="SDTM", short_name="Original"))
+            db.session.commit()
+        patcher, _ = _patch_client()
+        with patcher:
+            resp = client.post(
+                "/specializations/",
+                data={
+                    "vlm_group_id": "VLM1",
+                    "bc_id": sample_bc,
+                    "domain": "CDASH",
+                    "short_name": "Renamed",
+                    "variables[0][name]": "RESULT",
+                    "variables[0][label]": "Result",
+                    "variables[0][data_type]": "decimal",
+                },
+            )
+        assert resp.status_code == 302
+        with app.app_context():
+            assert DatasetSpecialization.query.count() == 1
+            spec = db.session.get(DatasetSpecialization, "VLM1")
+            assert spec.domain == "CDASH"
+            assert spec.short_name == "Renamed"
+            assert spec.variables == [{"name": "RESULT", "label": "Result", "data_type": "decimal", "required": False}]
+
+    def test_edit_writes_updated_audit_log(self, client, app, sample_bc):
+        with app.app_context():
+            db.session.add(DatasetSpecialization(vlm_group_id="VLM1", bc_id=sample_bc, domain="SDTM", short_name="Original"))
+            db.session.commit()
+        patcher, _ = _patch_client()
+        with patcher:
+            client.post(
+                "/specializations/",
+                data={"vlm_group_id": "VLM1", "bc_id": sample_bc, "domain": "SDTM", "short_name": "Renamed"},
+            )
+        with app.app_context():
+            log = AuditLog.query.filter_by(entity_type="DatasetSpecialization", entity_id="VLM1", action="updated").first()
+            assert log is not None
+            assert log.before_state["short_name"] == "Original"
+            assert log.after_state["short_name"] == "Renamed"
+
 
 class TestDelete:
     def test_delete_removes_spec(self, client, app, sample_bc):
