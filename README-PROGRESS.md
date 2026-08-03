@@ -28,6 +28,15 @@ CDISC Biomedical Concept Curation — a Flask/Jinja web application for curating
 
 ## Daily Changelog
 
+### 2026-08-03
+
+#### Fixed Broken Governance Export Fix-Up Commits from PR #39
+
+- Fixed `services/bc_service.py` `save_decs()` — removed a stray duplicate `for` loop line (`IndentationError: expected an indented block`) left over from an automated PR-review fix commit
+- Fixed `services/export.py` `export_governance_xlsx()` — restored the missing inner `for col_idx, header in enumerate(GOVERNANCE_HEADERS, start=1):` loop (`IndentationError: unindent does not match any outer indentation level`) dropped by the same commit
+- Both files failed to even compile after `git pull origin release-v0.3` pulled in 5 "Potential fix for pull request finding" commits responding to PR #39 review comments; the other 3 (`.mcp.json`, `routes/governance.py`, `tests/test_ncit.py`) were fine
+- All 239 tests passing after the fix
+
 ### 2026-04-15
 
 #### Audit Trail Coverage Completion + Specialization Delete Route

@@ -99,7 +99,6 @@ def save_decs(bc_id, decs):
     """
     DataElementConcept.query.filter_by(bc_id=bc_id).delete()
     for i, dec in enumerate(decs or []):
-    for i, dec in enumerate(decs):
         label = (dec.get("dec_label") or "").strip()
         if not label:
             continue
