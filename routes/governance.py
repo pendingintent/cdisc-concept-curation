@@ -1,3 +1,5 @@
+import logging
+
 from flask import Blueprint, Response, flash, jsonify, redirect, render_template, request, url_for
 
 from extensions import db
@@ -5,6 +7,8 @@ from models.bc import BiomedicalConcept
 from services import governance_service
 from services.export import export_governance_xlsx
 from services.governance_service import STATUS_ORDER
+
+logger = logging.getLogger(__name__)
 
 bp = Blueprint("governance", __name__)
 

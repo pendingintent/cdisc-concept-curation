@@ -1,6 +1,10 @@
+import logging
+
 from flask import Blueprint, jsonify, request
 
 from services.loinc_api import LoincApiClient
+
+logger = logging.getLogger(__name__)
 
 bp = Blueprint("loinc", __name__)
 

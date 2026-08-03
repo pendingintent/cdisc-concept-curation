@@ -5,6 +5,7 @@ MCP tools call the same functions, so every write goes through one code
 path and the AuditLog contract holds everywhere.
 """
 
+import logging
 from datetime import datetime, timezone
 
 from extensions import db
@@ -12,6 +13,8 @@ from models.bc import BiomedicalConcept, DataElementConcept
 from models.governance import GovernanceRecord
 from models.specialization import DatasetSpecialization
 from services.audit import log_change
+
+logger = logging.getLogger(__name__)
 
 
 class NotFoundError(ValueError):

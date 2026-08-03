@@ -5,8 +5,12 @@ AuditLog. Routes (and, later, MCP tools) call log_change() instead of
 constructing AuditLog rows inline so the write pattern stays uniform.
 """
 
+import logging
+
 from extensions import db
 from models.audit import AuditLog
+
+logger = logging.getLogger(__name__)
 
 
 def log_change(entity_type, entity_id, action, actor, before=None, after=None):

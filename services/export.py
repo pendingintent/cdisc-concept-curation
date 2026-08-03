@@ -1,5 +1,6 @@
 import io
 import json
+import logging
 from datetime import datetime, timezone
 
 try:
@@ -12,6 +13,8 @@ try:
     from lxml import etree
 except ImportError:
     etree = None
+
+logger = logging.getLogger(__name__)
 
 
 BC_EXPORT_FIELDS = [

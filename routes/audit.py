@@ -1,6 +1,10 @@
+import logging
+
 from flask import Blueprint, render_template, request
 
 from models.audit import AuditLog
+
+logger = logging.getLogger(__name__)
 
 bp = Blueprint("audit", __name__)
 

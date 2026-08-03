@@ -1,11 +1,14 @@
 """Governance stage transitions shared by routes and the MCP server."""
 
+import logging
 from datetime import datetime, timezone
 
 from extensions import db
 from models.governance import GovernanceRecord
 from services.audit import log_change
 from services.bc_service import _get_bc_or_raise
+
+logger = logging.getLogger(__name__)
 
 STATUS_ORDER = ["provisional", "sme_review", "cdisc_approval", "published"]
 

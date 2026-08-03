@@ -1,9 +1,13 @@
+import logging
+
 from flask import Blueprint, flash, jsonify, redirect, render_template, request, url_for
 
 from extensions import db
 from models.bc import BiomedicalConcept
 from services import bc_service
 from services.ncit_api import NCItApiClient
+
+logger = logging.getLogger(__name__)
 
 bp = Blueprint("ncit", __name__)
 

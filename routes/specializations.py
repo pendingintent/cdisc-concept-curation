@@ -1,3 +1,5 @@
+import logging
+
 from flask import Blueprint, flash, jsonify, redirect, render_template, request, url_for
 
 from extensions import db
@@ -5,6 +7,8 @@ from models.bc import BiomedicalConcept, DataElementConcept
 from models.specialization import DatasetSpecialization
 from services.audit import log_change
 from services.cdisc_api import CDISCApiClient
+
+logger = logging.getLogger(__name__)
 
 bp = Blueprint("specializations", __name__)
 

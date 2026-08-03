@@ -1,3 +1,4 @@
+import logging
 import uuid
 
 from flask import (
@@ -15,6 +16,8 @@ from models.audit import AuditLog
 from models.bc import BiomedicalConcept, DataElementConcept
 from models.ingestion import IngestionRecord
 from services.ingestion import deduplicate, parse_csv, parse_json, parse_xlsx
+
+logger = logging.getLogger(__name__)
 
 bp = Blueprint("ingestion", __name__)
 

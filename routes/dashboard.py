@@ -1,3 +1,4 @@
+import logging
 from concurrent.futures import ThreadPoolExecutor
 from datetime import datetime, timedelta, timezone
 
@@ -6,6 +7,8 @@ from flask import Blueprint, render_template
 from models.audit import AuditLog
 from models.bc import BiomedicalConcept
 from services.cdisc_api import CDISCApiClient
+
+logger = logging.getLogger(__name__)
 
 bp = Blueprint("dashboard", __name__)
 

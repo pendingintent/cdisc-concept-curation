@@ -6,29 +6,35 @@ CDISC Biomedical Concept Curation — a Flask/Jinja web application for curating
 
 ## Feature Status
 
-| Module | Status | Details |
-|--------|--------|---------|
-| Flask App Foundation | ✅ Complete | `app.py`, `extensions.py`, `config.py` |
-| Database Models | ✅ Complete | BC, DEC, Governance, Audit, Ingestion, Specialization |
-| Dashboard | ✅ Complete | KPI stats, live CDISC Library API counts + BC/Spec panels, route `/` |
-| Ingestion (Upload + Parse) | ✅ Complete | XLSX/CSV/JSON upload, AI field mapping, BC/DEC grouping |
-| BC CRUD + Export | ✅ Complete | JSON/XLSX/ODM-XML export |
-| NCIt Mapping | ✅ Complete | EVS REST API search + mapping resolution |
-| LOINC API Explorer | ✅ Complete | LOINC search + BC metadata integration, `routes/loinc.py` |
-| Dataset Specializations | ✅ Complete | Full CRUD, BC selection, fixed search |
-| Governance Workflow | ✅ Complete | 4-stage Kanban board |
-| Audit Trail | ✅ Complete | Filterable audit log |
-| CDISC Library API Client | ✅ Complete | `services/cdisc_api.py` |
-| NCIt EVS API Client | ✅ Complete | `services/ncit_api.py` |
-| LOINC API Client | ✅ Complete | `services/loinc_api.py` |
-| Export Service | ✅ Complete | XLSX, JSON, ODM-XML |
-| UI (Bootstrap 5) | ✅ Complete | Sidebar layout, custom CDISC design tokens |
-| Pre-commit Hooks | ✅ Complete | flake8 + black enforced on commit |
-| Test Suite | 🚧 In Progress | BC routes, LOINC, NCIt coverage added |
+| Module                     | Status         | Details                                                              |
+| -------------------------- | -------------- | -------------------------------------------------------------------- |
+| Flask App Foundation       | ✅ Complete    | `app.py`, `extensions.py`, `config.py`                               |
+| Database Models            | ✅ Complete    | BC, DEC, Governance, Audit, Ingestion, Specialization                |
+| Dashboard                  | ✅ Complete    | KPI stats, live CDISC Library API counts + BC/Spec panels, route `/` |
+| Ingestion (Upload + Parse) | ✅ Complete    | XLSX/CSV/JSON upload, AI field mapping, BC/DEC grouping              |
+| BC CRUD + Export           | ✅ Complete    | JSON/XLSX/ODM-XML export                                             |
+| NCIt Mapping               | ✅ Complete    | EVS REST API search + mapping resolution                             |
+| LOINC API Explorer         | ✅ Complete    | LOINC search + BC metadata integration, `routes/loinc.py`            |
+| Dataset Specializations    | ✅ Complete    | Full CRUD, BC selection, fixed search                                |
+| Governance Workflow        | ✅ Complete    | 4-stage Kanban board                                                 |
+| Audit Trail                | ✅ Complete    | Filterable audit log                                                 |
+| CDISC Library API Client   | ✅ Complete    | `services/cdisc_api.py`                                              |
+| NCIt EVS API Client        | ✅ Complete    | `services/ncit_api.py`                                               |
+| LOINC API Client           | ✅ Complete    | `services/loinc_api.py`                                              |
+| Export Service             | ✅ Complete    | XLSX, JSON, ODM-XML                                                  |
+| UI (Bootstrap 5)           | ✅ Complete    | Sidebar layout, custom CDISC design tokens                           |
+| Pre-commit Hooks           | ✅ Complete    | flake8 + black enforced on commit                                    |
+| Test Suite                 | 🚧 In Progress | BC routes, LOINC, NCIt coverage added                                |
 
 ## Daily Changelog
 
 ### 2026-08-03
+
+#### Closed Out Workstream B.1 — Module-Level Loggers
+
+- Added `import logging` + `logger = logging.getLogger(__name__)` to the 11 route/service files that lacked one: `routes/audit.py`, `routes/dashboard.py`, `routes/governance.py`, `routes/ingestion.py`, `routes/loinc.py`, `routes/ncit.py`, `routes/specializations.py`, `services/audit.py`, `services/bc_service.py`, `services/export.py`, `services/governance_service.py`
+- `app.py` and the three API clients (`cdisc_api.py`, `ncit_api.py`, `loinc_api.py`) already had loggers; this closes the remaining gap from PR #39's Workstream B.1 audit
+- All 245 tests passing, isort/black/flake8 clean ✅
 
 #### Fixed Broken Governance Export Fix-Up Commits from PR #39
 
@@ -99,6 +105,7 @@ CDISC Biomedical Concept Curation — a Flask/Jinja web application for curating
 - Updated KPI cards in `templates/dashboard.html`: "BCs in CDISC Library" and "Dataset Specializations" now display live counts from the API rather than static zeros
 
 ### 2026-03-27
+
 - ✅ Built complete Flask/Jinja web application from scratch for CDISC BC curation
 - ✅ Created `app.py` — Flask application factory with blueprint registration
 - ✅ Created `extensions.py` — SQLAlchemy + Flask-Migrate instances (avoids circular imports)
