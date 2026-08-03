@@ -36,6 +36,14 @@ CDISC Biomedical Concept Curation — a Flask/Jinja web application for curating
 - Fixed `services/export.py` `export_governance_xlsx()` — restored the missing inner `for col_idx, header in enumerate(GOVERNANCE_HEADERS, start=1):` loop (`IndentationError: unindent does not match any outer indentation level`) dropped by the same commit
 - Both files failed to even compile after `git pull origin release-v0.3` pulled in 5 "Potential fix for pull request finding" commits responding to PR #39 review comments; the other 3 (`.mcp.json`, `routes/governance.py`, `tests/test_ncit.py`) were fine
 - All 239 tests passing after the fix
+- Removed unused `GovernanceRecord` import from `routes/governance.py` that failed CI's flake8 F401 check on PR #39
+
+#### Fixed BC ID Promotion Orphaning Dependent Rows
+
+- Fixed `services/bc_service.py` `map_ncit_to_bc()` — promoting an `IMPORT_` id to a resolved NCIt code now bulk-updates `DataElementConcept.bc_id`, `DatasetSpecialization.bc_id`, `GovernanceRecord.bc_id`, and `BiomedicalConcept.parent_bc_id` to the new id instead of leaving them pointed at the old, now-nonexistent `bc_id`
+- Added a check that raises `ValueError(f"BC {ncit_code} already exists")` when the target `ncit_code` collides with an existing BC's `bc_id`, instead of surfacing a raw `IntegrityError`
+- Added 3 tests to `tests/test_mcp_server.py::TestMapNcit` covering dependent-row re-pointing, child-BC `parent_bc_id` re-pointing, and the collision case
+- All 242 tests passing, isort/black/flake8 clean ✅
 
 ### 2026-04-15
 

@@ -9,6 +9,8 @@ from datetime import datetime, timezone
 
 from extensions import db
 from models.bc import BiomedicalConcept, DataElementConcept
+from models.governance import GovernanceRecord
+from models.specialization import DatasetSpecialization
 from services.audit import log_change
 
 
@@ -130,6 +132,13 @@ def map_ncit_to_bc(bc_id, ncit_code, actor="user"):
     bc.ncit_code = ncit_code
     # Promote temporary IMPORT_ IDs to their resolved NCIt code
     if not bc.bc_id or bc.bc_id.startswith("IMPORT_"):
+        old_bc_id = bc.bc_id
+        if ncit_code != old_bc_id and db.session.get(BiomedicalConcept, ncit_code):
+            raise ValueError(f"BC {ncit_code} already exists")
+        DataElementConcept.query.filter_by(bc_id=old_bc_id).update({"bc_id": ncit_code})
+        DatasetSpecialization.query.filter_by(bc_id=old_bc_id).update({"bc_id": ncit_code})
+        GovernanceRecord.query.filter_by(bc_id=old_bc_id).update({"bc_id": ncit_code})
+        BiomedicalConcept.query.filter_by(parent_bc_id=old_bc_id).update({"parent_bc_id": ncit_code})
         bc.bc_id = ncit_code
     log_change("BiomedicalConcept", bc.bc_id, "ncit_mapped", actor=actor, before=before, after=bc.to_dict())
     db.session.commit()

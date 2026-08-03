@@ -225,6 +225,46 @@ class TestMapNcit:
         with pytest.raises(ValueError, match="ncit_code is required"):
             _dispatch("map_ncit_to_bc", {"bc_id": sample_bc, "ncit_code": " "})
 
+    def test_promotes_import_id_repoints_dependents(self, app):
+        with app.app_context():
+            db.session.add(BiomedicalConcept(bc_id="IMPORT_1", short_name="Imported", status="provisional"))
+            db.session.add(DataElementConcept(dec_id="IMPORT_1.DEC.1", bc_id="IMPORT_1", dec_label="Test DEC"))
+            db.session.add(DatasetSpecialization(vlm_group_id="VLM1", bc_id="IMPORT_1", domain="SDTM"))
+            db.session.add(GovernanceRecord(bc_id="IMPORT_1", stage=0, action="submitted", actor="user"))
+            db.session.commit()
+
+        result = _dispatch("map_ncit_to_bc", {"bc_id": "IMPORT_1", "ncit_code": "C55555"})
+        assert result["bc_id"] == "C55555"
+
+        with app.app_context():
+            assert db.session.get(BiomedicalConcept, "IMPORT_1") is None
+            new_bc = db.session.get(BiomedicalConcept, "C55555")
+            assert new_bc is not None
+            assert [d.bc_id for d in new_bc.decs] == ["C55555"]
+            assert [s.bc_id for s in new_bc.specializations] == ["C55555"]
+            assert [g.bc_id for g in new_bc.governance_records] == ["C55555"]
+
+    def test_promotes_import_id_repoints_child_bcs(self, app):
+        with app.app_context():
+            db.session.add(BiomedicalConcept(bc_id="IMPORT_1", short_name="Imported", status="provisional"))
+            db.session.add(BiomedicalConcept(bc_id="CHILD_1", short_name="Child", parent_bc_id="IMPORT_1", status="provisional"))
+            db.session.commit()
+
+        _dispatch("map_ncit_to_bc", {"bc_id": "IMPORT_1", "ncit_code": "C55555"})
+
+        with app.app_context():
+            child = db.session.get(BiomedicalConcept, "CHILD_1")
+            assert child.parent_bc_id == "C55555"
+
+    def test_promotes_import_id_collision_raises(self, app):
+        with app.app_context():
+            db.session.add(BiomedicalConcept(bc_id="IMPORT_1", short_name="Imported", status="provisional"))
+            db.session.add(BiomedicalConcept(bc_id="C55555", short_name="Existing", status="provisional"))
+            db.session.commit()
+
+        with pytest.raises(ValueError, match="C55555 already exists"):
+            _dispatch("map_ncit_to_bc", {"bc_id": "IMPORT_1", "ncit_code": "C55555"})
+
 
 class TestGovernanceWrites:
     def test_submit_then_advance_to_published(self, app, sample_bc):
