@@ -1,9 +1,9 @@
 {
   "mcpServers": {
     "cdisc-curation": {
-      "command": "/Users/dmoreland/projects/cdisc-concept-curation/.venv/bin/python",
+      "command": ".venv/bin/python",
       "args": ["-m", "mcp_server"],
-      "cwd": "/Users/dmoreland/projects/cdisc-concept-curation"
+      "cwd": "."
     }
   }
 }
