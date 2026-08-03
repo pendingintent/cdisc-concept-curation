@@ -25,12 +25,14 @@ def board():
 
 @bp.route("/export")
 def export():
-    filename = request.args.get("filename", "governance_export").strip() or "governance_export"
-    base = filename.rsplit(".", 1)[0] if "." in filename else filename
+    import re
+
+    raw = request.args.get("filename", "governance_export")
+    base = re.sub(r"[^A-Za-z0-9._-]+", "_", (raw or "").strip()) or "governance_export"
+    base = base.rsplit(".", 1)[0] if "." in base else base
     safe_filename = f"{base}.xlsx"
 
-    stage3_bc_ids = db.session.query(GovernanceRecord.bc_id).filter(GovernanceRecord.stage == 3).distinct()
-    bcs = BiomedicalConcept.query.filter(BiomedicalConcept.bc_id.in_(stage3_bc_ids)).all()
+    bcs = BiomedicalConcept.query.filter_by(status="published").all()
 
     buf = export_governance_xlsx(bcs)
     return Response(
