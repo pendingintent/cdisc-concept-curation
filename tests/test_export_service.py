@@ -94,6 +94,15 @@ class TestExportXlsx:
         assert ws.cell(row=2, column=1).value == "ONLY_ID"
         assert ws.cell(row=2, column=2).value in ("", None)
 
+    def test_code_column_uses_loinc_code(self):
+        """BiomedicalConcept.to_dict() has no 'code' key (only 'loinc_code'),
+        so the 'Code' column must be sourced from 'loinc_code'."""
+        wb = openpyxl.load_workbook(export_xlsx(SAMPLE_BCS))
+        ws = wb.active
+        code_col = BC_EXPORT_FIELDS.index("code") + 1
+        assert ws.cell(row=2, column=code_col).value == "4548-4"
+        assert ws.cell(row=3, column=code_col).value in ("", None)
+
 
 class TestExportGovernanceXlsx:
     def _make_bc_with_decs(self):

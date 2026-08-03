@@ -58,7 +58,8 @@ def export_xlsx(bc_list):
 
     for row_idx, bc in enumerate(bc_list, start=2):
         for col_idx, field in enumerate(BC_EXPORT_FIELDS, start=1):
-            ws.cell(row=row_idx, column=col_idx, value=bc.get(field, ""))
+            value = bc.get("loinc_code", "") if field == "code" else bc.get(field, "")
+            ws.cell(row=row_idx, column=col_idx, value=value)
 
     buf = io.BytesIO()
     wb.save(buf)

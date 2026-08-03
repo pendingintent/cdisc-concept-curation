@@ -30,6 +30,13 @@ CDISC Biomedical Concept Curation — a Flask/Jinja web application for curating
 
 ### 2026-08-03
 
+#### Fixed New Copilot Comment on PR #39 — "Code" Column Still Blank in `export_xlsx()`
+
+- Fixed `services/export.py` `export_xlsx()` — the generic per-field loop still read `bc.get(field, "")` for every column, so the "Code" column stayed blank; now special-cases `field == "code"` to source the value from `bc.get("loinc_code", "")`, matching the pattern already used in `export_governance_xlsx()`
+- Added `tests/test_export_service.py::TestExportXlsx::test_code_column_uses_loinc_code` as a regression test
+- All 246 tests passing, lint clean ✅
+- Resolves the last (11th) open Copilot comment on PR #39
+
 #### Closed Out Workstream B.1 — Module-Level Loggers
 
 - Added `import logging` + `logger = logging.getLogger(__name__)` to the 11 route/service files that lacked one: `routes/audit.py`, `routes/dashboard.py`, `routes/governance.py`, `routes/ingestion.py`, `routes/loinc.py`, `routes/ncit.py`, `routes/specializations.py`, `services/audit.py`, `services/bc_service.py`, `services/export.py`, `services/governance_service.py`
