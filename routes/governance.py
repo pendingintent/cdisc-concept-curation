@@ -2,7 +2,6 @@ from flask import Blueprint, Response, flash, jsonify, redirect, render_template
 
 from extensions import db
 from models.bc import BiomedicalConcept
-from models.governance import GovernanceRecord
 from services import governance_service
 from services.export import export_governance_xlsx
 from services.governance_service import STATUS_ORDER
