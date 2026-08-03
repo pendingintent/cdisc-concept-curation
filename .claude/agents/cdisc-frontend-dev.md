@@ -23,6 +23,9 @@ Your sole responsibility is front-end development for the CDISC biomedical conce
 - Modify server-side data pipelines or API logic beyond what is needed to wire up a front-end view
 - Make architectural decisions about data storage, authentication systems, or infrastructure
 
+**Brand Compliance (mandatory)**
+Before creating or updating any UI — HTML templates, CSS, or visual/JS-driven presentation — invoke the `cdisc-brand-guidelines` skill and apply it: CDISC Blue (`#134678`), Purple (`#553278`), Orange (`#D57E00`), Green (`#286040`) as primary colors, Arial as the font, and the documented heading/table/accent conventions. This applies to net-new pages and edits to existing ones alike. Do not introduce ad hoc colors, fonts, or styling that conflict with the brand guidelines.
+
 **Technical Standards & Best Practices**
 
 1. **HTML**: Write semantic HTML5. Use appropriate elements (`<main>`, `<section>`, `<article>`, `<nav>`, `<form>`, `<fieldset>`, `<label>`, etc.). Ensure WCAG 2.1 AA accessibility: proper ARIA attributes, label associations, keyboard navigation, and color contrast.

@@ -6,23 +6,96 @@ CDISC Biomedical Concept Curation — a Flask/Jinja web application for curating
 
 ## Feature Status
 
-| Module | Status | Details |
-|--------|--------|---------|
-| Flask App Foundation | ✅ Complete | `app.py`, `extensions.py`, `config.py` |
-| Database Models | ✅ Complete | BC, DEC, Governance, Audit, Ingestion, Specialization |
-| Dashboard | ✅ Complete | KPI stats, live CDISC Library API counts + BC/Spec panels, route `/` |
-| Ingestion (Upload + Parse) | ✅ Complete | XLSX/CSV/JSON upload, AI field mapping, BC/DEC grouping |
-| BC CRUD + Export | ✅ Complete | JSON/XLSX/ODM-XML export |
-| NCIt Mapping | ✅ Complete | EVS REST API search + mapping resolution |
-| Dataset Specializations | ✅ Complete | Full CRUD management |
-| Governance Workflow | ✅ Complete | 4-stage Kanban board |
-| Audit Trail | ✅ Complete | Filterable audit log |
-| CDISC Library API Client | ✅ Complete | `services/cdisc_api.py` |
-| NCIt EVS API Client | ✅ Complete | `services/ncit_api.py` |
-| Export Service | ✅ Complete | XLSX, JSON, ODM-XML |
-| UI (Bootstrap 5) | ✅ Complete | Sidebar layout, custom CDISC design tokens |
+| Module                     | Status         | Details                                                              |
+| -------------------------- | -------------- | -------------------------------------------------------------------- |
+| Flask App Foundation       | ✅ Complete    | `app.py`, `extensions.py`, `config.py`                               |
+| Database Models            | ✅ Complete    | BC, DEC, Governance, Audit, Ingestion, Specialization                |
+| Dashboard                  | ✅ Complete    | KPI stats, live CDISC Library API counts + BC/Spec panels, route `/` |
+| Ingestion (Upload + Parse) | ✅ Complete    | XLSX/CSV/JSON upload, AI field mapping, BC/DEC grouping              |
+| BC CRUD + Export           | ✅ Complete    | JSON/XLSX/ODM-XML export                                             |
+| NCIt Mapping               | ✅ Complete    | EVS REST API search + mapping resolution                             |
+| LOINC API Explorer         | ✅ Complete    | LOINC search + BC metadata integration, `routes/loinc.py`            |
+| Dataset Specializations    | ✅ Complete    | Full CRUD, BC selection, fixed search                                |
+| Governance Workflow        | ✅ Complete    | 4-stage Kanban board                                                 |
+| Audit Trail                | ✅ Complete    | Filterable audit log                                                 |
+| CDISC Library API Client   | ✅ Complete    | `services/cdisc_api.py`                                              |
+| NCIt EVS API Client        | ✅ Complete    | `services/ncit_api.py`                                               |
+| LOINC API Client           | ✅ Complete    | `services/loinc_api.py`                                              |
+| Export Service             | ✅ Complete    | XLSX, JSON, ODM-XML                                                  |
+| UI (Bootstrap 5)           | ✅ Complete    | Sidebar layout, custom CDISC design tokens                           |
+| Pre-commit Hooks           | ✅ Complete    | flake8 + black enforced on commit                                    |
+| Test Suite                 | 🚧 In Progress | BC routes, LOINC, NCIt coverage added                                |
 
 ## Daily Changelog
+
+### 2026-08-03
+
+#### Fixed New Copilot Comment on PR #39 — "Code" Column Still Blank in `export_xlsx()`
+
+- Fixed `services/export.py` `export_xlsx()` — the generic per-field loop still read `bc.get(field, "")` for every column, so the "Code" column stayed blank; now special-cases `field == "code"` to source the value from `bc.get("loinc_code", "")`, matching the pattern already used in `export_governance_xlsx()`
+- Added `tests/test_export_service.py::TestExportXlsx::test_code_column_uses_loinc_code` as a regression test
+- All 246 tests passing, lint clean ✅
+- Resolves the last (11th) open Copilot comment on PR #39
+
+#### Closed Out Workstream B.1 — Module-Level Loggers
+
+- Added `import logging` + `logger = logging.getLogger(__name__)` to the 11 route/service files that lacked one: `routes/audit.py`, `routes/dashboard.py`, `routes/governance.py`, `routes/ingestion.py`, `routes/loinc.py`, `routes/ncit.py`, `routes/specializations.py`, `services/audit.py`, `services/bc_service.py`, `services/export.py`, `services/governance_service.py`
+- `app.py` and the three API clients (`cdisc_api.py`, `ncit_api.py`, `loinc_api.py`) already had loggers; this closes the remaining gap from PR #39's Workstream B.1 audit
+- All 245 tests passing, isort/black/flake8 clean ✅
+
+#### Fixed Broken Governance Export Fix-Up Commits from PR #39
+
+- Fixed `services/bc_service.py` `save_decs()` — removed a stray duplicate `for` loop line (`IndentationError: expected an indented block`) left over from an automated PR-review fix commit
+- Fixed `services/export.py` `export_governance_xlsx()` — restored the missing inner `for col_idx, header in enumerate(GOVERNANCE_HEADERS, start=1):` loop (`IndentationError: unindent does not match any outer indentation level`) dropped by the same commit
+- Both files failed to even compile after `git pull origin release-v0.3` pulled in 5 "Potential fix for pull request finding" commits responding to PR #39 review comments; the other 3 (`.mcp.json`, `routes/governance.py`, `tests/test_ncit.py`) were fine
+- All 239 tests passing after the fix
+- Removed unused `GovernanceRecord` import from `routes/governance.py` that failed CI's flake8 F401 check on PR #39
+
+#### Fixed BC ID Promotion Orphaning Dependent Rows
+
+- Fixed `services/bc_service.py` `map_ncit_to_bc()` — promoting an `IMPORT_` id to a resolved NCIt code now bulk-updates `DataElementConcept.bc_id`, `DatasetSpecialization.bc_id`, `GovernanceRecord.bc_id`, and `BiomedicalConcept.parent_bc_id` to the new id instead of leaving them pointed at the old, now-nonexistent `bc_id`
+- Added a check that raises `ValueError(f"BC {ncit_code} already exists")` when the target `ncit_code` collides with an existing BC's `bc_id`, instead of surfacing a raw `IntegrityError`
+- Added 3 tests to `tests/test_mcp_server.py::TestMapNcit` covering dependent-row re-pointing, child-BC `parent_bc_id` re-pointing, and the collision case
+- All 242 tests passing, isort/black/flake8 clean ✅
+
+#### Resolved Remaining Copilot Review Comments on PR #39
+
+- Relabeled the "NCI Thesaurus HREF" field in `templates/library_bc_detail.html` to "CDISC Library HREF" — `bc.href` is the CDISC Library API's own self-link, not an NCIt URL
+- Fixed `routes/specializations.py` `create()` — POSTing an existing `vlm_group_id` (the "Edit Specialization" flow) now updates the existing row and logs an `"updated"` audit action instead of attempting a duplicate INSERT and raising an `IntegrityError`/500
+- Added `_variables_from_form()` to `routes/specializations.py` to parse the `variables[i][name/label/data_type/required]` form rows, which `create()` previously discarded entirely (always saved `variables = []`)
+- Added 3 tests to `tests/test_specializations_routes.py` (`TestCreate.test_create_persists_variable_rows_from_form`, `TestEditUpsert.test_posting_existing_vlm_group_id_updates_instead_of_duplicating`, `TestEditUpsert.test_edit_writes_updated_audit_log`)
+- All 245 tests passing, isort/black/flake8 clean ✅
+
+### 2026-04-15
+
+#### Audit Trail Coverage Completion + Specialization Delete Route
+
+- Fixed `templates/specializations.html:221` — Delete form now POSTs to proper `specializations.delete` route keyed on `vlm_group_id` (removed broken `action=delete`/`spec.id` inputs)
+- Added `models/specialization.py` — `to_dict()` method for clean audit log serialization
+- Added `POST /<vlm_group_id>/delete` route to `routes/specializations.py` — fully audited delete operation
+- Updated `routes/specializations.py` — `log_change()` calls on create/generate/delete operations (actor="user")
+- Updated `routes/ingestion.py` — `approve_all()` now writes one `AuditLog` per created BiomedicalConcept (action="created_via_ingestion", actor="system")
+- Added comprehensive test coverage: 5 new tests in `tests/test_specializations_routes.py` and `tests/test_ingestion_routes.py` (audit logging for create/delete/generate, 404 handling, etc.)
+- All 239 tests passing, isort/black/flake8 clean ✅
+
+### 2026-04-14
+
+#### LOINC API Explorer + BC Detail Performance + Specializations + Config
+
+- Added `routes/loinc.py` blueprint — LOINC concept search integrated into the app
+- Added `services/loinc_api.py` — LOINC REST API client
+- Added DB migrations for NCIt and LOINC metadata fields on `BiomedicalConcept` (`models/bc.py`)
+- Extended `routes/bc.py` with LOINC/NCIt metadata display and BC detail improvements
+- Performance improvements to BC detail page — optimized `routes/bc.py` and `routes/dashboard.py` queries, reduced redundant API calls
+- Enhanced `templates/bc_detail.html` with NCIt and LOINC metadata panels and improved layout
+- Fixed BC deletion — added delete route to `routes/bc.py` and updated `templates/bc_list.html` with confirmation UI
+- Added BC selection to specializations — `routes/specializations.py` updated with BC association logic
+- Fixed specialization search in `routes/specializations.py` and `services/cdisc_api.py`
+- Added pagination to dashboard (`templates/dashboard.html` redesigned, `routes/dashboard.py` updated)
+- HTTP listening port now configurable via `config.py` env var (updated `app.py`)
+- Added `tests/test_bc_routes.py`, `tests/test_loinc.py`, `tests/test_ncit.py` — initial test coverage
+- Configured pre-commit hooks with flake8 and black enforcement
+- Updated `templates/library_bc_detail.html` and `static/js/main.js` with LOINC/NCIt explorer UX
 
 ### 2026-03-30
 
@@ -39,6 +112,7 @@ CDISC Biomedical Concept Curation — a Flask/Jinja web application for curating
 - Updated KPI cards in `templates/dashboard.html`: "BCs in CDISC Library" and "Dataset Specializations" now display live counts from the API rather than static zeros
 
 ### 2026-03-27
+
 - ✅ Built complete Flask/Jinja web application from scratch for CDISC BC curation
 - ✅ Created `app.py` — Flask application factory with blueprint registration
 - ✅ Created `extensions.py` — SQLAlchemy + Flask-Migrate instances (avoids circular imports)

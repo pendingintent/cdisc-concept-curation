@@ -1,24 +1,26 @@
 import pytest
+
 from app import create_app
 from extensions import db as _db
-from models.bc import BiomedicalConcept, DataElementConcept
-from models.governance import GovernanceRecord
-from models.audit import AuditLog
-from models.ingestion import IngestionRecord
+from models.audit import AuditLog  # noqa: F401  (registers table metadata)
+from models.bc import BiomedicalConcept, DataElementConcept  # noqa: F401
+from models.governance import GovernanceRecord  # noqa: F401
+from models.ingestion import IngestionRecord  # noqa: F401
 
 
 class TestConfig:
     TESTING = True
-    SQLALCHEMY_DATABASE_URI = 'sqlite:///:memory:'
-    SECRET_KEY = 'test-secret-key'
-    CDISC_API_KEY = ''
-    CDISC_API_BASE_URL = 'https://api.library.cdisc.org/api/cosmos/v2'
-    NCIT_API_BASE_URL = 'https://api-evsrest.nci.nih.gov/api/v1'
+    SQLALCHEMY_DATABASE_URI = "sqlite:///:memory:"
+    SECRET_KEY = "test-secret-key"
+    CDISC_API_KEY = ""
+    CDISC_SUBSCRIPTION_KEY = ""
+    CDISC_API_BASE_URL = "https://api.library.cdisc.org/api/cosmos/v2"
+    NCIT_API_BASE_URL = "https://api-evsrest.nci.nih.gov/api/v1"
     MAX_CONTENT_LENGTH = 16 * 1024 * 1024
     WTF_CSRF_ENABLED = False
 
 
-@pytest.fixture(scope='session')
+@pytest.fixture(scope="session")
 def app():
     app = create_app(TestConfig)
     return app
@@ -39,17 +41,27 @@ def clean_db(app):
         _db.session.remove()
 
 
+@pytest.fixture(autouse=True)
+def clear_api_cache():
+    """Reset the shared external-API cache so tests never see each other's
+    (or a failure's) cached responses."""
+    from services import api_cache
+
+    api_cache._cache.clear()
+    yield
+
+
 @pytest.fixture()
 def sample_bc(app):
     """A minimal BiomedicalConcept persisted to the test DB."""
     with app.app_context():
         bc = BiomedicalConcept(
-            bc_id='C12345',
-            short_name='Test Concept',
-            definition='A test BC definition.',
-            ncit_code='C12345',
-            status='provisional',
-            submitter='tester',
+            bc_id="C12345",
+            short_name="Test Concept",
+            definition="A test BC definition.",
+            ncit_code="C12345",
+            status="provisional",
+            submitter="tester",
         )
         _db.session.add(bc)
         _db.session.commit()

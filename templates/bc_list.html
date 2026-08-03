@@ -132,17 +132,15 @@
                    aria-label="View/Edit {{ bc.short_name }}">
                   <i class="bi bi-pencil" aria-hidden="true"></i> Edit
                 </a>
-                <form method="POST"
-                      action="{{ url_for('bc.detail', bc_id=bc.bc_id) }}"
-                      onsubmit="return confirm('Delete {{ bc.short_name | replace("'", "\\'") }}?');"
-                      style="display:inline;">
-                  {{ form.hidden_tag() if form else '' }}
-                  <input type="hidden" name="action" value="delete">
-                  <button type="submit" class="btn btn-sm btn-outline-danger"
-                          aria-label="Delete {{ bc.short_name }}">
-                    <i class="bi bi-trash" aria-hidden="true"></i>
-                  </button>
-                </form>
+                <button type="button"
+                        class="btn btn-sm btn-outline-danger"
+                        data-bs-toggle="modal"
+                        data-bs-target="#delete-confirm-modal"
+                        data-bc-name="{{ bc.short_name | e }}"
+                        data-delete-url="{{ url_for('bc.delete', bc_id=bc.bc_id) }}"
+                        aria-label="Delete {{ bc.short_name }}">
+                  <i class="bi bi-trash" aria-hidden="true"></i>
+                </button>
               </div>
             </td>
           </tr>
@@ -202,4 +200,39 @@
 </nav>
 {% endif %}
 
+<!-- Delete confirmation modal -->
+<div class="modal fade" id="delete-confirm-modal" tabindex="-1"
+     aria-labelledby="delete-confirm-label" aria-modal="true" role="dialog">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="delete-confirm-label">Delete Biomedical Concept</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <p>Are you sure you want to delete <strong id="delete-bc-name"></strong>?</p>
+        <p class="text-danger small mb-0">This action cannot be undone.</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+        <form id="delete-bc-form" method="POST" style="display:inline;">
+          <button type="submit" class="btn btn-danger">
+            <i class="bi bi-trash" aria-hidden="true"></i> Delete
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.getElementById('delete-confirm-modal').addEventListener('show.bs.modal', function (event) {
+  var btn = event.relatedTarget;
+  document.getElementById('delete-bc-name').textContent = btn.getAttribute('data-bc-name');
+  document.getElementById('delete-bc-form').action = btn.getAttribute('data-delete-url');
+});
+</script>
 {% endblock %}

@@ -1,18 +1,19 @@
-from extensions import db
-from datetime import datetime
 import json
+from datetime import datetime, timezone
+
+from extensions import db
 
 
 class AuditLog(db.Model):
-    __tablename__ = 'audit_logs'
+    __tablename__ = "audit_logs"
     id = db.Column(db.Integer, primary_key=True)
     entity_type = db.Column(db.String(50))  # BiomedicalConcept, GovernanceRecord, etc.
     entity_id = db.Column(db.String(100))
     action = db.Column(db.String(100))  # created, updated, status_changed, deleted
-    actor = db.Column(db.String(100), default='system')
-    _before_state = db.Column('before_state', db.Text)
-    _after_state = db.Column('after_state', db.Text)
-    timestamp = db.Column(db.DateTime, default=datetime.utcnow)
+    actor = db.Column(db.String(100), default="system")
+    _before_state = db.Column("before_state", db.Text)
+    _after_state = db.Column("after_state", db.Text)
+    timestamp = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc))
 
     @property
     def before_state(self):
