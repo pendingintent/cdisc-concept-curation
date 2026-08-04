@@ -1,0 +1,250 @@
+{
+  "scriptCompleted": true,
+  "stats": {
+    "filesScanned": 97,
+    "filesWithImports": 38,
+    "totalEdges": 105
+  },
+  "importMap": {
+    ".claude/agent-memory/cdisc-concept-explorer/MEMORY.md": [],
+    ".claude/agent-memory/cdisc-concept-explorer/reference_api_endpoints.md": [],
+    ".claude/agent-memory/cdisc-frontend-dev/MEMORY.md": [],
+    ".claude/agent-memory/cdisc-frontend-dev/frontend_architecture.md": [],
+    ".claude/agent-memory/cdisc-frontend-dev/project_foundation.md": [],
+    ".claude/agents/cdisc-concept-explorer.md": [],
+    ".claude/agents/cdisc-frontend-dev.md": [],
+    ".claude/agents/mike.md": [],
+    ".claude/skills/code-review/SKILL.md": [],
+    ".claude/skills/run-concept-curation/SKILL.md": [],
+    ".claude/skills/run-concept-curation/smoke.sh": [],
+    ".flake8": [],
+    ".github/workflows/ci.yml": [],
+    ".hintrc": [],
+    ".mcp.json": [],
+    ".pre-commit-config.yaml": [],
+    ".ua/.understandignore": [],
+    ".ua/config.json": [],
+    "CLAUDE.md": [],
+    "README-PROGRESS.md": [],
+    "README.md": [],
+    "app.py": [
+      "config.py",
+      "extensions.py"
+    ],
+    "config.py": [],
+    "db_bootstrap.py": [
+      "extensions.py"
+    ],
+    "extensions.py": [],
+    "files/BC Curation Principles and Completion GLs.xlsx": [],
+    "files/BC DEC Templates.xlsx": [],
+    "files/BC Examples.xlsx": [],
+    "files/BC Governance.docx": [],
+    "files/implementation.md": [],
+    "files/plan.md": [],
+    "files/result.md": [],
+    "mcp_server/__init__.py": [],
+    "mcp_server/__main__.py": [
+      "mcp_server/server.py"
+    ],
+    "mcp_server/server.py": [],
+    "migrations/README": [],
+    "migrations/alembic.ini": [],
+    "migrations/env.py": [],
+    "migrations/script.py.mako": [],
+    "migrations/versions/51d4a009d291_baseline_initial_schema.py": [],
+    "models/__init__.py": [
+      "extensions.py"
+    ],
+    "models/audit.py": [
+      "extensions.py"
+    ],
+    "models/bc.py": [
+      "extensions.py"
+    ],
+    "models/governance.py": [
+      "extensions.py"
+    ],
+    "models/ingestion.py": [
+      "extensions.py"
+    ],
+    "models/specialization.py": [
+      "extensions.py"
+    ],
+    "pyproject.toml": [],
+    "requirements-dev.txt": [],
+    "requirements.txt": [],
+    "routes/__init__.py": [],
+    "routes/audit.py": [
+      "models/audit.py"
+    ],
+    "routes/bc.py": [
+      "extensions.py",
+      "models/bc.py",
+      "models/governance.py",
+      "services/__init__.py",
+      "services/audit.py",
+      "services/bc_service.py",
+      "services/cdisc_api.py",
+      "services/export.py",
+      "services/loinc_api.py",
+      "services/ncit_api.py"
+    ],
+    "routes/dashboard.py": [
+      "models/audit.py",
+      "models/bc.py",
+      "services/cdisc_api.py"
+    ],
+    "routes/governance.py": [
+      "extensions.py",
+      "models/bc.py",
+      "services/__init__.py",
+      "services/export.py",
+      "services/governance_service.py"
+    ],
+    "routes/ingestion.py": [
+      "extensions.py",
+      "models/audit.py",
+      "models/bc.py",
+      "models/ingestion.py",
+      "services/ingestion.py"
+    ],
+    "routes/loinc.py": [
+      "services/loinc_api.py"
+    ],
+    "routes/ncit.py": [
+      "extensions.py",
+      "models/bc.py",
+      "services/__init__.py",
+      "services/bc_service.py",
+      "services/ncit_api.py"
+    ],
+    "routes/specializations.py": [
+      "extensions.py",
+      "models/bc.py",
+      "models/specialization.py",
+      "services/audit.py",
+      "services/cdisc_api.py"
+    ],
+    "services/__init__.py": [],
+    "services/api_cache.py": [],
+    "services/audit.py": [
+      "extensions.py",
+      "models/audit.py"
+    ],
+    "services/bc_service.py": [
+      "extensions.py",
+      "models/bc.py",
+      "models/governance.py",
+      "models/specialization.py",
+      "services/audit.py"
+    ],
+    "services/cdisc_api.py": [
+      "services/api_cache.py"
+    ],
+    "services/export.py": [],
+    "services/governance_service.py": [
+      "extensions.py",
+      "models/governance.py",
+      "services/audit.py",
+      "services/bc_service.py"
+    ],
+    "services/ingestion.py": [],
+    "services/loinc_api.py": [
+      "services/api_cache.py"
+    ],
+    "services/ncit_api.py": [
+      "services/api_cache.py"
+    ],
+    "static/css/custom.css": [],
+    "static/js/main.js": [],
+    "templates/audit.html": [],
+    "templates/base.html": [],
+    "templates/bc_detail.html": [],
+    "templates/bc_list.html": [],
+    "templates/dashboard.html": [],
+    "templates/governance.html": [],
+    "templates/ingestion.html": [],
+    "templates/library_bc_detail.html": [],
+    "templates/library_spec_detail.html": [],
+    "templates/ncit_mapping.html": [],
+    "templates/specializations.html": [],
+    "tests/__init__.py": [],
+    "tests/conftest.py": [
+      "app.py",
+      "extensions.py",
+      "models/audit.py",
+      "models/bc.py",
+      "models/governance.py",
+      "models/ingestion.py"
+    ],
+    "tests/test_audit_routes.py": [
+      "extensions.py",
+      "models/audit.py"
+    ],
+    "tests/test_bc_routes.py": [
+      "extensions.py",
+      "models/audit.py",
+      "models/bc.py"
+    ],
+    "tests/test_cdisc_api_cache.py": [
+      "services/cdisc_api.py"
+    ],
+    "tests/test_dashboard.py": [
+      "extensions.py",
+      "models/bc.py"
+    ],
+    "tests/test_db_bootstrap.py": [
+      "app.py",
+      "db_bootstrap.py",
+      "extensions.py"
+    ],
+    "tests/test_export_service.py": [
+      "extensions.py",
+      "models/bc.py",
+      "services/export.py"
+    ],
+    "tests/test_governance_routes.py": [
+      "extensions.py",
+      "models/audit.py",
+      "models/bc.py",
+      "models/governance.py"
+    ],
+    "tests/test_ingestion_routes.py": [
+      "extensions.py",
+      "models/audit.py",
+      "models/bc.py",
+      "models/ingestion.py"
+    ],
+    "tests/test_ingestion_service.py": [
+      "services/ingestion.py"
+    ],
+    "tests/test_loinc.py": [
+      "services/loinc_api.py"
+    ],
+    "tests/test_mcp_server.py": [
+      "extensions.py",
+      "mcp_server/server.py",
+      "models/audit.py",
+      "models/bc.py",
+      "models/governance.py",
+      "models/ingestion.py",
+      "models/specialization.py"
+    ],
+    "tests/test_models.py": [
+      "extensions.py",
+      "models/audit.py",
+      "models/bc.py",
+      "models/ingestion.py"
+    ],
+    "tests/test_ncit.py": [
+      "services/ncit_api.py"
+    ],
+    "tests/test_specializations_routes.py": [
+      "extensions.py",
+      "models/audit.py",
+      "models/bc.py",
+      "models/specialization.py"
+    ]
+  }
+}

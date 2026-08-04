@@ -1,0 +1,826 @@
+{
+  "scriptCompleted": true,
+  "directoryGroups": {
+    "models": [
+      "file:models/audit.py",
+      "file:models/bc.py",
+      "file:models/ingestion.py",
+      "file:models/governance.py",
+      "file:models/__init__.py",
+      "file:models/specialization.py"
+    ],
+    "routes": [
+      "file:routes/audit.py",
+      "file:routes/ingestion.py",
+      "file:routes/bc.py",
+      "file:routes/governance.py",
+      "file:routes/ncit.py",
+      "file:routes/dashboard.py",
+      "file:routes/loinc.py",
+      "file:routes/specializations.py",
+      "file:routes/__init__.py"
+    ],
+    "services": [
+      "file:services/ingestion.py",
+      "file:services/__init__.py",
+      "file:services/audit.py",
+      "file:services/bc_service.py",
+      "file:services/export.py",
+      "file:services/governance_service.py",
+      "file:services/ncit_api.py",
+      "file:services/api_cache.py",
+      "file:services/cdisc_api.py",
+      "file:services/loinc_api.py"
+    ],
+    "tests": [
+      "file:tests/conftest.py",
+      "file:tests/test_audit_routes.py",
+      "file:tests/test_bc_routes.py",
+      "file:tests/test_governance_routes.py",
+      "file:tests/test_ingestion_routes.py",
+      "file:tests/test_ingestion_service.py",
+      "file:tests/test_models.py",
+      "file:tests/test_export_service.py",
+      "file:tests/test_ncit.py",
+      "file:tests/test_cdisc_api_cache.py",
+      "file:tests/test_loinc.py",
+      "file:tests/test_dashboard.py",
+      "file:tests/test_db_bootstrap.py",
+      "file:tests/test_mcp_server.py",
+      "file:tests/test_specializations_routes.py",
+      "file:tests/__init__.py"
+    ],
+    "py": [
+      "file:app.py",
+      "file:db_bootstrap.py",
+      "file:extensions.py"
+    ],
+    "config": [
+      "file:config.py",
+      "config:.pre-commit-config.yaml"
+    ],
+    "mcp_server": [
+      "file:mcp_server/__main__.py",
+      "file:mcp_server/server.py",
+      "file:mcp_server/__init__.py"
+    ],
+    ".github": [
+      "pipeline:.github/workflows/ci.yml"
+    ],
+    ".claude": [
+      "document:.claude/agent-memory/cdisc-frontend-dev/MEMORY.md",
+      "document:.claude/agent-memory/cdisc-frontend-dev/frontend_architecture.md",
+      "document:.claude/agent-memory/cdisc-frontend-dev/project_foundation.md",
+      "document:.claude/agents/cdisc-concept-explorer.md",
+      "document:.claude/agents/cdisc-frontend-dev.md",
+      "document:.claude/agents/mike.md",
+      "document:.claude/agent-memory/cdisc-concept-explorer/MEMORY.md",
+      "document:.claude/agent-memory/cdisc-concept-explorer/reference_api_endpoints.md",
+      "document:.claude/skills/code-review/SKILL.md",
+      "document:.claude/skills/run-concept-curation/SKILL.md",
+      "file:.claude/skills/run-concept-curation/smoke.sh"
+    ],
+    "json": [
+      "config:.mcp.json"
+    ],
+    "md": [
+      "document:CLAUDE.md",
+      "document:README-PROGRESS.md",
+      "document:README.md"
+    ],
+    "toml": [
+      "config:pyproject.toml"
+    ],
+    "txt": [
+      "document:requirements-dev.txt",
+      "document:requirements.txt"
+    ],
+    "files": [
+      "document:files/plan.md",
+      "document:files/implementation.md",
+      "document:files/result.md",
+      "file:files/BC Curation Principles and Completion GLs.xlsx",
+      "file:files/BC DEC Templates.xlsx",
+      "file:files/BC Examples.xlsx",
+      "file:files/BC Governance.docx",
+      "file:files/cdisc_bc_ai_platform.html",
+      "file:files/cdisc_smart_goals_infographic.html"
+    ],
+    "templates": [
+      "file:templates/base.html",
+      "file:templates/audit.html",
+      "file:templates/bc_detail.html",
+      "file:templates/bc_list.html",
+      "file:templates/dashboard.html",
+      "file:templates/governance.html",
+      "file:templates/ingestion.html",
+      "file:templates/library_bc_detail.html",
+      "file:templates/library_spec_detail.html",
+      "file:templates/ncit_mapping.html",
+      "file:templates/specializations.html"
+    ],
+    "flake8": [
+      "config:.flake8"
+    ],
+    "hintrc": [
+      "config:.hintrc"
+    ],
+    ".ua": [
+      "config:.ua/.understandignore",
+      "config:.ua/config.json"
+    ],
+    "migrations": [
+      "document:migrations/README",
+      "config:migrations/alembic.ini",
+      "file:migrations/env.py",
+      "file:migrations/script.py.mako",
+      "file:migrations/versions/51d4a009d291_baseline_initial_schema.py"
+    ],
+    "static": [
+      "file:static/css/custom.css",
+      "file:static/js/main.js"
+    ]
+  },
+  "nodeTypeGroups": {
+    "file": [
+      "file:models/audit.py",
+      "file:models/bc.py",
+      "file:models/ingestion.py",
+      "file:routes/audit.py",
+      "file:routes/ingestion.py",
+      "file:services/ingestion.py",
+      "file:tests/conftest.py",
+      "file:tests/test_audit_routes.py",
+      "file:tests/test_bc_routes.py",
+      "file:tests/test_governance_routes.py",
+      "file:tests/test_ingestion_routes.py",
+      "file:tests/test_ingestion_service.py",
+      "file:tests/test_models.py",
+      "file:models/governance.py",
+      "file:routes/bc.py",
+      "file:routes/governance.py",
+      "file:routes/ncit.py",
+      "file:services/__init__.py",
+      "file:services/audit.py",
+      "file:services/bc_service.py",
+      "file:services/export.py",
+      "file:services/governance_service.py",
+      "file:services/ncit_api.py",
+      "file:tests/test_export_service.py",
+      "file:tests/test_ncit.py",
+      "file:routes/dashboard.py",
+      "file:routes/loinc.py",
+      "file:routes/specializations.py",
+      "file:services/api_cache.py",
+      "file:services/cdisc_api.py",
+      "file:services/loinc_api.py",
+      "file:tests/test_cdisc_api_cache.py",
+      "file:tests/test_loinc.py",
+      "file:app.py",
+      "file:config.py",
+      "file:db_bootstrap.py",
+      "file:extensions.py",
+      "file:models/__init__.py",
+      "file:tests/test_dashboard.py",
+      "file:tests/test_db_bootstrap.py",
+      "file:mcp_server/__main__.py",
+      "file:mcp_server/server.py",
+      "file:models/specialization.py",
+      "file:tests/test_mcp_server.py",
+      "file:tests/test_specializations_routes.py",
+      "file:templates/base.html",
+      "file:templates/audit.html",
+      "file:templates/bc_detail.html",
+      "file:templates/bc_list.html",
+      "file:templates/dashboard.html",
+      "file:templates/governance.html",
+      "file:templates/ingestion.html",
+      "file:templates/library_bc_detail.html",
+      "file:templates/library_spec_detail.html",
+      "file:templates/ncit_mapping.html",
+      "file:templates/specializations.html",
+      "file:.claude/skills/run-concept-curation/smoke.sh",
+      "file:files/BC Curation Principles and Completion GLs.xlsx",
+      "file:files/BC DEC Templates.xlsx",
+      "file:files/BC Examples.xlsx",
+      "file:files/BC Governance.docx",
+      "file:mcp_server/__init__.py",
+      "file:migrations/env.py",
+      "file:migrations/script.py.mako",
+      "file:migrations/versions/51d4a009d291_baseline_initial_schema.py",
+      "file:routes/__init__.py",
+      "file:static/css/custom.css",
+      "file:static/js/main.js",
+      "file:tests/__init__.py",
+      "file:files/cdisc_bc_ai_platform.html",
+      "file:files/cdisc_smart_goals_infographic.html"
+    ],
+    "pipeline": [
+      "pipeline:.github/workflows/ci.yml"
+    ],
+    "document": [
+      "document:.claude/agent-memory/cdisc-frontend-dev/MEMORY.md",
+      "document:.claude/agent-memory/cdisc-frontend-dev/frontend_architecture.md",
+      "document:.claude/agent-memory/cdisc-frontend-dev/project_foundation.md",
+      "document:.claude/agents/cdisc-concept-explorer.md",
+      "document:.claude/agents/cdisc-frontend-dev.md",
+      "document:.claude/agents/mike.md",
+      "document:CLAUDE.md",
+      "document:README-PROGRESS.md",
+      "document:README.md",
+      "document:requirements-dev.txt",
+      "document:requirements.txt",
+      "document:files/plan.md",
+      "document:files/implementation.md",
+      "document:files/result.md",
+      "document:.claude/agent-memory/cdisc-concept-explorer/MEMORY.md",
+      "document:.claude/agent-memory/cdisc-concept-explorer/reference_api_endpoints.md",
+      "document:.claude/skills/code-review/SKILL.md",
+      "document:.claude/skills/run-concept-curation/SKILL.md",
+      "document:migrations/README"
+    ],
+    "config": [
+      "config:.mcp.json",
+      "config:.pre-commit-config.yaml",
+      "config:pyproject.toml",
+      "config:.flake8",
+      "config:.hintrc",
+      "config:.ua/.understandignore",
+      "config:.ua/config.json",
+      "config:migrations/alembic.ini"
+    ]
+  },
+  "crossCategoryEdges": [
+    {
+      "fromType": "document",
+      "toType": "file",
+      "edgeType": "documents",
+      "count": 37
+    },
+    {
+      "fromType": "document",
+      "toType": "config",
+      "edgeType": "documents",
+      "count": 2
+    },
+    {
+      "fromType": "config",
+      "toType": "file",
+      "edgeType": "configures",
+      "count": 1
+    },
+    {
+      "fromType": "document",
+      "toType": "file",
+      "edgeType": "related",
+      "count": 7
+    }
+  ],
+  "interGroupImports": [
+    {
+      "from": "models",
+      "to": "py",
+      "count": 6
+    },
+    {
+      "from": "routes",
+      "to": "models",
+      "count": 12
+    },
+    {
+      "from": "routes",
+      "to": "py",
+      "count": 5
+    },
+    {
+      "from": "routes",
+      "to": "services",
+      "count": 18
+    },
+    {
+      "from": "tests",
+      "to": "py",
+      "count": 14
+    },
+    {
+      "from": "tests",
+      "to": "models",
+      "count": 26
+    },
+    {
+      "from": "tests",
+      "to": "services",
+      "count": 5
+    },
+    {
+      "from": "services",
+      "to": "py",
+      "count": 3
+    },
+    {
+      "from": "services",
+      "to": "models",
+      "count": 5
+    },
+    {
+      "from": "py",
+      "to": "config",
+      "count": 1
+    },
+    {
+      "from": "tests",
+      "to": "mcp_server",
+      "count": 1
+    }
+  ],
+  "intraGroupDensity": {
+    "models": {
+      "internalEdges": 0,
+      "totalEdges": 49,
+      "density": 0
+    },
+    "routes": {
+      "internalEdges": 0,
+      "totalEdges": 35,
+      "density": 0
+    },
+    "services": {
+      "internalEdges": 6,
+      "totalEdges": 37,
+      "density": 0.16216216216216217
+    },
+    "tests": {
+      "internalEdges": 0,
+      "totalEdges": 46,
+      "density": 0
+    },
+    "py": {
+      "internalEdges": 2,
+      "totalEdges": 31,
+      "density": 0.06451612903225806
+    },
+    "config": {
+      "internalEdges": 0,
+      "totalEdges": 1,
+      "density": 0
+    },
+    "mcp_server": {
+      "internalEdges": 1,
+      "totalEdges": 2,
+      "density": 0.5
+    },
+    ".github": {
+      "internalEdges": 0,
+      "totalEdges": 0,
+      "density": 0
+    },
+    ".claude": {
+      "internalEdges": 0,
+      "totalEdges": 0,
+      "density": 0
+    },
+    "json": {
+      "internalEdges": 0,
+      "totalEdges": 0,
+      "density": 0
+    },
+    "md": {
+      "internalEdges": 0,
+      "totalEdges": 0,
+      "density": 0
+    },
+    "toml": {
+      "internalEdges": 0,
+      "totalEdges": 0,
+      "density": 0
+    },
+    "txt": {
+      "internalEdges": 0,
+      "totalEdges": 0,
+      "density": 0
+    },
+    "files": {
+      "internalEdges": 0,
+      "totalEdges": 0,
+      "density": 0
+    },
+    "templates": {
+      "internalEdges": 0,
+      "totalEdges": 0,
+      "density": 0
+    },
+    "flake8": {
+      "internalEdges": 0,
+      "totalEdges": 0,
+      "density": 0
+    },
+    "hintrc": {
+      "internalEdges": 0,
+      "totalEdges": 0,
+      "density": 0
+    },
+    ".ua": {
+      "internalEdges": 0,
+      "totalEdges": 0,
+      "density": 0
+    },
+    "migrations": {
+      "internalEdges": 0,
+      "totalEdges": 0,
+      "density": 0
+    },
+    "static": {
+      "internalEdges": 0,
+      "totalEdges": 0,
+      "density": 0
+    }
+  },
+  "patternMatches": {
+    "models": "data",
+    "routes": "api",
+    "services": "service",
+    "tests": "test",
+    "config": "config",
+    ".github": "ci-cd",
+    "migrations": "data",
+    "static": "assets"
+  },
+  "filePatternMatches": {
+    "file:tests/test_audit_routes.py": "test",
+    "file:tests/test_bc_routes.py": "test",
+    "file:tests/test_governance_routes.py": "test",
+    "file:tests/test_ingestion_routes.py": "test",
+    "file:tests/test_ingestion_service.py": "test",
+    "file:tests/test_models.py": "test",
+    "file:services/__init__.py": "entry",
+    "file:tests/test_export_service.py": "test",
+    "file:tests/test_ncit.py": "test",
+    "file:tests/test_cdisc_api_cache.py": "test",
+    "file:tests/test_loinc.py": "test",
+    "file:models/__init__.py": "entry",
+    "file:tests/test_dashboard.py": "test",
+    "file:tests/test_db_bootstrap.py": "test",
+    "file:tests/test_mcp_server.py": "test",
+    "file:tests/test_specializations_routes.py": "test",
+    "pipeline:.github/workflows/ci.yml": "ci-cd",
+    "document:.claude/agent-memory/cdisc-frontend-dev/MEMORY.md": "documentation",
+    "document:.claude/agent-memory/cdisc-frontend-dev/frontend_architecture.md": "documentation",
+    "document:.claude/agent-memory/cdisc-frontend-dev/project_foundation.md": "documentation",
+    "document:.claude/agents/cdisc-concept-explorer.md": "documentation",
+    "document:.claude/agents/cdisc-frontend-dev.md": "documentation",
+    "document:.claude/agents/mike.md": "documentation",
+    "document:CLAUDE.md": "documentation",
+    "document:README-PROGRESS.md": "documentation",
+    "document:README.md": "documentation",
+    "document:files/plan.md": "documentation",
+    "document:files/implementation.md": "documentation",
+    "document:files/result.md": "documentation",
+    "document:.claude/agent-memory/cdisc-concept-explorer/MEMORY.md": "documentation",
+    "document:.claude/agent-memory/cdisc-concept-explorer/reference_api_endpoints.md": "documentation",
+    "document:.claude/skills/code-review/SKILL.md": "documentation",
+    "document:.claude/skills/run-concept-curation/SKILL.md": "documentation",
+    "file:mcp_server/__init__.py": "entry",
+    "file:routes/__init__.py": "entry",
+    "file:tests/__init__.py": "entry"
+  },
+  "deploymentTopology": {
+    "hasDockerfile": false,
+    "hasCompose": false,
+    "hasK8s": false,
+    "hasTerraform": false,
+    "hasCI": true,
+    "infraFiles": [
+      ".github/workflows/ci.yml"
+    ]
+  },
+  "dataPipeline": {
+    "schemaFiles": [],
+    "migrationFiles": [
+      "migrations/README",
+      "migrations/alembic.ini",
+      "migrations/env.py",
+      "migrations/script.py.mako",
+      "migrations/versions/51d4a009d291_baseline_initial_schema.py"
+    ],
+    "dataModelFiles": [
+      "models/audit.py",
+      "models/bc.py",
+      "models/ingestion.py",
+      "models/governance.py",
+      "models/__init__.py",
+      "models/specialization.py"
+    ],
+    "apiHandlerFiles": [
+      "routes/audit.py",
+      "routes/ingestion.py",
+      "routes/bc.py",
+      "routes/governance.py",
+      "routes/ncit.py",
+      "routes/dashboard.py",
+      "routes/loinc.py",
+      "routes/specializations.py",
+      "routes/__init__.py"
+    ]
+  },
+  "docCoverage": {
+    "groupsWithDocs": 5,
+    "totalGroups": 20,
+    "coverageRatio": 0.25,
+    "undocumentedGroups": [
+      "models",
+      "routes",
+      "services",
+      "tests",
+      "py",
+      "config",
+      "mcp_server",
+      ".github",
+      "json",
+      "toml",
+      "templates",
+      "flake8",
+      "hintrc",
+      ".ua",
+      "static"
+    ]
+  },
+  "dependencyDirection": [
+    {
+      "dependent": "models",
+      "dependsOn": "py"
+    },
+    {
+      "dependent": "routes",
+      "dependsOn": "models"
+    },
+    {
+      "dependent": "routes",
+      "dependsOn": "py"
+    },
+    {
+      "dependent": "routes",
+      "dependsOn": "services"
+    },
+    {
+      "dependent": "tests",
+      "dependsOn": "py"
+    },
+    {
+      "dependent": "tests",
+      "dependsOn": "models"
+    },
+    {
+      "dependent": "tests",
+      "dependsOn": "services"
+    },
+    {
+      "dependent": "services",
+      "dependsOn": "py"
+    },
+    {
+      "dependent": "services",
+      "dependsOn": "models"
+    },
+    {
+      "dependent": "py",
+      "dependsOn": "config"
+    },
+    {
+      "dependent": "tests",
+      "dependsOn": "mcp_server"
+    }
+  ],
+  "fileStats": {
+    "totalFileNodes": 99,
+    "filesPerGroup": {
+      "models": 6,
+      "routes": 9,
+      "services": 10,
+      "tests": 16,
+      "py": 3,
+      "config": 2,
+      "mcp_server": 3,
+      ".github": 1,
+      ".claude": 11,
+      "json": 1,
+      "md": 3,
+      "toml": 1,
+      "txt": 2,
+      "files": 9,
+      "templates": 11,
+      "flake8": 1,
+      "hintrc": 1,
+      ".ua": 2,
+      "migrations": 5,
+      "static": 2
+    },
+    "nodeTypeCounts": {
+      "file": 71,
+      "pipeline": 1,
+      "document": 19,
+      "config": 8
+    }
+  },
+  "fileFanIn": {
+    "file:models/audit.py": 12,
+    "file:models/bc.py": 16,
+    "file:models/ingestion.py": 5,
+    "file:routes/audit.py": 0,
+    "file:routes/ingestion.py": 0,
+    "file:services/ingestion.py": 2,
+    "file:tests/conftest.py": 0,
+    "file:tests/test_audit_routes.py": 0,
+    "file:tests/test_bc_routes.py": 0,
+    "file:tests/test_governance_routes.py": 0,
+    "file:tests/test_ingestion_routes.py": 0,
+    "file:tests/test_ingestion_service.py": 0,
+    "file:tests/test_models.py": 0,
+    "file:models/governance.py": 6,
+    "file:routes/bc.py": 0,
+    "file:routes/governance.py": 0,
+    "file:routes/ncit.py": 0,
+    "file:services/__init__.py": 3,
+    "file:services/audit.py": 4,
+    "file:services/bc_service.py": 3,
+    "file:services/export.py": 3,
+    "file:services/governance_service.py": 1,
+    "file:services/ncit_api.py": 3,
+    "file:tests/test_export_service.py": 0,
+    "file:tests/test_ncit.py": 0,
+    "file:routes/dashboard.py": 0,
+    "file:routes/loinc.py": 0,
+    "file:routes/specializations.py": 0,
+    "file:services/api_cache.py": 3,
+    "file:services/cdisc_api.py": 4,
+    "file:services/loinc_api.py": 3,
+    "file:tests/test_cdisc_api_cache.py": 0,
+    "file:tests/test_loinc.py": 0,
+    "file:app.py": 2,
+    "file:config.py": 1,
+    "file:db_bootstrap.py": 1,
+    "file:extensions.py": 27,
+    "file:models/__init__.py": 0,
+    "file:tests/test_dashboard.py": 0,
+    "file:tests/test_db_bootstrap.py": 0,
+    "file:mcp_server/__main__.py": 0,
+    "file:mcp_server/server.py": 2,
+    "file:models/specialization.py": 4,
+    "file:tests/test_mcp_server.py": 0,
+    "file:tests/test_specializations_routes.py": 0,
+    "pipeline:.github/workflows/ci.yml": 0,
+    "document:.claude/agent-memory/cdisc-frontend-dev/MEMORY.md": 0,
+    "document:.claude/agent-memory/cdisc-frontend-dev/frontend_architecture.md": 0,
+    "document:.claude/agent-memory/cdisc-frontend-dev/project_foundation.md": 0,
+    "document:.claude/agents/cdisc-concept-explorer.md": 0,
+    "document:.claude/agents/cdisc-frontend-dev.md": 0,
+    "document:.claude/agents/mike.md": 0,
+    "config:.mcp.json": 0,
+    "config:.pre-commit-config.yaml": 0,
+    "document:CLAUDE.md": 0,
+    "document:README-PROGRESS.md": 0,
+    "document:README.md": 0,
+    "config:pyproject.toml": 0,
+    "document:requirements-dev.txt": 0,
+    "document:requirements.txt": 0,
+    "document:files/plan.md": 0,
+    "document:files/implementation.md": 0,
+    "document:files/result.md": 0,
+    "file:templates/base.html": 0,
+    "file:templates/audit.html": 0,
+    "file:templates/bc_detail.html": 0,
+    "file:templates/bc_list.html": 0,
+    "file:templates/dashboard.html": 0,
+    "file:templates/governance.html": 0,
+    "file:templates/ingestion.html": 0,
+    "file:templates/library_bc_detail.html": 0,
+    "file:templates/library_spec_detail.html": 0,
+    "file:templates/ncit_mapping.html": 0,
+    "file:templates/specializations.html": 0,
+    "document:.claude/agent-memory/cdisc-concept-explorer/MEMORY.md": 0,
+    "document:.claude/agent-memory/cdisc-concept-explorer/reference_api_endpoints.md": 0,
+    "document:.claude/skills/code-review/SKILL.md": 0,
+    "document:.claude/skills/run-concept-curation/SKILL.md": 0,
+    "file:.claude/skills/run-concept-curation/smoke.sh": 0,
+    "config:.flake8": 0,
+    "config:.hintrc": 0,
+    "config:.ua/.understandignore": 0,
+    "config:.ua/config.json": 0,
+    "file:files/BC Curation Principles and Completion GLs.xlsx": 0,
+    "file:files/BC DEC Templates.xlsx": 0,
+    "file:files/BC Examples.xlsx": 0,
+    "file:files/BC Governance.docx": 0,
+    "file:mcp_server/__init__.py": 0,
+    "document:migrations/README": 0,
+    "config:migrations/alembic.ini": 0,
+    "file:migrations/env.py": 0,
+    "file:migrations/script.py.mako": 0,
+    "file:migrations/versions/51d4a009d291_baseline_initial_schema.py": 0,
+    "file:routes/__init__.py": 0,
+    "file:static/css/custom.css": 0,
+    "file:static/js/main.js": 0,
+    "file:tests/__init__.py": 0,
+    "file:files/cdisc_bc_ai_platform.html": 0,
+    "file:files/cdisc_smart_goals_infographic.html": 0
+  },
+  "fileFanOut": {
+    "file:models/audit.py": 1,
+    "file:models/bc.py": 1,
+    "file:models/ingestion.py": 1,
+    "file:routes/audit.py": 1,
+    "file:routes/ingestion.py": 5,
+    "file:services/ingestion.py": 0,
+    "file:tests/conftest.py": 6,
+    "file:tests/test_audit_routes.py": 2,
+    "file:tests/test_bc_routes.py": 3,
+    "file:tests/test_governance_routes.py": 4,
+    "file:tests/test_ingestion_routes.py": 4,
+    "file:tests/test_ingestion_service.py": 1,
+    "file:tests/test_models.py": 4,
+    "file:models/governance.py": 1,
+    "file:routes/bc.py": 10,
+    "file:routes/governance.py": 5,
+    "file:routes/ncit.py": 5,
+    "file:services/__init__.py": 0,
+    "file:services/audit.py": 2,
+    "file:services/bc_service.py": 5,
+    "file:services/export.py": 0,
+    "file:services/governance_service.py": 4,
+    "file:services/ncit_api.py": 1,
+    "file:tests/test_export_service.py": 3,
+    "file:tests/test_ncit.py": 1,
+    "file:routes/dashboard.py": 3,
+    "file:routes/loinc.py": 1,
+    "file:routes/specializations.py": 5,
+    "file:services/api_cache.py": 0,
+    "file:services/cdisc_api.py": 1,
+    "file:services/loinc_api.py": 1,
+    "file:tests/test_cdisc_api_cache.py": 1,
+    "file:tests/test_loinc.py": 1,
+    "file:app.py": 2,
+    "file:config.py": 0,
+    "file:db_bootstrap.py": 1,
+    "file:extensions.py": 0,
+    "file:models/__init__.py": 1,
+    "file:tests/test_dashboard.py": 2,
+    "file:tests/test_db_bootstrap.py": 3,
+    "file:mcp_server/__main__.py": 1,
+    "file:mcp_server/server.py": 0,
+    "file:models/specialization.py": 1,
+    "file:tests/test_mcp_server.py": 7,
+    "file:tests/test_specializations_routes.py": 4,
+    "pipeline:.github/workflows/ci.yml": 0,
+    "document:.claude/agent-memory/cdisc-frontend-dev/MEMORY.md": 0,
+    "document:.claude/agent-memory/cdisc-frontend-dev/frontend_architecture.md": 0,
+    "document:.claude/agent-memory/cdisc-frontend-dev/project_foundation.md": 0,
+    "document:.claude/agents/cdisc-concept-explorer.md": 0,
+    "document:.claude/agents/cdisc-frontend-dev.md": 0,
+    "document:.claude/agents/mike.md": 0,
+    "config:.mcp.json": 0,
+    "config:.pre-commit-config.yaml": 0,
+    "document:CLAUDE.md": 0,
+    "document:README-PROGRESS.md": 0,
+    "document:README.md": 0,
+    "config:pyproject.toml": 0,
+    "document:requirements-dev.txt": 0,
+    "document:requirements.txt": 0,
+    "document:files/plan.md": 0,
+    "document:files/implementation.md": 0,
+    "document:files/result.md": 0,
+    "file:templates/base.html": 0,
+    "file:templates/audit.html": 0,
+    "file:templates/bc_detail.html": 0,
+    "file:templates/bc_list.html": 0,
+    "file:templates/dashboard.html": 0,
+    "file:templates/governance.html": 0,
+    "file:templates/ingestion.html": 0,
+    "file:templates/library_bc_detail.html": 0,
+    "file:templates/library_spec_detail.html": 0,
+    "file:templates/ncit_mapping.html": 0,
+    "file:templates/specializations.html": 0,
+    "document:.claude/agent-memory/cdisc-concept-explorer/MEMORY.md": 0,
+    "document:.claude/agent-memory/cdisc-concept-explorer/reference_api_endpoints.md": 0,
+    "document:.claude/skills/code-review/SKILL.md": 0,
+    "document:.claude/skills/run-concept-curation/SKILL.md": 0,
+    "file:.claude/skills/run-concept-curation/smoke.sh": 0,
+    "config:.flake8": 0,
+    "config:.hintrc": 0,
+    "config:.ua/.understandignore": 0,
+    "config:.ua/config.json": 0,
+    "file:files/BC Curation Principles and Completion GLs.xlsx": 0,
+    "file:files/BC DEC Templates.xlsx": 0,
+    "file:files/BC Examples.xlsx": 0,
+    "file:files/BC Governance.docx": 0,
+    "file:mcp_server/__init__.py": 0,
+    "document:migrations/README": 0,
+    "config:migrations/alembic.ini": 0,
+    "file:migrations/env.py": 0,
+    "file:migrations/script.py.mako": 0,
+    "file:migrations/versions/51d4a009d291_baseline_initial_schema.py": 0,
+    "file:routes/__init__.py": 0,
+    "file:static/css/custom.css": 0,
+    "file:static/js/main.js": 0,
+    "file:tests/__init__.py": 0,
+    "file:files/cdisc_bc_ai_platform.html": 0,
+    "file:files/cdisc_smart_goals_infographic.html": 0
+  }
+}

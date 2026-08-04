@@ -1,0 +1,2566 @@
+{
+  "scriptCompleted": true,
+  "filesAnalyzed": 12,
+  "filesSkipped": [
+    ".flake8",
+    ".hintrc",
+    ".ua/.understandignore",
+    "files/BC Curation Principles and Completion GLs.xlsx",
+    "files/BC DEC Templates.xlsx",
+    "files/BC Examples.xlsx",
+    "files/BC Governance.docx",
+    "migrations/README",
+    "migrations/alembic.ini",
+    "migrations/script.py.mako",
+    "static/css/custom.css"
+  ],
+  "analysisOutcomes": {
+    "structure": {
+      "succeeded": 12,
+      "failed": 0
+    },
+    "callGraph": {
+      "succeeded": 6,
+      "failed": 0,
+      "skipped": 6
+    }
+  },
+  "results": [
+    {
+      "path": ".claude/agent-memory/cdisc-concept-explorer/MEMORY.md",
+      "language": "markdown",
+      "fileCategory": "docs",
+      "totalLines": 1,
+      "nonEmptyLines": 1,
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0,
+        "sectionCount": 0
+      }
+    },
+    {
+      "path": ".claude/agent-memory/cdisc-concept-explorer/reference_api_endpoints.md",
+      "language": "markdown",
+      "fileCategory": "docs",
+      "totalLines": 36,
+      "nonEmptyLines": 27,
+      "sections": [
+        {
+          "heading": "Base URL",
+          "level": 2,
+          "line": 7
+        },
+        {
+          "heading": "Working Endpoints",
+          "level": 2,
+          "line": 11
+        },
+        {
+          "heading": "Pagination",
+          "level": 2,
+          "line": 22
+        },
+        {
+          "heading": "List Response Shape",
+          "level": 2,
+          "line": 25
+        },
+        {
+          "heading": "Single BC Record Fields",
+          "level": 2,
+          "line": 30
+        },
+        {
+          "heading": "Single Dataset Specialization Record Fields",
+          "level": 2,
+          "line": 33
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0,
+        "sectionCount": 6
+      }
+    },
+    {
+      "path": ".claude/skills/code-review/SKILL.md",
+      "language": "markdown",
+      "fileCategory": "docs",
+      "totalLines": 59,
+      "nonEmptyLines": 50,
+      "sections": [
+        {
+          "heading": "Code review for cdisc-concept-curation",
+          "level": 1,
+          "line": 6
+        },
+        {
+          "heading": "Project-specific checks (highest value)",
+          "level": 2,
+          "line": 12
+        },
+        {
+          "heading": "General checks",
+          "level": 2,
+          "line": 40
+        },
+        {
+          "heading": "Verification",
+          "level": 2,
+          "line": 51
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0,
+        "sectionCount": 4
+      }
+    },
+    {
+      "path": ".claude/skills/run-concept-curation/SKILL.md",
+      "language": "markdown",
+      "fileCategory": "docs",
+      "totalLines": 49,
+      "nonEmptyLines": 39,
+      "sections": [
+        {
+          "heading": "Run the cdisc-concept-curation app",
+          "level": 1,
+          "line": 6
+        },
+        {
+          "heading": "Quick smoke test (preferred)",
+          "level": 2,
+          "line": 8
+        },
+        {
+          "heading": "Manual dev server",
+          "level": 2,
+          "line": 21
+        },
+        {
+          "heading": "Rules",
+          "level": 2,
+          "line": 29
+        },
+        {
+          "heading": "Troubleshooting",
+          "level": 2,
+          "line": 42
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0,
+        "sectionCount": 5
+      }
+    },
+    {
+      "path": ".claude/skills/run-concept-curation/smoke.sh",
+      "language": "shell",
+      "fileCategory": "script",
+      "totalLines": 90,
+      "nonEmptyLines": 80,
+      "functions": [
+        {
+          "name": "cleanup",
+          "startLine": 16,
+          "endLine": 22,
+          "params": []
+        },
+        {
+          "name": "check",
+          "startLine": 25,
+          "endLine": 34,
+          "params": []
+        },
+        {
+          "name": "get_code",
+          "startLine": 36,
+          "endLine": 38,
+          "params": []
+        },
+        {
+          "name": "post_code",
+          "startLine": 40,
+          "endLine": 43,
+          "params": []
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 0,
+        "functionCount": 4,
+        "classCount": 0
+      }
+    },
+    {
+      "path": ".ua/config.json",
+      "language": "json",
+      "fileCategory": "config",
+      "totalLines": 1,
+      "nonEmptyLines": 1,
+      "sections": [
+        {
+          "heading": "outputLanguage",
+          "level": 1,
+          "line": 1
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0,
+        "sectionCount": 1
+      }
+    },
+    {
+      "path": "mcp_server/__init__.py",
+      "language": "python",
+      "fileCategory": "code",
+      "totalLines": 5,
+      "nonEmptyLines": 4,
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "migrations/env.py",
+      "language": "python",
+      "fileCategory": "code",
+      "totalLines": 105,
+      "nonEmptyLines": 76,
+      "functions": [
+        {
+          "name": "get_engine",
+          "startLine": 17,
+          "endLine": 23,
+          "params": []
+        },
+        {
+          "name": "get_engine_url",
+          "startLine": 26,
+          "endLine": 30,
+          "params": []
+        },
+        {
+          "name": "get_metadata",
+          "startLine": 46,
+          "endLine": 49,
+          "params": []
+        },
+        {
+          "name": "run_migrations_offline",
+          "startLine": 52,
+          "endLine": 68,
+          "params": []
+        },
+        {
+          "name": "run_migrations_online",
+          "startLine": 71,
+          "endLine": 99,
+          "params": []
+        }
+      ],
+      "exports": [
+        {
+          "name": "get_engine",
+          "line": 17,
+          "isDefault": false
+        },
+        {
+          "name": "get_engine_url",
+          "line": 26,
+          "isDefault": false
+        },
+        {
+          "name": "get_metadata",
+          "line": 46,
+          "isDefault": false
+        },
+        {
+          "name": "run_migrations_offline",
+          "line": 52,
+          "isDefault": false
+        },
+        {
+          "name": "run_migrations_online",
+          "line": 71,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "get_engine",
+          "callee": "current_app.extensions[\"migrate\"].db.get_engine",
+          "lineNumber": 20
+        },
+        {
+          "caller": "get_engine_url",
+          "callee": "get_engine().url.render_as_string(hide_password=False).replace",
+          "lineNumber": 28
+        },
+        {
+          "caller": "get_engine_url",
+          "callee": "get_engine().url.render_as_string",
+          "lineNumber": 28
+        },
+        {
+          "caller": "get_engine_url",
+          "callee": "get_engine",
+          "lineNumber": 28
+        },
+        {
+          "caller": "get_engine_url",
+          "callee": "str(get_engine().url).replace",
+          "lineNumber": 30
+        },
+        {
+          "caller": "get_engine_url",
+          "callee": "str",
+          "lineNumber": 30
+        },
+        {
+          "caller": "get_engine_url",
+          "callee": "get_engine",
+          "lineNumber": 30
+        },
+        {
+          "caller": "get_metadata",
+          "callee": "hasattr",
+          "lineNumber": 47
+        },
+        {
+          "caller": "run_migrations_offline",
+          "callee": "config.get_main_option",
+          "lineNumber": 64
+        },
+        {
+          "caller": "run_migrations_offline",
+          "callee": "context.configure",
+          "lineNumber": 65
+        },
+        {
+          "caller": "run_migrations_offline",
+          "callee": "get_metadata",
+          "lineNumber": 65
+        },
+        {
+          "caller": "run_migrations_offline",
+          "callee": "context.begin_transaction",
+          "lineNumber": 67
+        },
+        {
+          "caller": "run_migrations_offline",
+          "callee": "context.run_migrations",
+          "lineNumber": 68
+        },
+        {
+          "caller": "process_revision_directives",
+          "callee": "getattr",
+          "lineNumber": 83
+        },
+        {
+          "caller": "process_revision_directives",
+          "callee": "script.upgrade_ops.is_empty",
+          "lineNumber": 85
+        },
+        {
+          "caller": "process_revision_directives",
+          "callee": "logger.info",
+          "lineNumber": 87
+        },
+        {
+          "caller": "run_migrations_online",
+          "callee": "conf_args.get",
+          "lineNumber": 90
+        },
+        {
+          "caller": "run_migrations_online",
+          "callee": "get_engine",
+          "lineNumber": 93
+        },
+        {
+          "caller": "run_migrations_online",
+          "callee": "connectable.connect",
+          "lineNumber": 95
+        },
+        {
+          "caller": "run_migrations_online",
+          "callee": "context.configure",
+          "lineNumber": 96
+        },
+        {
+          "caller": "run_migrations_online",
+          "callee": "get_metadata",
+          "lineNumber": 96
+        },
+        {
+          "caller": "run_migrations_online",
+          "callee": "context.begin_transaction",
+          "lineNumber": 98
+        },
+        {
+          "caller": "run_migrations_online",
+          "callee": "context.run_migrations",
+          "lineNumber": 99
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 5,
+        "functionCount": 5,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "migrations/versions/51d4a009d291_baseline_initial_schema.py",
+      "language": "python",
+      "fileCategory": "code",
+      "totalLines": 142,
+      "nonEmptyLines": 132,
+      "functions": [
+        {
+          "name": "upgrade",
+          "startLine": 19,
+          "endLine": 128,
+          "params": []
+        },
+        {
+          "name": "downgrade",
+          "startLine": 131,
+          "endLine": 142,
+          "params": []
+        }
+      ],
+      "exports": [
+        {
+          "name": "upgrade",
+          "line": 19,
+          "isDefault": false
+        },
+        {
+          "name": "downgrade",
+          "line": 131,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "upgrade",
+          "callee": "op.create_table",
+          "lineNumber": 21
+        },
+        {
+          "caller": "upgrade",
+          "callee": "sa.Column",
+          "lineNumber": 23
+        },
+        {
+          "caller": "upgrade",
+          "callee": "sa.Integer",
+          "lineNumber": 23
+        },
+        {
+          "caller": "upgrade",
+          "callee": "sa.Column",
+          "lineNumber": 24
+        },
+        {
+          "caller": "upgrade",
+          "callee": "sa.String",
+          "lineNumber": 24
+        },
+        {
+          "caller": "upgrade",
+          "callee": "sa.Column",
+          "lineNumber": 25
+        },
+        {
+          "caller": "upgrade",
+          "callee": "sa.String",
+          "lineNumber": 25
+        },
+        {
+          "caller": "upgrade",
+          "callee": "sa.Column",
+          "lineNumber": 26
+        },
+        {
+          "caller": "upgrade",
+          "callee": "sa.String",
+          "lineNumber": 26
+        },
+        {
+          "caller": "upgrade",
+          "callee": "sa.Column",
+          "lineNumber": 27
+        },
+        {
+          "caller": "upgrade",
+          "callee": "sa.String",
+          "lineNumber": 27
+        },
+        {
+          "caller": "upgrade",
+          "callee": "sa.Column",
+          "lineNumber": 28
+        },
+        {
+          "caller": "upgrade",
+          "callee": "sa.Text",
+          "lineNumber": 28
+        },
+        {
+          "caller": "upgrade",
+          "callee": "sa.Column",
+          "lineNumber": 29
+        },
+        {
+          "caller": "upgrade",
+          "callee": "sa.Text",
+          "lineNumber": 29
+        },
+        {
+          "caller": "upgrade",
+          "callee": "sa.Column",
+          "lineNumber": 30
+        },
+        {
+          "caller": "upgrade",
+          "callee": "sa.DateTime",
+          "lineNumber": 30
+        },
+        {
+          "caller": "upgrade",
+          "callee": "sa.PrimaryKeyConstraint",
+          "lineNumber": 31
+        },
+        {
+          "caller": "upgrade",
+          "callee": "op.create_table",
+          "lineNumber": 33
+        },
+        {
+          "caller": "upgrade",
+          "callee": "sa.Column",
+          "lineNumber": 35
+        },
+        {
+          "caller": "upgrade",
+          "callee": "sa.String",
+          "lineNumber": 35
+        },
+        {
+          "caller": "upgrade",
+          "callee": "sa.Column",
+          "lineNumber": 36
+        },
+        {
+          "caller": "upgrade",
+          "callee": "sa.String",
+          "lineNumber": 36
+        },
+        {
+          "caller": "upgrade",
+          "callee": "sa.Column",
+          "lineNumber": 37
+        },
+        {
+          "caller": "upgrade",
+          "callee": "sa.Text",
+          "lineNumber": 37
+        },
+        {
+          "caller": "upgrade",
+          "callee": "sa.Column",
+          "lineNumber": 38
+        },
+        {
+          "caller": "upgrade",
+          "callee": "sa.String",
+          "lineNumber": 38
+        },
+        {
+          "caller": "upgrade",
+          "callee": "sa.Column",
+          "lineNumber": 39
+        },
+        {
+          "caller": "upgrade",
+          "callee": "sa.String",
+          "lineNumber": 39
+        },
+        {
+          "caller": "upgrade",
+          "callee": "sa.Column",
+          "lineNumber": 40
+        },
+        {
+          "caller": "upgrade",
+          "callee": "sa.String",
+          "lineNumber": 40
+        },
+        {
+          "caller": "upgrade",
+          "callee": "sa.Column",
+          "lineNumber": 41
+        },
+        {
+          "caller": "upgrade",
+          "callee": "sa.Text",
+          "lineNumber": 41
+        },
+        {
+          "caller": "upgrade",
+          "callee": "sa.Column",
+          "lineNumber": 42
+        },
+        {
+          "caller": "upgrade",
+          "callee": "sa.String",
+          "lineNumber": 42
+        },
+        {
+          "caller": "upgrade",
+          "callee": "sa.Column",
+          "lineNumber": 43
+        },
+        {
+          "caller": "upgrade",
+          "callee": "sa.String",
+          "lineNumber": 43
+        },
+        {
+          "caller": "upgrade",
+          "callee": "sa.Column",
+          "lineNumber": 44
+        },
+        {
+          "caller": "upgrade",
+          "callee": "sa.String",
+          "lineNumber": 44
+        },
+        {
+          "caller": "upgrade",
+          "callee": "sa.Column",
+          "lineNumber": 45
+        },
+        {
+          "caller": "upgrade",
+          "callee": "sa.String",
+          "lineNumber": 45
+        },
+        {
+          "caller": "upgrade",
+          "callee": "sa.Column",
+          "lineNumber": 46
+        },
+        {
+          "caller": "upgrade",
+          "callee": "sa.String",
+          "lineNumber": 46
+        },
+        {
+          "caller": "upgrade",
+          "callee": "sa.Column",
+          "lineNumber": 47
+        },
+        {
+          "caller": "upgrade",
+          "callee": "sa.Text",
+          "lineNumber": 47
+        },
+        {
+          "caller": "upgrade",
+          "callee": "sa.Column",
+          "lineNumber": 48
+        },
+        {
+          "caller": "upgrade",
+          "callee": "sa.Text",
+          "lineNumber": 48
+        },
+        {
+          "caller": "upgrade",
+          "callee": "sa.Column",
+          "lineNumber": 49
+        },
+        {
+          "caller": "upgrade",
+          "callee": "sa.String",
+          "lineNumber": 49
+        },
+        {
+          "caller": "upgrade",
+          "callee": "sa.Column",
+          "lineNumber": 50
+        },
+        {
+          "caller": "upgrade",
+          "callee": "sa.String",
+          "lineNumber": 50
+        },
+        {
+          "caller": "upgrade",
+          "callee": "sa.Column",
+          "lineNumber": 51
+        },
+        {
+          "caller": "upgrade",
+          "callee": "sa.String",
+          "lineNumber": 51
+        },
+        {
+          "caller": "upgrade",
+          "callee": "sa.Column",
+          "lineNumber": 52
+        },
+        {
+          "caller": "upgrade",
+          "callee": "sa.DateTime",
+          "lineNumber": 52
+        },
+        {
+          "caller": "upgrade",
+          "callee": "sa.Column",
+          "lineNumber": 53
+        },
+        {
+          "caller": "upgrade",
+          "callee": "sa.DateTime",
+          "lineNumber": 53
+        },
+        {
+          "caller": "upgrade",
+          "callee": "sa.Column",
+          "lineNumber": 54
+        },
+        {
+          "caller": "upgrade",
+          "callee": "sa.Text",
+          "lineNumber": 54
+        },
+        {
+          "caller": "upgrade",
+          "callee": "sa.Column",
+          "lineNumber": 55
+        },
+        {
+          "caller": "upgrade",
+          "callee": "sa.String",
+          "lineNumber": 55
+        },
+        {
+          "caller": "upgrade",
+          "callee": "sa.ForeignKeyConstraint",
+          "lineNumber": 56
+        },
+        {
+          "caller": "upgrade",
+          "callee": "sa.PrimaryKeyConstraint",
+          "lineNumber": 60
+        },
+        {
+          "caller": "upgrade",
+          "callee": "op.create_table",
+          "lineNumber": 62
+        },
+        {
+          "caller": "upgrade",
+          "callee": "sa.Column",
+          "lineNumber": 64
+        },
+        {
+          "caller": "upgrade",
+          "callee": "sa.Integer",
+          "lineNumber": 64
+        },
+        {
+          "caller": "upgrade",
+          "callee": "sa.Column",
+          "lineNumber": 65
+        },
+        {
+          "caller": "upgrade",
+          "callee": "sa.String",
+          "lineNumber": 65
+        },
+        {
+          "caller": "upgrade",
+          "callee": "sa.Column",
+          "lineNumber": 66
+        },
+        {
+          "caller": "upgrade",
+          "callee": "sa.String",
+          "lineNumber": 66
+        },
+        {
+          "caller": "upgrade",
+          "callee": "sa.Column",
+          "lineNumber": 67
+        },
+        {
+          "caller": "upgrade",
+          "callee": "sa.String",
+          "lineNumber": 67
+        },
+        {
+          "caller": "upgrade",
+          "callee": "sa.Column",
+          "lineNumber": 68
+        },
+        {
+          "caller": "upgrade",
+          "callee": "sa.Text",
+          "lineNumber": 68
+        },
+        {
+          "caller": "upgrade",
+          "callee": "sa.Column",
+          "lineNumber": 69
+        },
+        {
+          "caller": "upgrade",
+          "callee": "sa.Text",
+          "lineNumber": 69
+        },
+        {
+          "caller": "upgrade",
+          "callee": "sa.Column",
+          "lineNumber": 70
+        },
+        {
+          "caller": "upgrade",
+          "callee": "sa.Text",
+          "lineNumber": 70
+        },
+        {
+          "caller": "upgrade",
+          "callee": "sa.Column",
+          "lineNumber": 71
+        },
+        {
+          "caller": "upgrade",
+          "callee": "sa.Text",
+          "lineNumber": 71
+        },
+        {
+          "caller": "upgrade",
+          "callee": "sa.Column",
+          "lineNumber": 72
+        },
+        {
+          "caller": "upgrade",
+          "callee": "sa.Boolean",
+          "lineNumber": 72
+        },
+        {
+          "caller": "upgrade",
+          "callee": "sa.Column",
+          "lineNumber": 73
+        },
+        {
+          "caller": "upgrade",
+          "callee": "sa.String",
+          "lineNumber": 73
+        },
+        {
+          "caller": "upgrade",
+          "callee": "sa.Column",
+          "lineNumber": 74
+        },
+        {
+          "caller": "upgrade",
+          "callee": "sa.DateTime",
+          "lineNumber": 74
+        },
+        {
+          "caller": "upgrade",
+          "callee": "sa.PrimaryKeyConstraint",
+          "lineNumber": 75
+        },
+        {
+          "caller": "upgrade",
+          "callee": "op.batch_alter_table",
+          "lineNumber": 77
+        },
+        {
+          "caller": "upgrade",
+          "callee": "batch_op.create_index",
+          "lineNumber": 78
+        },
+        {
+          "caller": "upgrade",
+          "callee": "batch_op.f",
+          "lineNumber": 78
+        },
+        {
+          "caller": "upgrade",
+          "callee": "op.create_table",
+          "lineNumber": 80
+        },
+        {
+          "caller": "upgrade",
+          "callee": "sa.Column",
+          "lineNumber": 82
+        },
+        {
+          "caller": "upgrade",
+          "callee": "sa.Integer",
+          "lineNumber": 82
+        },
+        {
+          "caller": "upgrade",
+          "callee": "sa.Column",
+          "lineNumber": 83
+        },
+        {
+          "caller": "upgrade",
+          "callee": "sa.String",
+          "lineNumber": 83
+        },
+        {
+          "caller": "upgrade",
+          "callee": "sa.Column",
+          "lineNumber": 84
+        },
+        {
+          "caller": "upgrade",
+          "callee": "sa.String",
+          "lineNumber": 84
+        },
+        {
+          "caller": "upgrade",
+          "callee": "sa.Column",
+          "lineNumber": 85
+        },
+        {
+          "caller": "upgrade",
+          "callee": "sa.String",
+          "lineNumber": 85
+        },
+        {
+          "caller": "upgrade",
+          "callee": "sa.Column",
+          "lineNumber": 86
+        },
+        {
+          "caller": "upgrade",
+          "callee": "sa.String",
+          "lineNumber": 86
+        },
+        {
+          "caller": "upgrade",
+          "callee": "sa.Column",
+          "lineNumber": 87
+        },
+        {
+          "caller": "upgrade",
+          "callee": "sa.String",
+          "lineNumber": 87
+        },
+        {
+          "caller": "upgrade",
+          "callee": "sa.Column",
+          "lineNumber": 88
+        },
+        {
+          "caller": "upgrade",
+          "callee": "sa.Text",
+          "lineNumber": 88
+        },
+        {
+          "caller": "upgrade",
+          "callee": "sa.Column",
+          "lineNumber": 89
+        },
+        {
+          "caller": "upgrade",
+          "callee": "sa.Boolean",
+          "lineNumber": 89
+        },
+        {
+          "caller": "upgrade",
+          "callee": "sa.Column",
+          "lineNumber": 90
+        },
+        {
+          "caller": "upgrade",
+          "callee": "sa.Boolean",
+          "lineNumber": 90
+        },
+        {
+          "caller": "upgrade",
+          "callee": "sa.Column",
+          "lineNumber": 91
+        },
+        {
+          "caller": "upgrade",
+          "callee": "sa.String",
+          "lineNumber": 91
+        },
+        {
+          "caller": "upgrade",
+          "callee": "sa.Column",
+          "lineNumber": 92
+        },
+        {
+          "caller": "upgrade",
+          "callee": "sa.Integer",
+          "lineNumber": 92
+        },
+        {
+          "caller": "upgrade",
+          "callee": "sa.ForeignKeyConstraint",
+          "lineNumber": 93
+        },
+        {
+          "caller": "upgrade",
+          "callee": "sa.PrimaryKeyConstraint",
+          "lineNumber": 97
+        },
+        {
+          "caller": "upgrade",
+          "callee": "op.create_table",
+          "lineNumber": 99
+        },
+        {
+          "caller": "upgrade",
+          "callee": "sa.Column",
+          "lineNumber": 101
+        },
+        {
+          "caller": "upgrade",
+          "callee": "sa.String",
+          "lineNumber": 101
+        },
+        {
+          "caller": "upgrade",
+          "callee": "sa.Column",
+          "lineNumber": 102
+        },
+        {
+          "caller": "upgrade",
+          "callee": "sa.String",
+          "lineNumber": 102
+        },
+        {
+          "caller": "upgrade",
+          "callee": "sa.Column",
+          "lineNumber": 103
+        },
+        {
+          "caller": "upgrade",
+          "callee": "sa.String",
+          "lineNumber": 103
+        },
+        {
+          "caller": "upgrade",
+          "callee": "sa.Column",
+          "lineNumber": 104
+        },
+        {
+          "caller": "upgrade",
+          "callee": "sa.String",
+          "lineNumber": 104
+        },
+        {
+          "caller": "upgrade",
+          "callee": "sa.Column",
+          "lineNumber": 105
+        },
+        {
+          "caller": "upgrade",
+          "callee": "sa.Text",
+          "lineNumber": 105
+        },
+        {
+          "caller": "upgrade",
+          "callee": "sa.Column",
+          "lineNumber": 106
+        },
+        {
+          "caller": "upgrade",
+          "callee": "sa.DateTime",
+          "lineNumber": 106
+        },
+        {
+          "caller": "upgrade",
+          "callee": "sa.ForeignKeyConstraint",
+          "lineNumber": 107
+        },
+        {
+          "caller": "upgrade",
+          "callee": "sa.PrimaryKeyConstraint",
+          "lineNumber": 111
+        },
+        {
+          "caller": "upgrade",
+          "callee": "op.create_table",
+          "lineNumber": 113
+        },
+        {
+          "caller": "upgrade",
+          "callee": "sa.Column",
+          "lineNumber": 115
+        },
+        {
+          "caller": "upgrade",
+          "callee": "sa.Integer",
+          "lineNumber": 115
+        },
+        {
+          "caller": "upgrade",
+          "callee": "sa.Column",
+          "lineNumber": 116
+        },
+        {
+          "caller": "upgrade",
+          "callee": "sa.String",
+          "lineNumber": 116
+        },
+        {
+          "caller": "upgrade",
+          "callee": "sa.Column",
+          "lineNumber": 117
+        },
+        {
+          "caller": "upgrade",
+          "callee": "sa.Integer",
+          "lineNumber": 117
+        },
+        {
+          "caller": "upgrade",
+          "callee": "sa.Column",
+          "lineNumber": 118
+        },
+        {
+          "caller": "upgrade",
+          "callee": "sa.String",
+          "lineNumber": 118
+        },
+        {
+          "caller": "upgrade",
+          "callee": "sa.Column",
+          "lineNumber": 119
+        },
+        {
+          "caller": "upgrade",
+          "callee": "sa.String",
+          "lineNumber": 119
+        },
+        {
+          "caller": "upgrade",
+          "callee": "sa.Column",
+          "lineNumber": 120
+        },
+        {
+          "caller": "upgrade",
+          "callee": "sa.Text",
+          "lineNumber": 120
+        },
+        {
+          "caller": "upgrade",
+          "callee": "sa.Column",
+          "lineNumber": 121
+        },
+        {
+          "caller": "upgrade",
+          "callee": "sa.DateTime",
+          "lineNumber": 121
+        },
+        {
+          "caller": "upgrade",
+          "callee": "sa.ForeignKeyConstraint",
+          "lineNumber": 122
+        },
+        {
+          "caller": "upgrade",
+          "callee": "sa.PrimaryKeyConstraint",
+          "lineNumber": 126
+        },
+        {
+          "caller": "downgrade",
+          "callee": "op.drop_table",
+          "lineNumber": 133
+        },
+        {
+          "caller": "downgrade",
+          "callee": "op.drop_table",
+          "lineNumber": 134
+        },
+        {
+          "caller": "downgrade",
+          "callee": "op.drop_table",
+          "lineNumber": 135
+        },
+        {
+          "caller": "downgrade",
+          "callee": "op.batch_alter_table",
+          "lineNumber": 136
+        },
+        {
+          "caller": "downgrade",
+          "callee": "batch_op.drop_index",
+          "lineNumber": 137
+        },
+        {
+          "caller": "downgrade",
+          "callee": "batch_op.f",
+          "lineNumber": 137
+        },
+        {
+          "caller": "downgrade",
+          "callee": "op.drop_table",
+          "lineNumber": 139
+        },
+        {
+          "caller": "downgrade",
+          "callee": "op.drop_table",
+          "lineNumber": 140
+        },
+        {
+          "caller": "downgrade",
+          "callee": "op.drop_table",
+          "lineNumber": 141
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 2,
+        "functionCount": 2,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "routes/__init__.py",
+      "language": "python",
+      "fileCategory": "code",
+      "totalLines": 1,
+      "nonEmptyLines": 0,
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "static/js/main.js",
+      "language": "javascript",
+      "fileCategory": "code",
+      "totalLines": 819,
+      "nonEmptyLines": 723,
+      "callGraph": [
+        {
+          "caller": "initFlashDismiss",
+          "callee": "document.querySelectorAll",
+          "lineNumber": 13
+        },
+        {
+          "caller": "initFlashDismiss",
+          "callee": "flashMessages.forEach",
+          "lineNumber": 14
+        },
+        {
+          "caller": "initFlashDismiss",
+          "callee": "setTimeout",
+          "lineNumber": 15
+        },
+        {
+          "caller": "initFlashDismiss",
+          "callee": "bootstrap.Alert.getOrCreateInstance",
+          "lineNumber": 16
+        },
+        {
+          "caller": "initFlashDismiss",
+          "callee": "bsAlert.close",
+          "lineNumber": 17
+        },
+        {
+          "caller": "initFileUpload",
+          "callee": "document.getElementById",
+          "lineNumber": 26
+        },
+        {
+          "caller": "initFileUpload",
+          "callee": "document.getElementById",
+          "lineNumber": 27
+        },
+        {
+          "caller": "initFileUpload",
+          "callee": "document.getElementById",
+          "lineNumber": 28
+        },
+        {
+          "caller": "initFileUpload",
+          "callee": "fileInput.addEventListener",
+          "lineNumber": 31
+        },
+        {
+          "caller": "initFileUpload",
+          "callee": "fileNameDisplay.classList.remove",
+          "lineNumber": 35
+        },
+        {
+          "caller": "initFileUpload",
+          "callee": "uploadZone.addEventListener",
+          "lineNumber": 42
+        },
+        {
+          "caller": "initFileUpload",
+          "callee": "e.target.closest",
+          "lineNumber": 43
+        },
+        {
+          "caller": "initFileUpload",
+          "callee": "e.target.closest",
+          "lineNumber": 43
+        },
+        {
+          "caller": "initFileUpload",
+          "callee": "fileInput.click",
+          "lineNumber": 44
+        },
+        {
+          "caller": "initFileUpload",
+          "callee": "uploadZone.addEventListener",
+          "lineNumber": 48
+        },
+        {
+          "caller": "initFileUpload",
+          "callee": "e.preventDefault",
+          "lineNumber": 49
+        },
+        {
+          "caller": "initFileUpload",
+          "callee": "uploadZone.classList.add",
+          "lineNumber": 50
+        },
+        {
+          "caller": "initFileUpload",
+          "callee": "uploadZone.addEventListener",
+          "lineNumber": 53
+        },
+        {
+          "caller": "initFileUpload",
+          "callee": "uploadZone.classList.remove",
+          "lineNumber": 54
+        },
+        {
+          "caller": "initFileUpload",
+          "callee": "uploadZone.addEventListener",
+          "lineNumber": 57
+        },
+        {
+          "caller": "initFileUpload",
+          "callee": "e.preventDefault",
+          "lineNumber": 58
+        },
+        {
+          "caller": "initFileUpload",
+          "callee": "uploadZone.classList.remove",
+          "lineNumber": 59
+        },
+        {
+          "caller": "initFileUpload",
+          "callee": "dt.items.add",
+          "lineNumber": 64
+        },
+        {
+          "caller": "initFileUpload",
+          "callee": "fileNameDisplay.classList.remove",
+          "lineNumber": 68
+        },
+        {
+          "caller": "initNcitLookup",
+          "callee": "document.getElementById",
+          "lineNumber": 85
+        },
+        {
+          "caller": "initNcitLookup",
+          "callee": "document.getElementById",
+          "lineNumber": 86
+        },
+        {
+          "caller": "initNcitLookup",
+          "callee": "document.getElementById",
+          "lineNumber": 87
+        },
+        {
+          "caller": "initNcitLookup",
+          "callee": "document.getElementById",
+          "lineNumber": 88
+        },
+        {
+          "caller": "initNcitLookup",
+          "callee": "lookupBtn.addEventListener",
+          "lineNumber": 92
+        },
+        {
+          "caller": "initNcitLookup",
+          "callee": "ncitCodeInput.value.trim",
+          "lineNumber": 93
+        },
+        {
+          "caller": "initNcitLookup",
+          "callee": "ncitCodeInput.focus",
+          "lineNumber": 95
+        },
+        {
+          "caller": "initNcitLookup",
+          "callee": "url.searchParams.set",
+          "lineNumber": 104
+        },
+        {
+          "caller": "initNcitLookup",
+          "callee": "fetch",
+          "lineNumber": 106
+        },
+        {
+          "caller": "initNcitLookup",
+          "callee": "url.toString",
+          "lineNumber": 106
+        },
+        {
+          "caller": "initNcitLookup",
+          "callee": "response.json",
+          "lineNumber": 112
+        },
+        {
+          "caller": "initNcitLookup",
+          "callee": "renderNcitResults",
+          "lineNumber": 113
+        },
+        {
+          "caller": "initNcitLookup",
+          "callee": "resultsPanel.classList.remove",
+          "lineNumber": 114
+        },
+        {
+          "caller": "initNcitLookup",
+          "callee": "resultsPanel.classList.remove",
+          "lineNumber": 119
+        },
+        {
+          "caller": "initNcitLookup",
+          "callee": "console.error",
+          "lineNumber": 120
+        },
+        {
+          "caller": "renderNcitResults",
+          "callee": "data.map(function (item) {\n      const synonymList = Array.isArray(item.synonyms) ? item.synonyms.join('; ') : (item.synonyms || '');\n      const safeCode = escapeHtml(item.code || '');\n      const safeName = escapeHtml(item.preferred_name || '');\n      const safeDef  = escapeHtml(item.definition || '');\n      const safeSyn  = escapeHtml(synonymList);\n\n      return `\n        <div class=\"ncit-result-card\" data-code=\"${safeCode}\">\n          <div class=\"d-flex align-items-center justify-content-between mb-1\">\n            <span class=\"ncit-code\">${safeCode}</span>\n            <button type=\"button\"\n                    class=\"btn btn-sm btn-outline-primary use-ncit-btn\"\n                    data-code=\"${safeCode}\"\n                    data-name=\"${safeName}\">\n              Use this concept\n            </button>\n          </div>\n          <div class=\"ncit-preferred-name\">${safeName}</div>\n          <div class=\"ncit-definition\">${safeDef}</div>\n          ${safeSyn ? `<div class=\"small text-secondary\"><strong>Synonyms:</strong> ${safeSyn}</div>` : ''}\n        </div>\n      `;\n    }).join",
+          "lineNumber": 140
+        },
+        {
+          "caller": "renderNcitResults",
+          "callee": "data.map",
+          "lineNumber": 140
+        },
+        {
+          "caller": "renderNcitResults",
+          "callee": "Array.isArray",
+          "lineNumber": 141
+        },
+        {
+          "caller": "renderNcitResults",
+          "callee": "item.synonyms.join",
+          "lineNumber": 141
+        },
+        {
+          "caller": "renderNcitResults",
+          "callee": "escapeHtml",
+          "lineNumber": 142
+        },
+        {
+          "caller": "renderNcitResults",
+          "callee": "escapeHtml",
+          "lineNumber": 143
+        },
+        {
+          "caller": "renderNcitResults",
+          "callee": "escapeHtml",
+          "lineNumber": 144
+        },
+        {
+          "caller": "renderNcitResults",
+          "callee": "escapeHtml",
+          "lineNumber": 145
+        },
+        {
+          "caller": "renderNcitResults",
+          "callee": "container.querySelectorAll('.use-ncit-btn').forEach",
+          "lineNumber": 166
+        },
+        {
+          "caller": "renderNcitResults",
+          "callee": "container.querySelectorAll",
+          "lineNumber": 166
+        },
+        {
+          "caller": "renderNcitResults",
+          "callee": "btn.addEventListener",
+          "lineNumber": 167
+        },
+        {
+          "caller": "renderNcitResults",
+          "callee": "document.getElementById",
+          "lineNumber": 171
+        },
+        {
+          "caller": "renderNcitResults",
+          "callee": "shortNameInput.value.trim",
+          "lineNumber": 172
+        },
+        {
+          "caller": "renderNcitResults",
+          "callee": "document.getElementById",
+          "lineNumber": 176
+        },
+        {
+          "caller": "renderNcitResults",
+          "callee": "panel.classList.add",
+          "lineNumber": 177
+        },
+        {
+          "caller": "renderNcitResults",
+          "callee": "document.getElementById",
+          "lineNumber": 180
+        },
+        {
+          "caller": "renderNcitResults",
+          "callee": "metaDisplay.classList.remove",
+          "lineNumber": 183
+        },
+        {
+          "caller": "renderNcitResults",
+          "callee": "encodeURIComponent",
+          "lineNumber": 186
+        },
+        {
+          "caller": "renderNcitResults",
+          "callee": "fetch",
+          "lineNumber": 187
+        },
+        {
+          "caller": "renderNcitResults",
+          "callee": "url.toString",
+          "lineNumber": 187
+        },
+        {
+          "caller": "renderNcitResults",
+          "callee": "response.json",
+          "lineNumber": 189
+        },
+        {
+          "caller": "renderNcitResults",
+          "callee": "renderNcitMetaDisplay",
+          "lineNumber": 190
+        },
+        {
+          "caller": "renderNcitResults",
+          "callee": "document.getElementById",
+          "lineNumber": 191
+        },
+        {
+          "caller": "renderNcitResults",
+          "callee": "JSON.stringify",
+          "lineNumber": 192
+        },
+        {
+          "caller": "renderNcitResults",
+          "callee": "console.error",
+          "lineNumber": 198
+        },
+        {
+          "caller": "renderNcitMetaDisplay",
+          "callee": "document.getElementById",
+          "lineNumber": 209
+        },
+        {
+          "caller": "renderNcitMetaDisplay",
+          "callee": "fields.filter(function (f) {\n      var v = item[f.key];\n      return v && (!Array.isArray(v) || v.length > 0);\n    }).map",
+          "lineNumber": 222
+        },
+        {
+          "caller": "renderNcitMetaDisplay",
+          "callee": "fields.filter",
+          "lineNumber": 222
+        },
+        {
+          "caller": "renderNcitMetaDisplay",
+          "callee": "Array.isArray",
+          "lineNumber": 224
+        },
+        {
+          "caller": "renderNcitMetaDisplay",
+          "callee": "v.map(function (d) { return '[' + (d.source || '') + '] ' + (d.definition || ''); }).filter(Boolean).join",
+          "lineNumber": 229
+        },
+        {
+          "caller": "renderNcitMetaDisplay",
+          "callee": "v.map(function (d) { return '[' + (d.source || '') + '] ' + (d.definition || ''); }).filter",
+          "lineNumber": 229
+        },
+        {
+          "caller": "renderNcitMetaDisplay",
+          "callee": "v.map",
+          "lineNumber": 229
+        },
+        {
+          "caller": "renderNcitMetaDisplay",
+          "callee": "v.map(function (p) { return p.name + ' (' + p.code + ')'; }).join",
+          "lineNumber": 231
+        },
+        {
+          "caller": "renderNcitMetaDisplay",
+          "callee": "v.map",
+          "lineNumber": 231
+        },
+        {
+          "caller": "renderNcitMetaDisplay",
+          "callee": "Array.isArray",
+          "lineNumber": 232
+        },
+        {
+          "caller": "renderNcitMetaDisplay",
+          "callee": "v.join",
+          "lineNumber": 233
+        },
+        {
+          "caller": "renderNcitMetaDisplay",
+          "callee": "String",
+          "lineNumber": 235
+        },
+        {
+          "caller": "renderNcitMetaDisplay",
+          "callee": "escapeHtml",
+          "lineNumber": 238
+        },
+        {
+          "caller": "renderNcitMetaDisplay",
+          "callee": "escapeHtml",
+          "lineNumber": 239
+        },
+        {
+          "caller": "renderNcitMetaDisplay",
+          "callee": "items.push",
+          "lineNumber": 245
+        },
+        {
+          "caller": "renderNcitMetaDisplay",
+          "callee": "escapeHtml",
+          "lineNumber": 247
+        },
+        {
+          "caller": "renderNcitMetaDisplay",
+          "callee": "items.join",
+          "lineNumber": 252
+        },
+        {
+          "caller": "renderNcitMetaDisplay",
+          "callee": "display.classList.toggle",
+          "lineNumber": 254
+        },
+        {
+          "caller": "renderNcitMetaDisplay",
+          "callee": "document.getElementById",
+          "lineNumber": 257
+        },
+        {
+          "caller": "renderNcitMetaDisplay",
+          "callee": "parentInput.value.trim",
+          "lineNumber": 258
+        },
+        {
+          "caller": "renderNcitMetaDisplay",
+          "callee": "Array.isArray",
+          "lineNumber": 258
+        },
+        {
+          "caller": "initDecTable",
+          "callee": "document.getElementById",
+          "lineNumber": 267
+        },
+        {
+          "caller": "initDecTable",
+          "callee": "document.getElementById",
+          "lineNumber": 268
+        },
+        {
+          "caller": "initDecTable",
+          "callee": "addDecBtn.addEventListener",
+          "lineNumber": 272
+        },
+        {
+          "caller": "initDecTable",
+          "callee": "decTableBody.querySelectorAll",
+          "lineNumber": 273
+        },
+        {
+          "caller": "initDecTable",
+          "callee": "buildDecRow",
+          "lineNumber": 274
+        },
+        {
+          "caller": "initDecTable",
+          "callee": "decTableBody.appendChild",
+          "lineNumber": 275
+        },
+        {
+          "caller": "initDecTable",
+          "callee": "decTableBody.addEventListener",
+          "lineNumber": 279
+        },
+        {
+          "caller": "initDecTable",
+          "callee": "e.target.closest",
+          "lineNumber": 280
+        },
+        {
+          "caller": "initDecTable",
+          "callee": "deleteBtn.closest",
+          "lineNumber": 282
+        },
+        {
+          "caller": "initDecTable",
+          "callee": "row.remove",
+          "lineNumber": 283
+        },
+        {
+          "caller": "buildDecRow",
+          "callee": "document.createElement",
+          "lineNumber": 292
+        },
+        {
+          "caller": "initKanban",
+          "callee": "document.querySelectorAll('.kanban-advance-btn').forEach",
+          "lineNumber": 334
+        },
+        {
+          "caller": "initKanban",
+          "callee": "document.querySelectorAll",
+          "lineNumber": 334
+        },
+        {
+          "caller": "initKanban",
+          "callee": "btn.addEventListener",
+          "lineNumber": 335
+        },
+        {
+          "caller": "initKanban",
+          "callee": "e.stopPropagation",
+          "lineNumber": 336
+        },
+        {
+          "caller": "initKanban",
+          "callee": "postJson",
+          "lineNumber": 342
+        },
+        {
+          "caller": "initKanban",
+          "callee": "encodeURIComponent",
+          "lineNumber": 342
+        },
+        {
+          "caller": "initKanban",
+          "callee": "location.reload",
+          "lineNumber": 344
+        },
+        {
+          "caller": "initKanban",
+          "callee": "showInlineToast",
+          "lineNumber": 346
+        },
+        {
+          "caller": "initKanban",
+          "callee": "showInlineToast",
+          "lineNumber": 350
+        },
+        {
+          "caller": "initKanban",
+          "callee": "console.error",
+          "lineNumber": 351
+        },
+        {
+          "caller": "initKanban",
+          "callee": "document.querySelectorAll('.kanban-reject-btn').forEach",
+          "lineNumber": 358
+        },
+        {
+          "caller": "initKanban",
+          "callee": "document.querySelectorAll",
+          "lineNumber": 358
+        },
+        {
+          "caller": "initKanban",
+          "callee": "btn.addEventListener",
+          "lineNumber": 359
+        },
+        {
+          "caller": "initKanban",
+          "callee": "e.stopPropagation",
+          "lineNumber": 360
+        },
+        {
+          "caller": "initKanban",
+          "callee": "confirm",
+          "lineNumber": 364
+        },
+        {
+          "caller": "initKanban",
+          "callee": "postJson",
+          "lineNumber": 368
+        },
+        {
+          "caller": "initKanban",
+          "callee": "encodeURIComponent",
+          "lineNumber": 368
+        },
+        {
+          "caller": "initKanban",
+          "callee": "location.reload",
+          "lineNumber": 370
+        },
+        {
+          "caller": "initKanban",
+          "callee": "showInlineToast",
+          "lineNumber": 372
+        },
+        {
+          "caller": "initKanban",
+          "callee": "showInlineToast",
+          "lineNumber": 376
+        },
+        {
+          "caller": "initKanban",
+          "callee": "console.error",
+          "lineNumber": 377
+        },
+        {
+          "caller": "initAuditDiff",
+          "callee": "document.querySelectorAll('.audit-diff-toggle').forEach",
+          "lineNumber": 388
+        },
+        {
+          "caller": "initAuditDiff",
+          "callee": "document.querySelectorAll",
+          "lineNumber": 388
+        },
+        {
+          "caller": "initAuditDiff",
+          "callee": "btn.addEventListener",
+          "lineNumber": 389
+        },
+        {
+          "caller": "initAuditDiff",
+          "callee": "btn.closest",
+          "lineNumber": 390
+        },
+        {
+          "caller": "initAuditDiff",
+          "callee": "panel.classList.contains",
+          "lineNumber": 391
+        },
+        {
+          "caller": "initAuditDiff",
+          "callee": "panel.classList.contains",
+          "lineNumber": 392
+        },
+        {
+          "caller": "initAuditDiff",
+          "callee": "panel.classList.toggle",
+          "lineNumber": 393
+        },
+        {
+          "caller": "initAuditDiff",
+          "callee": "btn.setAttribute",
+          "lineNumber": 394
+        },
+        {
+          "caller": "initNcitSearch",
+          "callee": "document.getElementById",
+          "lineNumber": 404
+        },
+        {
+          "caller": "initNcitSearch",
+          "callee": "document.getElementById",
+          "lineNumber": 405
+        },
+        {
+          "caller": "initNcitSearch",
+          "callee": "document.getElementById",
+          "lineNumber": 406
+        },
+        {
+          "caller": "doSearch",
+          "callee": "searchInput.value.trim",
+          "lineNumber": 411
+        },
+        {
+          "caller": "doSearch",
+          "callee": "url.searchParams.set",
+          "lineNumber": 420
+        },
+        {
+          "caller": "doSearch",
+          "callee": "fetch",
+          "lineNumber": 422
+        },
+        {
+          "caller": "doSearch",
+          "callee": "url.toString",
+          "lineNumber": 422
+        },
+        {
+          "caller": "doSearch",
+          "callee": "response.json",
+          "lineNumber": 428
+        },
+        {
+          "caller": "doSearch",
+          "callee": "renderNcitSearchResults",
+          "lineNumber": 429
+        },
+        {
+          "caller": "doSearch",
+          "callee": "console.error",
+          "lineNumber": 432
+        },
+        {
+          "caller": "initNcitSearch",
+          "callee": "searchBtn.addEventListener",
+          "lineNumber": 439
+        },
+        {
+          "caller": "initNcitSearch",
+          "callee": "searchInput.addEventListener",
+          "lineNumber": 440
+        },
+        {
+          "caller": "initNcitSearch",
+          "callee": "doSearch",
+          "lineNumber": 441
+        },
+        {
+          "caller": "renderNcitSearchResults",
+          "callee": "data.map(function (item) {\n      const safeCode = escapeHtml(item.code || '');\n      const safeName = escapeHtml(item.preferred_name || '');\n      const safeDef  = escapeHtml(item.definition || '');\n      const synonymList = Array.isArray(item.synonyms) ? item.synonyms : (item.synonyms ? [item.synonyms] : []);\n      const safeSyns = synonymList.map(escapeHtml);\n\n      return `\n        <div class=\"ncit-result-card bc-card bc-card-sm mb-3\">\n          <div class=\"d-flex align-items-center gap-2 mb-2\">\n            <span class=\"ncit-code\">${safeCode}</span>\n          </div>\n          <div class=\"ncit-preferred-name\">${safeName}</div>\n          <p class=\"ncit-definition mt-1 mb-2\">${safeDef}</p>\n          ${safeSyns.length > 0 ? `\n            <div class=\"mb-2 small text-secondary\">\n              <strong>Synonyms:</strong>\n              <ul class=\"mb-0 ps-3 mt-1\">\n                ${safeSyns.map(s => `<li>${s}</li>`).join('')}\n              </ul>\n            </div>` : ''}\n          <button type=\"button\"\n                  class=\"btn btn-sm btn-primary use-ncit-in-search-btn\"\n                  data-code=\"${safeCode}\"\n                  data-name=\"${safeName}\"\n                  data-definition=\"${safeDef}\">\n            Use this concept\n          </button>\n        </div>\n      `;\n    }).join",
+          "lineNumber": 451
+        },
+        {
+          "caller": "renderNcitSearchResults",
+          "callee": "data.map",
+          "lineNumber": 451
+        },
+        {
+          "caller": "renderNcitSearchResults",
+          "callee": "escapeHtml",
+          "lineNumber": 452
+        },
+        {
+          "caller": "renderNcitSearchResults",
+          "callee": "escapeHtml",
+          "lineNumber": 453
+        },
+        {
+          "caller": "renderNcitSearchResults",
+          "callee": "escapeHtml",
+          "lineNumber": 454
+        },
+        {
+          "caller": "renderNcitSearchResults",
+          "callee": "Array.isArray",
+          "lineNumber": 455
+        },
+        {
+          "caller": "renderNcitSearchResults",
+          "callee": "synonymList.map",
+          "lineNumber": 456
+        },
+        {
+          "caller": "renderNcitSearchResults",
+          "callee": "safeSyns.map(s => `<li>${s}</li>`).join",
+          "lineNumber": 469
+        },
+        {
+          "caller": "renderNcitSearchResults",
+          "callee": "safeSyns.map",
+          "lineNumber": 469
+        },
+        {
+          "caller": "renderNcitSearchResults",
+          "callee": "container.querySelectorAll('.use-ncit-in-search-btn').forEach",
+          "lineNumber": 484
+        },
+        {
+          "caller": "renderNcitSearchResults",
+          "callee": "container.querySelectorAll",
+          "lineNumber": 484
+        },
+        {
+          "caller": "renderNcitSearchResults",
+          "callee": "btn.addEventListener",
+          "lineNumber": 485
+        },
+        {
+          "caller": "renderNcitSearchResults",
+          "callee": "encodeURIComponent",
+          "lineNumber": 494
+        },
+        {
+          "caller": "renderNcitSearchResults",
+          "callee": "fetch",
+          "lineNumber": 495
+        },
+        {
+          "caller": "renderNcitSearchResults",
+          "callee": "url.toString",
+          "lineNumber": 495
+        },
+        {
+          "caller": "renderNcitSearchResults",
+          "callee": "response.json",
+          "lineNumber": 497
+        },
+        {
+          "caller": "renderNcitSearchResults",
+          "callee": "sessionStorage.setItem",
+          "lineNumber": 498
+        },
+        {
+          "caller": "renderNcitSearchResults",
+          "callee": "JSON.stringify",
+          "lineNumber": 498
+        },
+        {
+          "caller": "renderNcitSearchResults",
+          "callee": "console.error",
+          "lineNumber": 501
+        },
+        {
+          "caller": "renderNcitSearchResults",
+          "callee": "encodeURIComponent",
+          "lineNumber": 504
+        },
+        {
+          "caller": "renderNcitSearchResults",
+          "callee": "encodeURIComponent",
+          "lineNumber": 504
+        },
+        {
+          "caller": "renderNcitSearchResults",
+          "callee": "encodeURIComponent",
+          "lineNumber": 504
+        },
+        {
+          "caller": "postJson",
+          "callee": "document.querySelector",
+          "lineNumber": 519
+        },
+        {
+          "caller": "postJson",
+          "callee": "csrfMeta.getAttribute",
+          "lineNumber": 520
+        },
+        {
+          "caller": "postJson",
+          "callee": "fetch",
+          "lineNumber": 522
+        },
+        {
+          "caller": "postJson",
+          "callee": "JSON.stringify",
+          "lineNumber": 525
+        },
+        {
+          "caller": "escapeHtml",
+          "callee": "document.createElement",
+          "lineNumber": 531
+        },
+        {
+          "caller": "escapeHtml",
+          "callee": "div.appendChild",
+          "lineNumber": 532
+        },
+        {
+          "caller": "escapeHtml",
+          "callee": "document.createTextNode",
+          "lineNumber": 532
+        },
+        {
+          "caller": "showInlineToast",
+          "callee": "getOrCreateToastContainer",
+          "lineNumber": 541
+        },
+        {
+          "caller": "showInlineToast",
+          "callee": "document.createElement",
+          "lineNumber": 542
+        },
+        {
+          "caller": "showInlineToast",
+          "callee": "toastEl.setAttribute",
+          "lineNumber": 544
+        },
+        {
+          "caller": "showInlineToast",
+          "callee": "toastEl.setAttribute",
+          "lineNumber": 545
+        },
+        {
+          "caller": "showInlineToast",
+          "callee": "toastEl.setAttribute",
+          "lineNumber": 546
+        },
+        {
+          "caller": "showInlineToast",
+          "callee": "escapeHtml",
+          "lineNumber": 549
+        },
+        {
+          "caller": "showInlineToast",
+          "callee": "container.appendChild",
+          "lineNumber": 554
+        },
+        {
+          "caller": "showInlineToast",
+          "callee": "toast.show",
+          "lineNumber": 557
+        },
+        {
+          "caller": "showInlineToast",
+          "callee": "toastEl.addEventListener",
+          "lineNumber": 559
+        },
+        {
+          "caller": "showInlineToast",
+          "callee": "toastEl.remove",
+          "lineNumber": 560
+        },
+        {
+          "caller": "getOrCreateToastContainer",
+          "callee": "document.getElementById",
+          "lineNumber": 565
+        },
+        {
+          "caller": "getOrCreateToastContainer",
+          "callee": "document.createElement",
+          "lineNumber": 567
+        },
+        {
+          "caller": "getOrCreateToastContainer",
+          "callee": "document.body.appendChild",
+          "lineNumber": 571
+        },
+        {
+          "caller": "initClickableRows",
+          "callee": "document.querySelectorAll('tr[data-href]').forEach",
+          "lineNumber": 580
+        },
+        {
+          "caller": "initClickableRows",
+          "callee": "document.querySelectorAll",
+          "lineNumber": 580
+        },
+        {
+          "caller": "initClickableRows",
+          "callee": "row.addEventListener",
+          "lineNumber": 581
+        },
+        {
+          "caller": "initLoincLookup",
+          "callee": "document.getElementById",
+          "lineNumber": 594
+        },
+        {
+          "caller": "initLoincLookup",
+          "callee": "document.getElementById",
+          "lineNumber": 595
+        },
+        {
+          "caller": "initLoincLookup",
+          "callee": "document.getElementById",
+          "lineNumber": 596
+        },
+        {
+          "caller": "initLoincLookup",
+          "callee": "document.getElementById",
+          "lineNumber": 597
+        },
+        {
+          "caller": "initLoincLookup",
+          "callee": "document.getElementById",
+          "lineNumber": 598
+        },
+        {
+          "caller": "doLoincSearch",
+          "callee": "url.searchParams.set",
+          "lineNumber": 608
+        },
+        {
+          "caller": "doLoincSearch",
+          "callee": "fetch",
+          "lineNumber": 609
+        },
+        {
+          "caller": "doLoincSearch",
+          "callee": "url.toString",
+          "lineNumber": 609
+        },
+        {
+          "caller": "doLoincSearch",
+          "callee": "response.json",
+          "lineNumber": 611
+        },
+        {
+          "caller": "doLoincSearch",
+          "callee": "renderLoincResults",
+          "lineNumber": 612
+        },
+        {
+          "caller": "doLoincSearch",
+          "callee": "resultsPanel.classList.remove",
+          "lineNumber": 613
+        },
+        {
+          "caller": "doLoincSearch",
+          "callee": "resultsPanel.classList.remove",
+          "lineNumber": 618
+        },
+        {
+          "caller": "doLoincSearch",
+          "callee": "console.error",
+          "lineNumber": 619
+        },
+        {
+          "caller": "initLoincLookup",
+          "callee": "lookupBtn.addEventListener",
+          "lineNumber": 627
+        },
+        {
+          "caller": "initLoincLookup",
+          "callee": "codeInput.value.trim",
+          "lineNumber": 628
+        },
+        {
+          "caller": "initLoincLookup",
+          "callee": "nameInput.value.trim",
+          "lineNumber": 628
+        },
+        {
+          "caller": "initLoincLookup",
+          "callee": "codeInput.focus",
+          "lineNumber": 629
+        },
+        {
+          "caller": "initLoincLookup",
+          "callee": "doLoincSearch",
+          "lineNumber": 630
+        },
+        {
+          "caller": "initLoincLookup",
+          "callee": "codeInput.addEventListener",
+          "lineNumber": 634
+        },
+        {
+          "caller": "initLoincLookup",
+          "callee": "e.preventDefault",
+          "lineNumber": 635
+        },
+        {
+          "caller": "initLoincLookup",
+          "callee": "doLoincSearch",
+          "lineNumber": 635
+        },
+        {
+          "caller": "initLoincLookup",
+          "callee": "codeInput.value.trim",
+          "lineNumber": 635
+        },
+        {
+          "caller": "initLoincLookup",
+          "callee": "nameInput.addEventListener",
+          "lineNumber": 641
+        },
+        {
+          "caller": "initLoincLookup",
+          "callee": "clearTimeout",
+          "lineNumber": 642
+        },
+        {
+          "caller": "initLoincLookup",
+          "callee": "nameInput.value.trim",
+          "lineNumber": 643
+        },
+        {
+          "caller": "initLoincLookup",
+          "callee": "resultsPanel.classList.add",
+          "lineNumber": 644
+        },
+        {
+          "caller": "initLoincLookup",
+          "callee": "setTimeout",
+          "lineNumber": 645
+        },
+        {
+          "caller": "initLoincLookup",
+          "callee": "doLoincSearch",
+          "lineNumber": 645
+        },
+        {
+          "caller": "initLoincLookup",
+          "callee": "nameInput.addEventListener",
+          "lineNumber": 647
+        },
+        {
+          "caller": "initLoincLookup",
+          "callee": "e.preventDefault",
+          "lineNumber": 649
+        },
+        {
+          "caller": "initLoincLookup",
+          "callee": "clearTimeout",
+          "lineNumber": 650
+        },
+        {
+          "caller": "initLoincLookup",
+          "callee": "doLoincSearch",
+          "lineNumber": 651
+        },
+        {
+          "caller": "initLoincLookup",
+          "callee": "nameInput.value.trim",
+          "lineNumber": 651
+        },
+        {
+          "caller": "renderLoincResults",
+          "callee": "escapeHtml",
+          "lineNumber": 690
+        },
+        {
+          "caller": "renderLoincResults",
+          "callee": "data.map(function (item, idx) {\n      const safeCode = escapeHtml(item.LOINC_NUM || '');\n      const safeName = escapeHtml(item.LONG_COMMON_NAME || '');\n\n      // Build metadata rows for all non-empty fields except LOINC_NUM\n      // (shown in the header row; LONG_COMMON_NAME is included in the grid)\n      var metaRows = Object.keys(LOINC_FIELD_LABELS)\n        .filter(function (k) { return k !== 'LOINC_NUM' && item[k]; })\n        .map(function (k) {\n          return `<div class=\"loinc-meta-item\">\n            <span class=\"loinc-meta-label\">${escapeHtml(LOINC_FIELD_LABELS[k])}</span>\n            <span class=\"loinc-meta-value\">${escapeHtml(String(item[k]))}</span>\n          </div>`;\n        }).join('');\n\n      return `\n        <div class=\"ncit-result-card\" data-idx=\"${idx}\">\n          <div class=\"d-flex align-items-center justify-content-between mb-1\">\n            <span class=\"ncit-code\">${safeCode}</span>\n            <button type=\"button\"\n                    class=\"btn btn-sm btn-outline-primary use-loinc-btn\"\n                    data-idx=\"${idx}\">\n              Use this code\n            </button>\n          </div>\n          <div class=\"ncit-preferred-name\">${safeName}</div>\n          ${metaRows ? `<div class=\"loinc-meta-grid mt-2\">${metaRows}</div>` : ''}\n        </div>\n      `;\n    }).join",
+          "lineNumber": 694
+        },
+        {
+          "caller": "renderLoincResults",
+          "callee": "data.map",
+          "lineNumber": 694
+        },
+        {
+          "caller": "renderLoincResults",
+          "callee": "escapeHtml",
+          "lineNumber": 695
+        },
+        {
+          "caller": "renderLoincResults",
+          "callee": "escapeHtml",
+          "lineNumber": 696
+        },
+        {
+          "caller": "renderLoincResults",
+          "callee": "Object.keys(LOINC_FIELD_LABELS)\n        .filter(function (k) { return k !== 'LOINC_NUM' && item[k]; })\n        .map(function (k) {\n          return `<div class=\"loinc-meta-item\">\n            <span class=\"loinc-meta-label\">${escapeHtml(LOINC_FIELD_LABELS[k])}</span>\n            <span class=\"loinc-meta-value\">${escapeHtml(String(item[k]))}</span>\n          </div>`;\n        }).join",
+          "lineNumber": 700
+        },
+        {
+          "caller": "renderLoincResults",
+          "callee": "Object.keys(LOINC_FIELD_LABELS)\n        .filter(function (k) { return k !== 'LOINC_NUM' && item[k]; })\n        .map",
+          "lineNumber": 700
+        },
+        {
+          "caller": "renderLoincResults",
+          "callee": "Object.keys(LOINC_FIELD_LABELS)\n        .filter",
+          "lineNumber": 700
+        },
+        {
+          "caller": "renderLoincResults",
+          "callee": "Object.keys",
+          "lineNumber": 700
+        },
+        {
+          "caller": "renderLoincResults",
+          "callee": "escapeHtml",
+          "lineNumber": 704
+        },
+        {
+          "caller": "renderLoincResults",
+          "callee": "escapeHtml",
+          "lineNumber": 705
+        },
+        {
+          "caller": "renderLoincResults",
+          "callee": "String",
+          "lineNumber": 705
+        },
+        {
+          "caller": "renderLoincResults",
+          "callee": "container.querySelectorAll('.use-loinc-btn').forEach",
+          "lineNumber": 729
+        },
+        {
+          "caller": "renderLoincResults",
+          "callee": "container.querySelectorAll",
+          "lineNumber": 729
+        },
+        {
+          "caller": "renderLoincResults",
+          "callee": "btn.addEventListener",
+          "lineNumber": 730
+        },
+        {
+          "caller": "renderLoincResults",
+          "callee": "parseInt",
+          "lineNumber": 731
+        },
+        {
+          "caller": "renderLoincResults",
+          "callee": "document.getElementById",
+          "lineNumber": 735
+        },
+        {
+          "caller": "renderLoincResults",
+          "callee": "document.getElementById",
+          "lineNumber": 736
+        },
+        {
+          "caller": "renderLoincResults",
+          "callee": "document.getElementById",
+          "lineNumber": 737
+        },
+        {
+          "caller": "renderLoincResults",
+          "callee": "JSON.stringify",
+          "lineNumber": 741
+        },
+        {
+          "caller": "renderLoincResults",
+          "callee": "renderLoincMetaDisplay",
+          "lineNumber": 743
+        },
+        {
+          "caller": "renderLoincResults",
+          "callee": "document.getElementById",
+          "lineNumber": 745
+        },
+        {
+          "caller": "renderLoincResults",
+          "callee": "panel.classList.add",
+          "lineNumber": 746
+        },
+        {
+          "caller": "renderLoincMetaDisplay",
+          "callee": "document.getElementById",
+          "lineNumber": 757
+        },
+        {
+          "caller": "renderLoincMetaDisplay",
+          "callee": "displayFields\n      .filter(function (k) { return item[k]; })\n      .map(function (k) {\n        return `<div class=\"loinc-meta-item\">\n          <span class=\"loinc-meta-label\">${escapeHtml(LOINC_FIELD_LABELS[k] || k)}</span>\n          <span class=\"loinc-meta-value\">${escapeHtml(String(item[k]))}</span>\n        </div>`;\n      }).join",
+          "lineNumber": 766
+        },
+        {
+          "caller": "renderLoincMetaDisplay",
+          "callee": "displayFields\n      .filter(function (k) { return item[k]; })\n      .map",
+          "lineNumber": 766
+        },
+        {
+          "caller": "renderLoincMetaDisplay",
+          "callee": "displayFields\n      .filter",
+          "lineNumber": 766
+        },
+        {
+          "caller": "renderLoincMetaDisplay",
+          "callee": "escapeHtml",
+          "lineNumber": 770
+        },
+        {
+          "caller": "renderLoincMetaDisplay",
+          "callee": "escapeHtml",
+          "lineNumber": 771
+        },
+        {
+          "caller": "renderLoincMetaDisplay",
+          "callee": "String",
+          "lineNumber": 771
+        },
+        {
+          "caller": "renderLoincMetaDisplay",
+          "callee": "display.classList.toggle",
+          "lineNumber": 776
+        },
+        {
+          "caller": "initPendingNcitConcept",
+          "callee": "sessionStorage.getItem",
+          "lineNumber": 784
+        },
+        {
+          "caller": "initPendingNcitConcept",
+          "callee": "document.getElementById",
+          "lineNumber": 787
+        },
+        {
+          "caller": "initPendingNcitConcept",
+          "callee": "document.getElementById",
+          "lineNumber": 788
+        },
+        {
+          "caller": "initPendingNcitConcept",
+          "callee": "sessionStorage.removeItem",
+          "lineNumber": 792
+        },
+        {
+          "caller": "initPendingNcitConcept",
+          "callee": "JSON.parse",
+          "lineNumber": 795
+        },
+        {
+          "caller": "initPendingNcitConcept",
+          "callee": "renderNcitMetaDisplay",
+          "lineNumber": 797
+        },
+        {
+          "caller": "initPendingNcitConcept",
+          "callee": "document.getElementById",
+          "lineNumber": 799
+        },
+        {
+          "caller": "initPendingNcitConcept",
+          "callee": "JSON.stringify",
+          "lineNumber": 800
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "tests/__init__.py",
+      "language": "python",
+      "fileCategory": "code",
+      "totalLines": 1,
+      "nonEmptyLines": 0,
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0
+      }
+    }
+  ]
+}

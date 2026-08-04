@@ -1,0 +1,83 @@
+{
+  "projectRoot": "/Users/dmoreland/projects/cdisc-concept-curation",
+  "batchFiles": [
+    {
+      "path": "routes/dashboard.py",
+      "language": "python",
+      "sizeLines": 60,
+      "fileCategory": "code"
+    },
+    {
+      "path": "routes/loinc.py",
+      "language": "python",
+      "sizeLines": 23,
+      "fileCategory": "code"
+    },
+    {
+      "path": "routes/specializations.py",
+      "language": "python",
+      "sizeLines": 172,
+      "fileCategory": "code"
+    },
+    {
+      "path": "services/api_cache.py",
+      "language": "python",
+      "sizeLines": 42,
+      "fileCategory": "code"
+    },
+    {
+      "path": "services/cdisc_api.py",
+      "language": "python",
+      "sizeLines": 127,
+      "fileCategory": "code"
+    },
+    {
+      "path": "services/loinc_api.py",
+      "language": "python",
+      "sizeLines": 62,
+      "fileCategory": "code"
+    },
+    {
+      "path": "tests/test_cdisc_api_cache.py",
+      "language": "python",
+      "sizeLines": 120,
+      "fileCategory": "code"
+    },
+    {
+      "path": "tests/test_loinc.py",
+      "language": "python",
+      "sizeLines": 205,
+      "fileCategory": "code"
+    }
+  ],
+  "batchImportData": {
+    "routes/dashboard.py": [
+      "models/audit.py",
+      "models/bc.py",
+      "services/cdisc_api.py"
+    ],
+    "routes/loinc.py": [
+      "services/loinc_api.py"
+    ],
+    "routes/specializations.py": [
+      "extensions.py",
+      "models/bc.py",
+      "models/specialization.py",
+      "services/audit.py",
+      "services/cdisc_api.py"
+    ],
+    "services/api_cache.py": [],
+    "services/cdisc_api.py": [
+      "services/api_cache.py"
+    ],
+    "services/loinc_api.py": [
+      "services/api_cache.py"
+    ],
+    "tests/test_cdisc_api_cache.py": [
+      "services/cdisc_api.py"
+    ],
+    "tests/test_loinc.py": [
+      "services/loinc_api.py"
+    ]
+  }
+}

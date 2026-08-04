@@ -1,0 +1,13 @@
+{
+  "projectRoot": "/Users/dmoreland/projects/cdisc-concept-curation",
+  "batchFiles": [
+    {"path": ".claude/agents/cdisc-concept-explorer.md", "language": "markdown", "sizeLines": 67, "fileCategory": "docs"},
+    {"path": ".claude/agents/cdisc-frontend-dev.md", "language": "markdown", "sizeLines": 207, "fileCategory": "docs"},
+    {"path": ".claude/agents/mike.md", "language": "markdown", "sizeLines": 108, "fileCategory": "docs"}
+  ],
+  "batchImportData": {
+    ".claude/agents/cdisc-concept-explorer.md": [],
+    ".claude/agents/cdisc-frontend-dev.md": [],
+    ".claude/agents/mike.md": []
+  }
+}

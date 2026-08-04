@@ -1,0 +1,205 @@
+{
+  "nodes": [
+    {
+      "id": "file:templates/base.html",
+      "type": "file",
+      "name": "base.html",
+      "filePath": "templates/base.html",
+      "summary": "Master Jinja2 layout providing the sidebar navigation, top bar, flash-message rendering, and template blocks (title, page_title, user_info, content, extra_js) that every other page in the app extends.",
+      "tags": ["layout", "navigation", "entry-point", "bootstrap", "component"],
+      "complexity": "moderate",
+      "languageNotes": "Jinja2 block-based inheritance root — defines the extension points (`{% block content %}`, `{% block extra_js %}`, etc.) that all ten other templates in this batch fill in via `{% extends \"base.html\" %}`."
+    },
+    {
+      "id": "file:templates/audit.html",
+      "type": "file",
+      "name": "audit.html",
+      "filePath": "templates/audit.html",
+      "summary": "Audit trail page listing all curation actions (create/update/delete/advance/reject/publish/ingest) with actor/entity/date filters, CSV/JSON export links, expandable before/after diff rows, and pagination.",
+      "tags": ["audit-trail", "data-table", "filter", "pagination", "export"],
+      "complexity": "complex"
+    },
+    {
+      "id": "file:templates/bc_detail.html",
+      "type": "file",
+      "name": "bc_detail.html",
+      "filePath": "templates/bc_detail.html",
+      "summary": "Create/edit form for a single Biomedical Concept covering identification, NCIt and LOINC lookups (with async metadata fetch in extra_js), classification, definition, metadata/status, and an editable Data Element Concepts (DECs) table.",
+      "tags": [
+        "form",
+        "crud",
+        "ncit-integration",
+        "loinc-integration",
+        "dynamic-form"
+      ],
+      "complexity": "complex",
+      "languageNotes": "extra_js block fetches BC metadata via `bc.fetch_metadata` and rebuilds the NCIt/LOINC display grids client-side, mirroring field lists that are also rendered server-side in Jinja — a duplicated-schema pattern worth keeping in sync if fields change."
+    },
+    {
+      "id": "file:templates/bc_list.html",
+      "type": "file",
+      "name": "bc_list.html",
+      "filePath": "templates/bc_list.html",
+      "summary": "Searchable, filterable, paginated table of locally curated Biomedical Concepts with status badges, JSON/XLSX/ODM-XML export links, and a delete-confirmation modal.",
+      "tags": ["list-view", "search", "filter", "pagination", "export"],
+      "complexity": "complex"
+    },
+    {
+      "id": "file:templates/dashboard.html",
+      "type": "file",
+      "name": "dashboard.html",
+      "filePath": "templates/dashboard.html",
+      "summary": "Main landing dashboard showing KPI cards, recent submissions, the governance pipeline snapshot, paginated/searchable views of CDISC Library BCs and dataset specializations, an AI curation pipeline progress tracker, and quick action links.",
+      "tags": [
+        "dashboard",
+        "kpi-metrics",
+        "pipeline-status",
+        "pagination",
+        "cdisc-library"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "file:templates/governance.html",
+      "type": "file",
+      "name": "governance.html",
+      "filePath": "templates/governance.html",
+      "summary": "Four-column Kanban board (Provisional -> SME Review -> CDISC Approval -> Published) for advancing or rejecting Biomedical Concepts through the governance workflow, with summary counts and an export-filename modal.",
+      "tags": ["kanban", "governance", "workflow", "modal", "export"],
+      "complexity": "complex"
+    },
+    {
+      "id": "file:templates/ingestion.html",
+      "type": "file",
+      "name": "ingestion.html",
+      "filePath": "templates/ingestion.html",
+      "summary": "File upload page (drag-and-drop or click) for XLSX/CSV/JSON ingestion, with a parsed-results queue table showing field-mapping confidence, validation errors, duplicate flags, and per-row approve/reject actions.",
+      "tags": ["file-upload", "drag-drop", "queue", "validation", "form"],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:templates/library_bc_detail.html",
+      "type": "file",
+      "name": "library_bc_detail.html",
+      "filePath": "templates/library_bc_detail.html",
+      "summary": "Read-only detail view of a single Biomedical Concept fetched from the published CDISC Library, showing identification, definition, LOINC coding, metadata, and its Data Element Concepts.",
+      "tags": [
+        "read-only-view",
+        "cdisc-library",
+        "loinc-integration",
+        "detail-view"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:templates/library_spec_detail.html",
+      "type": "file",
+      "name": "library_spec_detail.html",
+      "filePath": "templates/library_spec_detail.html",
+      "summary": "Read-only detail view of a Dataset Specialization from the published CDISC Library, showing identification/domain metadata and a full variables table (role, codelist, assigned term, mandatory flags, relationship).",
+      "tags": [
+        "read-only-view",
+        "cdisc-library",
+        "variables-table",
+        "detail-view"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:templates/ncit_mapping.html",
+      "type": "file",
+      "name": "ncit_mapping.html",
+      "filePath": "templates/ncit_mapping.html",
+      "summary": "NCI Thesaurus search page plus a conflict-resolution queue listing Biomedical Concepts with unresolved or low-confidence NCIt mappings that block governance advancement, with a confidence-score legend.",
+      "tags": [
+        "ncit-integration",
+        "search",
+        "conflict-resolution",
+        "confidence-score"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:templates/specializations.html",
+      "type": "file",
+      "name": "specializations.html",
+      "filePath": "templates/specializations.html",
+      "summary": "Dataset Specialization management page with a collapsible create/edit form (VLM group ID, BC selector, SDTM/CDASH domain, dynamic variables table, generate-from-DEC-templates action) and a list/edit/delete table of existing specializations.",
+      "tags": ["crud", "dynamic-form", "sdtm", "cdash", "variable-table"],
+      "complexity": "complex",
+      "languageNotes": "extra_js block mixes server-rendered variable rows with client-side row templating (identical markup duplicated in Jinja and JS template-literal form) for the add-row and generate-from-DEC-templates interactions."
+    }
+  ],
+  "edges": [
+    {
+      "source": "file:templates/audit.html",
+      "target": "file:templates/base.html",
+      "type": "depends_on",
+      "direction": "forward",
+      "weight": 0.6
+    },
+    {
+      "source": "file:templates/bc_detail.html",
+      "target": "file:templates/base.html",
+      "type": "depends_on",
+      "direction": "forward",
+      "weight": 0.6
+    },
+    {
+      "source": "file:templates/bc_list.html",
+      "target": "file:templates/base.html",
+      "type": "depends_on",
+      "direction": "forward",
+      "weight": 0.6
+    },
+    {
+      "source": "file:templates/dashboard.html",
+      "target": "file:templates/base.html",
+      "type": "depends_on",
+      "direction": "forward",
+      "weight": 0.6
+    },
+    {
+      "source": "file:templates/governance.html",
+      "target": "file:templates/base.html",
+      "type": "depends_on",
+      "direction": "forward",
+      "weight": 0.6
+    },
+    {
+      "source": "file:templates/ingestion.html",
+      "target": "file:templates/base.html",
+      "type": "depends_on",
+      "direction": "forward",
+      "weight": 0.6
+    },
+    {
+      "source": "file:templates/library_bc_detail.html",
+      "target": "file:templates/base.html",
+      "type": "depends_on",
+      "direction": "forward",
+      "weight": 0.6
+    },
+    {
+      "source": "file:templates/library_spec_detail.html",
+      "target": "file:templates/base.html",
+      "type": "depends_on",
+      "direction": "forward",
+      "weight": 0.6
+    },
+    {
+      "source": "file:templates/ncit_mapping.html",
+      "target": "file:templates/base.html",
+      "type": "depends_on",
+      "direction": "forward",
+      "weight": 0.6
+    },
+    {
+      "source": "file:templates/specializations.html",
+      "target": "file:templates/base.html",
+      "type": "depends_on",
+      "direction": "forward",
+      "weight": 0.6
+    }
+  ]
+}

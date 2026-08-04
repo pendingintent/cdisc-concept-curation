@@ -1,0 +1,59 @@
+{
+  "projectRoot": "/Users/dmoreland/projects/cdisc-concept-curation",
+  "batchFiles": [
+    {
+      "path": "mcp_server/__main__.py",
+      "language": "python",
+      "sizeLines": 3,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mcp_server/server.py",
+      "language": "python",
+      "sizeLines": 572,
+      "fileCategory": "code"
+    },
+    {
+      "path": "models/specialization.py",
+      "language": "python",
+      "sizeLines": 30,
+      "fileCategory": "code"
+    },
+    {
+      "path": "tests/test_mcp_server.py",
+      "language": "python",
+      "sizeLines": 315,
+      "fileCategory": "code"
+    },
+    {
+      "path": "tests/test_specializations_routes.py",
+      "language": "python",
+      "sizeLines": 260,
+      "fileCategory": "code"
+    }
+  ],
+  "batchImportData": {
+    "mcp_server/__main__.py": [
+      "mcp_server/server.py"
+    ],
+    "mcp_server/server.py": [],
+    "models/specialization.py": [
+      "extensions.py"
+    ],
+    "tests/test_mcp_server.py": [
+      "extensions.py",
+      "mcp_server/server.py",
+      "models/audit.py",
+      "models/bc.py",
+      "models/governance.py",
+      "models/ingestion.py",
+      "models/specialization.py"
+    ],
+    "tests/test_specializations_routes.py": [
+      "extensions.py",
+      "models/audit.py",
+      "models/bc.py",
+      "models/specialization.py"
+    ]
+  }
+}

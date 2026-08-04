@@ -1,0 +1,157 @@
+[
+  {
+    "id": "layer:api",
+    "name": "API Layer",
+    "description": "Flask blueprint route handlers (dashboard, ingestion, bc, ncit, loinc, specializations, governance, audit) plus the MCP server package that exposes the same read/write operations as a second tool-based API surface for AI agents.",
+    "nodeIds": [
+      "file:routes/audit.py",
+      "file:routes/ingestion.py",
+      "file:routes/bc.py",
+      "file:routes/governance.py",
+      "file:routes/ncit.py",
+      "file:routes/dashboard.py",
+      "file:routes/loinc.py",
+      "file:routes/specializations.py",
+      "file:routes/__init__.py",
+      "file:mcp_server/__main__.py",
+      "file:mcp_server/server.py",
+      "file:mcp_server/__init__.py"
+    ]
+  },
+  {
+    "id": "layer:service",
+    "name": "Service Layer",
+    "description": "Business logic and external API clients — BC/governance/audit orchestration, the ingestion parser and field mapper, the XLSX/JSON/ODM-XML exporter, and the CDISC Library, NCIt, and LOINC API clients (with in-memory caching).",
+    "nodeIds": [
+      "file:services/ingestion.py",
+      "file:services/__init__.py",
+      "file:services/audit.py",
+      "file:services/bc_service.py",
+      "file:services/export.py",
+      "file:services/governance_service.py",
+      "file:services/ncit_api.py",
+      "file:services/api_cache.py",
+      "file:services/cdisc_api.py",
+      "file:services/loinc_api.py"
+    ]
+  },
+  {
+    "id": "layer:data",
+    "name": "Data Layer",
+    "description": "SQLAlchemy ORM models (BiomedicalConcept, DataElementConcept, IngestionRecord, AuditLog, GovernanceRecord, Specialization) together with the Alembic migration environment and baseline schema revision that bring the SQLite database to head.",
+    "nodeIds": [
+      "file:models/audit.py",
+      "file:models/bc.py",
+      "file:models/ingestion.py",
+      "file:models/governance.py",
+      "file:models/__init__.py",
+      "file:models/specialization.py",
+      "document:migrations/README",
+      "config:migrations/alembic.ini",
+      "file:migrations/env.py",
+      "file:migrations/script.py.mako",
+      "file:migrations/versions/51d4a009d291_baseline_initial_schema.py"
+    ]
+  },
+  {
+    "id": "layer:ui",
+    "name": "UI Layer",
+    "description": "Jinja2 + Bootstrap 5 templates for every page (dashboard, ingestion, BC detail/list, governance Kanban, NCIt mapping, specializations, audit log) plus the shared CSS and JavaScript assets that render them in the browser.",
+    "nodeIds": [
+      "file:templates/base.html",
+      "file:templates/audit.html",
+      "file:templates/bc_detail.html",
+      "file:templates/bc_list.html",
+      "file:templates/dashboard.html",
+      "file:templates/governance.html",
+      "file:templates/ingestion.html",
+      "file:templates/library_bc_detail.html",
+      "file:templates/library_spec_detail.html",
+      "file:templates/ncit_mapping.html",
+      "file:templates/specializations.html",
+      "file:static/css/custom.css",
+      "file:static/js/main.js"
+    ]
+  },
+  {
+    "id": "layer:config",
+    "name": "Configuration & Application Setup",
+    "description": "The application factory, extension singletons, and DB-bootstrap entry points (app.py, extensions.py, db_bootstrap.py) alongside project-level configuration — config.py, dependency pins, lint/format tool config, and the MCP server registration.",
+    "nodeIds": [
+      "file:app.py",
+      "file:db_bootstrap.py",
+      "file:extensions.py",
+      "file:config.py",
+      "config:.pre-commit-config.yaml",
+      "config:.mcp.json",
+      "config:pyproject.toml",
+      "document:requirements-dev.txt",
+      "document:requirements.txt",
+      "config:.flake8",
+      "config:.hintrc",
+      "config:.ua/.understandignore",
+      "config:.ua/config.json"
+    ]
+  },
+  {
+    "id": "layer:test",
+    "name": "Test Layer",
+    "description": "The pytest suite covering every blueprint, service, and model, plus shared fixtures in conftest.py, run against the in-memory SQLite TestConfig database used by both CI and local development.",
+    "nodeIds": [
+      "file:tests/conftest.py",
+      "file:tests/test_audit_routes.py",
+      "file:tests/test_bc_routes.py",
+      "file:tests/test_governance_routes.py",
+      "file:tests/test_ingestion_routes.py",
+      "file:tests/test_ingestion_service.py",
+      "file:tests/test_models.py",
+      "file:tests/test_export_service.py",
+      "file:tests/test_ncit.py",
+      "file:tests/test_cdisc_api_cache.py",
+      "file:tests/test_loinc.py",
+      "file:tests/test_dashboard.py",
+      "file:tests/test_db_bootstrap.py",
+      "file:tests/test_mcp_server.py",
+      "file:tests/test_specializations_routes.py",
+      "file:tests/__init__.py"
+    ]
+  },
+  {
+    "id": "layer:documentation",
+    "name": "Documentation & Reference Materials",
+    "description": "Project-level documentation (CLAUDE.md, README, progress log) and the domain reference materials in files/ — BC curation principles, DEC templates, worked examples, governance guidance, and platform planning docs — that ground the curation workflow the app implements.",
+    "nodeIds": [
+      "document:CLAUDE.md",
+      "document:README-PROGRESS.md",
+      "document:README.md",
+      "document:files/plan.md",
+      "document:files/implementation.md",
+      "document:files/result.md",
+      "file:files/BC Curation Principles and Completion GLs.xlsx",
+      "file:files/BC DEC Templates.xlsx",
+      "file:files/BC Examples.xlsx",
+      "file:files/BC Governance.docx",
+      "file:files/cdisc_bc_ai_platform.html",
+      "file:files/cdisc_smart_goals_infographic.html"
+    ]
+  },
+  {
+    "id": "layer:dev-tooling",
+    "name": "Dev Tooling & CI/CD",
+    "description": "The GitHub Actions CI pipeline plus Claude Code agent configuration and memory (.claude/agents, .claude/agent-memory, .claude/skills) that automate linting, testing, and AI-assisted development for this repository.",
+    "nodeIds": [
+      "pipeline:.github/workflows/ci.yml",
+      "document:.claude/agent-memory/cdisc-frontend-dev/MEMORY.md",
+      "document:.claude/agent-memory/cdisc-frontend-dev/frontend_architecture.md",
+      "document:.claude/agent-memory/cdisc-frontend-dev/project_foundation.md",
+      "document:.claude/agents/cdisc-concept-explorer.md",
+      "document:.claude/agents/cdisc-frontend-dev.md",
+      "document:.claude/agents/mike.md",
+      "document:.claude/agent-memory/cdisc-concept-explorer/MEMORY.md",
+      "document:.claude/agent-memory/cdisc-concept-explorer/reference_api_endpoints.md",
+      "document:.claude/skills/code-review/SKILL.md",
+      "document:.claude/skills/run-concept-curation/SKILL.md",
+      "file:.claude/skills/run-concept-curation/smoke.sh"
+    ]
+  }
+]

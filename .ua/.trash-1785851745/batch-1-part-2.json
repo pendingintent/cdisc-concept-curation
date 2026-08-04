@@ -1,0 +1,806 @@
+{
+  "nodes": [
+    {
+      "id": "file:tests/test_audit_routes.py",
+      "type": "file",
+      "name": "test_audit_routes.py",
+      "filePath": "tests/test_audit_routes.py",
+      "summary": "Test suite for the audit log route, covering empty listing, log rendering, and filtering by entity type, action, actor, and pagination parameters.",
+      "tags": ["test", "audit", "route-test"],
+      "complexity": "simple"
+    },
+    {
+      "id": "class:tests/test_audit_routes.py:TestAuditIndex",
+      "type": "class",
+      "name": "TestAuditIndex",
+      "filePath": "tests/test_audit_routes.py",
+      "lineRange": [14, 49],
+      "summary": "Test class exercising the audit index route's rendering, entity/action/actor filters, and pagination parameter handling.",
+      "tags": ["test", "audit", "route-test"],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:tests/test_bc_routes.py",
+      "type": "file",
+      "name": "test_bc_routes.py",
+      "filePath": "tests/test_bc_routes.py",
+      "summary": "Large test suite covering BC CRUD routes: listing/search, creation, detail view (including LOINC lookups), editing, clearing NCIt/LOINC codes, submission for review, deletion, export formats, and the CDISC Library detail page.",
+      "tags": ["test", "bc", "route-test"],
+      "complexity": "complex"
+    },
+    {
+      "id": "function:tests/test_bc_routes.py:_bc_form",
+      "type": "function",
+      "name": "_bc_form",
+      "filePath": "tests/test_bc_routes.py",
+      "lineRange": [10, 19],
+      "summary": "Test helper that builds a default BC creation form payload, allowing field overrides via keyword arguments.",
+      "tags": ["test-helper", "fixture", "form-data"],
+      "complexity": "simple"
+    },
+    {
+      "id": "class:tests/test_bc_routes.py:TestBcIndex",
+      "type": "class",
+      "name": "TestBcIndex",
+      "filePath": "tests/test_bc_routes.py",
+      "lineRange": [27, 43],
+      "summary": "Tests the BC index route's default listing, name search, no-match search, and status filtering.",
+      "tags": ["test", "bc", "route-test"],
+      "complexity": "moderate"
+    },
+    {
+      "id": "class:tests/test_bc_routes.py:TestCreateBc",
+      "type": "class",
+      "name": "TestCreateBc",
+      "filePath": "tests/test_bc_routes.py",
+      "lineRange": [62, 109],
+      "summary": "Tests BC creation: success redirect, missing bc_id validation, duplicate id rejection, audit logging, conditional system/system_name population from a LOINC code, and DEC creation.",
+      "tags": ["test", "bc", "route-test", "validation"],
+      "complexity": "complex"
+    },
+    {
+      "id": "class:tests/test_bc_routes.py:TestBcDetail",
+      "type": "class",
+      "name": "TestBcDetail",
+      "filePath": "tests/test_bc_routes.py",
+      "lineRange": [117, 224],
+      "summary": "Tests the BC detail page, including 404 handling and conditional LOINC API calls and spinner behavior based on whether a LOINC code is set.",
+      "tags": ["test", "bc", "loinc", "route-test"],
+      "complexity": "complex"
+    },
+    {
+      "id": "class:tests/test_bc_routes.py:TestEditBc",
+      "type": "class",
+      "name": "TestEditBc",
+      "filePath": "tests/test_bc_routes.py",
+      "lineRange": [232, 332],
+      "summary": "Tests BC editing, covering short name updates, audit logging, clearing NCIt/LOINC/parent BC fields, and consistency between LOINC code and system/system_name fields.",
+      "tags": ["test", "bc", "route-test", "validation"],
+      "complexity": "complex"
+    },
+    {
+      "id": "class:tests/test_bc_routes.py:TestClearNcitCode",
+      "type": "class",
+      "name": "TestClearNcitCode",
+      "filePath": "tests/test_bc_routes.py",
+      "lineRange": [340, 370],
+      "summary": "Tests the endpoint that clears a BC's NCIt code and associated metadata, including cascading clearing of the parent BC id.",
+      "tags": ["test", "bc", "ncit", "route-test"],
+      "complexity": "moderate"
+    },
+    {
+      "id": "class:tests/test_bc_routes.py:TestClearLoincCode",
+      "type": "class",
+      "name": "TestClearLoincCode",
+      "filePath": "tests/test_bc_routes.py",
+      "lineRange": [378, 416],
+      "summary": "Tests the endpoint that clears a BC's LOINC code, associated metadata, and dependent system/system_name fields.",
+      "tags": ["test", "bc", "loinc", "route-test"],
+      "complexity": "moderate"
+    },
+    {
+      "id": "class:tests/test_bc_routes.py:TestSubmitForReview",
+      "type": "class",
+      "name": "TestSubmitForReview",
+      "filePath": "tests/test_bc_routes.py",
+      "lineRange": [424, 435],
+      "summary": "Tests that submitting a BC for review advances its governance status and writes an audit log entry.",
+      "tags": ["test", "bc", "governance", "route-test"],
+      "complexity": "simple"
+    },
+    {
+      "id": "class:tests/test_bc_routes.py:TestDeleteBc",
+      "type": "class",
+      "name": "TestDeleteBc",
+      "filePath": "tests/test_bc_routes.py",
+      "lineRange": [443, 457],
+      "summary": "Tests BC deletion, audit logging on delete, and 404 handling for nonexistent BCs.",
+      "tags": ["test", "bc", "route-test"],
+      "complexity": "moderate"
+    },
+    {
+      "id": "class:tests/test_bc_routes.py:TestExport",
+      "type": "class",
+      "name": "TestExport",
+      "filePath": "tests/test_bc_routes.py",
+      "lineRange": [465, 479],
+      "summary": "Tests BC export endpoints across JSON, XLSX, and ODM-XML formats.",
+      "tags": ["test", "bc", "export", "route-test"],
+      "complexity": "moderate"
+    },
+    {
+      "id": "class:tests/test_bc_routes.py:TestLibraryDetail",
+      "type": "class",
+      "name": "TestLibraryDetail",
+      "filePath": "tests/test_bc_routes.py",
+      "lineRange": [511, 547],
+      "summary": "Tests the CDISC Library detail page rendering, API-error redirects, and conditional LOINC API calls based on LOINC coding presence.",
+      "tags": ["test", "bc", "loinc", "cdisc-library", "route-test"],
+      "complexity": "complex"
+    },
+    {
+      "id": "file:tests/test_governance_routes.py",
+      "type": "file",
+      "name": "test_governance_routes.py",
+      "filePath": "tests/test_governance_routes.py",
+      "summary": "Test suite for the governance Kanban board routes: stage advancement, rejection, and XLSX export of stage-3 BCs with LOINC-derived system columns.",
+      "tags": ["test", "governance", "route-test"],
+      "complexity": "complex"
+    },
+    {
+      "id": "class:tests/test_governance_routes.py:TestAdvance",
+      "type": "class",
+      "name": "TestAdvance",
+      "filePath": "tests/test_governance_routes.py",
+      "lineRange": [17, 68],
+      "summary": "Tests governance stage advancement, including multi-stage progression, staying at published, governance record and audit log creation, 404 handling, and AJAX JSON responses.",
+      "tags": ["test", "governance", "route-test"],
+      "complexity": "complex"
+    },
+    {
+      "id": "class:tests/test_governance_routes.py:TestReject",
+      "type": "class",
+      "name": "TestReject",
+      "filePath": "tests/test_governance_routes.py",
+      "lineRange": [71, 105],
+      "summary": "Tests governance rejection back to provisional status, governance record and audit log creation, AJAX responses, and 404 handling.",
+      "tags": ["test", "governance", "route-test"],
+      "complexity": "moderate"
+    },
+    {
+      "id": "class:tests/test_governance_routes.py:TestGovernanceExport",
+      "type": "class",
+      "name": "TestGovernanceExport",
+      "filePath": "tests/test_governance_routes.py",
+      "lineRange": [108, 236],
+      "summary": "Tests the governance XLSX export endpoint: file format enforcement, filtering to stage-3 BCs, and correct population of System/System Name/Code columns based on LOINC code presence.",
+      "tags": ["test", "governance", "export", "route-test"],
+      "complexity": "complex"
+    },
+    {
+      "id": "file:tests/test_ingestion_routes.py",
+      "type": "file",
+      "name": "test_ingestion_routes.py",
+      "filePath": "tests/test_ingestion_routes.py",
+      "summary": "Test suite for the ingestion pipeline routes: file upload (CSV/JSON), duplicate BC flagging, per-record approve/reject, and bulk approve-all with audit logging.",
+      "tags": ["test", "ingestion", "route-test"],
+      "complexity": "complex"
+    },
+    {
+      "id": "class:tests/test_ingestion_routes.py:TestUpload",
+      "type": "class",
+      "name": "TestUpload",
+      "filePath": "tests/test_ingestion_routes.py",
+      "lineRange": [32, 83],
+      "summary": "Tests file upload handling for CSV and JSON ingestion, missing-file and wrong-extension errors, and duplicate BC detection.",
+      "tags": ["test", "ingestion", "upload", "route-test"],
+      "complexity": "complex"
+    },
+    {
+      "id": "class:tests/test_ingestion_routes.py:TestApprove",
+      "type": "class",
+      "name": "TestApprove",
+      "filePath": "tests/test_ingestion_routes.py",
+      "lineRange": [86, 131],
+      "summary": "Tests approving an ingestion record, verifying BC creation, status transition, 404 handling, and duplicate-prevention when the BC already exists.",
+      "tags": ["test", "ingestion", "route-test"],
+      "complexity": "complex"
+    },
+    {
+      "id": "class:tests/test_ingestion_routes.py:TestReject",
+      "type": "class",
+      "name": "TestReject",
+      "filePath": "tests/test_ingestion_routes.py",
+      "lineRange": [134, 170],
+      "summary": "Tests rejecting an ingestion record, ensuring no BC is created and 404 handling for missing records.",
+      "tags": ["test", "ingestion", "route-test"],
+      "complexity": "moderate"
+    },
+    {
+      "id": "class:tests/test_ingestion_routes.py:TestApproveAll",
+      "type": "class",
+      "name": "TestApproveAll",
+      "filePath": "tests/test_ingestion_routes.py",
+      "lineRange": [173, 204],
+      "summary": "Tests bulk approval of all pending ingestion records, skipping records with validation errors and writing an audit log entry per created BC.",
+      "tags": ["test", "ingestion", "bulk-approve", "route-test"],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:tests/test_ingestion_service.py",
+      "type": "file",
+      "name": "test_ingestion_service.py",
+      "filePath": "tests/test_ingestion_service.py",
+      "summary": "Unit test suite for the ingestion service module, covering field similarity scoring, field mapping/matching, BC validation, deduplication, and XLSX/CSV/JSON parsing and grouping logic.",
+      "tags": ["test", "ingestion", "service-test", "parsing"],
+      "complexity": "complex"
+    },
+    {
+      "id": "class:tests/test_ingestion_service.py:TestSimilarity",
+      "type": "class",
+      "name": "TestSimilarity",
+      "filePath": "tests/test_ingestion_service.py",
+      "lineRange": [22, 34],
+      "summary": "Tests the fuzzy string similarity scorer used for field-name matching, covering identical, case-insensitive, dissimilar, and partial matches.",
+      "tags": ["test", "ingestion", "similarity"],
+      "complexity": "simple"
+    },
+    {
+      "id": "class:tests/test_ingestion_service.py:TestMatchField",
+      "type": "class",
+      "name": "TestMatchField",
+      "filePath": "tests/test_ingestion_service.py",
+      "lineRange": [42, 65],
+      "summary": "Tests matching a raw column name to a canonical field via known aliases, definition synonyms, whitespace normalization, and low-confidence fallback.",
+      "tags": ["test", "ingestion", "field-mapping"],
+      "complexity": "moderate"
+    },
+    {
+      "id": "class:tests/test_ingestion_service.py:TestMapFields",
+      "type": "class",
+      "name": "TestMapFields",
+      "filePath": "tests/test_ingestion_service.py",
+      "lineRange": [73, 93],
+      "summary": "Tests mapping a raw row dict to canonical fields, including handling of None/NaN values, low-confidence exclusion, and value stripping.",
+      "tags": ["test", "ingestion", "field-mapping"],
+      "complexity": "moderate"
+    },
+    {
+      "id": "class:tests/test_ingestion_service.py:TestValidateBc",
+      "type": "class",
+      "name": "TestValidateBc",
+      "filePath": "tests/test_ingestion_service.py",
+      "lineRange": [101, 133],
+      "summary": "Tests BC record validation rules: required short name/definition, requiring at least one of NCIt/LOINC code, and NCIt code format checking.",
+      "tags": ["test", "ingestion", "validation"],
+      "complexity": "moderate"
+    },
+    {
+      "id": "class:tests/test_ingestion_service.py:TestDeduplicate",
+      "type": "class",
+      "name": "TestDeduplicate",
+      "filePath": "tests/test_ingestion_service.py",
+      "lineRange": [141, 164],
+      "summary": "Tests deduplication of parsed ingestion records against existing BC ids, including case-insensitive comparison and NCIt-code fallback matching.",
+      "tags": ["test", "ingestion", "deduplication"],
+      "complexity": "moderate"
+    },
+    {
+      "id": "class:tests/test_ingestion_service.py:TestParseCsv",
+      "type": "class",
+      "name": "TestParseCsv",
+      "filePath": "tests/test_ingestion_service.py",
+      "lineRange": [172, 198],
+      "summary": "Tests CSV parsing into mapped/validated records, including error handling for invalid files and validation-error propagation.",
+      "tags": ["test", "ingestion", "parsing", "csv"],
+      "complexity": "moderate"
+    },
+    {
+      "id": "class:tests/test_ingestion_service.py:TestParseJson",
+      "type": "class",
+      "name": "TestParseJson",
+      "filePath": "tests/test_ingestion_service.py",
+      "lineRange": [206, 223],
+      "summary": "Tests JSON parsing for both array-of-objects and single-object inputs, and error handling for invalid JSON.",
+      "tags": ["test", "ingestion", "parsing", "json"],
+      "complexity": "simple"
+    },
+    {
+      "id": "class:tests/test_ingestion_service.py:TestGroupByBc",
+      "type": "class",
+      "name": "TestGroupByBc",
+      "filePath": "tests/test_ingestion_service.py",
+      "lineRange": [231, 259],
+      "summary": "Tests grouping of parsed rows by BC id, including nested DEC sub-rows, multiple distinct BCs, and skipping rows without a BC id.",
+      "tags": ["test", "ingestion", "grouping"],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:tests/test_models.py",
+      "type": "file",
+      "name": "test_models.py",
+      "filePath": "tests/test_models.py",
+      "summary": "Unit tests for the AuditLog, IngestionRecord, and BiomedicalConcept ORM models, verifying JSON-backed property round-tripping, computed averages, and dictionary serialization.",
+      "tags": ["test", "models", "orm"],
+      "complexity": "moderate"
+    },
+    {
+      "id": "class:tests/test_models.py:TestAuditLogJsonProperties",
+      "type": "class",
+      "name": "TestAuditLogJsonProperties",
+      "filePath": "tests/test_models.py",
+      "lineRange": [9, 44],
+      "summary": "Tests round-tripping of AuditLog's JSON-backed before_state/after_state properties and correct handling of None values on a persisted record.",
+      "tags": ["test", "models", "audit", "serialization"],
+      "complexity": "moderate"
+    },
+    {
+      "id": "class:tests/test_models.py:TestIngestionRecordProperties",
+      "type": "class",
+      "name": "TestIngestionRecordProperties",
+      "filePath": "tests/test_models.py",
+      "lineRange": [47, 87],
+      "summary": "Tests round-tripping of IngestionRecord's JSON-backed mapped/confidences/errors/decs properties and the correctness of the computed average confidence.",
+      "tags": ["test", "models", "ingestion", "serialization"],
+      "complexity": "moderate"
+    },
+    {
+      "id": "class:tests/test_models.py:TestBiomedicalConceptToDict",
+      "type": "class",
+      "name": "TestBiomedicalConceptToDict",
+      "filePath": "tests/test_models.py",
+      "lineRange": [90, 116],
+      "summary": "Tests that BiomedicalConcept.to_dict() includes required keys, matches field values, and defaults status to provisional.",
+      "tags": ["test", "models", "bc", "serialization"],
+      "complexity": "simple"
+    }
+  ],
+  "edges": [
+    {
+      "source": "file:tests/test_audit_routes.py",
+      "target": "file:extensions.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:tests/test_audit_routes.py",
+      "target": "file:models/audit.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:tests/test_bc_routes.py",
+      "target": "file:extensions.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:tests/test_bc_routes.py",
+      "target": "file:models/audit.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:tests/test_bc_routes.py",
+      "target": "file:models/bc.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:tests/test_governance_routes.py",
+      "target": "file:extensions.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:tests/test_governance_routes.py",
+      "target": "file:models/audit.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:tests/test_governance_routes.py",
+      "target": "file:models/bc.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:tests/test_governance_routes.py",
+      "target": "file:models/governance.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:tests/test_ingestion_routes.py",
+      "target": "file:extensions.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:tests/test_ingestion_routes.py",
+      "target": "file:models/audit.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:tests/test_ingestion_routes.py",
+      "target": "file:models/bc.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:tests/test_ingestion_routes.py",
+      "target": "file:models/ingestion.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:tests/test_ingestion_service.py",
+      "target": "file:services/ingestion.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:tests/test_models.py",
+      "target": "file:extensions.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:tests/test_models.py",
+      "target": "file:models/audit.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:tests/test_models.py",
+      "target": "file:models/bc.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:tests/test_models.py",
+      "target": "file:models/ingestion.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+
+    {
+      "source": "file:tests/test_audit_routes.py",
+      "target": "class:tests/test_audit_routes.py:TestAuditIndex",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+
+    {
+      "source": "file:tests/test_bc_routes.py",
+      "target": "function:tests/test_bc_routes.py:_bc_form",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:tests/test_bc_routes.py",
+      "target": "class:tests/test_bc_routes.py:TestBcIndex",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:tests/test_bc_routes.py",
+      "target": "class:tests/test_bc_routes.py:TestCreateBc",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:tests/test_bc_routes.py",
+      "target": "class:tests/test_bc_routes.py:TestBcDetail",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:tests/test_bc_routes.py",
+      "target": "class:tests/test_bc_routes.py:TestEditBc",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:tests/test_bc_routes.py",
+      "target": "class:tests/test_bc_routes.py:TestClearNcitCode",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:tests/test_bc_routes.py",
+      "target": "class:tests/test_bc_routes.py:TestClearLoincCode",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:tests/test_bc_routes.py",
+      "target": "class:tests/test_bc_routes.py:TestSubmitForReview",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:tests/test_bc_routes.py",
+      "target": "class:tests/test_bc_routes.py:TestDeleteBc",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:tests/test_bc_routes.py",
+      "target": "class:tests/test_bc_routes.py:TestExport",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:tests/test_bc_routes.py",
+      "target": "class:tests/test_bc_routes.py:TestLibraryDetail",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+
+    {
+      "source": "file:tests/test_governance_routes.py",
+      "target": "class:tests/test_governance_routes.py:TestAdvance",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:tests/test_governance_routes.py",
+      "target": "class:tests/test_governance_routes.py:TestReject",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:tests/test_governance_routes.py",
+      "target": "class:tests/test_governance_routes.py:TestGovernanceExport",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+
+    {
+      "source": "file:tests/test_ingestion_routes.py",
+      "target": "class:tests/test_ingestion_routes.py:TestUpload",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:tests/test_ingestion_routes.py",
+      "target": "class:tests/test_ingestion_routes.py:TestApprove",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:tests/test_ingestion_routes.py",
+      "target": "class:tests/test_ingestion_routes.py:TestReject",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:tests/test_ingestion_routes.py",
+      "target": "class:tests/test_ingestion_routes.py:TestApproveAll",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+
+    {
+      "source": "file:tests/test_ingestion_service.py",
+      "target": "class:tests/test_ingestion_service.py:TestSimilarity",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:tests/test_ingestion_service.py",
+      "target": "class:tests/test_ingestion_service.py:TestMatchField",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:tests/test_ingestion_service.py",
+      "target": "class:tests/test_ingestion_service.py:TestMapFields",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:tests/test_ingestion_service.py",
+      "target": "class:tests/test_ingestion_service.py:TestValidateBc",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:tests/test_ingestion_service.py",
+      "target": "class:tests/test_ingestion_service.py:TestDeduplicate",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:tests/test_ingestion_service.py",
+      "target": "class:tests/test_ingestion_service.py:TestParseCsv",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:tests/test_ingestion_service.py",
+      "target": "class:tests/test_ingestion_service.py:TestParseJson",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:tests/test_ingestion_service.py",
+      "target": "class:tests/test_ingestion_service.py:TestGroupByBc",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+
+    {
+      "source": "file:tests/test_models.py",
+      "target": "class:tests/test_models.py:TestAuditLogJsonProperties",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:tests/test_models.py",
+      "target": "class:tests/test_models.py:TestIngestionRecordProperties",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:tests/test_models.py",
+      "target": "class:tests/test_models.py:TestBiomedicalConceptToDict",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+
+    {
+      "source": "file:routes/audit.py",
+      "target": "file:tests/test_audit_routes.py",
+      "type": "tested_by",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "file:models/audit.py",
+      "target": "file:tests/test_audit_routes.py",
+      "type": "tested_by",
+      "direction": "forward",
+      "weight": 0.5
+    },
+
+    {
+      "source": "file:models/bc.py",
+      "target": "file:tests/test_bc_routes.py",
+      "type": "tested_by",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "file:routes/bc.py",
+      "target": "file:tests/test_bc_routes.py",
+      "type": "tested_by",
+      "direction": "forward",
+      "weight": 0.5
+    },
+
+    {
+      "source": "file:models/bc.py",
+      "target": "file:tests/test_governance_routes.py",
+      "type": "tested_by",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "file:models/governance.py",
+      "target": "file:tests/test_governance_routes.py",
+      "type": "tested_by",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "file:routes/governance.py",
+      "target": "file:tests/test_governance_routes.py",
+      "type": "tested_by",
+      "direction": "forward",
+      "weight": 0.5
+    },
+
+    {
+      "source": "file:routes/ingestion.py",
+      "target": "file:tests/test_ingestion_routes.py",
+      "type": "tested_by",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "file:models/bc.py",
+      "target": "file:tests/test_ingestion_routes.py",
+      "type": "tested_by",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "file:models/ingestion.py",
+      "target": "file:tests/test_ingestion_routes.py",
+      "type": "tested_by",
+      "direction": "forward",
+      "weight": 0.5
+    },
+
+    {
+      "source": "file:services/ingestion.py",
+      "target": "file:tests/test_ingestion_service.py",
+      "type": "tested_by",
+      "direction": "forward",
+      "weight": 0.5
+    },
+
+    {
+      "source": "file:models/audit.py",
+      "target": "file:tests/test_models.py",
+      "type": "tested_by",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "file:models/bc.py",
+      "target": "file:tests/test_models.py",
+      "type": "tested_by",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "file:models/ingestion.py",
+      "target": "file:tests/test_models.py",
+      "type": "tested_by",
+      "direction": "forward",
+      "weight": 0.5
+    }
+  ]
+}

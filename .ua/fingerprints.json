@@ -1,0 +1,4505 @@
+{
+  "version": "1.0.0",
+  "gitCommitHash": "8df239f9988f09a9476e634ceb7cac80c29f72fe",
+  "generatedAt": "2026-08-04T12:51:44.114Z",
+  "files": {
+    ".claude/agent-memory/cdisc-concept-explorer/MEMORY.md": {
+      "filePath": ".claude/agent-memory/cdisc-concept-explorer/MEMORY.md",
+      "contentHash": "ee417c274518ef2aacebe6beedbd4cdb922f4bbbe70fc17aa9097b09559de658",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 2,
+      "hasStructuralAnalysis": true
+    },
+    ".claude/agent-memory/cdisc-concept-explorer/reference_api_endpoints.md": {
+      "filePath": ".claude/agent-memory/cdisc-concept-explorer/reference_api_endpoints.md",
+      "contentHash": "5c481ee629243bd21285e2598ee6020d3067d2a4b847309416bc4ab6e8297f99",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 37,
+      "hasStructuralAnalysis": true
+    },
+    ".claude/agent-memory/cdisc-frontend-dev/MEMORY.md": {
+      "filePath": ".claude/agent-memory/cdisc-frontend-dev/MEMORY.md",
+      "contentHash": "9cfc5fe6aaa907e2cdc699cfd2603999336adbd10903d1f0a8603977dd4873fe",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 3,
+      "hasStructuralAnalysis": true
+    },
+    ".claude/agent-memory/cdisc-frontend-dev/frontend_architecture.md": {
+      "filePath": ".claude/agent-memory/cdisc-frontend-dev/frontend_architecture.md",
+      "contentHash": "3b05b5895c38aad4b300845ff70e1ca4c32677c7dcbed8d89d9f7ae1473961ca",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 66,
+      "hasStructuralAnalysis": true
+    },
+    ".claude/agent-memory/cdisc-frontend-dev/project_foundation.md": {
+      "filePath": ".claude/agent-memory/cdisc-frontend-dev/project_foundation.md",
+      "contentHash": "e8eb26ab98afe12f21d9c17642ace96e6a8c9aa4b17401fb554388b4e58f6891",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 55,
+      "hasStructuralAnalysis": true
+    },
+    ".claude/agents/cdisc-concept-explorer.md": {
+      "filePath": ".claude/agents/cdisc-concept-explorer.md",
+      "contentHash": "f907dbdf954f653dd35e03e0d7b6fffbb38c1c490365a4554b7650eea7821f9b",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 68,
+      "hasStructuralAnalysis": true
+    },
+    ".claude/agents/cdisc-frontend-dev.md": {
+      "filePath": ".claude/agents/cdisc-frontend-dev.md",
+      "contentHash": "573541a9606aa19a355ee658d195192d4eaa6fa100144c687ada0eafd0d0a31d",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 208,
+      "hasStructuralAnalysis": true
+    },
+    ".claude/agents/mike.md": {
+      "filePath": ".claude/agents/mike.md",
+      "contentHash": "588c5031dd5cf81a75989f12a447bf96e326219a64f90bcf173fa52d97178073",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 109,
+      "hasStructuralAnalysis": true
+    },
+    ".claude/skills/code-review/SKILL.md": {
+      "filePath": ".claude/skills/code-review/SKILL.md",
+      "contentHash": "349bb5d0210ddbd16465458913f4b7bc8d69c3b4ac4618fd6669e8211370520d",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 60,
+      "hasStructuralAnalysis": true
+    },
+    ".claude/skills/run-concept-curation/SKILL.md": {
+      "filePath": ".claude/skills/run-concept-curation/SKILL.md",
+      "contentHash": "9165f7fa93e935395a2284ee844fd74d73f849d90cec18ac8b83f706b8956a66",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 50,
+      "hasStructuralAnalysis": true
+    },
+    ".claude/skills/run-concept-curation/smoke.sh": {
+      "filePath": ".claude/skills/run-concept-curation/smoke.sh",
+      "contentHash": "3ebfae9eed4b581af79400d637b56a2fd9d304838c802a92e7a61c00ecb77785",
+      "functions": [
+        {
+          "name": "cleanup",
+          "params": [],
+          "exported": false,
+          "lineCount": 7
+        },
+        {
+          "name": "check",
+          "params": [],
+          "exported": false,
+          "lineCount": 10
+        },
+        {
+          "name": "get_code",
+          "params": [],
+          "exported": false,
+          "lineCount": 3
+        },
+        {
+          "name": "post_code",
+          "params": [],
+          "exported": false,
+          "lineCount": 4
+        }
+      ],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 91,
+      "hasStructuralAnalysis": true
+    },
+    ".flake8": {
+      "filePath": ".flake8",
+      "contentHash": "50e829a2c17f0fbf402c844a6f69e9951ea71d000d06f2f02db81e3d844d34ef",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 17,
+      "hasStructuralAnalysis": false
+    },
+    ".github/workflows/ci.yml": {
+      "filePath": ".github/workflows/ci.yml",
+      "contentHash": "f32bc27dcfc08f2c7689eba8e3061540c2c36a55ed61ab6e2648efbf2aa6a7a1",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 27,
+      "hasStructuralAnalysis": true
+    },
+    ".hintrc": {
+      "filePath": ".hintrc",
+      "contentHash": "8eb612a502d2b7e4802fa225cf718b1f5a4c0c2522218a0c74ae443add44d90b",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 8,
+      "hasStructuralAnalysis": false
+    },
+    ".mcp.json": {
+      "filePath": ".mcp.json",
+      "contentHash": "22dbf241a5b03191333d6e14f2663e82feed1f38c5376e344fb5f8e8f3671288",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 10,
+      "hasStructuralAnalysis": true
+    },
+    ".pre-commit-config.yaml": {
+      "filePath": ".pre-commit-config.yaml",
+      "contentHash": "9477fce18a5b3b6145e4971ea89b78919283632dbfc98226861cb757b637e0bb",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 25,
+      "hasStructuralAnalysis": true
+    },
+    ".ua/.understandignore": {
+      "filePath": ".ua/.understandignore",
+      "contentHash": "121b228fa2b76f7ac38af1fa7d27cf3adf72f84fd8f02e1c2e760ba67889eb2e",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 111,
+      "hasStructuralAnalysis": false
+    },
+    ".ua/config.json": {
+      "filePath": ".ua/config.json",
+      "contentHash": "e6e1895a8e3cb71f76daebccd84c4fc9877d8a88fb75e476ca22a320e69d4995",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 2,
+      "hasStructuralAnalysis": true
+    },
+    "CLAUDE.md": {
+      "filePath": "CLAUDE.md",
+      "contentHash": "b5e73debeb62dbb875b1c392949ee2b17335d15f89c6a47ea9c80dbe422ad5a0",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 129,
+      "hasStructuralAnalysis": true
+    },
+    "README-PROGRESS.md": {
+      "filePath": "README-PROGRESS.md",
+      "contentHash": "0e85f64fe2ea380bb65d159d2a439ed5a8f6d369883e6fadc2000f827b5e93a6",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 148,
+      "hasStructuralAnalysis": true
+    },
+    "README.md": {
+      "filePath": "README.md",
+      "contentHash": "d590246a42fa91bf021240bc7d3290e5a6d12d3f9160682c2a68fa26f9e069d8",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 186,
+      "hasStructuralAnalysis": true
+    },
+    "app.py": {
+      "filePath": "app.py",
+      "contentHash": "b7ebda67cac87f9e627d9425dd04b869da56df48fdaa564c6c0c4380fdcf02cd",
+      "functions": [
+        {
+          "name": "_configure_logging",
+          "params": [],
+          "exported": true,
+          "lineCount": 12
+        },
+        {
+          "name": "create_app",
+          "params": [
+            "config_class"
+          ],
+          "exported": true,
+          "lineCount": 27
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "logging",
+          "specifiers": [
+            "logging"
+          ]
+        },
+        {
+          "source": "os",
+          "specifiers": [
+            "os"
+          ]
+        },
+        {
+          "source": "flask",
+          "specifiers": [
+            "Flask"
+          ]
+        },
+        {
+          "source": "config",
+          "specifiers": [
+            "Config"
+          ]
+        },
+        {
+          "source": "extensions",
+          "specifiers": [
+            "db",
+            "migrate"
+          ]
+        }
+      ],
+      "exports": [
+        "_configure_logging",
+        "create_app"
+      ],
+      "totalLines": 60,
+      "hasStructuralAnalysis": true
+    },
+    "config.py": {
+      "filePath": "config.py",
+      "contentHash": "920708fe5857bc3bd8adb9cde0ad718dbf83a21e1ab53562956ddb10200190b2",
+      "functions": [],
+      "classes": [
+        {
+          "name": "Config",
+          "methods": [],
+          "properties": [],
+          "exported": true,
+          "lineCount": 11
+        }
+      ],
+      "imports": [
+        {
+          "source": "os",
+          "specifiers": [
+            "os"
+          ]
+        }
+      ],
+      "exports": [
+        "Config"
+      ],
+      "totalLines": 15,
+      "hasStructuralAnalysis": true
+    },
+    "db_bootstrap.py": {
+      "filePath": "db_bootstrap.py",
+      "contentHash": "1d43ffaa14c25aeffa4fd9239e2553d8d26360f5a94d102a7d06d60665ecc613",
+      "functions": [
+        {
+          "name": "_schema_is_current",
+          "params": [
+            "inspector"
+          ],
+          "exported": true,
+          "lineCount": 3
+        },
+        {
+          "name": "ensure_db",
+          "params": [
+            "app"
+          ],
+          "exported": true,
+          "lineCount": 36
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "logging",
+          "specifiers": [
+            "logging"
+          ]
+        },
+        {
+          "source": "flask_migrate",
+          "specifiers": [
+            "stamp",
+            "upgrade"
+          ]
+        },
+        {
+          "source": "sqlalchemy",
+          "specifiers": [
+            "inspect",
+            "text"
+          ]
+        },
+        {
+          "source": "extensions",
+          "specifiers": [
+            "db"
+          ]
+        }
+      ],
+      "exports": [
+        "_schema_is_current",
+        "ensure_db"
+      ],
+      "totalLines": 72,
+      "hasStructuralAnalysis": true
+    },
+    "extensions.py": {
+      "filePath": "extensions.py",
+      "contentHash": "a9f773e061558d1cab03e9b47d20cc956bfbe0ce685afddac72da466abd28d0a",
+      "functions": [
+        {
+          "name": "_set_sqlite_pragmas",
+          "params": [
+            "dbapi_connection",
+            "connection_record"
+          ],
+          "exported": true,
+          "lineCount": 13
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "sqlite3",
+          "specifiers": [
+            "sqlite3"
+          ]
+        },
+        {
+          "source": "flask_migrate",
+          "specifiers": [
+            "Migrate"
+          ]
+        },
+        {
+          "source": "flask_sqlalchemy",
+          "specifiers": [
+            "SQLAlchemy"
+          ]
+        },
+        {
+          "source": "sqlalchemy",
+          "specifiers": [
+            "event"
+          ]
+        },
+        {
+          "source": "sqlalchemy.engine",
+          "specifiers": [
+            "Engine"
+          ]
+        }
+      ],
+      "exports": [
+        "_set_sqlite_pragmas"
+      ],
+      "totalLines": 26,
+      "hasStructuralAnalysis": true
+    },
+    "files/BC Curation Principles and Completion GLs.xlsx": {
+      "filePath": "files/BC Curation Principles and Completion GLs.xlsx",
+      "contentHash": "f88a580abd70d7d5ea448a51a53354511cad86b5e8e7f0a23dff33f8bc5e8f6b",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 183,
+      "hasStructuralAnalysis": false
+    },
+    "files/BC DEC Templates.xlsx": {
+      "filePath": "files/BC DEC Templates.xlsx",
+      "contentHash": "307bcc306a110b44187885c1cf7647721c3757bb146d1881516c6ef819722247",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 95,
+      "hasStructuralAnalysis": false
+    },
+    "files/BC Examples.xlsx": {
+      "filePath": "files/BC Examples.xlsx",
+      "contentHash": "b73c17e958fb8ea05ce4455c7d97863099841930fee5104eaff831c1992a36c8",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 333,
+      "hasStructuralAnalysis": false
+    },
+    "files/BC Governance.docx": {
+      "filePath": "files/BC Governance.docx",
+      "contentHash": "5f2bbfc7ab96f59e3be77a623c6bf7685ecdacbdea292595a439579cbd90e6bf",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 55,
+      "hasStructuralAnalysis": false
+    },
+    "files/implementation.md": {
+      "filePath": "files/implementation.md",
+      "contentHash": "1c0944818a2b8137476499791c5d9001b1f727985cd95fcb4a6ba2f7b46e8669",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 206,
+      "hasStructuralAnalysis": true
+    },
+    "files/plan.md": {
+      "filePath": "files/plan.md",
+      "contentHash": "00dc791078a0ea8662ee8742894ea677f4a9c628886a01b81543c1fd9404b3a5",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 48,
+      "hasStructuralAnalysis": true
+    },
+    "files/result.md": {
+      "filePath": "files/result.md",
+      "contentHash": "3437e47769e0f7ed3cc128456fae9e4ee1a03787e9761a74b061a178d787d53d",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 28,
+      "hasStructuralAnalysis": true
+    },
+    "mcp_server/__init__.py": {
+      "filePath": "mcp_server/__init__.py",
+      "contentHash": "7dd8aa0295c37b61193777401163e286d48d8f105cda0268504ea5834ad64a99",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 6,
+      "hasStructuralAnalysis": true
+    },
+    "mcp_server/__main__.py": {
+      "filePath": "mcp_server/__main__.py",
+      "contentHash": "425871ea4a94a774abe503f0f3ba0b46a45e352d5154fd5abba2b486fa2fa7d3",
+      "functions": [],
+      "classes": [],
+      "imports": [
+        {
+          "source": "mcp_server.server",
+          "specifiers": [
+            "main"
+          ]
+        }
+      ],
+      "exports": [],
+      "totalLines": 4,
+      "hasStructuralAnalysis": true
+    },
+    "mcp_server/server.py": {
+      "filePath": "mcp_server/server.py",
+      "contentHash": "9f2497cc3778a3fe9ae96817297a9d47bc2f7756067c537c971befe2c9b78100",
+      "functions": [
+        {
+          "name": "_get_app",
+          "params": [],
+          "exported": true,
+          "lineCount": 9
+        },
+        {
+          "name": "_with_app_context",
+          "params": [
+            "fn"
+          ],
+          "exported": true,
+          "lineCount": 13
+        },
+        {
+          "name": "list_tools",
+          "params": [],
+          "returnType": "list[types.Tool]",
+          "exported": true,
+          "lineCount": 2
+        },
+        {
+          "name": "call_tool",
+          "params": [
+            "name",
+            "arguments"
+          ],
+          "returnType": "list[types.TextContent]",
+          "exported": true,
+          "lineCount": 4
+        },
+        {
+          "name": "_dispatch",
+          "params": [
+            "name",
+            "args"
+          ],
+          "returnType": "Any",
+          "exported": true,
+          "lineCount": 21
+        },
+        {
+          "name": "_bc_full_dict",
+          "params": [
+            "bc"
+          ],
+          "exported": true,
+          "lineCount": 13
+        },
+        {
+          "name": "_list_bcs",
+          "params": [
+            "args"
+          ],
+          "returnType": "dict",
+          "exported": true,
+          "lineCount": 21
+        },
+        {
+          "name": "_get_bc",
+          "params": [
+            "args"
+          ],
+          "returnType": "dict",
+          "exported": true,
+          "lineCount": 46
+        },
+        {
+          "name": "_search_ncit",
+          "params": [
+            "args"
+          ],
+          "returnType": "list",
+          "exported": true,
+          "lineCount": 8
+        },
+        {
+          "name": "_get_ncit_concept",
+          "params": [
+            "args"
+          ],
+          "returnType": "dict",
+          "exported": true,
+          "lineCount": 7
+        },
+        {
+          "name": "_search_loinc",
+          "params": [
+            "args"
+          ],
+          "returnType": "list",
+          "exported": true,
+          "lineCount": 8
+        },
+        {
+          "name": "_search_cdisc_library",
+          "params": [
+            "args"
+          ],
+          "returnType": "list",
+          "exported": true,
+          "lineCount": 10
+        },
+        {
+          "name": "_get_library_bc",
+          "params": [
+            "args"
+          ],
+          "returnType": "dict",
+          "exported": true,
+          "lineCount": 7
+        },
+        {
+          "name": "_list_review_queue",
+          "params": [
+            "_args"
+          ],
+          "returnType": "dict",
+          "exported": true,
+          "lineCount": 14
+        },
+        {
+          "name": "_create_bc",
+          "params": [
+            "args"
+          ],
+          "returnType": "dict",
+          "exported": true,
+          "lineCount": 9
+        },
+        {
+          "name": "_update_bc",
+          "params": [
+            "args"
+          ],
+          "returnType": "dict",
+          "exported": true,
+          "lineCount": 10
+        },
+        {
+          "name": "_map_ncit_to_bc",
+          "params": [
+            "args"
+          ],
+          "returnType": "dict",
+          "exported": true,
+          "lineCount": 9
+        },
+        {
+          "name": "_submit_bc_for_review",
+          "params": [
+            "args"
+          ],
+          "returnType": "dict",
+          "exported": true,
+          "lineCount": 9
+        },
+        {
+          "name": "_advance_governance",
+          "params": [
+            "args"
+          ],
+          "returnType": "dict",
+          "exported": true,
+          "lineCount": 8
+        },
+        {
+          "name": "_reject_bc",
+          "params": [
+            "args"
+          ],
+          "returnType": "dict",
+          "exported": true,
+          "lineCount": 8
+        },
+        {
+          "name": "main",
+          "params": [],
+          "returnType": "None",
+          "exported": true,
+          "lineCount": 3
+        },
+        {
+          "name": "_run",
+          "params": [],
+          "returnType": "None",
+          "exported": true,
+          "lineCount": 3
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "asyncio",
+          "specifiers": [
+            "asyncio"
+          ]
+        },
+        {
+          "source": "functools",
+          "specifiers": [
+            "functools"
+          ]
+        },
+        {
+          "source": "json",
+          "specifiers": [
+            "json"
+          ]
+        },
+        {
+          "source": "logging",
+          "specifiers": [
+            "logging"
+          ]
+        },
+        {
+          "source": "typing",
+          "specifiers": [
+            "Any"
+          ]
+        },
+        {
+          "source": "mcp.types",
+          "specifiers": [
+            "types"
+          ]
+        },
+        {
+          "source": "mcp.server",
+          "specifiers": [
+            "Server"
+          ]
+        },
+        {
+          "source": "mcp.server.stdio",
+          "specifiers": [
+            "stdio_server"
+          ]
+        }
+      ],
+      "exports": [
+        "_get_app",
+        "_with_app_context",
+        "list_tools",
+        "call_tool",
+        "_dispatch",
+        "_bc_full_dict",
+        "_list_bcs",
+        "_get_bc",
+        "_search_ncit",
+        "_get_ncit_concept",
+        "_search_loinc",
+        "_search_cdisc_library",
+        "_get_library_bc",
+        "_list_review_queue",
+        "_create_bc",
+        "_update_bc",
+        "_map_ncit_to_bc",
+        "_submit_bc_for_review",
+        "_advance_governance",
+        "_reject_bc",
+        "main",
+        "_run"
+      ],
+      "totalLines": 573,
+      "hasStructuralAnalysis": true
+    },
+    "migrations/README": {
+      "filePath": "migrations/README",
+      "contentHash": "24bd0dae33abb1c3dc2a0466421d51de196fd7fae8843a2dd13be999d336ec99",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 2,
+      "hasStructuralAnalysis": false
+    },
+    "migrations/alembic.ini": {
+      "filePath": "migrations/alembic.ini",
+      "contentHash": "4a36049892b3cfa2bc41fb995ad2c900959c08a39d45b7d486c565a60bfca1c9",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 51,
+      "hasStructuralAnalysis": false
+    },
+    "migrations/env.py": {
+      "filePath": "migrations/env.py",
+      "contentHash": "92689d7fd7f97985620061033b64aa7142753f6298c57c7f5eb60e268334beb4",
+      "functions": [
+        {
+          "name": "get_engine",
+          "params": [],
+          "exported": true,
+          "lineCount": 7
+        },
+        {
+          "name": "get_engine_url",
+          "params": [],
+          "exported": true,
+          "lineCount": 5
+        },
+        {
+          "name": "get_metadata",
+          "params": [],
+          "exported": true,
+          "lineCount": 4
+        },
+        {
+          "name": "run_migrations_offline",
+          "params": [],
+          "exported": true,
+          "lineCount": 17
+        },
+        {
+          "name": "run_migrations_online",
+          "params": [],
+          "exported": true,
+          "lineCount": 29
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "logging",
+          "specifiers": [
+            "logging"
+          ]
+        },
+        {
+          "source": "logging.config",
+          "specifiers": [
+            "fileConfig"
+          ]
+        },
+        {
+          "source": "alembic",
+          "specifiers": [
+            "context"
+          ]
+        },
+        {
+          "source": "flask",
+          "specifiers": [
+            "current_app"
+          ]
+        }
+      ],
+      "exports": [
+        "get_engine",
+        "get_engine_url",
+        "get_metadata",
+        "run_migrations_offline",
+        "run_migrations_online"
+      ],
+      "totalLines": 106,
+      "hasStructuralAnalysis": true
+    },
+    "migrations/script.py.mako": {
+      "filePath": "migrations/script.py.mako",
+      "contentHash": "f3fc6003e826fce85e8673bb0a22228d68279b4d1996ccc41ed207ac0605265d",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 25,
+      "hasStructuralAnalysis": false
+    },
+    "migrations/versions/51d4a009d291_baseline_initial_schema.py": {
+      "filePath": "migrations/versions/51d4a009d291_baseline_initial_schema.py",
+      "contentHash": "edf3daaa1612275a98cf23d62847b43b815346756996b53c43ce94d2ac8003b2",
+      "functions": [
+        {
+          "name": "upgrade",
+          "params": [],
+          "exported": true,
+          "lineCount": 110
+        },
+        {
+          "name": "downgrade",
+          "params": [],
+          "exported": true,
+          "lineCount": 12
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "sqlalchemy",
+          "specifiers": [
+            "sa"
+          ]
+        },
+        {
+          "source": "alembic",
+          "specifiers": [
+            "op"
+          ]
+        }
+      ],
+      "exports": [
+        "upgrade",
+        "downgrade"
+      ],
+      "totalLines": 143,
+      "hasStructuralAnalysis": true
+    },
+    "models/__init__.py": {
+      "filePath": "models/__init__.py",
+      "contentHash": "273825544f98b1156d301faba2f8d77e630da0cf94894bcc32377930215c193d",
+      "functions": [],
+      "classes": [],
+      "imports": [
+        {
+          "source": "extensions",
+          "specifiers": [
+            "db"
+          ]
+        }
+      ],
+      "exports": [],
+      "totalLines": 2,
+      "hasStructuralAnalysis": true
+    },
+    "models/audit.py": {
+      "filePath": "models/audit.py",
+      "contentHash": "f67bd0fe5e9cbf356609e39e6fe3b3e73cc5d7fffc4d2c00b3b54248101c8571",
+      "functions": [],
+      "classes": [
+        {
+          "name": "AuditLog",
+          "methods": [
+            "before_state",
+            "before_state",
+            "after_state",
+            "after_state"
+          ],
+          "properties": [],
+          "exported": true,
+          "lineCount": 26
+        }
+      ],
+      "imports": [
+        {
+          "source": "json",
+          "specifiers": [
+            "json"
+          ]
+        },
+        {
+          "source": "datetime",
+          "specifiers": [
+            "datetime",
+            "timezone"
+          ]
+        },
+        {
+          "source": "extensions",
+          "specifiers": [
+            "db"
+          ]
+        }
+      ],
+      "exports": [
+        "AuditLog"
+      ],
+      "totalLines": 33,
+      "hasStructuralAnalysis": true
+    },
+    "models/bc.py": {
+      "filePath": "models/bc.py",
+      "contentHash": "f8c9a5096da1fc72a59e4ef79834525f19b739a965eb4fbaa2be927f46dfff5b",
+      "functions": [],
+      "classes": [
+        {
+          "name": "BiomedicalConcept",
+          "methods": [
+            "to_dict"
+          ],
+          "properties": [],
+          "exported": true,
+          "lineCount": 45
+        },
+        {
+          "name": "DataElementConcept",
+          "methods": [],
+          "properties": [],
+          "exported": true,
+          "lineCount": 13
+        }
+      ],
+      "imports": [
+        {
+          "source": "datetime",
+          "specifiers": [
+            "datetime",
+            "timezone"
+          ]
+        },
+        {
+          "source": "extensions",
+          "specifiers": [
+            "db"
+          ]
+        }
+      ],
+      "exports": [
+        "BiomedicalConcept",
+        "DataElementConcept"
+      ],
+      "totalLines": 66,
+      "hasStructuralAnalysis": true
+    },
+    "models/governance.py": {
+      "filePath": "models/governance.py",
+      "contentHash": "88d4dadcfeed93ca7bc1d069ab68578ebe3850af8a7321d5b79efc96ce1df19e",
+      "functions": [],
+      "classes": [
+        {
+          "name": "GovernanceRecord",
+          "methods": [],
+          "properties": [],
+          "exported": true,
+          "lineCount": 11
+        }
+      ],
+      "imports": [
+        {
+          "source": "datetime",
+          "specifiers": [
+            "datetime",
+            "timezone"
+          ]
+        },
+        {
+          "source": "extensions",
+          "specifiers": [
+            "db"
+          ]
+        }
+      ],
+      "exports": [
+        "GovernanceRecord"
+      ],
+      "totalLines": 17,
+      "hasStructuralAnalysis": true
+    },
+    "models/ingestion.py": {
+      "filePath": "models/ingestion.py",
+      "contentHash": "b51f60feedd01d30bc9b3ce674e2b87a390129ff5dcca8eee62936901be5919f",
+      "functions": [],
+      "classes": [
+        {
+          "name": "IngestionRecord",
+          "methods": [
+            "mapped",
+            "mapped",
+            "confidences",
+            "confidences",
+            "errors",
+            "errors",
+            "decs",
+            "decs",
+            "avg_confidence"
+          ],
+          "properties": [],
+          "exported": true,
+          "lineCount": 50
+        }
+      ],
+      "imports": [
+        {
+          "source": "json",
+          "specifiers": [
+            "json"
+          ]
+        },
+        {
+          "source": "datetime",
+          "specifiers": [
+            "datetime",
+            "timezone"
+          ]
+        },
+        {
+          "source": "extensions",
+          "specifiers": [
+            "db"
+          ]
+        }
+      ],
+      "exports": [
+        "IngestionRecord"
+      ],
+      "totalLines": 57,
+      "hasStructuralAnalysis": true
+    },
+    "models/specialization.py": {
+      "filePath": "models/specialization.py",
+      "contentHash": "7964823cf0cd491b3f3505045cb38ecddab606fe481b60366277717ac0214278",
+      "functions": [],
+      "classes": [
+        {
+          "name": "DatasetSpecialization",
+          "methods": [
+            "variables",
+            "variables",
+            "to_dict"
+          ],
+          "properties": [],
+          "exported": true,
+          "lineCount": 25
+        }
+      ],
+      "imports": [
+        {
+          "source": "json",
+          "specifiers": [
+            "json"
+          ]
+        },
+        {
+          "source": "extensions",
+          "specifiers": [
+            "db"
+          ]
+        }
+      ],
+      "exports": [
+        "DatasetSpecialization"
+      ],
+      "totalLines": 31,
+      "hasStructuralAnalysis": true
+    },
+    "pyproject.toml": {
+      "filePath": "pyproject.toml",
+      "contentHash": "7891009aeb7a54c053c9742a767b8a430c054b0af785ae80c892dcf1c21ab24a",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 8,
+      "hasStructuralAnalysis": true
+    },
+    "requirements-dev.txt": {
+      "filePath": "requirements-dev.txt",
+      "contentHash": "144cb029a25e18c30aa58e37d283c9e054a8ba598c06aa61dd49bbc4c41cdb3e",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 10,
+      "hasStructuralAnalysis": false
+    },
+    "requirements.txt": {
+      "filePath": "requirements.txt",
+      "contentHash": "999c15143ead873cb4b4fd52b765b0af47d954d2f20e198dc15d1c59cb433fc8",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 29,
+      "hasStructuralAnalysis": false
+    },
+    "routes/__init__.py": {
+      "filePath": "routes/__init__.py",
+      "contentHash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 1,
+      "hasStructuralAnalysis": true
+    },
+    "routes/audit.py": {
+      "filePath": "routes/audit.py",
+      "contentHash": "d188f43a629a8f7504ab84021f69b05a4feebf5980f550bafbdeb23137bf5c5c",
+      "functions": [
+        {
+          "name": "index",
+          "params": [],
+          "exported": true,
+          "lineCount": 32
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "logging",
+          "specifiers": [
+            "logging"
+          ]
+        },
+        {
+          "source": "flask",
+          "specifiers": [
+            "Blueprint",
+            "render_template",
+            "request"
+          ]
+        },
+        {
+          "source": "models.audit",
+          "specifiers": [
+            "AuditLog"
+          ]
+        }
+      ],
+      "exports": [
+        "index"
+      ],
+      "totalLines": 45,
+      "hasStructuralAnalysis": true
+    },
+    "routes/bc.py": {
+      "filePath": "routes/bc.py",
+      "contentHash": "45037137be470c61cf1def15b342a9529c16a7d03e71ff11287014d0bef07aeb",
+      "functions": [
+        {
+          "name": "index",
+          "params": [],
+          "exported": true,
+          "lineCount": 17
+        },
+        {
+          "name": "new_bc",
+          "params": [],
+          "exported": true,
+          "lineCount": 17
+        },
+        {
+          "name": "export",
+          "params": [],
+          "exported": true,
+          "lineCount": 23
+        },
+        {
+          "name": "library_detail",
+          "params": [
+            "concept_id"
+          ],
+          "exported": true,
+          "lineCount": 26
+        },
+        {
+          "name": "detail",
+          "params": [
+            "bc_id"
+          ],
+          "exported": true,
+          "lineCount": 34
+        },
+        {
+          "name": "fetch_metadata",
+          "params": [
+            "bc_id"
+          ],
+          "exported": true,
+          "lineCount": 28
+        },
+        {
+          "name": "create",
+          "params": [],
+          "exported": true,
+          "lineCount": 9
+        },
+        {
+          "name": "edit",
+          "params": [
+            "bc_id"
+          ],
+          "exported": true,
+          "lineCount": 6
+        },
+        {
+          "name": "clear_ncit",
+          "params": [
+            "bc_id"
+          ],
+          "exported": true,
+          "lineCount": 11
+        },
+        {
+          "name": "clear_loinc",
+          "params": [
+            "bc_id"
+          ],
+          "exported": true,
+          "lineCount": 12
+        },
+        {
+          "name": "submit_for_review",
+          "params": [
+            "bc_id"
+          ],
+          "exported": true,
+          "lineCount": 5
+        },
+        {
+          "name": "delete",
+          "params": [
+            "bc_id"
+          ],
+          "exported": true,
+          "lineCount": 12
+        },
+        {
+          "name": "_decs_from_form",
+          "params": [
+            "form"
+          ],
+          "exported": true,
+          "lineCount": 19
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "json",
+          "specifiers": [
+            "json"
+          ]
+        },
+        {
+          "source": "logging",
+          "specifiers": [
+            "logging"
+          ]
+        },
+        {
+          "source": "datetime",
+          "specifiers": [
+            "datetime",
+            "timezone"
+          ]
+        },
+        {
+          "source": "flask",
+          "specifiers": [
+            "Blueprint",
+            "Response",
+            "flash",
+            "redirect",
+            "render_template",
+            "request",
+            "url_for"
+          ]
+        },
+        {
+          "source": "extensions",
+          "specifiers": [
+            "db"
+          ]
+        },
+        {
+          "source": "models.bc",
+          "specifiers": [
+            "BiomedicalConcept",
+            "DataElementConcept"
+          ]
+        },
+        {
+          "source": "models.governance",
+          "specifiers": [
+            "GovernanceRecord"
+          ]
+        },
+        {
+          "source": "services",
+          "specifiers": [
+            "bc_service"
+          ]
+        },
+        {
+          "source": "services.audit",
+          "specifiers": [
+            "log_change"
+          ]
+        },
+        {
+          "source": "services.cdisc_api",
+          "specifiers": [
+            "CDISCApiClient"
+          ]
+        },
+        {
+          "source": "services.export",
+          "specifiers": [
+            "export_json",
+            "export_odm_xml",
+            "export_xlsx"
+          ]
+        },
+        {
+          "source": "services.loinc_api",
+          "specifiers": [
+            "LoincApiClient"
+          ]
+        },
+        {
+          "source": "services.ncit_api",
+          "specifiers": [
+            "NCItApiClient"
+          ]
+        }
+      ],
+      "exports": [
+        "index",
+        "new_bc",
+        "export",
+        "library_detail",
+        "detail",
+        "fetch_metadata",
+        "create",
+        "edit",
+        "clear_ncit",
+        "clear_loinc",
+        "submit_for_review",
+        "delete",
+        "_decs_from_form"
+      ],
+      "totalLines": 277,
+      "hasStructuralAnalysis": true
+    },
+    "routes/dashboard.py": {
+      "filePath": "routes/dashboard.py",
+      "contentHash": "de080bfd5e5df9378eeea01f24592e878e42b27de874726c6ee65d3439d9b588",
+      "functions": [
+        {
+          "name": "index",
+          "params": [],
+          "exported": true,
+          "lineCount": 44
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "logging",
+          "specifiers": [
+            "logging"
+          ]
+        },
+        {
+          "source": "concurrent.futures",
+          "specifiers": [
+            "ThreadPoolExecutor"
+          ]
+        },
+        {
+          "source": "datetime",
+          "specifiers": [
+            "datetime",
+            "timedelta",
+            "timezone"
+          ]
+        },
+        {
+          "source": "flask",
+          "specifiers": [
+            "Blueprint",
+            "render_template"
+          ]
+        },
+        {
+          "source": "models.audit",
+          "specifiers": [
+            "AuditLog"
+          ]
+        },
+        {
+          "source": "models.bc",
+          "specifiers": [
+            "BiomedicalConcept"
+          ]
+        },
+        {
+          "source": "services.cdisc_api",
+          "specifiers": [
+            "CDISCApiClient"
+          ]
+        }
+      ],
+      "exports": [
+        "index"
+      ],
+      "totalLines": 61,
+      "hasStructuralAnalysis": true
+    },
+    "routes/governance.py": {
+      "filePath": "routes/governance.py",
+      "contentHash": "f3a4e9fdf44b9cb3170ad88f6d0a756ac7e29941a06ca6927997d39af5a830cb",
+      "functions": [
+        {
+          "name": "board",
+          "params": [],
+          "exported": true,
+          "lineCount": 10
+        },
+        {
+          "name": "export",
+          "params": [],
+          "exported": true,
+          "lineCount": 16
+        },
+        {
+          "name": "advance",
+          "params": [
+            "bc_id"
+          ],
+          "exported": true,
+          "lineCount": 10
+        },
+        {
+          "name": "reject_bc",
+          "params": [
+            "bc_id"
+          ],
+          "exported": true,
+          "lineCount": 7
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "logging",
+          "specifiers": [
+            "logging"
+          ]
+        },
+        {
+          "source": "flask",
+          "specifiers": [
+            "Blueprint",
+            "Response",
+            "flash",
+            "jsonify",
+            "redirect",
+            "render_template",
+            "request",
+            "url_for"
+          ]
+        },
+        {
+          "source": "extensions",
+          "specifiers": [
+            "db"
+          ]
+        },
+        {
+          "source": "models.bc",
+          "specifiers": [
+            "BiomedicalConcept"
+          ]
+        },
+        {
+          "source": "services",
+          "specifiers": [
+            "governance_service"
+          ]
+        },
+        {
+          "source": "services.export",
+          "specifiers": [
+            "export_governance_xlsx"
+          ]
+        },
+        {
+          "source": "services.governance_service",
+          "specifiers": [
+            "STATUS_ORDER"
+          ]
+        }
+      ],
+      "exports": [
+        "board",
+        "export",
+        "advance",
+        "reject_bc"
+      ],
+      "totalLines": 69,
+      "hasStructuralAnalysis": true
+    },
+    "routes/ingestion.py": {
+      "filePath": "routes/ingestion.py",
+      "contentHash": "7554db3e76c74e77bd81761bee4bbf46fb10c7a7516cf6797d1cbe985bad2e57",
+      "functions": [
+        {
+          "name": "_allowed_file",
+          "params": [
+            "filename"
+          ],
+          "exported": true,
+          "lineCount": 3
+        },
+        {
+          "name": "_get_session_key",
+          "params": [],
+          "exported": true,
+          "lineCount": 4
+        },
+        {
+          "name": "_bc_from_mapped",
+          "params": [
+            "bc_id",
+            "mapped"
+          ],
+          "exported": true,
+          "lineCount": 17
+        },
+        {
+          "name": "_create_decs",
+          "params": [
+            "bc_id",
+            "decs"
+          ],
+          "exported": true,
+          "lineCount": 12
+        },
+        {
+          "name": "index",
+          "params": [],
+          "exported": true,
+          "lineCount": 4
+        },
+        {
+          "name": "upload",
+          "params": [],
+          "exported": true,
+          "lineCount": 40
+        },
+        {
+          "name": "approve",
+          "params": [
+            "record_id"
+          ],
+          "exported": true,
+          "lineCount": 22
+        },
+        {
+          "name": "reject",
+          "params": [
+            "record_id"
+          ],
+          "exported": true,
+          "lineCount": 5
+        },
+        {
+          "name": "approve_all",
+          "params": [],
+          "exported": true,
+          "lineCount": 32
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "logging",
+          "specifiers": [
+            "logging"
+          ]
+        },
+        {
+          "source": "uuid",
+          "specifiers": [
+            "uuid"
+          ]
+        },
+        {
+          "source": "flask",
+          "specifiers": [
+            "Blueprint",
+            "flash",
+            "redirect",
+            "render_template",
+            "request",
+            "session",
+            "url_for"
+          ]
+        },
+        {
+          "source": "extensions",
+          "specifiers": [
+            "db"
+          ]
+        },
+        {
+          "source": "models.audit",
+          "specifiers": [
+            "AuditLog"
+          ]
+        },
+        {
+          "source": "models.bc",
+          "specifiers": [
+            "BiomedicalConcept",
+            "DataElementConcept"
+          ]
+        },
+        {
+          "source": "models.ingestion",
+          "specifiers": [
+            "IngestionRecord"
+          ]
+        },
+        {
+          "source": "services.ingestion",
+          "specifiers": [
+            "deduplicate",
+            "parse_csv",
+            "parse_json",
+            "parse_xlsx"
+          ]
+        }
+      ],
+      "exports": [
+        "_allowed_file",
+        "_get_session_key",
+        "_bc_from_mapped",
+        "_create_decs",
+        "index",
+        "upload",
+        "approve",
+        "reject",
+        "approve_all"
+      ],
+      "totalLines": 187,
+      "hasStructuralAnalysis": true
+    },
+    "routes/loinc.py": {
+      "filePath": "routes/loinc.py",
+      "contentHash": "658f533968b7d9f4866058d9a7d410c85d53573e9866838a5a56aa14b988a4b3",
+      "functions": [
+        {
+          "name": "search",
+          "params": [],
+          "exported": true,
+          "lineCount": 11
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "logging",
+          "specifiers": [
+            "logging"
+          ]
+        },
+        {
+          "source": "flask",
+          "specifiers": [
+            "Blueprint",
+            "jsonify",
+            "request"
+          ]
+        },
+        {
+          "source": "services.loinc_api",
+          "specifiers": [
+            "LoincApiClient"
+          ]
+        }
+      ],
+      "exports": [
+        "search"
+      ],
+      "totalLines": 24,
+      "hasStructuralAnalysis": true
+    },
+    "routes/ncit.py": {
+      "filePath": "routes/ncit.py",
+      "contentHash": "134c08ee841cd2a20ecc9b87a07af703baa72db7d9ef56d895901147c3003b83",
+      "functions": [
+        {
+          "name": "index",
+          "params": [],
+          "exported": true,
+          "lineCount": 2
+        },
+        {
+          "name": "mapping",
+          "params": [],
+          "exported": true,
+          "lineCount": 10
+        },
+        {
+          "name": "search_ncit",
+          "params": [],
+          "exported": true,
+          "lineCount": 28
+        },
+        {
+          "name": "concept_detail",
+          "params": [
+            "ncit_code"
+          ],
+          "exported": true,
+          "lineCount": 9
+        },
+        {
+          "name": "resolve",
+          "params": [
+            "bc_id"
+          ],
+          "exported": true,
+          "lineCount": 7
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "logging",
+          "specifiers": [
+            "logging"
+          ]
+        },
+        {
+          "source": "flask",
+          "specifiers": [
+            "Blueprint",
+            "flash",
+            "jsonify",
+            "redirect",
+            "render_template",
+            "request",
+            "url_for"
+          ]
+        },
+        {
+          "source": "extensions",
+          "specifiers": [
+            "db"
+          ]
+        },
+        {
+          "source": "models.bc",
+          "specifiers": [
+            "BiomedicalConcept"
+          ]
+        },
+        {
+          "source": "services",
+          "specifiers": [
+            "bc_service"
+          ]
+        },
+        {
+          "source": "services.ncit_api",
+          "specifiers": [
+            "NCItApiClient"
+          ]
+        }
+      ],
+      "exports": [
+        "index",
+        "mapping",
+        "search_ncit",
+        "concept_detail",
+        "resolve"
+      ],
+      "totalLines": 84,
+      "hasStructuralAnalysis": true
+    },
+    "routes/specializations.py": {
+      "filePath": "routes/specializations.py",
+      "contentHash": "40d13cc0af73d20e8b93f2b835a8f68ee18f77cf34100acc35a171ab2d40d9c7",
+      "functions": [
+        {
+          "name": "_get_bc_options",
+          "params": [],
+          "exported": true,
+          "lineCount": 10
+        },
+        {
+          "name": "index",
+          "params": [],
+          "exported": true,
+          "lineCount": 10
+        },
+        {
+          "name": "library_detail",
+          "params": [
+            "spec_path"
+          ],
+          "exported": true,
+          "lineCount": 11
+        },
+        {
+          "name": "detail",
+          "params": [
+            "vlm_group_id"
+          ],
+          "exported": true,
+          "lineCount": 12
+        },
+        {
+          "name": "_variables_from_form",
+          "params": [
+            "form"
+          ],
+          "exported": true,
+          "lineCount": 18
+        },
+        {
+          "name": "create",
+          "params": [],
+          "exported": true,
+          "lineCount": 34
+        },
+        {
+          "name": "delete",
+          "params": [
+            "vlm_group_id"
+          ],
+          "exported": true,
+          "lineCount": 7
+        },
+        {
+          "name": "generate_from_dec",
+          "params": [],
+          "exported": true,
+          "lineCount": 9
+        },
+        {
+          "name": "generate",
+          "params": [
+            "bc_id"
+          ],
+          "exported": true,
+          "lineCount": 23
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "logging",
+          "specifiers": [
+            "logging"
+          ]
+        },
+        {
+          "source": "flask",
+          "specifiers": [
+            "Blueprint",
+            "flash",
+            "jsonify",
+            "redirect",
+            "render_template",
+            "request",
+            "url_for"
+          ]
+        },
+        {
+          "source": "extensions",
+          "specifiers": [
+            "db"
+          ]
+        },
+        {
+          "source": "models.bc",
+          "specifiers": [
+            "BiomedicalConcept",
+            "DataElementConcept"
+          ]
+        },
+        {
+          "source": "models.specialization",
+          "specifiers": [
+            "DatasetSpecialization"
+          ]
+        },
+        {
+          "source": "services.audit",
+          "specifiers": [
+            "log_change"
+          ]
+        },
+        {
+          "source": "services.cdisc_api",
+          "specifiers": [
+            "CDISCApiClient"
+          ]
+        }
+      ],
+      "exports": [
+        "_get_bc_options",
+        "index",
+        "library_detail",
+        "detail",
+        "_variables_from_form",
+        "create",
+        "delete",
+        "generate_from_dec",
+        "generate"
+      ],
+      "totalLines": 173,
+      "hasStructuralAnalysis": true
+    },
+    "services/__init__.py": {
+      "filePath": "services/__init__.py",
+      "contentHash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 1,
+      "hasStructuralAnalysis": true
+    },
+    "services/api_cache.py": {
+      "filePath": "services/api_cache.py",
+      "contentHash": "ae642e2006c93f59753144f998bbe5284396e1be939f9fa9265242813823473c",
+      "functions": [
+        {
+          "name": "cached",
+          "params": [
+            "cache_key",
+            "fn"
+          ],
+          "exported": true,
+          "lineCount": 21
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "logging",
+          "specifiers": [
+            "logging"
+          ]
+        },
+        {
+          "source": "time",
+          "specifiers": [
+            "time"
+          ]
+        }
+      ],
+      "exports": [
+        "cached"
+      ],
+      "totalLines": 43,
+      "hasStructuralAnalysis": true
+    },
+    "services/audit.py": {
+      "filePath": "services/audit.py",
+      "contentHash": "54f49edc0b14634d80f3131b2b8e6cee20f5b6df28ca6b6af1a79d208d9bd435",
+      "functions": [
+        {
+          "name": "log_change",
+          "params": [
+            "entity_type",
+            "entity_id",
+            "action",
+            "actor",
+            "before",
+            "after"
+          ],
+          "exported": true,
+          "lineCount": 17
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "logging",
+          "specifiers": [
+            "logging"
+          ]
+        },
+        {
+          "source": "extensions",
+          "specifiers": [
+            "db"
+          ]
+        },
+        {
+          "source": "models.audit",
+          "specifiers": [
+            "AuditLog"
+          ]
+        }
+      ],
+      "exports": [
+        "log_change"
+      ],
+      "totalLines": 33,
+      "hasStructuralAnalysis": true
+    },
+    "services/bc_service.py": {
+      "filePath": "services/bc_service.py",
+      "contentHash": "ae90c7ea4c439a757e44d67e6a2355dc7ed025c8892a0f8316401e38ed2530c6",
+      "functions": [
+        {
+          "name": "_get_bc_or_raise",
+          "params": [
+            "bc_id"
+          ],
+          "exported": true,
+          "lineCount": 5
+        },
+        {
+          "name": "apply_bc_fields",
+          "params": [
+            "bc",
+            "data",
+            "is_new"
+          ],
+          "exported": true,
+          "lineCount": 29
+        },
+        {
+          "name": "create_bc",
+          "params": [
+            "data",
+            "actor"
+          ],
+          "exported": true,
+          "lineCount": 20
+        },
+        {
+          "name": "update_bc",
+          "params": [
+            "bc_id",
+            "data",
+            "actor"
+          ],
+          "exported": true,
+          "lineCount": 8
+        },
+        {
+          "name": "save_decs",
+          "params": [
+            "bc_id",
+            "decs"
+          ],
+          "exported": true,
+          "lineCount": 24
+        },
+        {
+          "name": "map_ncit_to_bc",
+          "params": [
+            "bc_id",
+            "ncit_code",
+            "actor"
+          ],
+          "exported": true,
+          "lineCount": 25
+        },
+        {
+          "name": "submit_bc_for_review",
+          "params": [
+            "bc_id",
+            "actor"
+          ],
+          "exported": true,
+          "lineCount": 9
+        }
+      ],
+      "classes": [
+        {
+          "name": "NotFoundError",
+          "methods": [],
+          "properties": [],
+          "exported": true,
+          "lineCount": 2
+        }
+      ],
+      "imports": [
+        {
+          "source": "logging",
+          "specifiers": [
+            "logging"
+          ]
+        },
+        {
+          "source": "datetime",
+          "specifiers": [
+            "datetime",
+            "timezone"
+          ]
+        },
+        {
+          "source": "extensions",
+          "specifiers": [
+            "db"
+          ]
+        },
+        {
+          "source": "models.bc",
+          "specifiers": [
+            "BiomedicalConcept",
+            "DataElementConcept"
+          ]
+        },
+        {
+          "source": "models.governance",
+          "specifiers": [
+            "GovernanceRecord"
+          ]
+        },
+        {
+          "source": "models.specialization",
+          "specifiers": [
+            "DatasetSpecialization"
+          ]
+        },
+        {
+          "source": "services.audit",
+          "specifiers": [
+            "log_change"
+          ]
+        }
+      ],
+      "exports": [
+        "NotFoundError",
+        "_get_bc_or_raise",
+        "apply_bc_fields",
+        "create_bc",
+        "update_bc",
+        "save_decs",
+        "map_ncit_to_bc",
+        "submit_bc_for_review"
+      ],
+      "totalLines": 160,
+      "hasStructuralAnalysis": true
+    },
+    "services/cdisc_api.py": {
+      "filePath": "services/cdisc_api.py",
+      "contentHash": "d18305bc14699506ba9700f76a9e378007a9d81733a6cd4c9c4a25edd60a86ad",
+      "functions": [
+        {
+          "name": "_config_value",
+          "params": [
+            "name",
+            "default"
+          ],
+          "exported": true,
+          "lineCount": 8
+        }
+      ],
+      "classes": [
+        {
+          "name": "CDISCApiClient",
+          "methods": [
+            "__init__",
+            "_cache_key",
+            "_get",
+            "get_biomedical_concepts",
+            "get_bc",
+            "get_specialization",
+            "get_dataset_specializations",
+            "check_duplicate",
+            "publish_bc"
+          ],
+          "properties": [],
+          "exported": true,
+          "lineCount": 99
+        }
+      ],
+      "imports": [
+        {
+          "source": "hashlib",
+          "specifiers": [
+            "hashlib"
+          ]
+        },
+        {
+          "source": "logging",
+          "specifiers": [
+            "logging"
+          ]
+        },
+        {
+          "source": "os",
+          "specifiers": [
+            "os"
+          ]
+        },
+        {
+          "source": "requests",
+          "specifiers": [
+            "requests"
+          ]
+        },
+        {
+          "source": "flask",
+          "specifiers": [
+            "current_app"
+          ]
+        },
+        {
+          "source": "services.api_cache",
+          "specifiers": [
+            "_CACHE_STALE_TTL"
+          ]
+        },
+        {
+          "source": "services.api_cache",
+          "specifiers": [
+            "_CACHE_TTL"
+          ]
+        },
+        {
+          "source": "services.api_cache",
+          "specifiers": [
+            "_cache",
+            "cached"
+          ]
+        }
+      ],
+      "exports": [
+        "_config_value",
+        "CDISCApiClient"
+      ],
+      "totalLines": 128,
+      "hasStructuralAnalysis": true
+    },
+    "services/export.py": {
+      "filePath": "services/export.py",
+      "contentHash": "8a7fc3b0568a340e7ee13309e95fb384ef4ea85dfe00d0dc108d880d3db03e85",
+      "functions": [
+        {
+          "name": "export_json",
+          "params": [
+            "bc_list"
+          ],
+          "exported": true,
+          "lineCount": 3
+        },
+        {
+          "name": "export_xlsx",
+          "params": [
+            "bc_list"
+          ],
+          "exported": true,
+          "lineCount": 26
+        },
+        {
+          "name": "export_governance_xlsx",
+          "params": [
+            "bc_objects"
+          ],
+          "exported": true,
+          "lineCount": 56
+        },
+        {
+          "name": "export_odm_xml",
+          "params": [
+            "bc_list"
+          ],
+          "exported": true,
+          "lineCount": 40
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "io",
+          "specifiers": [
+            "io"
+          ]
+        },
+        {
+          "source": "json",
+          "specifiers": [
+            "json"
+          ]
+        },
+        {
+          "source": "logging",
+          "specifiers": [
+            "logging"
+          ]
+        },
+        {
+          "source": "datetime",
+          "specifiers": [
+            "datetime",
+            "timezone"
+          ]
+        }
+      ],
+      "exports": [
+        "export_json",
+        "export_xlsx",
+        "export_governance_xlsx",
+        "export_odm_xml"
+      ],
+      "totalLines": 186,
+      "hasStructuralAnalysis": true
+    },
+    "services/governance_service.py": {
+      "filePath": "services/governance_service.py",
+      "contentHash": "6a62bb7150c5ee6e91eba0875e616f1b8f0050c9fc0867b49d5673e7b76e5473",
+      "functions": [
+        {
+          "name": "advance_governance",
+          "params": [
+            "bc_id",
+            "actor",
+            "comment"
+          ],
+          "exported": true,
+          "lineCount": 25
+        },
+        {
+          "name": "reject_bc",
+          "params": [
+            "bc_id",
+            "actor",
+            "comment"
+          ],
+          "exported": true,
+          "lineCount": 18
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "logging",
+          "specifiers": [
+            "logging"
+          ]
+        },
+        {
+          "source": "datetime",
+          "specifiers": [
+            "datetime",
+            "timezone"
+          ]
+        },
+        {
+          "source": "extensions",
+          "specifiers": [
+            "db"
+          ]
+        },
+        {
+          "source": "models.governance",
+          "specifiers": [
+            "GovernanceRecord"
+          ]
+        },
+        {
+          "source": "services.audit",
+          "specifiers": [
+            "log_change"
+          ]
+        },
+        {
+          "source": "services.bc_service",
+          "specifiers": [
+            "_get_bc_or_raise"
+          ]
+        }
+      ],
+      "exports": [
+        "advance_governance",
+        "reject_bc"
+      ],
+      "totalLines": 61,
+      "hasStructuralAnalysis": true
+    },
+    "services/ingestion.py": {
+      "filePath": "services/ingestion.py",
+      "contentHash": "0167eca1feb3312c2378e931a090a335bf57bb544214e219dc607c9a3e69b96f",
+      "functions": [
+        {
+          "name": "_similarity",
+          "params": [
+            "a",
+            "b"
+          ],
+          "exported": true,
+          "lineCount": 2
+        },
+        {
+          "name": "_match_field",
+          "params": [
+            "col_name"
+          ],
+          "exported": true,
+          "lineCount": 11
+        },
+        {
+          "name": "map_fields",
+          "params": [
+            "raw_dict"
+          ],
+          "exported": true,
+          "lineCount": 15
+        },
+        {
+          "name": "validate_bc",
+          "params": [
+            "bc_dict"
+          ],
+          "exported": true,
+          "lineCount": 17
+        },
+        {
+          "name": "_group_by_bc",
+          "params": [
+            "rows",
+            "sheet"
+          ],
+          "exported": true,
+          "lineCount": 54
+        },
+        {
+          "name": "parse_xlsx",
+          "params": [
+            "file_obj"
+          ],
+          "exported": true,
+          "lineCount": 23
+        },
+        {
+          "name": "parse_csv",
+          "params": [
+            "file_obj"
+          ],
+          "exported": true,
+          "lineCount": 24
+        },
+        {
+          "name": "parse_json",
+          "params": [
+            "file_obj"
+          ],
+          "exported": true,
+          "lineCount": 25
+        },
+        {
+          "name": "deduplicate",
+          "params": [
+            "parsed_records",
+            "existing_ids"
+          ],
+          "exported": true,
+          "lineCount": 10
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "json",
+          "specifiers": [
+            "json"
+          ]
+        },
+        {
+          "source": "logging",
+          "specifiers": [
+            "logging"
+          ]
+        },
+        {
+          "source": "difflib",
+          "specifiers": [
+            "SequenceMatcher"
+          ]
+        },
+        {
+          "source": "pandas",
+          "specifiers": [
+            "pd"
+          ]
+        }
+      ],
+      "exports": [
+        "_similarity",
+        "_match_field",
+        "map_fields",
+        "validate_bc",
+        "_group_by_bc",
+        "parse_xlsx",
+        "parse_csv",
+        "parse_json",
+        "deduplicate"
+      ],
+      "totalLines": 228,
+      "hasStructuralAnalysis": true
+    },
+    "services/loinc_api.py": {
+      "filePath": "services/loinc_api.py",
+      "contentHash": "3721953b89408afb4e88d17531e45dbba4450f8d507123447f60097919a4197f",
+      "functions": [],
+      "classes": [
+        {
+          "name": "LoincApiClient",
+          "methods": [
+            "_auth",
+            "search"
+          ],
+          "properties": [],
+          "exported": true,
+          "lineCount": 45
+        }
+      ],
+      "imports": [
+        {
+          "source": "logging",
+          "specifiers": [
+            "logging"
+          ]
+        },
+        {
+          "source": "os",
+          "specifiers": [
+            "os"
+          ]
+        },
+        {
+          "source": "requests",
+          "specifiers": [
+            "requests"
+          ]
+        },
+        {
+          "source": "services.api_cache",
+          "specifiers": [
+            "cached"
+          ]
+        }
+      ],
+      "exports": [
+        "LoincApiClient"
+      ],
+      "totalLines": 63,
+      "hasStructuralAnalysis": true
+    },
+    "services/ncit_api.py": {
+      "filePath": "services/ncit_api.py",
+      "contentHash": "57b47561c153e0fa364bc504b8d77cb5484447243a5e93b65a05fb5b7639f3e4",
+      "functions": [
+        {
+          "name": "_pick_definition",
+          "params": [
+            "definitions"
+          ],
+          "exported": true,
+          "lineCount": 8
+        }
+      ],
+      "classes": [
+        {
+          "name": "NCItApiClient",
+          "methods": [
+            "__init__",
+            "_get",
+            "search_concept",
+            "get_concept",
+            "get_preferred_name"
+          ],
+          "properties": [],
+          "exported": true,
+          "lineCount": 62
+        }
+      ],
+      "imports": [
+        {
+          "source": "logging",
+          "specifiers": [
+            "logging"
+          ]
+        },
+        {
+          "source": "os",
+          "specifiers": [
+            "os"
+          ]
+        },
+        {
+          "source": "requests",
+          "specifiers": [
+            "requests"
+          ]
+        },
+        {
+          "source": "flask",
+          "specifiers": [
+            "current_app"
+          ]
+        },
+        {
+          "source": "services.api_cache",
+          "specifiers": [
+            "cached"
+          ]
+        }
+      ],
+      "exports": [
+        "_pick_definition",
+        "NCItApiClient"
+      ],
+      "totalLines": 86,
+      "hasStructuralAnalysis": true
+    },
+    "static/css/custom.css": {
+      "filePath": "static/css/custom.css",
+      "contentHash": "61fe20679445ac825b7b8be238374a72935d29c7a83715d4bb59a8ac98fbe71d",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 1097,
+      "hasStructuralAnalysis": false
+    },
+    "static/js/main.js": {
+      "filePath": "static/js/main.js",
+      "contentHash": "52f07e8e97b921aa15cf4232d720b84b484d272dcaad46d647dc1b19527abbed",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 820,
+      "hasStructuralAnalysis": true
+    },
+    "templates/audit.html": {
+      "filePath": "templates/audit.html",
+      "contentHash": "8caa4e6e4d29be0f03d0bb84310c968d63fcf1757c4cce75cbe8cb391372a535",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 214,
+      "hasStructuralAnalysis": false
+    },
+    "templates/base.html": {
+      "filePath": "templates/base.html",
+      "contentHash": "ae7e1ed9f173f9c8a968789b3674945f1fd62b17ed8f267daf2a29cece1016ba",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 131,
+      "hasStructuralAnalysis": false
+    },
+    "templates/bc_detail.html": {
+      "filePath": "templates/bc_detail.html",
+      "contentHash": "51bc60ce834cc904d783297bf3ca5fda52ff1f8b396fa3795280e14e6a42cb51",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 534,
+      "hasStructuralAnalysis": false
+    },
+    "templates/bc_list.html": {
+      "filePath": "templates/bc_list.html",
+      "contentHash": "f04c173eacaf83502a489c42e467b3d88edd3d3f7d511cf17bd9e415c978b602",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 239,
+      "hasStructuralAnalysis": false
+    },
+    "templates/dashboard.html": {
+      "filePath": "templates/dashboard.html",
+      "contentHash": "df7e92c5b82100baf0279761e27424ec926644eda4a937171845fdbb9e859deb",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 393,
+      "hasStructuralAnalysis": false
+    },
+    "templates/governance.html": {
+      "filePath": "templates/governance.html",
+      "contentHash": "3e52302cff2946df0da808d8b013b6673afcceddbf84b5f46589aef223fb88c6",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 244,
+      "hasStructuralAnalysis": false
+    },
+    "templates/ingestion.html": {
+      "filePath": "templates/ingestion.html",
+      "contentHash": "7a78c465c79edcd552b3344a4fe0834d01710c724875d5cb7412b0f5a59a6106",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 175,
+      "hasStructuralAnalysis": false
+    },
+    "templates/library_bc_detail.html": {
+      "filePath": "templates/library_bc_detail.html",
+      "contentHash": "e9283447bada3f960efa471e8c38515beebebc1b1faf583f852aabf919377494",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 163,
+      "hasStructuralAnalysis": false
+    },
+    "templates/library_spec_detail.html": {
+      "filePath": "templates/library_spec_detail.html",
+      "contentHash": "4850d7885fb08dfefbe8eb478720b8b560e248e43bd844e57a3ebbee8cfce560",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 198,
+      "hasStructuralAnalysis": false
+    },
+    "templates/ncit_mapping.html": {
+      "filePath": "templates/ncit_mapping.html",
+      "contentHash": "a1e1d73e4d18f92bcc7dc8a252bb71dab1692a00f866b5140d542bcacdefd0d4",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 136,
+      "hasStructuralAnalysis": false
+    },
+    "templates/specializations.html": {
+      "filePath": "templates/specializations.html",
+      "contentHash": "b8ec28d214b216400093b36585910c871fb2fe70749e0f792c15d2e8dd578a49",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 395,
+      "hasStructuralAnalysis": false
+    },
+    "tests/__init__.py": {
+      "filePath": "tests/__init__.py",
+      "contentHash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 1,
+      "hasStructuralAnalysis": true
+    },
+    "tests/conftest.py": {
+      "filePath": "tests/conftest.py",
+      "contentHash": "ce9fd20760a20dda13f8e8ec1731dd16dc53dd0b9383a303a718cb77f9fbe0a8",
+      "functions": [
+        {
+          "name": "app",
+          "params": [],
+          "exported": true,
+          "lineCount": 3
+        },
+        {
+          "name": "client",
+          "params": [
+            "app"
+          ],
+          "exported": true,
+          "lineCount": 2
+        },
+        {
+          "name": "clean_db",
+          "params": [
+            "app"
+          ],
+          "exported": true,
+          "lineCount": 7
+        },
+        {
+          "name": "clear_api_cache",
+          "params": [],
+          "exported": true,
+          "lineCount": 7
+        },
+        {
+          "name": "sample_bc",
+          "params": [
+            "app"
+          ],
+          "exported": true,
+          "lineCount": 14
+        }
+      ],
+      "classes": [
+        {
+          "name": "TestConfig",
+          "methods": [],
+          "properties": [],
+          "exported": true,
+          "lineCount": 10
+        }
+      ],
+      "imports": [
+        {
+          "source": "pytest",
+          "specifiers": [
+            "pytest"
+          ]
+        },
+        {
+          "source": "app",
+          "specifiers": [
+            "create_app"
+          ]
+        },
+        {
+          "source": "extensions",
+          "specifiers": [
+            "_db"
+          ]
+        },
+        {
+          "source": "models.audit",
+          "specifiers": [
+            "AuditLog"
+          ]
+        },
+        {
+          "source": "models.bc",
+          "specifiers": [
+            "BiomedicalConcept",
+            "DataElementConcept"
+          ]
+        },
+        {
+          "source": "models.governance",
+          "specifiers": [
+            "GovernanceRecord"
+          ]
+        },
+        {
+          "source": "models.ingestion",
+          "specifiers": [
+            "IngestionRecord"
+          ]
+        }
+      ],
+      "exports": [
+        "TestConfig",
+        "app",
+        "client",
+        "clean_db",
+        "clear_api_cache",
+        "sample_bc"
+      ],
+      "totalLines": 69,
+      "hasStructuralAnalysis": true
+    },
+    "tests/test_audit_routes.py": {
+      "filePath": "tests/test_audit_routes.py",
+      "contentHash": "8013f2c2340ecbe6f0e28bdf714b38e8dbabde5697034a9a2e85feacc6129d57",
+      "functions": [
+        {
+          "name": "_add_log",
+          "params": [
+            "app",
+            "entity_type",
+            "entity_id",
+            "action",
+            "actor"
+          ],
+          "exported": true,
+          "lineCount": 5
+        }
+      ],
+      "classes": [
+        {
+          "name": "TestAuditIndex",
+          "methods": [
+            "test_returns_200_empty",
+            "test_shows_log_entries",
+            "test_filter_by_entity_type",
+            "test_filter_by_action",
+            "test_filter_by_actor",
+            "test_pagination_param_accepted"
+          ],
+          "properties": [],
+          "exported": true,
+          "lineCount": 36
+        }
+      ],
+      "imports": [
+        {
+          "source": "extensions",
+          "specifiers": [
+            "db"
+          ]
+        },
+        {
+          "source": "models.audit",
+          "specifiers": [
+            "AuditLog"
+          ]
+        }
+      ],
+      "exports": [
+        "_add_log",
+        "TestAuditIndex"
+      ],
+      "totalLines": 50,
+      "hasStructuralAnalysis": true
+    },
+    "tests/test_bc_routes.py": {
+      "filePath": "tests/test_bc_routes.py",
+      "contentHash": "5f48f82a7e30df683e33af91cc19fc91712cbfaf4d9a9180cf5cef9efbd13c43",
+      "functions": [
+        {
+          "name": "_bc_form",
+          "params": [
+            "**kwargs"
+          ],
+          "exported": true,
+          "lineCount": 10
+        }
+      ],
+      "classes": [
+        {
+          "name": "TestBcIndex",
+          "methods": [
+            "test_returns_200",
+            "test_search_by_name",
+            "test_search_no_match",
+            "test_filter_by_status"
+          ],
+          "properties": [],
+          "exported": true,
+          "lineCount": 17
+        },
+        {
+          "name": "TestNewBc",
+          "methods": [
+            "test_returns_200"
+          ],
+          "properties": [],
+          "exported": true,
+          "lineCount": 4
+        },
+        {
+          "name": "TestCreateBc",
+          "methods": [
+            "test_creates_bc_and_redirects",
+            "test_missing_bc_id_redirects_with_error",
+            "test_duplicate_bc_id_rejected",
+            "test_create_writes_audit_log",
+            "test_create_does_not_set_system_without_loinc_code",
+            "test_create_sets_system_when_loinc_code_provided",
+            "test_create_with_decs"
+          ],
+          "properties": [],
+          "exported": true,
+          "lineCount": 48
+        },
+        {
+          "name": "TestBcDetail",
+          "methods": [
+            "test_existing_bc_returns_200",
+            "test_missing_bc_returns_404",
+            "test_loinc_api_called_when_code_set",
+            "test_loinc_api_not_called_when_no_code",
+            "test_loinc_api_error_does_not_break_page",
+            "test_loinc_spinner_not_shown_when_loinc_fetched_server_side",
+            "test_loinc_metadata_saved_when_fetched_in_detail"
+          ],
+          "properties": [],
+          "exported": true,
+          "lineCount": 108
+        },
+        {
+          "name": "TestEditBc",
+          "methods": [
+            "test_updates_short_name",
+            "test_edit_writes_audit_log",
+            "test_nonexistent_bc_returns_404",
+            "test_edit_clears_ncit_code_when_submitted_empty",
+            "test_edit_clears_ncit_metadata_when_ncit_code_cleared",
+            "test_edit_clears_parent_bc_id_when_submitted_empty",
+            "test_edit_clears_loinc_code_and_metadata_when_submitted_empty",
+            "test_edit_clears_system_and_system_name_when_loinc_code_cleared",
+            "test_edit_preserves_system_when_loinc_code_present",
+            "test_edit_strips_whitespace_from_ncit_code",
+            "test_detail_renders_empty_ncit_code_when_none"
+          ],
+          "properties": [],
+          "exported": true,
+          "lineCount": 101
+        },
+        {
+          "name": "TestClearNcitCode",
+          "methods": [
+            "test_clears_ncit_code_and_metadata",
+            "test_clear_ncit_writes_audit_log",
+            "test_clear_ncit_nonexistent_bc_returns_404",
+            "test_clear_ncit_also_clears_parent_bc_id"
+          ],
+          "properties": [],
+          "exported": true,
+          "lineCount": 31
+        },
+        {
+          "name": "TestClearLoincCode",
+          "methods": [
+            "test_clears_loinc_code_and_metadata",
+            "test_clear_loinc_writes_audit_log",
+            "test_clear_loinc_also_clears_system_and_system_name",
+            "test_clear_loinc_nonexistent_bc_returns_404"
+          ],
+          "properties": [],
+          "exported": true,
+          "lineCount": 39
+        },
+        {
+          "name": "TestSubmitForReview",
+          "methods": [
+            "test_advances_status_to_sme_review",
+            "test_submit_writes_audit_log"
+          ],
+          "properties": [],
+          "exported": true,
+          "lineCount": 12
+        },
+        {
+          "name": "TestDeleteBc",
+          "methods": [
+            "test_deletes_bc",
+            "test_delete_writes_audit_log",
+            "test_nonexistent_bc_returns_404"
+          ],
+          "properties": [],
+          "exported": true,
+          "lineCount": 15
+        },
+        {
+          "name": "TestExport",
+          "methods": [
+            "test_json_export",
+            "test_xlsx_export",
+            "test_odm_xml_export"
+          ],
+          "properties": [],
+          "exported": true,
+          "lineCount": 15
+        },
+        {
+          "name": "TestLibraryDetail",
+          "methods": [
+            "test_renders_page_for_valid_concept",
+            "test_redirects_on_api_error",
+            "test_loinc_api_called_when_loinc_coding_present",
+            "test_loinc_api_not_called_when_no_loinc_coding",
+            "test_loinc_api_error_does_not_break_page"
+          ],
+          "properties": [],
+          "exported": true,
+          "lineCount": 37
+        }
+      ],
+      "imports": [
+        {
+          "source": "unittest.mock",
+          "specifiers": [
+            "patch"
+          ]
+        },
+        {
+          "source": "extensions",
+          "specifiers": [
+            "db"
+          ]
+        },
+        {
+          "source": "models.audit",
+          "specifiers": [
+            "AuditLog"
+          ]
+        },
+        {
+          "source": "models.bc",
+          "specifiers": [
+            "BiomedicalConcept",
+            "DataElementConcept"
+          ]
+        }
+      ],
+      "exports": [
+        "_bc_form",
+        "TestBcIndex",
+        "TestNewBc",
+        "TestCreateBc",
+        "TestBcDetail",
+        "TestEditBc",
+        "TestClearNcitCode",
+        "TestClearLoincCode",
+        "TestSubmitForReview",
+        "TestDeleteBc",
+        "TestExport",
+        "TestLibraryDetail"
+      ],
+      "totalLines": 548,
+      "hasStructuralAnalysis": true
+    },
+    "tests/test_cdisc_api_cache.py": {
+      "filePath": "tests/test_cdisc_api_cache.py",
+      "contentHash": "9d7e123e8aff8f05db55a0bf4c081949a3d0a2372615a008afdbcfebc085f8d0",
+      "functions": [],
+      "classes": [
+        {
+          "name": "TestCachedHelper",
+          "methods": [
+            "setup_method",
+            "test_first_call_fetches_and_stores",
+            "test_fresh_entry_served_without_refetch",
+            "test_stale_entry_refreshes_successfully",
+            "test_stale_entry_served_when_refresh_fails",
+            "test_expired_entry_raises_when_refresh_fails",
+            "test_no_entry_raises_when_fetch_fails"
+          ],
+          "properties": [],
+          "exported": true,
+          "lineCount": 54
+        },
+        {
+          "name": "TestClientCacheKeys",
+          "methods": [
+            "setup_method",
+            "test_cache_key_excludes_raw_api_key",
+            "test_get_biomedical_concepts_error_encoded_not_raised",
+            "test_error_result_replaced_after_ttl"
+          ],
+          "properties": [],
+          "exported": true,
+          "lineCount": 54
+        }
+      ],
+      "imports": [
+        {
+          "source": "time",
+          "specifiers": [
+            "time"
+          ]
+        },
+        {
+          "source": "pytest",
+          "specifiers": [
+            "pytest"
+          ]
+        },
+        {
+          "source": "services.cdisc_api",
+          "specifiers": [
+            "cdisc_api"
+          ]
+        },
+        {
+          "source": "services.cdisc_api",
+          "specifiers": [
+            "CDISCApiClient",
+            "_cached"
+          ]
+        }
+      ],
+      "exports": [
+        "TestCachedHelper",
+        "TestClientCacheKeys"
+      ],
+      "totalLines": 121,
+      "hasStructuralAnalysis": true
+    },
+    "tests/test_dashboard.py": {
+      "filePath": "tests/test_dashboard.py",
+      "contentHash": "f3e92dfc86cf756cc94bbe5f72e25c1a75f431037dd952111b751c7bfdaa8398",
+      "functions": [
+        {
+          "name": "_mock_client",
+          "params": [
+            "bcs",
+            "specs"
+          ],
+          "exported": true,
+          "lineCount": 5
+        }
+      ],
+      "classes": [
+        {
+          "name": "TestDashboardIndex",
+          "methods": [
+            "test_renders_with_api_data",
+            "test_renders_when_api_errors",
+            "test_renders_with_empty_api_results",
+            "test_local_stats_reflect_db",
+            "test_both_api_calls_made_concurrently"
+          ],
+          "properties": [],
+          "exported": true,
+          "lineCount": 52
+        }
+      ],
+      "imports": [
+        {
+          "source": "unittest.mock",
+          "specifiers": [
+            "MagicMock",
+            "patch"
+          ]
+        },
+        {
+          "source": "extensions",
+          "specifiers": [
+            "db"
+          ]
+        },
+        {
+          "source": "models.bc",
+          "specifiers": [
+            "BiomedicalConcept"
+          ]
+        }
+      ],
+      "exports": [
+        "_mock_client",
+        "TestDashboardIndex"
+      ],
+      "totalLines": 76,
+      "hasStructuralAnalysis": true
+    },
+    "tests/test_db_bootstrap.py": {
+      "filePath": "tests/test_db_bootstrap.py",
+      "contentHash": "31893a83fea3420c9dd3dbdb19f488586f11c9a3f89d1c658fa381e87c7150c5",
+      "functions": [
+        {
+          "name": "_make_app",
+          "params": [
+            "tmp_path",
+            "name"
+          ],
+          "exported": true,
+          "lineCount": 11
+        },
+        {
+          "name": "_tables",
+          "params": [
+            "app"
+          ],
+          "exported": true,
+          "lineCount": 3
+        },
+        {
+          "name": "_stamped_revision",
+          "params": [
+            "app"
+          ],
+          "exported": true,
+          "lineCount": 3
+        }
+      ],
+      "classes": [
+        {
+          "name": "TestEnsureDb",
+          "methods": [
+            "test_fresh_db_upgraded_from_baseline",
+            "test_legacy_create_all_db_is_stamped",
+            "test_pre_squash_stamped_db_is_restamped",
+            "test_outdated_schema_raises",
+            "test_idempotent_second_run"
+          ],
+          "properties": [],
+          "exported": true,
+          "lineCount": 45
+        }
+      ],
+      "imports": [
+        {
+          "source": "pytest",
+          "specifiers": [
+            "pytest"
+          ]
+        },
+        {
+          "source": "sqlalchemy",
+          "specifiers": [
+            "inspect",
+            "text"
+          ]
+        },
+        {
+          "source": "app",
+          "specifiers": [
+            "create_app"
+          ]
+        },
+        {
+          "source": "db_bootstrap",
+          "specifiers": [
+            "LEGACY_REVISIONS",
+            "ensure_db"
+          ]
+        },
+        {
+          "source": "extensions",
+          "specifiers": [
+            "db"
+          ]
+        }
+      ],
+      "exports": [
+        "_make_app",
+        "_tables",
+        "_stamped_revision",
+        "TestEnsureDb"
+      ],
+      "totalLines": 88,
+      "hasStructuralAnalysis": true
+    },
+    "tests/test_export_service.py": {
+      "filePath": "tests/test_export_service.py",
+      "contentHash": "8a8dca02d5af71e736751928345e9c0e218eba429eb3b73077f8c5be7e9fa50f",
+      "functions": [],
+      "classes": [
+        {
+          "name": "TestExportJson",
+          "methods": [
+            "test_round_trip",
+            "test_empty_list",
+            "test_non_serializable_values_coerced"
+          ],
+          "properties": [],
+          "exported": true,
+          "lineCount": 16
+        },
+        {
+          "name": "TestExportXlsx",
+          "methods": [
+            "test_returns_workbook_with_headers_and_rows",
+            "test_empty_list_has_header_only",
+            "test_missing_fields_render_blank",
+            "test_code_column_uses_loinc_code"
+          ],
+          "properties": [],
+          "exported": true,
+          "lineCount": 32
+        },
+        {
+          "name": "TestExportGovernanceXlsx",
+          "methods": [
+            "_make_bc_with_decs",
+            "test_bc_row_then_dec_rows",
+            "test_bc_without_loinc_blanks_system_fields"
+          ],
+          "properties": [],
+          "exported": true,
+          "lineCount": 74
+        },
+        {
+          "name": "TestExportOdmXml",
+          "methods": [
+            "test_valid_odm_structure",
+            "test_alias_only_when_ncit_code_present",
+            "test_empty_list"
+          ],
+          "properties": [],
+          "exported": true,
+          "lineCount": 25
+        }
+      ],
+      "imports": [
+        {
+          "source": "json",
+          "specifiers": [
+            "json"
+          ]
+        },
+        {
+          "source": "openpyxl",
+          "specifiers": [
+            "openpyxl"
+          ]
+        },
+        {
+          "source": "lxml",
+          "specifiers": [
+            "etree"
+          ]
+        },
+        {
+          "source": "extensions",
+          "specifiers": [
+            "db"
+          ]
+        },
+        {
+          "source": "models.bc",
+          "specifiers": [
+            "BiomedicalConcept",
+            "DataElementConcept"
+          ]
+        },
+        {
+          "source": "services.export",
+          "specifiers": [
+            "BC_EXPORT_FIELDS",
+            "GOVERNANCE_HEADERS",
+            "export_governance_xlsx",
+            "export_json",
+            "export_odm_xml",
+            "export_xlsx"
+          ]
+        }
+      ],
+      "exports": [
+        "TestExportJson",
+        "TestExportXlsx",
+        "TestExportGovernanceXlsx",
+        "TestExportOdmXml"
+      ],
+      "totalLines": 208,
+      "hasStructuralAnalysis": true
+    },
+    "tests/test_governance_routes.py": {
+      "filePath": "tests/test_governance_routes.py",
+      "contentHash": "c0e5a5fa592e675783523d9900710fa2b7ead002b4f131256a1b1d5e060ebc07",
+      "functions": [],
+      "classes": [
+        {
+          "name": "TestGovernanceBoard",
+          "methods": [
+            "test_board_returns_200"
+          ],
+          "properties": [],
+          "exported": true,
+          "lineCount": 4
+        },
+        {
+          "name": "TestAdvance",
+          "methods": [
+            "test_advances_provisional_to_sme_review",
+            "test_advance_through_all_stages",
+            "test_already_published_stays_published",
+            "test_advance_creates_governance_record",
+            "test_advance_writes_audit_log",
+            "test_advance_nonexistent_bc_returns_404",
+            "test_advance_ajax_returns_json"
+          ],
+          "properties": [],
+          "exported": true,
+          "lineCount": 52
+        },
+        {
+          "name": "TestReject",
+          "methods": [
+            "test_reject_returns_to_provisional",
+            "test_reject_creates_governance_record",
+            "test_reject_writes_audit_log",
+            "test_reject_ajax_returns_json",
+            "test_reject_nonexistent_bc_returns_404"
+          ],
+          "properties": [],
+          "exported": true,
+          "lineCount": 35
+        },
+        {
+          "name": "TestGovernanceExport",
+          "methods": [
+            "test_export_returns_xlsx",
+            "test_export_filename_in_content_disposition",
+            "test_export_enforces_xlsx_extension",
+            "test_export_excludes_non_stage3_bcs",
+            "test_export_includes_stage3_bcs",
+            "test_export_system_columns_blank_without_loinc_code",
+            "test_export_system_columns_populated_with_loinc_code",
+            "test_export_code_column_uses_loinc_code"
+          ],
+          "properties": [],
+          "exported": true,
+          "lineCount": 129
+        }
+      ],
+      "imports": [
+        {
+          "source": "extensions",
+          "specifiers": [
+            "db"
+          ]
+        },
+        {
+          "source": "models.audit",
+          "specifiers": [
+            "AuditLog"
+          ]
+        },
+        {
+          "source": "models.bc",
+          "specifiers": [
+            "BiomedicalConcept"
+          ]
+        },
+        {
+          "source": "models.governance",
+          "specifiers": [
+            "GovernanceRecord"
+          ]
+        }
+      ],
+      "exports": [
+        "TestGovernanceBoard",
+        "TestAdvance",
+        "TestReject",
+        "TestGovernanceExport"
+      ],
+      "totalLines": 237,
+      "hasStructuralAnalysis": true
+    },
+    "tests/test_ingestion_routes.py": {
+      "filePath": "tests/test_ingestion_routes.py",
+      "contentHash": "79d59da2cb71886a311c02c94a3a922fe456f7b3477c35b4eb622d5511533271",
+      "functions": [
+        {
+          "name": "_csv_file",
+          "params": [
+            "rows"
+          ],
+          "exported": true,
+          "lineCount": 7
+        },
+        {
+          "name": "_json_file",
+          "params": [
+            "data"
+          ],
+          "exported": true,
+          "lineCount": 2
+        }
+      ],
+      "classes": [
+        {
+          "name": "TestIngestionIndex",
+          "methods": [
+            "test_returns_200"
+          ],
+          "properties": [],
+          "exported": true,
+          "lineCount": 4
+        },
+        {
+          "name": "TestUpload",
+          "methods": [
+            "test_upload_csv_creates_ingestion_records",
+            "test_upload_json_creates_ingestion_records",
+            "test_no_file_redirects_with_error",
+            "test_wrong_extension_rejected",
+            "test_duplicate_bc_flagged"
+          ],
+          "properties": [],
+          "exported": true,
+          "lineCount": 52
+        },
+        {
+          "name": "TestApprove",
+          "methods": [
+            "_upload_and_get_record_id",
+            "test_approve_creates_bc",
+            "test_approve_sets_status_approved",
+            "test_approve_nonexistent_record_returns_404",
+            "test_approve_already_existing_bc_does_not_duplicate"
+          ],
+          "properties": [],
+          "exported": true,
+          "lineCount": 46
+        },
+        {
+          "name": "TestReject",
+          "methods": [
+            "test_reject_sets_status_rejected",
+            "test_reject_does_not_create_bc",
+            "test_reject_nonexistent_record_returns_404"
+          ],
+          "properties": [],
+          "exported": true,
+          "lineCount": 37
+        },
+        {
+          "name": "TestApproveAll",
+          "methods": [
+            "test_approve_all_skips_records_with_errors",
+            "test_approve_all_writes_audit_log_per_bc"
+          ],
+          "properties": [],
+          "exported": true,
+          "lineCount": 32
+        }
+      ],
+      "imports": [
+        {
+          "source": "csv",
+          "specifiers": [
+            "csv"
+          ]
+        },
+        {
+          "source": "io",
+          "specifiers": [
+            "io"
+          ]
+        },
+        {
+          "source": "json",
+          "specifiers": [
+            "json"
+          ]
+        },
+        {
+          "source": "extensions",
+          "specifiers": [
+            "db"
+          ]
+        },
+        {
+          "source": "models.audit",
+          "specifiers": [
+            "AuditLog"
+          ]
+        },
+        {
+          "source": "models.bc",
+          "specifiers": [
+            "BiomedicalConcept"
+          ]
+        },
+        {
+          "source": "models.ingestion",
+          "specifiers": [
+            "IngestionRecord"
+          ]
+        }
+      ],
+      "exports": [
+        "_csv_file",
+        "_json_file",
+        "TestIngestionIndex",
+        "TestUpload",
+        "TestApprove",
+        "TestReject",
+        "TestApproveAll"
+      ],
+      "totalLines": 205,
+      "hasStructuralAnalysis": true
+    },
+    "tests/test_ingestion_service.py": {
+      "filePath": "tests/test_ingestion_service.py",
+      "contentHash": "4c435290fbff3c641fd0af82defbd764898d8d61f745419a6eccb9a6d3ff5131",
+      "functions": [],
+      "classes": [
+        {
+          "name": "TestSimilarity",
+          "methods": [
+            "test_identical_strings",
+            "test_case_insensitive",
+            "test_completely_different",
+            "test_partial_match"
+          ],
+          "properties": [],
+          "exported": true,
+          "lineCount": 13
+        },
+        {
+          "name": "TestMatchField",
+          "methods": [
+            "test_exact_alias_match",
+            "test_known_alias",
+            "test_definition_alias",
+            "test_spaces_normalised",
+            "test_unknown_column_returns_low_score"
+          ],
+          "properties": [],
+          "exported": true,
+          "lineCount": 24
+        },
+        {
+          "name": "TestMapFields",
+          "methods": [
+            "test_canonical_columns_mapped_at_full_confidence",
+            "test_none_values_skipped",
+            "test_nan_values_skipped",
+            "test_low_confidence_columns_excluded",
+            "test_values_stripped"
+          ],
+          "properties": [],
+          "exported": true,
+          "lineCount": 21
+        },
+        {
+          "name": "TestValidateBc",
+          "methods": [
+            "_valid",
+            "test_valid_record_has_no_errors",
+            "test_missing_short_name",
+            "test_missing_definition",
+            "test_missing_both_ids",
+            "test_invalid_ncit_format",
+            "test_ncit_starting_with_c_accepted"
+          ],
+          "properties": [],
+          "exported": true,
+          "lineCount": 33
+        },
+        {
+          "name": "TestDeduplicate",
+          "methods": [
+            "_record",
+            "test_marks_existing_ids_as_duplicate",
+            "test_case_insensitive_comparison",
+            "test_empty_existing_ids",
+            "test_falls_back_to_ncit_code"
+          ],
+          "properties": [],
+          "exported": true,
+          "lineCount": 24
+        },
+        {
+          "name": "TestParseCsv",
+          "methods": [
+            "_make_csv",
+            "test_valid_row_parsed",
+            "test_invalid_file_returns_error_record",
+            "test_missing_definition_produces_validation_error"
+          ],
+          "properties": [],
+          "exported": true,
+          "lineCount": 27
+        },
+        {
+          "name": "TestParseJson",
+          "methods": [
+            "test_array_of_objects",
+            "test_single_object_wrapped",
+            "test_invalid_json_returns_error"
+          ],
+          "properties": [],
+          "exported": true,
+          "lineCount": 18
+        },
+        {
+          "name": "TestGroupByBc",
+          "methods": [
+            "test_single_row_becomes_one_record",
+            "test_dec_sub_rows_grouped_under_parent",
+            "test_multiple_bcs_produce_separate_records",
+            "test_row_without_bc_id_skipped"
+          ],
+          "properties": [],
+          "exported": true,
+          "lineCount": 29
+        }
+      ],
+      "imports": [
+        {
+          "source": "io",
+          "specifiers": [
+            "io"
+          ]
+        },
+        {
+          "source": "json",
+          "specifiers": [
+            "json"
+          ]
+        },
+        {
+          "source": "services.ingestion",
+          "specifiers": [
+            "_group_by_bc",
+            "_match_field",
+            "_similarity",
+            "deduplicate",
+            "map_fields",
+            "parse_csv",
+            "parse_json",
+            "validate_bc"
+          ]
+        }
+      ],
+      "exports": [
+        "TestSimilarity",
+        "TestMatchField",
+        "TestMapFields",
+        "TestValidateBc",
+        "TestDeduplicate",
+        "TestParseCsv",
+        "TestParseJson",
+        "TestGroupByBc"
+      ],
+      "totalLines": 260,
+      "hasStructuralAnalysis": true
+    },
+    "tests/test_loinc.py": {
+      "filePath": "tests/test_loinc.py",
+      "contentHash": "3d4b82abeb234340727868b8efca4afd28123be231132025844129f54294c95d",
+      "functions": [],
+      "classes": [
+        {
+          "name": "TestLoincApiClientSearch",
+          "methods": [
+            "_mock_response",
+            "test_returns_normalized_list",
+            "test_all_ef_fields_present_in_result",
+            "test_uses_ef_parameter",
+            "test_ef_fields_constant_contains_all_required_fields",
+            "test_uses_basic_auth_when_env_vars_set",
+            "test_no_auth_when_env_vars_missing",
+            "test_empty_results",
+            "test_missing_codes_array_returns_empty",
+            "test_network_error_returns_error_entry"
+          ],
+          "properties": [],
+          "exported": true,
+          "lineCount": 125
+        },
+        {
+          "name": "TestLoincSearchRoute",
+          "methods": [
+            "test_returns_json_for_ajax",
+            "test_empty_term_returns_empty_list",
+            "test_calls_client_with_term",
+            "test_format_json_param_triggers_json_response"
+          ],
+          "properties": [],
+          "exported": true,
+          "lineCount": 30
+        }
+      ],
+      "imports": [
+        {
+          "source": "json",
+          "specifiers": [
+            "json"
+          ]
+        },
+        {
+          "source": "unittest.mock",
+          "specifiers": [
+            "MagicMock",
+            "patch"
+          ]
+        },
+        {
+          "source": "requests",
+          "specifiers": [
+            "requests"
+          ]
+        },
+        {
+          "source": "services.loinc_api",
+          "specifiers": [
+            "LOINC_EF_FIELDS",
+            "LoincApiClient"
+          ]
+        }
+      ],
+      "exports": [
+        "TestLoincApiClientSearch",
+        "TestLoincSearchRoute"
+      ],
+      "totalLines": 206,
+      "hasStructuralAnalysis": true
+    },
+    "tests/test_mcp_server.py": {
+      "filePath": "tests/test_mcp_server.py",
+      "contentHash": "916868d3e977f2c9af27dfbbeb390d4de45aa6dc0d2d1a227267a48c2d4efb27",
+      "functions": [
+        {
+          "name": "inject_test_app",
+          "params": [
+            "app"
+          ],
+          "exported": true,
+          "lineCount": 5
+        },
+        {
+          "name": "_dispatch",
+          "params": [
+            "name",
+            "args"
+          ],
+          "exported": true,
+          "lineCount": 2
+        },
+        {
+          "name": "_audit_rows",
+          "params": [
+            "app",
+            "action"
+          ],
+          "exported": true,
+          "lineCount": 3
+        }
+      ],
+      "classes": [
+        {
+          "name": "TestDispatch",
+          "methods": [
+            "test_unknown_tool_raises",
+            "test_all_declared_tools_are_dispatchable"
+          ],
+          "properties": [],
+          "exported": true,
+          "lineCount": 23
+        },
+        {
+          "name": "TestListBcs",
+          "methods": [
+            "test_empty_db",
+            "test_lists_and_filters",
+            "test_pagination"
+          ],
+          "properties": [],
+          "exported": true,
+          "lineCount": 30
+        },
+        {
+          "name": "TestGetBc",
+          "methods": [
+            "test_requires_bc_id",
+            "test_missing_bc_raises",
+            "test_full_detail"
+          ],
+          "properties": [],
+          "exported": true,
+          "lineCount": 21
+        },
+        {
+          "name": "TestExternalApiTools",
+          "methods": [
+            "test_search_ncit_requires_term",
+            "test_search_ncit",
+            "test_get_ncit_concept",
+            "test_search_loinc",
+            "test_search_cdisc_library_filters_by_title",
+            "test_search_cdisc_library_passes_error_through",
+            "test_get_library_bc"
+          ],
+          "properties": [],
+          "exported": true,
+          "lineCount": 43
+        },
+        {
+          "name": "TestCreateBc",
+          "methods": [
+            "test_creates_with_decs_and_audit",
+            "test_duplicate_raises",
+            "test_missing_bc_id_raises"
+          ],
+          "properties": [],
+          "exported": true,
+          "lineCount": 27
+        },
+        {
+          "name": "TestUpdateBc",
+          "methods": [
+            "test_updates_and_audits_before_after",
+            "test_missing_bc_raises"
+          ],
+          "properties": [],
+          "exported": true,
+          "lineCount": 13
+        },
+        {
+          "name": "TestMapNcit",
+          "methods": [
+            "test_maps_and_audits",
+            "test_promotes_import_id",
+            "test_empty_code_raises",
+            "test_promotes_import_id_repoints_dependents",
+            "test_promotes_import_id_repoints_child_bcs",
+            "test_promotes_import_id_collision_raises"
+          ],
+          "properties": [],
+          "exported": true,
+          "lineCount": 61
+        },
+        {
+          "name": "TestGovernanceWrites",
+          "methods": [
+            "test_submit_then_advance_to_published",
+            "test_reject_returns_to_provisional"
+          ],
+          "properties": [],
+          "exported": true,
+          "lineCount": 32
+        },
+        {
+          "name": "TestReviewQueue",
+          "methods": [
+            "test_queue_summary"
+          ],
+          "properties": [],
+          "exported": true,
+          "lineCount": 13
+        }
+      ],
+      "imports": [
+        {
+          "source": "unittest.mock",
+          "specifiers": [
+            "patch"
+          ]
+        },
+        {
+          "source": "pytest",
+          "specifiers": [
+            "pytest"
+          ]
+        },
+        {
+          "source": "mcp_server.server",
+          "specifiers": [
+            "mcp_srv"
+          ]
+        },
+        {
+          "source": "extensions",
+          "specifiers": [
+            "db"
+          ]
+        },
+        {
+          "source": "models.audit",
+          "specifiers": [
+            "AuditLog"
+          ]
+        },
+        {
+          "source": "models.bc",
+          "specifiers": [
+            "BiomedicalConcept",
+            "DataElementConcept"
+          ]
+        },
+        {
+          "source": "models.governance",
+          "specifiers": [
+            "GovernanceRecord"
+          ]
+        },
+        {
+          "source": "models.ingestion",
+          "specifiers": [
+            "IngestionRecord"
+          ]
+        },
+        {
+          "source": "models.specialization",
+          "specifiers": [
+            "DatasetSpecialization"
+          ]
+        }
+      ],
+      "exports": [
+        "inject_test_app",
+        "_dispatch",
+        "TestDispatch",
+        "TestListBcs",
+        "TestGetBc",
+        "TestExternalApiTools",
+        "_audit_rows",
+        "TestCreateBc",
+        "TestUpdateBc",
+        "TestMapNcit",
+        "TestGovernanceWrites",
+        "TestReviewQueue"
+      ],
+      "totalLines": 316,
+      "hasStructuralAnalysis": true
+    },
+    "tests/test_models.py": {
+      "filePath": "tests/test_models.py",
+      "contentHash": "4c9a8ca039ac1d5aea47c02831eaf8b169055235059425b6492066979d8e4818",
+      "functions": [],
+      "classes": [
+        {
+          "name": "TestAuditLogJsonProperties",
+          "methods": [
+            "test_before_state_round_trips",
+            "test_after_state_round_trips",
+            "test_none_before_state_returns_none",
+            "test_none_after_state_returns_none",
+            "test_persisted_log_retrieves_state"
+          ],
+          "properties": [],
+          "exported": true,
+          "lineCount": 36
+        },
+        {
+          "name": "TestIngestionRecordProperties",
+          "methods": [
+            "test_mapped_round_trips",
+            "test_confidences_round_trips",
+            "test_errors_round_trips",
+            "test_decs_round_trips",
+            "test_empty_mapped_returns_empty_dict",
+            "test_avg_confidence_computed_correctly",
+            "test_avg_confidence_empty_confidences"
+          ],
+          "properties": [],
+          "exported": true,
+          "lineCount": 41
+        },
+        {
+          "name": "TestBiomedicalConceptToDict",
+          "methods": [
+            "test_to_dict_contains_required_keys",
+            "test_to_dict_values_match",
+            "test_default_status_is_provisional"
+          ],
+          "properties": [],
+          "exported": true,
+          "lineCount": 27
+        }
+      ],
+      "imports": [
+        {
+          "source": "extensions",
+          "specifiers": [
+            "db"
+          ]
+        },
+        {
+          "source": "models.audit",
+          "specifiers": [
+            "AuditLog"
+          ]
+        },
+        {
+          "source": "models.bc",
+          "specifiers": [
+            "BiomedicalConcept"
+          ]
+        },
+        {
+          "source": "models.ingestion",
+          "specifiers": [
+            "IngestionRecord"
+          ]
+        }
+      ],
+      "exports": [
+        "TestAuditLogJsonProperties",
+        "TestIngestionRecordProperties",
+        "TestBiomedicalConceptToDict"
+      ],
+      "totalLines": 117,
+      "hasStructuralAnalysis": true
+    },
+    "tests/test_ncit.py": {
+      "filePath": "tests/test_ncit.py",
+      "contentHash": "72dd3cce91530eecfcde2157da49f56e744d7fde3ae986302f3adaa7482c37a2",
+      "functions": [],
+      "classes": [
+        {
+          "name": "TestNcitGetConceptExtended",
+          "methods": [
+            "setup_method",
+            "_mock_get",
+            "test_returns_parents",
+            "test_returns_semantic_type",
+            "test_returns_source_synonyms",
+            "test_returns_all_definitions",
+            "test_empty_parents_returns_empty_list",
+            "test_missing_semantic_type_returns_empty_list",
+            "test_error_returns_error_dict"
+          ],
+          "properties": [],
+          "exported": true,
+          "lineCount": 70
+        },
+        {
+          "name": "TestNcitConceptRoute",
+          "methods": [
+            "test_returns_json",
+            "test_calls_get_concept_with_code",
+            "test_error_from_service_returns_404"
+          ],
+          "properties": [],
+          "exported": true,
+          "lineCount": 26
+        }
+      ],
+      "imports": [
+        {
+          "source": "json",
+          "specifiers": [
+            "json"
+          ]
+        },
+        {
+          "source": "unittest.mock",
+          "specifiers": [
+            "MagicMock",
+            "patch"
+          ]
+        },
+        {
+          "source": "requests",
+          "specifiers": [
+            "requests"
+          ]
+        },
+        {
+          "source": "services.ncit_api",
+          "specifiers": [
+            "NCItApiClient"
+          ]
+        }
+      ],
+      "exports": [
+        "TestNcitGetConceptExtended",
+        "TestNcitConceptRoute"
+      ],
+      "totalLines": 157,
+      "hasStructuralAnalysis": true
+    },
+    "tests/test_specializations_routes.py": {
+      "filePath": "tests/test_specializations_routes.py",
+      "contentHash": "8166664408d6bdeac94371f94e2b8a3efbd92259cfce5439fa45dd5721c80eb1",
+      "functions": [
+        {
+          "name": "_patch_client",
+          "params": [
+            "**kwargs"
+          ],
+          "exported": true,
+          "lineCount": 7
+        }
+      ],
+      "classes": [
+        {
+          "name": "TestIndex",
+          "methods": [
+            "test_lists_specializations",
+            "test_index_survives_library_error"
+          ],
+          "properties": [],
+          "exported": true,
+          "lineCount": 17
+        },
+        {
+          "name": "TestCreate",
+          "methods": [
+            "test_create_persists_spec",
+            "test_create_requires_ids",
+            "test_create_writes_audit_log",
+            "test_create_persists_variable_rows_from_form"
+          ],
+          "properties": [],
+          "exported": true,
+          "lineCount": 55
+        },
+        {
+          "name": "TestEditUpsert",
+          "methods": [
+            "test_posting_existing_vlm_group_id_updates_instead_of_duplicating",
+            "test_edit_writes_updated_audit_log"
+          ],
+          "properties": [],
+          "exported": true,
+          "lineCount": 42
+        },
+        {
+          "name": "TestDelete",
+          "methods": [
+            "test_delete_removes_spec",
+            "test_delete_writes_audit_log",
+            "test_delete_unknown_404"
+          ],
+          "properties": [],
+          "exported": true,
+          "lineCount": 29
+        },
+        {
+          "name": "TestDetail",
+          "methods": [
+            "test_detail_renders",
+            "test_detail_404_for_unknown"
+          ],
+          "properties": [],
+          "exported": true,
+          "lineCount": 15
+        },
+        {
+          "name": "TestLibraryDetail",
+          "methods": [
+            "test_renders_library_spec",
+            "test_error_redirects_to_dashboard"
+          ],
+          "properties": [],
+          "exported": true,
+          "lineCount": 13
+        },
+        {
+          "name": "TestGenerate",
+          "methods": [
+            "_add_decs",
+            "test_generate_builds_variables_from_decs",
+            "test_generate_duplicate_is_rejected",
+            "test_generate_unknown_bc_404",
+            "test_generate_writes_audit_log"
+          ],
+          "properties": [],
+          "exported": true,
+          "lineCount": 39
+        },
+        {
+          "name": "TestGenerateFromDec",
+          "methods": [
+            "test_returns_variables_json",
+            "test_missing_bc_id_returns_400"
+          ],
+          "properties": [],
+          "exported": true,
+          "lineCount": 13
+        }
+      ],
+      "imports": [
+        {
+          "source": "unittest.mock",
+          "specifiers": [
+            "MagicMock",
+            "patch"
+          ]
+        },
+        {
+          "source": "extensions",
+          "specifiers": [
+            "db"
+          ]
+        },
+        {
+          "source": "models.audit",
+          "specifiers": [
+            "AuditLog"
+          ]
+        },
+        {
+          "source": "models.bc",
+          "specifiers": [
+            "DataElementConcept"
+          ]
+        },
+        {
+          "source": "models.specialization",
+          "specifiers": [
+            "DatasetSpecialization"
+          ]
+        }
+      ],
+      "exports": [
+        "_patch_client",
+        "TestIndex",
+        "TestCreate",
+        "TestEditUpsert",
+        "TestDelete",
+        "TestDetail",
+        "TestLibraryDetail",
+        "TestGenerate",
+        "TestGenerateFromDec"
+      ],
+      "totalLines": 261,
+      "hasStructuralAnalysis": true
+    }
+  }
+}

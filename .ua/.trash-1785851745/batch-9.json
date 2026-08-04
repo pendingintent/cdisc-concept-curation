@@ -1,0 +1,127 @@
+{
+  "nodes": [
+    {
+      "id": "config:.mcp.json",
+      "type": "config",
+      "name": ".mcp.json",
+      "filePath": ".mcp.json",
+      "summary": "Registers the cdisc-curation MCP server, launching it via the project virtualenv's Python interpreter running the `mcp_server` package as a module.",
+      "tags": ["configuration", "mcp", "server-registration"],
+      "complexity": "simple"
+    },
+    {
+      "id": "config:.pre-commit-config.yaml",
+      "type": "config",
+      "name": ".pre-commit-config.yaml",
+      "filePath": ".pre-commit-config.yaml",
+      "summary": "Pre-commit hook configuration that runs isort, black, and flake8 on staged files and executes the full pytest suite before every commit.",
+      "tags": ["configuration", "ci-cd", "linting", "build-system"],
+      "complexity": "simple"
+    },
+    {
+      "id": "document:CLAUDE.md",
+      "type": "document",
+      "name": "CLAUDE.md",
+      "filePath": "CLAUDE.md",
+      "summary": "Guidance document for Claude Code covering the app's purpose, how to run it, linting and testing commands, the Route-Service-Model architecture with its 8 Flask blueprints and key services, the MCP server, and environment-variable configuration.",
+      "tags": ["documentation", "architecture", "entry-point", "development"],
+      "complexity": "moderate"
+    },
+    {
+      "id": "document:README-PROGRESS.md",
+      "type": "document",
+      "name": "README-PROGRESS.md",
+      "filePath": "README-PROGRESS.md",
+      "summary": "Running project progress log tracking feature status and a dated changelog of fixes and workstream completions such as governance export corrections, audit trail coverage, and LOINC API explorer work.",
+      "tags": ["documentation", "changelog", "project-status"],
+      "complexity": "moderate"
+    },
+    {
+      "id": "document:README.md",
+      "type": "document",
+      "name": "README.md",
+      "filePath": "README.md",
+      "summary": "Primary project README covering prerequisites, installation, environment-variable configuration, running the app and tests, key screens, project structure, and the external CDISC/NCIt/LOINC APIs the platform integrates with.",
+      "tags": ["documentation", "entry-point", "installation", "overview"],
+      "complexity": "moderate"
+    },
+    {
+      "id": "config:pyproject.toml",
+      "type": "config",
+      "name": "pyproject.toml",
+      "filePath": "pyproject.toml",
+      "summary": "Tool configuration setting a shared 200-character line length for black (targeting Python 3.9-3.11) and isort (using the black-compatible profile).",
+      "tags": ["configuration", "build-system", "formatting"],
+      "complexity": "simple"
+    },
+    {
+      "id": "document:requirements-dev.txt",
+      "type": "document",
+      "name": "requirements-dev.txt",
+      "filePath": "requirements-dev.txt",
+      "summary": "Pinned development-only dependency list: black, flake8 (with mccabe/pycodestyle/pyflakes), isort, pre-commit, pytest, and pytest-flask, used for linting and testing.",
+      "tags": ["dependencies", "development", "linting", "testing"],
+      "complexity": "simple"
+    },
+    {
+      "id": "document:requirements.txt",
+      "type": "document",
+      "name": "requirements.txt",
+      "filePath": "requirements.txt",
+      "summary": "Pinned runtime dependency list for the Flask application, including Flask, Flask-SQLAlchemy, Flask-Migrate, SQLAlchemy, Alembic, pandas, openpyxl, lxml, requests, and the mcp SDK.",
+      "tags": ["dependencies", "runtime", "build-system"],
+      "complexity": "simple"
+    }
+  ],
+  "edges": [
+    {
+      "source": "document:README.md",
+      "target": "document:requirements.txt",
+      "type": "documents",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "document:README.md",
+      "target": "config:.pre-commit-config.yaml",
+      "type": "documents",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "document:README.md",
+      "target": "config:pyproject.toml",
+      "type": "documents",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "config:.pre-commit-config.yaml",
+      "target": "config:pyproject.toml",
+      "type": "depends_on",
+      "direction": "forward",
+      "weight": 0.6
+    },
+    {
+      "source": "document:requirements-dev.txt",
+      "target": "document:requirements.txt",
+      "type": "related",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "document:README.md",
+      "target": "document:CLAUDE.md",
+      "type": "related",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "document:README.md",
+      "target": "document:README-PROGRESS.md",
+      "type": "related",
+      "direction": "forward",
+      "weight": 0.5
+    }
+  ]
+}

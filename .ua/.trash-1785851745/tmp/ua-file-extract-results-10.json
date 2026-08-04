@@ -1,0 +1,226 @@
+{
+  "scriptCompleted": true,
+  "filesAnalyzed": 3,
+  "filesSkipped": [],
+  "analysisOutcomes": {
+    "structure": {
+      "succeeded": 3,
+      "failed": 0
+    },
+    "callGraph": {
+      "succeeded": 0,
+      "failed": 0,
+      "skipped": 3
+    }
+  },
+  "results": [
+    {
+      "path": "files/implementation.md",
+      "language": "markdown",
+      "fileCategory": "docs",
+      "totalLines": 205,
+      "nonEmptyLines": 167,
+      "sections": [
+        {
+          "heading": "CDISC Biomedical Concept Curation Application",
+          "level": 1,
+          "line": 1
+        },
+        {
+          "heading": "Context",
+          "level": 2,
+          "line": 3
+        },
+        {
+          "heading": "Directory Structure",
+          "level": 2,
+          "line": 9
+        },
+        {
+          "heading": "Data Models (SQLAlchemy + SQLite)",
+          "level": 2,
+          "line": 52
+        },
+        {
+          "heading": "BiomedicalConcept",
+          "level": 3,
+          "line": 54
+        },
+        {
+          "heading": "DataElementConcept",
+          "level": 3,
+          "line": 62
+        },
+        {
+          "heading": "DatasetSpecialization",
+          "level": 3,
+          "line": 67
+        },
+        {
+          "heading": "GovernanceRecord",
+          "level": 3,
+          "line": 72
+        },
+        {
+          "heading": "AuditLog",
+          "level": 3,
+          "line": 77
+        },
+        {
+          "heading": "Flask Blueprints",
+          "level": 2,
+          "line": 84
+        },
+        {
+          "heading": "Services",
+          "level": 2,
+          "line": 98
+        },
+        {
+          "heading": "`services/cdisc_api.py`",
+          "level": 3,
+          "line": 100
+        },
+        {
+          "heading": "`services/ncit_api.py`",
+          "level": 3,
+          "line": 107
+        },
+        {
+          "heading": "`services/ingestion.py`",
+          "level": 3,
+          "line": 113
+        },
+        {
+          "heading": "`services/export.py`",
+          "level": 3,
+          "line": 121
+        },
+        {
+          "heading": "Templates",
+          "level": 2,
+          "line": 128
+        },
+        {
+          "heading": "`base.html`",
+          "level": 3,
+          "line": 130
+        },
+        {
+          "heading": "Per-screen templates",
+          "level": 3,
+          "line": 135
+        },
+        {
+          "heading": "Implementation Phases",
+          "level": 2,
+          "line": 146
+        },
+        {
+          "heading": "Phase 1 — Core Foundation (MVP)",
+          "level": 3,
+          "line": 148
+        },
+        {
+          "heading": "Phase 2 — Ingestion + NCIt",
+          "level": 3,
+          "line": 156
+        },
+        {
+          "heading": "Phase 3 — Governance + Specializations",
+          "level": 3,
+          "line": 163
+        },
+        {
+          "heading": "Phase 4 — Export + Polish",
+          "level": 3,
+          "line": 170
+        },
+        {
+          "heading": "Critical Files to Create/Modify",
+          "level": 2,
+          "line": 179
+        },
+        {
+          "heading": "Reference Files (read-only)",
+          "level": 2,
+          "line": 188
+        },
+        {
+          "heading": "Verification",
+          "level": 2,
+          "line": 197
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0,
+        "sectionCount": 26
+      }
+    },
+    {
+      "path": "files/plan.md",
+      "language": "markdown",
+      "fileCategory": "docs",
+      "totalLines": 47,
+      "nonEmptyLines": 28,
+      "sections": [
+        {
+          "heading": "High level overview",
+          "level": 1,
+          "line": 1
+        },
+        {
+          "heading": "Files to review",
+          "level": 1,
+          "line": 33
+        },
+        {
+          "heading": "Agents",
+          "level": 1,
+          "line": 43
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0,
+        "sectionCount": 3
+      }
+    },
+    {
+      "path": "files/result.md",
+      "language": "markdown",
+      "fileCategory": "docs",
+      "totalLines": 27,
+      "nonEmptyLines": 24,
+      "sections": [
+        {
+          "heading": "What was built",
+          "level": 1,
+          "line": 1
+        },
+        {
+          "heading": "Structure",
+          "level": 3,
+          "line": 5
+        },
+        {
+          "heading": "Key capabilities",
+          "level": 3,
+          "line": 20
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0,
+        "sectionCount": 3
+      }
+    }
+  ]
+}

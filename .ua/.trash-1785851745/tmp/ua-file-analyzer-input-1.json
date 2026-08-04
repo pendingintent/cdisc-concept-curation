@@ -1,0 +1,143 @@
+{
+  "projectRoot": "/Users/dmoreland/projects/cdisc-concept-curation",
+  "batchFiles": [
+    {
+      "path": "models/audit.py",
+      "language": "python",
+      "sizeLines": 32,
+      "fileCategory": "code"
+    },
+    {
+      "path": "models/bc.py",
+      "language": "python",
+      "sizeLines": 65,
+      "fileCategory": "code"
+    },
+    {
+      "path": "models/ingestion.py",
+      "language": "python",
+      "sizeLines": 56,
+      "fileCategory": "code"
+    },
+    {
+      "path": "routes/audit.py",
+      "language": "python",
+      "sizeLines": 44,
+      "fileCategory": "code"
+    },
+    {
+      "path": "routes/ingestion.py",
+      "language": "python",
+      "sizeLines": 186,
+      "fileCategory": "code"
+    },
+    {
+      "path": "services/ingestion.py",
+      "language": "python",
+      "sizeLines": 227,
+      "fileCategory": "code"
+    },
+    {
+      "path": "tests/conftest.py",
+      "language": "python",
+      "sizeLines": 68,
+      "fileCategory": "code"
+    },
+    {
+      "path": "tests/test_audit_routes.py",
+      "language": "python",
+      "sizeLines": 49,
+      "fileCategory": "code"
+    },
+    {
+      "path": "tests/test_bc_routes.py",
+      "language": "python",
+      "sizeLines": 547,
+      "fileCategory": "code"
+    },
+    {
+      "path": "tests/test_governance_routes.py",
+      "language": "python",
+      "sizeLines": 236,
+      "fileCategory": "code"
+    },
+    {
+      "path": "tests/test_ingestion_routes.py",
+      "language": "python",
+      "sizeLines": 204,
+      "fileCategory": "code"
+    },
+    {
+      "path": "tests/test_ingestion_service.py",
+      "language": "python",
+      "sizeLines": 259,
+      "fileCategory": "code"
+    },
+    {
+      "path": "tests/test_models.py",
+      "language": "python",
+      "sizeLines": 116,
+      "fileCategory": "code"
+    }
+  ],
+  "batchImportData": {
+    "models/audit.py": [
+      "extensions.py"
+    ],
+    "models/bc.py": [
+      "extensions.py"
+    ],
+    "models/ingestion.py": [
+      "extensions.py"
+    ],
+    "routes/audit.py": [
+      "models/audit.py"
+    ],
+    "routes/ingestion.py": [
+      "extensions.py",
+      "models/audit.py",
+      "models/bc.py",
+      "models/ingestion.py",
+      "services/ingestion.py"
+    ],
+    "services/ingestion.py": [],
+    "tests/conftest.py": [
+      "app.py",
+      "extensions.py",
+      "models/audit.py",
+      "models/bc.py",
+      "models/governance.py",
+      "models/ingestion.py"
+    ],
+    "tests/test_audit_routes.py": [
+      "extensions.py",
+      "models/audit.py"
+    ],
+    "tests/test_bc_routes.py": [
+      "extensions.py",
+      "models/audit.py",
+      "models/bc.py"
+    ],
+    "tests/test_governance_routes.py": [
+      "extensions.py",
+      "models/audit.py",
+      "models/bc.py",
+      "models/governance.py"
+    ],
+    "tests/test_ingestion_routes.py": [
+      "extensions.py",
+      "models/audit.py",
+      "models/bc.py",
+      "models/ingestion.py"
+    ],
+    "tests/test_ingestion_service.py": [
+      "services/ingestion.py"
+    ],
+    "tests/test_models.py": [
+      "extensions.py",
+      "models/audit.py",
+      "models/bc.py",
+      "models/ingestion.py"
+    ]
+  }
+}

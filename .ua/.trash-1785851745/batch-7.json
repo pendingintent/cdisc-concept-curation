@@ -1,0 +1,164 @@
+{
+  "nodes": [
+    {
+      "id": "document:.claude/agent-memory/cdisc-frontend-dev/MEMORY.md",
+      "type": "document",
+      "name": "MEMORY.md",
+      "filePath": ".claude/agent-memory/cdisc-frontend-dev/MEMORY.md",
+      "summary": "Index file for the cdisc-frontend-dev sub-agent's persistent memory, linking to the project foundation and frontend architecture notes.",
+      "tags": ["documentation", "agent-memory", "index"],
+      "complexity": "simple"
+    },
+    {
+      "id": "document:.claude/agent-memory/cdisc-frontend-dev/frontend_architecture.md",
+      "type": "document",
+      "name": "frontend_architecture.md",
+      "filePath": ".claude/agent-memory/cdisc-frontend-dev/frontend_architecture.md",
+      "summary": "Persistent agent memory documenting the front-end template hierarchy, custom.css class naming conventions, main.js module functions, template-to-route mapping, and Jinja context variable conventions for the CDISC BC Curation UI.",
+      "tags": [
+        "documentation",
+        "frontend",
+        "css",
+        "javascript",
+        "agent-memory"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "document:.claude/agent-memory/cdisc-frontend-dev/project_foundation.md",
+      "type": "document",
+      "name": "project_foundation.md",
+      "filePath": ".claude/agent-memory/cdisc-frontend-dev/project_foundation.md",
+      "summary": "Persistent agent memory describing the Flask application factory pattern, registered blueprints, model and service locations, database setup, and key route implementation decisions for the CDISC BC Curation app.",
+      "tags": [
+        "documentation",
+        "architecture",
+        "flask",
+        "database",
+        "agent-memory"
+      ],
+      "complexity": "moderate"
+    }
+  ],
+  "edges": [
+    {
+      "source": "document:.claude/agent-memory/cdisc-frontend-dev/MEMORY.md",
+      "target": "document:.claude/agent-memory/cdisc-frontend-dev/project_foundation.md",
+      "type": "related",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "document:.claude/agent-memory/cdisc-frontend-dev/MEMORY.md",
+      "target": "document:.claude/agent-memory/cdisc-frontend-dev/frontend_architecture.md",
+      "type": "related",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "document:.claude/agent-memory/cdisc-frontend-dev/frontend_architecture.md",
+      "target": "file:templates/base.html",
+      "type": "documents",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "document:.claude/agent-memory/cdisc-frontend-dev/frontend_architecture.md",
+      "target": "file:static/js/main.js",
+      "type": "documents",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "document:.claude/agent-memory/cdisc-frontend-dev/frontend_architecture.md",
+      "target": "file:static/css/custom.css",
+      "type": "documents",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "document:.claude/agent-memory/cdisc-frontend-dev/project_foundation.md",
+      "target": "file:app.py",
+      "type": "documents",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "document:.claude/agent-memory/cdisc-frontend-dev/project_foundation.md",
+      "target": "file:extensions.py",
+      "type": "documents",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "document:.claude/agent-memory/cdisc-frontend-dev/project_foundation.md",
+      "target": "file:models/bc.py",
+      "type": "documents",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "document:.claude/agent-memory/cdisc-frontend-dev/project_foundation.md",
+      "target": "file:models/specialization.py",
+      "type": "documents",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "document:.claude/agent-memory/cdisc-frontend-dev/project_foundation.md",
+      "target": "file:models/governance.py",
+      "type": "documents",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "document:.claude/agent-memory/cdisc-frontend-dev/project_foundation.md",
+      "target": "file:models/audit.py",
+      "type": "documents",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "document:.claude/agent-memory/cdisc-frontend-dev/project_foundation.md",
+      "target": "file:models/ingestion.py",
+      "type": "documents",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "document:.claude/agent-memory/cdisc-frontend-dev/project_foundation.md",
+      "target": "file:services/ingestion.py",
+      "type": "documents",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "document:.claude/agent-memory/cdisc-frontend-dev/project_foundation.md",
+      "target": "file:services/ncit_api.py",
+      "type": "documents",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "document:.claude/agent-memory/cdisc-frontend-dev/project_foundation.md",
+      "target": "file:services/loinc_api.py",
+      "type": "documents",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "document:.claude/agent-memory/cdisc-frontend-dev/project_foundation.md",
+      "target": "file:services/export.py",
+      "type": "documents",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "document:.claude/agent-memory/cdisc-frontend-dev/project_foundation.md",
+      "target": "file:services/cdisc_api.py",
+      "type": "documents",
+      "direction": "forward",
+      "weight": 0.5
+    }
+  ]
+}

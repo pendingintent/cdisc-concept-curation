@@ -1,0 +1,16 @@
+{
+  "fixedSectionOk": true,
+  "nodesRecovered": 2,
+  "edgesRestored": 6,
+  "crossBatchEdgesAdded": 0,
+  "typesRemapped": 0,
+  "complexityRemapped": 0,
+  "notes": [
+    "Fixed section (7 tested_by edges dropped) is a small fraction (~1.2%) of 568 input edges; no systemic issue, no action needed.",
+    "No nodes-with-no-id, unknown-type, or unknown-complexity issues were reported by the merge script for this run.",
+    "4 of the 6 dropped 'could not fix' edges (document:files/plan.md -> BC Curation Principles and Completion GLs.xlsx / BC Examples.xlsx / BC DEC Templates.xlsx / BC Governance.docx) were not truly missing data: batch-12 had already created these as file:files/... nodes (type 'file'), but batch-10's edges were authored with a document: prefix. This is a cross-batch prefix-convention mismatch the mechanical merge script's ID-normalization rules didn't cover (not a doubled/missing prefix, but a wrong type-prefix). Rewrote the 4 edge targets to the existing file:files/... node IDs and restored them.",
+    "The remaining 2 dropped edges targeted files/cdisc_bc_ai_platform.html and files/cdisc_smart_goals_infographic.html. These .html files exist on disk under files/ but were never scanned by project-scanner (absent from scan-result.json's 97-file inventory, filteredByIgnore=0), so no batch ever produced nodes for them -- likely an extension the scanner's Phase 1 doesn't pick up (confirmed present in .html form, not excluded via .understandignore). Recreated them as lightweight file: nodes (summary: 'No summary available', tags: ['untagged'], complexity: 'moderate') and restored the 2 edges from plan.md, since the files are real, referenced reference documents and recovering them was low-risk and valuable for graph completeness.",
+    "Cross-batch imports check: all 105 importMap entries from scan-result.json already have corresponding imports edges in the assembled graph (0 missing) -- consistent with the merge script's own report of 0 additional imports recovered. No cross-batch edges needed.",
+    "Post-fix integrity check passed: 281 nodes, 561 edges, 0 dangling edges, 0 duplicate node IDs, 0 duplicate (source,target,type) edge keys."
+  ]
+}

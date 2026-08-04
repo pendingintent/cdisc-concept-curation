@@ -1,0 +1,843 @@
+{
+  "scriptCompleted": true,
+  "filesAnalyzed": 7,
+  "filesSkipped": [],
+  "analysisOutcomes": {
+    "structure": {
+      "succeeded": 7,
+      "failed": 0
+    },
+    "callGraph": {
+      "succeeded": 7,
+      "failed": 0,
+      "skipped": 0
+    }
+  },
+  "results": [
+    {
+      "path": "app.py",
+      "language": "python",
+      "fileCategory": "code",
+      "totalLines": 59,
+      "nonEmptyLines": 45,
+      "functions": [
+        {
+          "name": "_configure_logging",
+          "startLine": 10,
+          "endLine": 21,
+          "params": []
+        },
+        {
+          "name": "create_app",
+          "startLine": 24,
+          "endLine": 50,
+          "params": [
+            "config_class"
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "_configure_logging",
+          "line": 10,
+          "isDefault": false
+        },
+        {
+          "name": "create_app",
+          "line": 24,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "_configure_logging",
+          "callee": "logging.getLogger",
+          "lineNumber": 16
+        },
+        {
+          "caller": "_configure_logging",
+          "callee": "logging.basicConfig",
+          "lineNumber": 18
+        },
+        {
+          "caller": "create_app",
+          "callee": "_configure_logging",
+          "lineNumber": 25
+        },
+        {
+          "caller": "create_app",
+          "callee": "Flask",
+          "lineNumber": 26
+        },
+        {
+          "caller": "create_app",
+          "callee": "app.config.from_object",
+          "lineNumber": 27
+        },
+        {
+          "caller": "create_app",
+          "callee": "db.init_app",
+          "lineNumber": 29
+        },
+        {
+          "caller": "create_app",
+          "callee": "migrate.init_app",
+          "lineNumber": 30
+        },
+        {
+          "caller": "create_app",
+          "callee": "app.register_blueprint",
+          "lineNumber": 41
+        },
+        {
+          "caller": "create_app",
+          "callee": "app.register_blueprint",
+          "lineNumber": 42
+        },
+        {
+          "caller": "create_app",
+          "callee": "app.register_blueprint",
+          "lineNumber": 43
+        },
+        {
+          "caller": "create_app",
+          "callee": "app.register_blueprint",
+          "lineNumber": 44
+        },
+        {
+          "caller": "create_app",
+          "callee": "app.register_blueprint",
+          "lineNumber": 45
+        },
+        {
+          "caller": "create_app",
+          "callee": "app.register_blueprint",
+          "lineNumber": 46
+        },
+        {
+          "caller": "create_app",
+          "callee": "app.register_blueprint",
+          "lineNumber": 47
+        },
+        {
+          "caller": "create_app",
+          "callee": "app.register_blueprint",
+          "lineNumber": 48
+        }
+      ],
+      "metrics": {
+        "importCount": 2,
+        "exportCount": 2,
+        "functionCount": 2,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "config.py",
+      "language": "python",
+      "fileCategory": "code",
+      "totalLines": 14,
+      "nonEmptyLines": 12,
+      "classes": [
+        {
+          "name": "Config",
+          "startLine": 4,
+          "endLine": 14,
+          "methods": [],
+          "properties": []
+        }
+      ],
+      "exports": [
+        {
+          "name": "Config",
+          "line": 4,
+          "isDefault": false
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 1,
+        "functionCount": 0,
+        "classCount": 1
+      }
+    },
+    {
+      "path": "db_bootstrap.py",
+      "language": "python",
+      "fileCategory": "code",
+      "totalLines": 71,
+      "nonEmptyLines": 55,
+      "functions": [
+        {
+          "name": "_schema_is_current",
+          "startLine": 31,
+          "endLine": 33,
+          "params": [
+            "inspector"
+          ]
+        },
+        {
+          "name": "ensure_db",
+          "startLine": 36,
+          "endLine": 71,
+          "params": [
+            "app"
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "_schema_is_current",
+          "line": 31,
+          "isDefault": false
+        },
+        {
+          "name": "ensure_db",
+          "line": 36,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "_schema_is_current",
+          "callee": "inspector.get_columns",
+          "lineNumber": 32
+        },
+        {
+          "caller": "ensure_db",
+          "callee": "app.app_context",
+          "lineNumber": 48
+        },
+        {
+          "caller": "ensure_db",
+          "callee": "inspect",
+          "lineNumber": 49
+        },
+        {
+          "caller": "ensure_db",
+          "callee": "set",
+          "lineNumber": 50
+        },
+        {
+          "caller": "ensure_db",
+          "callee": "inspector.get_table_names",
+          "lineNumber": 50
+        },
+        {
+          "caller": "ensure_db",
+          "callee": "_schema_is_current",
+          "lineNumber": 53
+        },
+        {
+          "caller": "ensure_db",
+          "callee": "RuntimeError",
+          "lineNumber": 54
+        },
+        {
+          "caller": "ensure_db",
+          "callee": "logger.info",
+          "lineNumber": 61
+        },
+        {
+          "caller": "ensure_db",
+          "callee": "stamp",
+          "lineNumber": 62
+        },
+        {
+          "caller": "ensure_db",
+          "callee": "db.session.execute(text(\"SELECT version_num FROM alembic_version\")).scalar",
+          "lineNumber": 64
+        },
+        {
+          "caller": "ensure_db",
+          "callee": "db.session.execute",
+          "lineNumber": 64
+        },
+        {
+          "caller": "ensure_db",
+          "callee": "text",
+          "lineNumber": 64
+        },
+        {
+          "caller": "ensure_db",
+          "callee": "logger.info",
+          "lineNumber": 66
+        },
+        {
+          "caller": "ensure_db",
+          "callee": "db.session.execute",
+          "lineNumber": 67
+        },
+        {
+          "caller": "ensure_db",
+          "callee": "text",
+          "lineNumber": 67
+        },
+        {
+          "caller": "ensure_db",
+          "callee": "db.session.commit",
+          "lineNumber": 68
+        },
+        {
+          "caller": "ensure_db",
+          "callee": "stamp",
+          "lineNumber": 69
+        },
+        {
+          "caller": "ensure_db",
+          "callee": "upgrade",
+          "lineNumber": 71
+        }
+      ],
+      "metrics": {
+        "importCount": 1,
+        "exportCount": 2,
+        "functionCount": 2,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "extensions.py",
+      "language": "python",
+      "fileCategory": "code",
+      "totalLines": 25,
+      "nonEmptyLines": 20,
+      "functions": [
+        {
+          "name": "_set_sqlite_pragmas",
+          "startLine": 13,
+          "endLine": 25,
+          "params": [
+            "dbapi_connection",
+            "connection_record"
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "_set_sqlite_pragmas",
+          "line": 12,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "_set_sqlite_pragmas",
+          "callee": "isinstance",
+          "lineNumber": 21
+        },
+        {
+          "caller": "_set_sqlite_pragmas",
+          "callee": "dbapi_connection.cursor",
+          "lineNumber": 22
+        },
+        {
+          "caller": "_set_sqlite_pragmas",
+          "callee": "cursor.execute",
+          "lineNumber": 23
+        },
+        {
+          "caller": "_set_sqlite_pragmas",
+          "callee": "cursor.execute",
+          "lineNumber": 24
+        },
+        {
+          "caller": "_set_sqlite_pragmas",
+          "callee": "cursor.close",
+          "lineNumber": 25
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 1,
+        "functionCount": 1,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "models/__init__.py",
+      "language": "python",
+      "fileCategory": "code",
+      "totalLines": 1,
+      "nonEmptyLines": 1,
+      "metrics": {
+        "importCount": 1,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "tests/test_dashboard.py",
+      "language": "python",
+      "fileCategory": "code",
+      "totalLines": 75,
+      "nonEmptyLines": 64,
+      "functions": [
+        {
+          "name": "_mock_client",
+          "startLine": 17,
+          "endLine": 21,
+          "params": [
+            "bcs",
+            "specs"
+          ]
+        }
+      ],
+      "classes": [
+        {
+          "name": "TestDashboardIndex",
+          "startLine": 24,
+          "endLine": 75,
+          "methods": [
+            "test_renders_with_api_data",
+            "test_renders_when_api_errors",
+            "test_renders_with_empty_api_results",
+            "test_local_stats_reflect_db",
+            "test_both_api_calls_made_concurrently"
+          ],
+          "properties": []
+        }
+      ],
+      "exports": [
+        {
+          "name": "_mock_client",
+          "line": 17,
+          "isDefault": false
+        },
+        {
+          "name": "TestDashboardIndex",
+          "line": 24,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "_mock_client",
+          "callee": "MagicMock",
+          "lineNumber": 18
+        },
+        {
+          "caller": "test_renders_with_api_data",
+          "callee": "patch",
+          "lineNumber": 26
+        },
+        {
+          "caller": "test_renders_with_api_data",
+          "callee": "_mock_client",
+          "lineNumber": 27
+        },
+        {
+          "caller": "test_renders_with_api_data",
+          "callee": "client.get",
+          "lineNumber": 28
+        },
+        {
+          "caller": "test_renders_when_api_errors",
+          "callee": "patch",
+          "lineNumber": 34
+        },
+        {
+          "caller": "test_renders_when_api_errors",
+          "callee": "_mock_client",
+          "lineNumber": 35
+        },
+        {
+          "caller": "test_renders_when_api_errors",
+          "callee": "client.get",
+          "lineNumber": 39
+        },
+        {
+          "caller": "test_renders_with_empty_api_results",
+          "callee": "patch",
+          "lineNumber": 44
+        },
+        {
+          "caller": "test_renders_with_empty_api_results",
+          "callee": "_mock_client",
+          "lineNumber": 45
+        },
+        {
+          "caller": "test_renders_with_empty_api_results",
+          "callee": "client.get",
+          "lineNumber": 46
+        },
+        {
+          "caller": "test_local_stats_reflect_db",
+          "callee": "app.app_context",
+          "lineNumber": 50
+        },
+        {
+          "caller": "test_local_stats_reflect_db",
+          "callee": "db.session.add",
+          "lineNumber": 51
+        },
+        {
+          "caller": "test_local_stats_reflect_db",
+          "callee": "BiomedicalConcept",
+          "lineNumber": 52
+        },
+        {
+          "caller": "test_local_stats_reflect_db",
+          "callee": "db.session.commit",
+          "lineNumber": 59
+        },
+        {
+          "caller": "test_local_stats_reflect_db",
+          "callee": "patch",
+          "lineNumber": 60
+        },
+        {
+          "caller": "test_local_stats_reflect_db",
+          "callee": "_mock_client",
+          "lineNumber": 61
+        },
+        {
+          "caller": "test_local_stats_reflect_db",
+          "callee": "client.get",
+          "lineNumber": 62
+        },
+        {
+          "caller": "test_both_api_calls_made_concurrently",
+          "callee": "_mock_client",
+          "lineNumber": 70
+        },
+        {
+          "caller": "test_both_api_calls_made_concurrently",
+          "callee": "patch",
+          "lineNumber": 71
+        },
+        {
+          "caller": "test_both_api_calls_made_concurrently",
+          "callee": "client.get",
+          "lineNumber": 73
+        }
+      ],
+      "metrics": {
+        "importCount": 2,
+        "exportCount": 2,
+        "functionCount": 1,
+        "classCount": 1
+      }
+    },
+    {
+      "path": "tests/test_db_bootstrap.py",
+      "language": "python",
+      "fileCategory": "code",
+      "totalLines": 87,
+      "nonEmptyLines": 71,
+      "functions": [
+        {
+          "name": "_make_app",
+          "startLine": 20,
+          "endLine": 30,
+          "params": [
+            "tmp_path",
+            "name"
+          ]
+        },
+        {
+          "name": "_tables",
+          "startLine": 33,
+          "endLine": 35,
+          "params": [
+            "app"
+          ]
+        },
+        {
+          "name": "_stamped_revision",
+          "startLine": 38,
+          "endLine": 40,
+          "params": [
+            "app"
+          ]
+        }
+      ],
+      "classes": [
+        {
+          "name": "TestEnsureDb",
+          "startLine": 43,
+          "endLine": 87,
+          "methods": [
+            "test_fresh_db_upgraded_from_baseline",
+            "test_legacy_create_all_db_is_stamped",
+            "test_pre_squash_stamped_db_is_restamped",
+            "test_outdated_schema_raises",
+            "test_idempotent_second_run"
+          ],
+          "properties": []
+        }
+      ],
+      "exports": [
+        {
+          "name": "_make_app",
+          "line": 20,
+          "isDefault": false
+        },
+        {
+          "name": "_tables",
+          "line": 33,
+          "isDefault": false
+        },
+        {
+          "name": "_stamped_revision",
+          "line": 38,
+          "isDefault": false
+        },
+        {
+          "name": "TestEnsureDb",
+          "line": 43,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "_make_app",
+          "callee": "create_app",
+          "lineNumber": 30
+        },
+        {
+          "caller": "_tables",
+          "callee": "app.app_context",
+          "lineNumber": 34
+        },
+        {
+          "caller": "_tables",
+          "callee": "set",
+          "lineNumber": 35
+        },
+        {
+          "caller": "_tables",
+          "callee": "inspect(db.engine).get_table_names",
+          "lineNumber": 35
+        },
+        {
+          "caller": "_tables",
+          "callee": "inspect",
+          "lineNumber": 35
+        },
+        {
+          "caller": "_stamped_revision",
+          "callee": "app.app_context",
+          "lineNumber": 39
+        },
+        {
+          "caller": "_stamped_revision",
+          "callee": "db.session.execute(text(\"SELECT version_num FROM alembic_version\")).scalar",
+          "lineNumber": 40
+        },
+        {
+          "caller": "_stamped_revision",
+          "callee": "db.session.execute",
+          "lineNumber": 40
+        },
+        {
+          "caller": "_stamped_revision",
+          "callee": "text",
+          "lineNumber": 40
+        },
+        {
+          "caller": "test_fresh_db_upgraded_from_baseline",
+          "callee": "_make_app",
+          "lineNumber": 45
+        },
+        {
+          "caller": "test_fresh_db_upgraded_from_baseline",
+          "callee": "ensure_db",
+          "lineNumber": 46
+        },
+        {
+          "caller": "test_fresh_db_upgraded_from_baseline",
+          "callee": "_tables",
+          "lineNumber": 47
+        },
+        {
+          "caller": "test_fresh_db_upgraded_from_baseline",
+          "callee": "_stamped_revision",
+          "lineNumber": 48
+        },
+        {
+          "caller": "test_legacy_create_all_db_is_stamped",
+          "callee": "_make_app",
+          "lineNumber": 51
+        },
+        {
+          "caller": "test_legacy_create_all_db_is_stamped",
+          "callee": "app.app_context",
+          "lineNumber": 52
+        },
+        {
+          "caller": "test_legacy_create_all_db_is_stamped",
+          "callee": "db.create_all",
+          "lineNumber": 53
+        },
+        {
+          "caller": "test_legacy_create_all_db_is_stamped",
+          "callee": "_tables",
+          "lineNumber": 54
+        },
+        {
+          "caller": "test_legacy_create_all_db_is_stamped",
+          "callee": "ensure_db",
+          "lineNumber": 55
+        },
+        {
+          "caller": "test_legacy_create_all_db_is_stamped",
+          "callee": "_tables",
+          "lineNumber": 56
+        },
+        {
+          "caller": "test_legacy_create_all_db_is_stamped",
+          "callee": "_stamped_revision",
+          "lineNumber": 57
+        },
+        {
+          "caller": "test_pre_squash_stamped_db_is_restamped",
+          "callee": "_make_app",
+          "lineNumber": 60
+        },
+        {
+          "caller": "test_pre_squash_stamped_db_is_restamped",
+          "callee": "app.app_context",
+          "lineNumber": 61
+        },
+        {
+          "caller": "test_pre_squash_stamped_db_is_restamped",
+          "callee": "db.create_all",
+          "lineNumber": 62
+        },
+        {
+          "caller": "test_pre_squash_stamped_db_is_restamped",
+          "callee": "db.session.execute",
+          "lineNumber": 63
+        },
+        {
+          "caller": "test_pre_squash_stamped_db_is_restamped",
+          "callee": "text",
+          "lineNumber": 63
+        },
+        {
+          "caller": "test_pre_squash_stamped_db_is_restamped",
+          "callee": "db.session.execute",
+          "lineNumber": 64
+        },
+        {
+          "caller": "test_pre_squash_stamped_db_is_restamped",
+          "callee": "text",
+          "lineNumber": 64
+        },
+        {
+          "caller": "test_pre_squash_stamped_db_is_restamped",
+          "callee": "db.session.execute",
+          "lineNumber": 66
+        },
+        {
+          "caller": "test_pre_squash_stamped_db_is_restamped",
+          "callee": "text",
+          "lineNumber": 66
+        },
+        {
+          "caller": "test_pre_squash_stamped_db_is_restamped",
+          "callee": "db.session.commit",
+          "lineNumber": 67
+        },
+        {
+          "caller": "test_pre_squash_stamped_db_is_restamped",
+          "callee": "ensure_db",
+          "lineNumber": 68
+        },
+        {
+          "caller": "test_pre_squash_stamped_db_is_restamped",
+          "callee": "_stamped_revision",
+          "lineNumber": 69
+        },
+        {
+          "caller": "test_pre_squash_stamped_db_is_restamped",
+          "callee": "app.app_context",
+          "lineNumber": 70
+        },
+        {
+          "caller": "test_pre_squash_stamped_db_is_restamped",
+          "callee": "db.session.execute(text(\"SELECT count(*) FROM biomedical_concepts\")).scalar",
+          "lineNumber": 71
+        },
+        {
+          "caller": "test_pre_squash_stamped_db_is_restamped",
+          "callee": "db.session.execute",
+          "lineNumber": 71
+        },
+        {
+          "caller": "test_pre_squash_stamped_db_is_restamped",
+          "callee": "text",
+          "lineNumber": 71
+        },
+        {
+          "caller": "test_outdated_schema_raises",
+          "callee": "_make_app",
+          "lineNumber": 74
+        },
+        {
+          "caller": "test_outdated_schema_raises",
+          "callee": "app.app_context",
+          "lineNumber": 75
+        },
+        {
+          "caller": "test_outdated_schema_raises",
+          "callee": "db.session.execute",
+          "lineNumber": 77
+        },
+        {
+          "caller": "test_outdated_schema_raises",
+          "callee": "text",
+          "lineNumber": 77
+        },
+        {
+          "caller": "test_outdated_schema_raises",
+          "callee": "db.session.commit",
+          "lineNumber": 78
+        },
+        {
+          "caller": "test_outdated_schema_raises",
+          "callee": "pytest.raises",
+          "lineNumber": 79
+        },
+        {
+          "caller": "test_outdated_schema_raises",
+          "callee": "ensure_db",
+          "lineNumber": 80
+        },
+        {
+          "caller": "test_idempotent_second_run",
+          "callee": "_make_app",
+          "lineNumber": 83
+        },
+        {
+          "caller": "test_idempotent_second_run",
+          "callee": "ensure_db",
+          "lineNumber": 84
+        },
+        {
+          "caller": "test_idempotent_second_run",
+          "callee": "_stamped_revision",
+          "lineNumber": 85
+        },
+        {
+          "caller": "test_idempotent_second_run",
+          "callee": "ensure_db",
+          "lineNumber": 86
+        },
+        {
+          "caller": "test_idempotent_second_run",
+          "callee": "_stamped_revision",
+          "lineNumber": 87
+        }
+      ],
+      "metrics": {
+        "importCount": 3,
+        "exportCount": 4,
+        "functionCount": 3,
+        "classCount": 1
+      }
+    }
+  ]
+}

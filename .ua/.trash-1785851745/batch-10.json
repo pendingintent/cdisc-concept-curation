@@ -1,0 +1,256 @@
+{
+  "nodes": [
+    {
+      "id": "document:files/plan.md",
+      "type": "document",
+      "name": "plan.md",
+      "filePath": "files/plan.md",
+      "summary": "Initial high-level project brief for the CDISC Biomedical Concept Curation application, specifying the target UI mockup to match, the key reference files to review, the required agents (cdisc-concept-explorer, ncit-concept-resolver, cdisc-frontend-dev, mike), and the constraint that only the CDISC_API_KEY environment variable be used for API authentication.",
+      "tags": ["documentation", "planning", "project-brief", "requirements"],
+      "complexity": "simple"
+    },
+    {
+      "id": "document:files/implementation.md",
+      "type": "document",
+      "name": "implementation.md",
+      "filePath": "files/implementation.md",
+      "summary": "Detailed implementation plan for the Flask/Jinja BC curation app, laying out the directory structure, SQLAlchemy data models, Flask blueprint/route table, service-layer API surface, template inventory, and a four-phase build roadmap from MVP through export and polish.",
+      "tags": [
+        "documentation",
+        "architecture",
+        "implementation-plan",
+        "specification"
+      ],
+      "complexity": "moderate",
+      "languageNotes": "Serves as the architectural blueprint the actual codebase (app.py, models/, routes/, services/, templates/) was built from; nearly every file/module it names exists in the repository today."
+    },
+    {
+      "id": "document:files/result.md",
+      "type": "document",
+      "name": "result.md",
+      "filePath": "files/result.md",
+      "summary": "Post-implementation status report confirming all 8 Flask routes return HTTP 200 and enumerating delivered capabilities: file ingestion with AI field mapping, BC CRUD, NCIt mapping, a 4-stage governance Kanban, an immutable audit trail, and JSON/XLSX/ODM-XML export.",
+      "tags": ["documentation", "summary", "status-report", "verification"],
+      "complexity": "simple"
+    }
+  ],
+  "edges": [
+    {
+      "source": "document:files/plan.md",
+      "target": "file:files/cdisc_bc_ai_platform.html",
+      "type": "related",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "document:files/plan.md",
+      "target": "file:files/cdisc_smart_goals_infographic.html",
+      "type": "related",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "document:files/plan.md",
+      "target": "document:files/BC Curation Principles and Completion GLs.xlsx",
+      "type": "related",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "document:files/plan.md",
+      "target": "document:files/BC Examples.xlsx",
+      "type": "related",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "document:files/plan.md",
+      "target": "document:files/BC DEC Templates.xlsx",
+      "type": "related",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "document:files/plan.md",
+      "target": "document:files/BC Governance.docx",
+      "type": "related",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "document:files/plan.md",
+      "target": "document:files/implementation.md",
+      "type": "related",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "document:files/implementation.md",
+      "target": "file:app.py",
+      "type": "documents",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "document:files/implementation.md",
+      "target": "file:config.py",
+      "type": "documents",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "document:files/implementation.md",
+      "target": "file:models/bc.py",
+      "type": "documents",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "document:files/implementation.md",
+      "target": "file:models/specialization.py",
+      "type": "documents",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "document:files/implementation.md",
+      "target": "file:models/governance.py",
+      "type": "documents",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "document:files/implementation.md",
+      "target": "file:models/audit.py",
+      "type": "documents",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "document:files/implementation.md",
+      "target": "file:routes/dashboard.py",
+      "type": "documents",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "document:files/implementation.md",
+      "target": "file:routes/ingestion.py",
+      "type": "documents",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "document:files/implementation.md",
+      "target": "file:routes/bc.py",
+      "type": "documents",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "document:files/implementation.md",
+      "target": "file:routes/ncit.py",
+      "type": "documents",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "document:files/implementation.md",
+      "target": "file:routes/specializations.py",
+      "type": "documents",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "document:files/implementation.md",
+      "target": "file:routes/governance.py",
+      "type": "documents",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "document:files/implementation.md",
+      "target": "file:routes/audit.py",
+      "type": "documents",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "document:files/implementation.md",
+      "target": "file:services/cdisc_api.py",
+      "type": "documents",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "document:files/implementation.md",
+      "target": "file:services/ncit_api.py",
+      "type": "documents",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "document:files/implementation.md",
+      "target": "file:services/ingestion.py",
+      "type": "documents",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "document:files/implementation.md",
+      "target": "file:services/export.py",
+      "type": "documents",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "document:files/implementation.md",
+      "target": "file:templates/base.html",
+      "type": "documents",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "document:files/implementation.md",
+      "target": "document:files/plan.md",
+      "type": "related",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "document:files/implementation.md",
+      "target": "document:files/result.md",
+      "type": "related",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "document:files/result.md",
+      "target": "file:app.py",
+      "type": "documents",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "document:files/result.md",
+      "target": "file:extensions.py",
+      "type": "documents",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "document:files/result.md",
+      "target": "file:config.py",
+      "type": "documents",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "document:files/result.md",
+      "target": "document:files/implementation.md",
+      "type": "related",
+      "direction": "forward",
+      "weight": 0.5
+    }
+  ]
+}

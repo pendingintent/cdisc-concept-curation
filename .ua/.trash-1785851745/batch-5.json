@@ -1,0 +1,1004 @@
+{
+  "nodes": [
+    {
+      "id": "file:mcp_server/__main__.py",
+      "type": "file",
+      "name": "__main__.py",
+      "filePath": "mcp_server/__main__.py",
+      "summary": "Module entry point for `python -m mcp_server`; imports the server's main() coroutine runner and invokes it immediately to start the stdio MCP server loop.",
+      "tags": ["entry-point", "mcp-server", "bootstrap"],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:mcp_server/server.py",
+      "type": "file",
+      "name": "server.py",
+      "filePath": "mcp_server/server.py",
+      "summary": "MCP server exposing the CDISC curation app's data and write operations as 14 stdio tools (8 read, 6 write); each call is dispatched into a Flask app context shared with the web app so both processes hit the same SQLite database and service layer.",
+      "tags": ["entry-point", "mcp-server", "api-handler", "service"],
+      "complexity": "complex",
+      "languageNotes": "Uses lazy, function-local imports throughout (Flask app, models, service clients) so they only resolve once an app context exists, plus a functools.wraps-based `_with_app_context` decorator that pushes a fresh app context per call since handlers run on asyncio executor worker threads."
+    },
+    {
+      "id": "function:mcp_server/server.py:_with_app_context",
+      "type": "function",
+      "name": "_with_app_context",
+      "filePath": "mcp_server/server.py",
+      "lineRange": [60, 72],
+      "summary": "Decorator that wraps a tool handler so it runs inside a fresh Flask app context, required because handlers execute on the asyncio executor's worker threads rather than the request thread.",
+      "tags": ["decorator", "middleware", "mcp-server"],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:mcp_server/server.py:_dispatch",
+      "type": "function",
+      "name": "_dispatch",
+      "filePath": "mcp_server/server.py",
+      "lineRange": [292, 312],
+      "summary": "Central dispatch table mapping the 14 MCP tool names to their handler functions and raising ValueError for unknown tool names.",
+      "tags": ["dispatcher", "mcp-server", "routing"],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:mcp_server/server.py:_bc_full_dict",
+      "type": "function",
+      "name": "_bc_full_dict",
+      "filePath": "mcp_server/server.py",
+      "lineRange": [320, 332],
+      "summary": "Builds the full JSON-serializable dict for a BiomedicalConcept, extending its to_dict() with fields (code, source, history_of_change, timestamps) omitted by the base serializer.",
+      "tags": ["serialization", "data-model", "utility"],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:mcp_server/server.py:_list_bcs",
+      "type": "function",
+      "name": "_list_bcs",
+      "filePath": "mcp_server/server.py",
+      "lineRange": [336, 356],
+      "summary": "Implements the list_bcs tool: paginated, filterable search over BiomedicalConcept by free-text query and status.",
+      "tags": ["api-handler", "query", "pagination"],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:mcp_server/server.py:_get_bc",
+      "type": "function",
+      "name": "_get_bc",
+      "filePath": "mcp_server/server.py",
+      "lineRange": [360, 405],
+      "summary": "Implements the get_bc tool: fetches full BC detail including its DataElementConcepts, dataset specializations, and governance history.",
+      "tags": ["api-handler", "query", "data-model"],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:mcp_server/server.py:_search_ncit",
+      "type": "function",
+      "name": "_search_ncit",
+      "filePath": "mcp_server/server.py",
+      "lineRange": [409, 416],
+      "summary": "Implements the search_ncit tool, delegating to NCItApiClient.search_concept with a required search term and bounded result count.",
+      "tags": ["api-handler", "external-api"],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:mcp_server/server.py:_get_ncit_concept",
+      "type": "function",
+      "name": "_get_ncit_concept",
+      "filePath": "mcp_server/server.py",
+      "lineRange": [420, 426],
+      "summary": "Implements the get_ncit_concept tool, fetching full concept detail from the NCI Thesaurus via NCItApiClient.",
+      "tags": ["api-handler", "external-api"],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:mcp_server/server.py:_search_loinc",
+      "type": "function",
+      "name": "_search_loinc",
+      "filePath": "mcp_server/server.py",
+      "lineRange": [430, 437],
+      "summary": "Implements the search_loinc tool, delegating to LoincApiClient.search for LOINC code lookups.",
+      "tags": ["api-handler", "external-api"],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:mcp_server/server.py:_search_cdisc_library",
+      "type": "function",
+      "name": "_search_cdisc_library",
+      "filePath": "mcp_server/server.py",
+      "lineRange": [441, 450],
+      "summary": "Implements the search_cdisc_library tool, querying the live CDISC Library for published Biomedical Concepts and filtering results by title.",
+      "tags": ["api-handler", "external-api"],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:mcp_server/server.py:_get_library_bc",
+      "type": "function",
+      "name": "_get_library_bc",
+      "filePath": "mcp_server/server.py",
+      "lineRange": [454, 460],
+      "summary": "Implements the get_library_bc tool, fetching one published BC from the CDISC Library by concept id.",
+      "tags": ["api-handler", "external-api"],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:mcp_server/server.py:_list_review_queue",
+      "type": "function",
+      "name": "_list_review_queue",
+      "filePath": "mcp_server/server.py",
+      "lineRange": [464, 477],
+      "summary": "Implements the list_review_queue tool: summarizes the governance Kanban board by status counts plus the count of pending ingestion records.",
+      "tags": ["api-handler", "governance", "query"],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:mcp_server/server.py:_create_bc",
+      "type": "function",
+      "name": "_create_bc",
+      "filePath": "mcp_server/server.py",
+      "lineRange": [486, 494],
+      "summary": "Implements the create_bc write tool, delegating to bc_service.create_bc and optionally bc_service.save_decs before returning the full BC detail.",
+      "tags": ["api-handler", "write-operation", "service"],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:mcp_server/server.py:_update_bc",
+      "type": "function",
+      "name": "_update_bc",
+      "filePath": "mcp_server/server.py",
+      "lineRange": [498, 507],
+      "summary": "Implements the update_bc write tool, applying field updates via bc_service.update_bc and returning the refreshed BC dict.",
+      "tags": ["api-handler", "write-operation", "service"],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:mcp_server/server.py:_map_ncit_to_bc",
+      "type": "function",
+      "name": "_map_ncit_to_bc",
+      "filePath": "mcp_server/server.py",
+      "lineRange": [511, 519],
+      "summary": "Implements the map_ncit_to_bc write tool, attaching an NCIt code to a BC via bc_service.map_ncit_to_bc (which also handles IMPORT_ id promotion).",
+      "tags": ["api-handler", "write-operation", "service"],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:mcp_server/server.py:_submit_bc_for_review",
+      "type": "function",
+      "name": "_submit_bc_for_review",
+      "filePath": "mcp_server/server.py",
+      "lineRange": [523, 531],
+      "summary": "Implements the submit_bc_for_review write tool, moving a BC from provisional into SME review via bc_service.submit_bc_for_review.",
+      "tags": ["api-handler", "write-operation", "governance"],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:mcp_server/server.py:_advance_governance",
+      "type": "function",
+      "name": "_advance_governance",
+      "filePath": "mcp_server/server.py",
+      "lineRange": [535, 542],
+      "summary": "Implements the advance_governance write tool, advancing a BC's governance stage via governance_service.advance_governance.",
+      "tags": ["api-handler", "write-operation", "governance"],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:mcp_server/server.py:_reject_bc",
+      "type": "function",
+      "name": "_reject_bc",
+      "filePath": "mcp_server/server.py",
+      "lineRange": [546, 553],
+      "summary": "Implements the reject_bc write tool, returning a BC to provisional status via governance_service.reject_bc.",
+      "tags": ["api-handler", "write-operation", "governance"],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:mcp_server/server.py:main",
+      "type": "function",
+      "name": "main",
+      "filePath": "mcp_server/server.py",
+      "lineRange": [561, 563],
+      "summary": "Async entry point that configures logging and runs the stdio MCP server loop; invoked by `python -m mcp_server`.",
+      "tags": ["entry-point", "bootstrap", "mcp-server"],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:mcp_server/server.py:_run",
+      "type": "function",
+      "name": "_run",
+      "filePath": "mcp_server/server.py",
+      "lineRange": [566, 568],
+      "summary": "Opens the stdio transport streams and runs the MCP Server with its initialization options.",
+      "tags": ["bootstrap", "mcp-server"],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:models/specialization.py",
+      "type": "file",
+      "name": "specialization.py",
+      "filePath": "models/specialization.py",
+      "summary": "SQLAlchemy model for a dataset specialization (SDTM/CDASH variable-level metadata group) tied to a Biomedical Concept, storing its variable list as a JSON-serialized text column.",
+      "tags": ["data-model", "orm", "database"],
+      "complexity": "simple"
+    },
+    {
+      "id": "class:models/specialization.py:DatasetSpecialization",
+      "type": "class",
+      "name": "DatasetSpecialization",
+      "filePath": "models/specialization.py",
+      "lineRange": [6, 30],
+      "summary": "ORM model mapping the dataset_specializations table; exposes a `variables` property/setter that transparently (de)serializes a JSON text column, plus a to_dict() used by routes and the MCP server.",
+      "tags": ["data-model", "orm", "serialization"],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:tests/test_mcp_server.py",
+      "type": "file",
+      "name": "test_mcp_server.py",
+      "filePath": "tests/test_mcp_server.py",
+      "summary": "Unit tests for the MCP server's `_dispatch` routing and all 14 tool handlers, exercising them directly against a shared in-memory test Flask app (no stdio transport) and asserting on returned data plus AuditLog/GovernanceRecord side effects.",
+      "tags": ["test", "mcp-server", "unit-test"],
+      "complexity": "complex"
+    },
+    {
+      "id": "class:tests/test_mcp_server.py:TestDispatch",
+      "type": "class",
+      "name": "TestDispatch",
+      "filePath": "tests/test_mcp_server.py",
+      "lineRange": [32, 54],
+      "summary": "Tests the _dispatch routing function: raises for unknown tool names and asserts every tool declared in _TOOLS is actually present in the dispatch handler map.",
+      "tags": ["test", "mcp-server", "dispatcher"],
+      "complexity": "simple"
+    },
+    {
+      "id": "class:tests/test_mcp_server.py:TestListBcs",
+      "type": "class",
+      "name": "TestListBcs",
+      "filePath": "tests/test_mcp_server.py",
+      "lineRange": [57, 86],
+      "summary": "Tests the list_bcs tool against an empty DB, filtering by query/status, and page/per_page pagination behavior.",
+      "tags": ["test", "mcp-server", "pagination"],
+      "complexity": "simple"
+    },
+    {
+      "id": "class:tests/test_mcp_server.py:TestGetBc",
+      "type": "class",
+      "name": "TestGetBc",
+      "filePath": "tests/test_mcp_server.py",
+      "lineRange": [89, 109],
+      "summary": "Tests the get_bc tool: requires a bc_id, raises on missing BC, and returns full detail including DECs, specializations, and governance records.",
+      "tags": ["test", "mcp-server", "data-model"],
+      "complexity": "simple"
+    },
+    {
+      "id": "class:tests/test_mcp_server.py:TestExternalApiTools",
+      "type": "class",
+      "name": "TestExternalApiTools",
+      "filePath": "tests/test_mcp_server.py",
+      "lineRange": [112, 154],
+      "summary": "Tests the external-API-backed tools (search_ncit, get_ncit_concept, search_loinc, search_cdisc_library, get_library_bc), mocking the underlying NCIt/LOINC/CDISC Library clients and asserting call arguments, filtering, and error propagation.",
+      "tags": ["test", "external-api", "mocking"],
+      "complexity": "moderate"
+    },
+    {
+      "id": "class:tests/test_mcp_server.py:TestCreateBc",
+      "type": "class",
+      "name": "TestCreateBc",
+      "filePath": "tests/test_mcp_server.py",
+      "lineRange": [162, 188],
+      "summary": "Tests the create_bc write tool: creates a BC with DECs and an audit trail, rejects a duplicate bc_id, and rejects a missing bc_id.",
+      "tags": ["test", "write-operation", "audit"],
+      "complexity": "simple"
+    },
+    {
+      "id": "class:tests/test_mcp_server.py:TestUpdateBc",
+      "type": "class",
+      "name": "TestUpdateBc",
+      "filePath": "tests/test_mcp_server.py",
+      "lineRange": [191, 203],
+      "summary": "Tests the update_bc write tool: verifies before/after audit logging on update and that updating a missing BC raises.",
+      "tags": ["test", "write-operation", "audit"],
+      "complexity": "simple"
+    },
+    {
+      "id": "class:tests/test_mcp_server.py:TestMapNcit",
+      "type": "class",
+      "name": "TestMapNcit",
+      "filePath": "tests/test_mcp_server.py",
+      "lineRange": [206, 266],
+      "summary": "Tests the map_ncit_to_bc write tool, covering audit logging, IMPORT_ id promotion and its cascading repoint of dependent DECs/specializations/governance records and child BCs, empty-code validation, and collision handling.",
+      "tags": ["test", "write-operation", "ncit"],
+      "complexity": "complex"
+    },
+    {
+      "id": "class:tests/test_mcp_server.py:TestGovernanceWrites",
+      "type": "class",
+      "name": "TestGovernanceWrites",
+      "filePath": "tests/test_mcp_server.py",
+      "lineRange": [269, 300],
+      "summary": "Tests the submit_bc_for_review, advance_governance, and reject_bc write tools end-to-end, asserting GovernanceRecord history and audit trail entries.",
+      "tags": ["test", "governance", "write-operation"],
+      "complexity": "moderate"
+    },
+    {
+      "id": "class:tests/test_mcp_server.py:TestReviewQueue",
+      "type": "class",
+      "name": "TestReviewQueue",
+      "filePath": "tests/test_mcp_server.py",
+      "lineRange": [303, 315],
+      "summary": "Tests the list_review_queue tool's governance-status summary counts and pending ingestion count.",
+      "tags": ["test", "governance", "query"],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:tests/test_specializations_routes.py",
+      "type": "file",
+      "name": "test_specializations_routes.py",
+      "filePath": "tests/test_specializations_routes.py",
+      "summary": "Route-level tests for the dataset specializations blueprint covering listing, creating, editing/upserting, deleting, detail views, and generating variables from DECs, including audit log verification and CDISC Library error handling.",
+      "tags": ["test", "route-test", "unit-test"],
+      "complexity": "complex"
+    },
+    {
+      "id": "class:tests/test_specializations_routes.py:TestIndex",
+      "type": "class",
+      "name": "TestIndex",
+      "filePath": "tests/test_specializations_routes.py",
+      "lineRange": [24, 40],
+      "summary": "Tests the specializations index route: lists persisted specializations and confirms the page still renders when the CDISC Library client raises an error.",
+      "tags": ["test", "route-test", "error-handling"],
+      "complexity": "simple"
+    },
+    {
+      "id": "class:tests/test_specializations_routes.py:TestCreate",
+      "type": "class",
+      "name": "TestCreate",
+      "filePath": "tests/test_specializations_routes.py",
+      "lineRange": [43, 97],
+      "summary": "Tests creating a dataset specialization via the route: persists the spec, requires bc_id/vlm_group_id, writes an audit log entry, and persists variable rows submitted via the form.",
+      "tags": ["test", "route-test", "audit"],
+      "complexity": "moderate"
+    },
+    {
+      "id": "class:tests/test_specializations_routes.py:TestEditUpsert",
+      "type": "class",
+      "name": "TestEditUpsert",
+      "filePath": "tests/test_specializations_routes.py",
+      "lineRange": [100, 141],
+      "summary": "Tests the edit route's upsert behavior: posting an existing vlm_group_id updates the record instead of duplicating it, and the update writes an audit log entry.",
+      "tags": ["test", "route-test", "upsert"],
+      "complexity": "simple"
+    },
+    {
+      "id": "class:tests/test_specializations_routes.py:TestDelete",
+      "type": "class",
+      "name": "TestDelete",
+      "filePath": "tests/test_specializations_routes.py",
+      "lineRange": [144, 172],
+      "summary": "Tests the delete route: removes the specialization, writes an audit log entry, and returns 404 for an unknown vlm_group_id.",
+      "tags": ["test", "route-test", "audit"],
+      "complexity": "simple"
+    },
+    {
+      "id": "class:tests/test_specializations_routes.py:TestDetail",
+      "type": "class",
+      "name": "TestDetail",
+      "filePath": "tests/test_specializations_routes.py",
+      "lineRange": [175, 189],
+      "summary": "Tests the specialization detail view renders for a known record and returns 404 for an unknown one.",
+      "tags": ["test", "route-test"],
+      "complexity": "simple"
+    },
+    {
+      "id": "class:tests/test_specializations_routes.py:TestLibraryDetail",
+      "type": "class",
+      "name": "TestLibraryDetail",
+      "filePath": "tests/test_specializations_routes.py",
+      "lineRange": [192, 204],
+      "summary": "Tests the library-detail view: renders a published CDISC Library specialization and redirects to the dashboard when the Library client errors.",
+      "tags": ["test", "route-test", "error-handling"],
+      "complexity": "simple"
+    },
+    {
+      "id": "class:tests/test_specializations_routes.py:TestGenerate",
+      "type": "class",
+      "name": "TestGenerate",
+      "filePath": "tests/test_specializations_routes.py",
+      "lineRange": [207, 245],
+      "summary": "Tests generating a dataset specialization from a BC's DECs: builds variables from DECs, rejects duplicates, 404s for an unknown BC, and writes an audit log entry.",
+      "tags": ["test", "route-test", "generation"],
+      "complexity": "moderate"
+    },
+    {
+      "id": "class:tests/test_specializations_routes.py:TestGenerateFromDec",
+      "type": "class",
+      "name": "TestGenerateFromDec",
+      "filePath": "tests/test_specializations_routes.py",
+      "lineRange": [248, 260],
+      "summary": "Tests the JSON endpoint that returns generated variables for a single DEC, and its 400 response when bc_id is missing.",
+      "tags": ["test", "route-test", "json-api"],
+      "complexity": "simple"
+    }
+  ],
+  "edges": [
+    {
+      "source": "file:mcp_server/__main__.py",
+      "target": "file:mcp_server/server.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:models/specialization.py",
+      "target": "file:extensions.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:tests/test_mcp_server.py",
+      "target": "file:extensions.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:tests/test_mcp_server.py",
+      "target": "file:mcp_server/server.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:tests/test_mcp_server.py",
+      "target": "file:models/audit.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:tests/test_mcp_server.py",
+      "target": "file:models/bc.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:tests/test_mcp_server.py",
+      "target": "file:models/governance.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:tests/test_mcp_server.py",
+      "target": "file:models/ingestion.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:tests/test_mcp_server.py",
+      "target": "file:models/specialization.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:tests/test_specializations_routes.py",
+      "target": "file:extensions.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:tests/test_specializations_routes.py",
+      "target": "file:models/audit.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:tests/test_specializations_routes.py",
+      "target": "file:models/bc.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:tests/test_specializations_routes.py",
+      "target": "file:models/specialization.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+
+    {
+      "source": "file:mcp_server/server.py",
+      "target": "function:mcp_server/server.py:_with_app_context",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:mcp_server/server.py",
+      "target": "function:mcp_server/server.py:_dispatch",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:mcp_server/server.py",
+      "target": "function:mcp_server/server.py:_bc_full_dict",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:mcp_server/server.py",
+      "target": "function:mcp_server/server.py:_list_bcs",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:mcp_server/server.py",
+      "target": "function:mcp_server/server.py:_get_bc",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:mcp_server/server.py",
+      "target": "function:mcp_server/server.py:_search_ncit",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:mcp_server/server.py",
+      "target": "function:mcp_server/server.py:_get_ncit_concept",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:mcp_server/server.py",
+      "target": "function:mcp_server/server.py:_search_loinc",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:mcp_server/server.py",
+      "target": "function:mcp_server/server.py:_search_cdisc_library",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:mcp_server/server.py",
+      "target": "function:mcp_server/server.py:_get_library_bc",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:mcp_server/server.py",
+      "target": "function:mcp_server/server.py:_list_review_queue",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:mcp_server/server.py",
+      "target": "function:mcp_server/server.py:_create_bc",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:mcp_server/server.py",
+      "target": "function:mcp_server/server.py:_update_bc",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:mcp_server/server.py",
+      "target": "function:mcp_server/server.py:_map_ncit_to_bc",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:mcp_server/server.py",
+      "target": "function:mcp_server/server.py:_submit_bc_for_review",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:mcp_server/server.py",
+      "target": "function:mcp_server/server.py:_advance_governance",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:mcp_server/server.py",
+      "target": "function:mcp_server/server.py:_reject_bc",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:mcp_server/server.py",
+      "target": "function:mcp_server/server.py:main",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:mcp_server/server.py",
+      "target": "function:mcp_server/server.py:_run",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+
+    {
+      "source": "file:models/specialization.py",
+      "target": "class:models/specialization.py:DatasetSpecialization",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+
+    {
+      "source": "file:tests/test_mcp_server.py",
+      "target": "class:tests/test_mcp_server.py:TestDispatch",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:tests/test_mcp_server.py",
+      "target": "class:tests/test_mcp_server.py:TestListBcs",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:tests/test_mcp_server.py",
+      "target": "class:tests/test_mcp_server.py:TestGetBc",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:tests/test_mcp_server.py",
+      "target": "class:tests/test_mcp_server.py:TestExternalApiTools",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:tests/test_mcp_server.py",
+      "target": "class:tests/test_mcp_server.py:TestCreateBc",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:tests/test_mcp_server.py",
+      "target": "class:tests/test_mcp_server.py:TestUpdateBc",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:tests/test_mcp_server.py",
+      "target": "class:tests/test_mcp_server.py:TestMapNcit",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:tests/test_mcp_server.py",
+      "target": "class:tests/test_mcp_server.py:TestGovernanceWrites",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:tests/test_mcp_server.py",
+      "target": "class:tests/test_mcp_server.py:TestReviewQueue",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+
+    {
+      "source": "file:tests/test_specializations_routes.py",
+      "target": "class:tests/test_specializations_routes.py:TestIndex",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:tests/test_specializations_routes.py",
+      "target": "class:tests/test_specializations_routes.py:TestCreate",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:tests/test_specializations_routes.py",
+      "target": "class:tests/test_specializations_routes.py:TestEditUpsert",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:tests/test_specializations_routes.py",
+      "target": "class:tests/test_specializations_routes.py:TestDelete",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:tests/test_specializations_routes.py",
+      "target": "class:tests/test_specializations_routes.py:TestDetail",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:tests/test_specializations_routes.py",
+      "target": "class:tests/test_specializations_routes.py:TestLibraryDetail",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:tests/test_specializations_routes.py",
+      "target": "class:tests/test_specializations_routes.py:TestGenerate",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:tests/test_specializations_routes.py",
+      "target": "class:tests/test_specializations_routes.py:TestGenerateFromDec",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+
+    {
+      "source": "file:models/specialization.py",
+      "target": "class:models/specialization.py:DatasetSpecialization",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:mcp_server/server.py",
+      "target": "function:mcp_server/server.py:_dispatch",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:mcp_server/server.py",
+      "target": "function:mcp_server/server.py:main",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+
+    {
+      "source": "file:mcp_server/__main__.py",
+      "target": "function:mcp_server/server.py:main",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "class:tests/test_mcp_server.py:TestDispatch",
+      "target": "function:mcp_server/server.py:_dispatch",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "class:tests/test_mcp_server.py:TestListBcs",
+      "target": "function:mcp_server/server.py:_list_bcs",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "class:tests/test_mcp_server.py:TestGetBc",
+      "target": "function:mcp_server/server.py:_get_bc",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "class:tests/test_mcp_server.py:TestExternalApiTools",
+      "target": "function:mcp_server/server.py:_search_ncit",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "class:tests/test_mcp_server.py:TestExternalApiTools",
+      "target": "function:mcp_server/server.py:_get_ncit_concept",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "class:tests/test_mcp_server.py:TestExternalApiTools",
+      "target": "function:mcp_server/server.py:_search_loinc",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "class:tests/test_mcp_server.py:TestExternalApiTools",
+      "target": "function:mcp_server/server.py:_search_cdisc_library",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "class:tests/test_mcp_server.py:TestExternalApiTools",
+      "target": "function:mcp_server/server.py:_get_library_bc",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "class:tests/test_mcp_server.py:TestCreateBc",
+      "target": "function:mcp_server/server.py:_create_bc",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "class:tests/test_mcp_server.py:TestUpdateBc",
+      "target": "function:mcp_server/server.py:_update_bc",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "class:tests/test_mcp_server.py:TestMapNcit",
+      "target": "function:mcp_server/server.py:_map_ncit_to_bc",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "class:tests/test_mcp_server.py:TestGovernanceWrites",
+      "target": "function:mcp_server/server.py:_submit_bc_for_review",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "class:tests/test_mcp_server.py:TestGovernanceWrites",
+      "target": "function:mcp_server/server.py:_advance_governance",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "class:tests/test_mcp_server.py:TestGovernanceWrites",
+      "target": "function:mcp_server/server.py:_reject_bc",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "class:tests/test_mcp_server.py:TestReviewQueue",
+      "target": "function:mcp_server/server.py:_list_review_queue",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+
+    {
+      "source": "file:mcp_server/server.py",
+      "target": "file:app.py",
+      "type": "depends_on",
+      "direction": "forward",
+      "weight": 0.6
+    },
+    {
+      "source": "file:mcp_server/server.py",
+      "target": "file:db_bootstrap.py",
+      "type": "depends_on",
+      "direction": "forward",
+      "weight": 0.6
+    },
+    {
+      "source": "file:mcp_server/server.py",
+      "target": "file:models/bc.py",
+      "type": "depends_on",
+      "direction": "forward",
+      "weight": 0.6
+    },
+    {
+      "source": "file:mcp_server/server.py",
+      "target": "file:models/governance.py",
+      "type": "depends_on",
+      "direction": "forward",
+      "weight": 0.6
+    },
+    {
+      "source": "file:mcp_server/server.py",
+      "target": "file:extensions.py",
+      "type": "depends_on",
+      "direction": "forward",
+      "weight": 0.6
+    },
+    {
+      "source": "file:mcp_server/server.py",
+      "target": "file:models/ingestion.py",
+      "type": "depends_on",
+      "direction": "forward",
+      "weight": 0.6
+    },
+    {
+      "source": "file:mcp_server/server.py",
+      "target": "file:services/ncit_api.py",
+      "type": "depends_on",
+      "direction": "forward",
+      "weight": 0.6
+    },
+    {
+      "source": "file:mcp_server/server.py",
+      "target": "file:services/loinc_api.py",
+      "type": "depends_on",
+      "direction": "forward",
+      "weight": 0.6
+    },
+    {
+      "source": "file:mcp_server/server.py",
+      "target": "file:services/cdisc_api.py",
+      "type": "depends_on",
+      "direction": "forward",
+      "weight": 0.6
+    },
+    {
+      "source": "file:mcp_server/server.py",
+      "target": "file:services/bc_service.py",
+      "type": "depends_on",
+      "direction": "forward",
+      "weight": 0.6
+    },
+    {
+      "source": "file:mcp_server/server.py",
+      "target": "file:services/governance_service.py",
+      "type": "depends_on",
+      "direction": "forward",
+      "weight": 0.6
+    },
+
+    {
+      "source": "file:mcp_server/server.py",
+      "target": "file:tests/test_mcp_server.py",
+      "type": "tested_by",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "file:routes/specializations.py",
+      "target": "file:tests/test_specializations_routes.py",
+      "type": "tested_by",
+      "direction": "forward",
+      "weight": 0.5
+    }
+  ]
+}

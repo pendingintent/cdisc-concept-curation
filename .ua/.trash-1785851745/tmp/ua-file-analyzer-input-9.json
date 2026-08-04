@@ -1,0 +1,63 @@
+{
+  "projectRoot": "/Users/dmoreland/projects/cdisc-concept-curation",
+  "batchFiles": [
+    {
+      "path": ".mcp.json",
+      "language": "json",
+      "sizeLines": 9,
+      "fileCategory": "config"
+    },
+    {
+      "path": ".pre-commit-config.yaml",
+      "language": "yaml",
+      "sizeLines": 24,
+      "fileCategory": "config"
+    },
+    {
+      "path": "CLAUDE.md",
+      "language": "markdown",
+      "sizeLines": 128,
+      "fileCategory": "docs"
+    },
+    {
+      "path": "README-PROGRESS.md",
+      "language": "markdown",
+      "sizeLines": 147,
+      "fileCategory": "docs"
+    },
+    {
+      "path": "README.md",
+      "language": "markdown",
+      "sizeLines": 185,
+      "fileCategory": "docs"
+    },
+    {
+      "path": "pyproject.toml",
+      "language": "toml",
+      "sizeLines": 7,
+      "fileCategory": "config"
+    },
+    {
+      "path": "requirements-dev.txt",
+      "language": "txt",
+      "sizeLines": 9,
+      "fileCategory": "docs"
+    },
+    {
+      "path": "requirements.txt",
+      "language": "txt",
+      "sizeLines": 28,
+      "fileCategory": "docs"
+    }
+  ],
+  "batchImportData": {
+    ".mcp.json": [],
+    ".pre-commit-config.yaml": [],
+    "CLAUDE.md": [],
+    "README-PROGRESS.md": [],
+    "README.md": [],
+    "pyproject.toml": [],
+    "requirements-dev.txt": [],
+    "requirements.txt": []
+  }
+}

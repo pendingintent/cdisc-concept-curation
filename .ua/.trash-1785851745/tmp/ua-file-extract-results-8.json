@@ -1,0 +1,231 @@
+{
+  "scriptCompleted": true,
+  "filesAnalyzed": 3,
+  "filesSkipped": [],
+  "analysisOutcomes": {
+    "structure": {
+      "succeeded": 3,
+      "failed": 0
+    },
+    "callGraph": {
+      "succeeded": 0,
+      "failed": 0,
+      "skipped": 3
+    }
+  },
+  "results": [
+    {
+      "path": ".claude/agents/cdisc-concept-explorer.md",
+      "language": "markdown",
+      "fileCategory": "docs",
+      "totalLines": 67,
+      "nonEmptyLines": 59,
+      "sections": [
+        {
+          "heading": "Your Core Mission",
+          "level": 2,
+          "line": 15
+        },
+        {
+          "heading": "Environment & API Access",
+          "level": 2,
+          "line": 21
+        },
+        {
+          "heading": "Project Integration Points",
+          "level": 2,
+          "line": 35
+        },
+        {
+          "heading": "CRITICAL: API-First Policy",
+          "level": 2,
+          "line": 44
+        },
+        {
+          "heading": "Output Format",
+          "level": 2,
+          "line": 53
+        },
+        {
+          "heading": "Search Results — candidate BCs with key details",
+          "level": 3,
+          "line": 54
+        },
+        {
+          "heading": "Recommendation — primary pick with rationale, alternatives with when-to-prefer",
+          "level": 3,
+          "line": 55
+        },
+        {
+          "heading": "Curation Notes — duplicate risk vs local drafts, metadata worth copying into the draft, deprecation flags",
+          "level": 3,
+          "line": 56
+        },
+        {
+          "heading": "Quality Standards",
+          "level": 2,
+          "line": 58
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0,
+        "sectionCount": 9
+      }
+    },
+    {
+      "path": ".claude/agents/cdisc-frontend-dev.md",
+      "language": "markdown",
+      "fileCategory": "docs",
+      "totalLines": 207,
+      "nonEmptyLines": 160,
+      "sections": [
+        {
+          "heading": "Persistent Agent Memory",
+          "level": 1,
+          "line": 74
+        },
+        {
+          "heading": "Types of memory",
+          "level": 2,
+          "line": 82
+        },
+        {
+          "heading": "What NOT to save in memory",
+          "level": 2,
+          "line": 146
+        },
+        {
+          "heading": "How to save memories",
+          "level": 2,
+          "line": 156
+        },
+        {
+          "heading": "When to access memories",
+          "level": 2,
+          "line": 180
+        },
+        {
+          "heading": "Before recommending from memory",
+          "level": 2,
+          "line": 186
+        },
+        {
+          "heading": "Memory and other forms of persistence",
+          "level": 2,
+          "line": 198
+        },
+        {
+          "heading": "MEMORY.md",
+          "level": 2,
+          "line": 205
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0,
+        "sectionCount": 8
+      }
+    },
+    {
+      "path": ".claude/agents/mike.md",
+      "language": "markdown",
+      "fileCategory": "docs",
+      "totalLines": 108,
+      "nonEmptyLines": 86,
+      "sections": [
+        {
+          "heading": "Your Responsibilities",
+          "level": 2,
+          "line": 14
+        },
+        {
+          "heading": "1. Progress Tracking",
+          "level": 3,
+          "line": 16
+        },
+        {
+          "heading": "2. Git Operations",
+          "level": 3,
+          "line": 22
+        },
+        {
+          "heading": "3. Documentation Management",
+          "level": 3,
+          "line": 27
+        },
+        {
+          "heading": "Project Structure Knowledge",
+          "level": 2,
+          "line": 33
+        },
+        {
+          "heading": "Progress & docs files",
+          "level": 3,
+          "line": 35
+        },
+        {
+          "heading": "Agent team",
+          "level": 3,
+          "line": 44
+        },
+        {
+          "heading": "App shape (for status summaries)",
+          "level": 3,
+          "line": 52
+        },
+        {
+          "heading": "README-PROGRESS.md Format",
+          "level": 2,
+          "line": 58
+        },
+        {
+          "heading": "Git Commit Guidelines",
+          "level": 2,
+          "line": 75
+        },
+        {
+          "heading": "Before Committing",
+          "level": 3,
+          "line": 77
+        },
+        {
+          "heading": "Commit Message Format",
+          "level": 3,
+          "line": 83
+        },
+        {
+          "heading": "Workflow Patterns",
+          "level": 2,
+          "line": 93
+        },
+        {
+          "heading": "After Work Session",
+          "level": 3,
+          "line": 95
+        },
+        {
+          "heading": "Always Ask Before",
+          "level": 3,
+          "line": 100
+        },
+        {
+          "heading": "Communication Style",
+          "level": 2,
+          "line": 105
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0,
+        "sectionCount": 16
+      }
+    }
+  ]
+}

@@ -1,0 +1,66 @@
+{
+  "nodes": [
+    {
+      "id": "document:.claude/agents/cdisc-concept-explorer.md",
+      "type": "document",
+      "name": "cdisc-concept-explorer.md",
+      "filePath": ".claude/agents/cdisc-concept-explorer.md",
+      "summary": "Defines the cdisc-concept-explorer Claude subagent, a CDISC standards specialist that queries the live CDISC Library API to detect duplicate Biomedical Concepts against local drafts, enrich drafts with authoritative metadata, and find dataset specializations for a given BC.",
+      "tags": [
+        "agent-definition",
+        "documentation",
+        "cdisc-library",
+        "api-integration",
+        "subagent-spec"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "document:.claude/agents/cdisc-frontend-dev.md",
+      "type": "document",
+      "name": "cdisc-frontend-dev.md",
+      "filePath": ".claude/agents/cdisc-frontend-dev.md",
+      "summary": "Defines the cdisc-frontend-dev Claude subagent, a front-end specialist scoped to Jinja2 templates, CSS, vanilla JavaScript, and Flask view wiring for the BC curation tool, with mandatory CDISC brand-guideline compliance and an extensive persistent project-memory protocol appended to the spec.",
+      "tags": [
+        "agent-definition",
+        "documentation",
+        "frontend",
+        "memory-system",
+        "brand-guidelines"
+      ],
+      "complexity": "moderate",
+      "languageNotes": "The file embeds a large boilerplate 'Persistent Agent Memory' instructional block (types of memory, save/access rules) alongside the domain-specific agent spec, roughly doubling its length beyond the front-end guidance itself."
+    },
+    {
+      "id": "document:.claude/agents/mike.md",
+      "type": "document",
+      "name": "mike.md",
+      "filePath": ".claude/agents/mike.md",
+      "summary": "Defines the mike Claude subagent, a project-manager assistant for cdisc-concept-curation that tracks daily progress in README-PROGRESS.md, prepares git commit messages, flags documentation drift against the code, and always asks before committing or pushing.",
+      "tags": [
+        "agent-definition",
+        "documentation",
+        "project-management",
+        "git-workflow",
+        "progress-tracking"
+      ],
+      "complexity": "simple"
+    }
+  ],
+  "edges": [
+    {
+      "source": "document:.claude/agents/mike.md",
+      "target": "document:.claude/agents/cdisc-frontend-dev.md",
+      "type": "related",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "document:.claude/agents/mike.md",
+      "target": "document:.claude/agents/cdisc-concept-explorer.md",
+      "type": "related",
+      "direction": "forward",
+      "weight": 0.5
+    }
+  ]
+}

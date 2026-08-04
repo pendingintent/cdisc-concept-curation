@@ -1,0 +1,740 @@
+{
+  "nodes": [
+    {
+      "id": "file:models/audit.py",
+      "type": "file",
+      "name": "audit.py",
+      "filePath": "models/audit.py",
+      "summary": "SQLAlchemy model for the AuditLog table that records before/after JSON state for every change made to BCs, DECs, and governance records.",
+      "tags": ["data-model", "audit-log", "database", "orm"],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:models/bc.py",
+      "type": "file",
+      "name": "bc.py",
+      "filePath": "models/bc.py",
+      "summary": "Core SQLAlchemy models for BiomedicalConcept and DataElementConcept, the central entities of the CDISC BC curation pipeline, including NCIt/LOINC coding fields and governance status.",
+      "tags": ["data-model", "database", "orm", "core-domain"],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:models/ingestion.py",
+      "type": "file",
+      "name": "ingestion.py",
+      "filePath": "models/ingestion.py",
+      "summary": "SQLAlchemy model for IngestionRecord, which stages parsed upload rows (with field mappings, confidence scores, and validation errors) in the DB prior to SME approval.",
+      "tags": ["data-model", "database", "orm", "ingestion"],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:routes/audit.py",
+      "type": "file",
+      "name": "audit.py",
+      "filePath": "routes/audit.py",
+      "summary": "Flask blueprint exposing the read-only audit trail view with filtering by entity type, action, and actor, and pagination.",
+      "tags": ["api-handler", "audit-log", "blueprint"],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:routes/ingestion.py",
+      "type": "file",
+      "name": "ingestion.py",
+      "filePath": "routes/ingestion.py",
+      "summary": "Flask blueprint implementing the file-upload ingestion workflow: parsing uploaded files, staging rows as IngestionRecord, and approving/rejecting them into BiomedicalConcept/DataElementConcept records with audit logging.",
+      "tags": ["api-handler", "blueprint", "ingestion", "workflow"],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:services/ingestion.py",
+      "type": "file",
+      "name": "ingestion.py",
+      "filePath": "services/ingestion.py",
+      "summary": "Business logic for the ingestion pipeline: fuzzy field-name mapping via SequenceMatcher similarity scoring, BC/DEC row validation, multi-row grouping by BC ID, and XLSX/CSV/JSON parsers.",
+      "tags": ["service", "parsing", "validation", "fuzzy-matching"],
+      "complexity": "complex",
+      "languageNotes": "Uses difflib.SequenceMatcher similarity ratios against a canonical FIELD_MAP alias dictionary to fuzzily map arbitrary spreadsheet column names to BC/DEC schema fields."
+    },
+    {
+      "id": "file:tests/conftest.py",
+      "type": "file",
+      "name": "conftest.py",
+      "filePath": "tests/conftest.py",
+      "summary": "Pytest fixtures shared across the test suite: Flask app/test client factories, a per-test DB reset fixture, API cache clearing, and a sample BiomedicalConcept fixture.",
+      "tags": ["test", "fixture", "pytest-config"],
+      "complexity": "moderate"
+    },
+    {
+      "id": "class:models/audit.py:AuditLog",
+      "type": "class",
+      "name": "AuditLog",
+      "filePath": "models/audit.py",
+      "lineRange": [7, 32],
+      "summary": "ORM model for the immutable audit trail; stores before/after entity state as JSON via property accessors that transparently serialize/deserialize.",
+      "tags": ["data-model", "audit-log", "orm"],
+      "complexity": "simple"
+    },
+    {
+      "id": "class:models/bc.py:BiomedicalConcept",
+      "type": "class",
+      "name": "BiomedicalConcept",
+      "filePath": "models/bc.py",
+      "lineRange": [6, 50],
+      "summary": "Central ORM entity representing a curated CDISC Biomedical Concept, holding NCIt/LOINC coding metadata, governance status, parent/child hierarchy, and related DECs/specializations.",
+      "tags": ["data-model", "core-domain", "orm"],
+      "complexity": "moderate"
+    },
+    {
+      "id": "class:models/bc.py:DataElementConcept",
+      "type": "class",
+      "name": "DataElementConcept",
+      "filePath": "models/bc.py",
+      "lineRange": [53, 65],
+      "summary": "ORM entity for a Data Element Concept (DEC) belonging to a BiomedicalConcept, capturing NCIt DEC code, data type, and example values.",
+      "tags": ["data-model", "core-domain", "orm"],
+      "complexity": "simple"
+    },
+    {
+      "id": "class:models/ingestion.py:IngestionRecord",
+      "type": "class",
+      "name": "IngestionRecord",
+      "filePath": "models/ingestion.py",
+      "lineRange": [7, 56],
+      "summary": "ORM staging model for a parsed upload row awaiting SME approval; exposes JSON-backed properties for field mapping, confidence scores, validation errors, and DEC sub-rows, plus an average-confidence helper.",
+      "tags": ["data-model", "ingestion", "orm"],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:routes/audit.py:index",
+      "type": "function",
+      "name": "index",
+      "filePath": "routes/audit.py",
+      "lineRange": [13, 44],
+      "summary": "Route handler serving the paginated audit log view, applying optional entity_type/action/actor query filters and ordering by timestamp descending.",
+      "tags": ["api-handler", "audit-log", "pagination"],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:routes/ingestion.py:_bc_from_mapped",
+      "type": "function",
+      "name": "_bc_from_mapped",
+      "filePath": "routes/ingestion.py",
+      "lineRange": [38, 54],
+      "summary": "Builds a BiomedicalConcept instance from a mapped-field dict produced by the ingestion service, pulling canonical field values.",
+      "tags": ["helper", "data-model", "ingestion"],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:routes/ingestion.py:_create_decs",
+      "type": "function",
+      "name": "_create_decs",
+      "filePath": "routes/ingestion.py",
+      "lineRange": [57, 68],
+      "summary": "Creates and persists DataElementConcept rows for a BC from the mapped DEC sub-row list produced during ingestion.",
+      "tags": ["helper", "data-model", "ingestion"],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:routes/ingestion.py:upload",
+      "type": "function",
+      "name": "upload",
+      "filePath": "routes/ingestion.py",
+      "lineRange": [79, 118],
+      "summary": "Route handler that accepts an uploaded XLSX/CSV/JSON file, dispatches to the matching parser, deduplicates against existing BC IDs, and stages the results as pending IngestionRecord rows.",
+      "tags": ["api-handler", "ingestion", "file-upload"],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:routes/ingestion.py:approve",
+      "type": "function",
+      "name": "approve",
+      "filePath": "routes/ingestion.py",
+      "lineRange": [122, 143],
+      "summary": "Route handler that approves a single pending IngestionRecord, committing it as a new BiomedicalConcept (and DECs) and writing an audit log entry.",
+      "tags": ["api-handler", "ingestion", "workflow"],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:routes/ingestion.py:approve_all",
+      "type": "function",
+      "name": "approve_all",
+      "filePath": "routes/ingestion.py",
+      "lineRange": [155, 186],
+      "summary": "Route handler that bulk-approves all pending IngestionRecord rows for the current session, creating BCs/DECs and an audit log entry per record.",
+      "tags": ["api-handler", "ingestion", "workflow", "bulk-operation"],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:services/ingestion.py:_match_field",
+      "type": "function",
+      "name": "_match_field",
+      "filePath": "services/ingestion.py",
+      "lineRange": [35, 45],
+      "summary": "Scores a raw column name against every canonical field's alias list using similarity ratios and returns the best-matching canonical field name with a confidence score.",
+      "tags": ["helper", "fuzzy-matching", "ingestion"],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:services/ingestion.py:map_fields",
+      "type": "function",
+      "name": "map_fields",
+      "filePath": "services/ingestion.py",
+      "lineRange": [48, 62],
+      "summary": "Maps a raw row dict's column names to canonical BC/DEC field names using _match_field, normalizing values to stripped strings.",
+      "tags": ["fuzzy-matching", "ingestion", "data-transformation"],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:services/ingestion.py:validate_bc",
+      "type": "function",
+      "name": "validate_bc",
+      "filePath": "services/ingestion.py",
+      "lineRange": [65, 81],
+      "summary": "Validates a mapped BC dict, flagging missing short name/definition and requiring at least one of NCIt code or external code with a correct NCIt format.",
+      "tags": ["validation", "ingestion"],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:services/ingestion.py:_group_by_bc",
+      "type": "function",
+      "name": "_group_by_bc",
+      "filePath": "services/ingestion.py",
+      "lineRange": [84, 137],
+      "summary": "Groups parsed spreadsheet rows by BC ID into single ingestion records, merging DEC sub-rows and confidences under each parent BC and running validation on the merged result.",
+      "tags": ["data-transformation", "ingestion", "grouping"],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:services/ingestion.py:parse_xlsx",
+      "type": "function",
+      "name": "parse_xlsx",
+      "filePath": "services/ingestion.py",
+      "lineRange": [140, 162],
+      "summary": "Parses an uploaded XLSX file's first sheet into mapped, grouped BC/DEC records via pandas, capturing per-row parse errors.",
+      "tags": ["parsing", "ingestion", "xlsx"],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:services/ingestion.py:parse_csv",
+      "type": "function",
+      "name": "parse_csv",
+      "filePath": "services/ingestion.py",
+      "lineRange": [165, 188],
+      "summary": "Parses an uploaded CSV file into mapped and validated BC records via pandas, capturing per-row parse errors.",
+      "tags": ["parsing", "ingestion", "csv"],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:services/ingestion.py:parse_json",
+      "type": "function",
+      "name": "parse_json",
+      "filePath": "services/ingestion.py",
+      "lineRange": [191, 215],
+      "summary": "Parses an uploaded JSON file (single object or array) into mapped and validated BC records, capturing per-item parse errors.",
+      "tags": ["parsing", "ingestion", "json"],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:services/ingestion.py:deduplicate",
+      "type": "function",
+      "name": "deduplicate",
+      "filePath": "services/ingestion.py",
+      "lineRange": [218, 227],
+      "summary": "Flags parsed records whose BC ID or NCIt code already exists in the database as duplicates, using case-insensitive comparison.",
+      "tags": ["validation", "ingestion", "deduplication"],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:tests/conftest.py:sample_bc",
+      "type": "function",
+      "name": "sample_bc",
+      "filePath": "tests/conftest.py",
+      "lineRange": [55, 68],
+      "summary": "Pytest fixture that inserts a sample BiomedicalConcept into the test database for use by tests needing an existing BC.",
+      "tags": ["test", "fixture"],
+      "complexity": "simple"
+    }
+  ],
+  "edges": [
+    {
+      "source": "file:models/audit.py",
+      "target": "file:extensions.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:models/bc.py",
+      "target": "file:extensions.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:models/ingestion.py",
+      "target": "file:extensions.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:routes/audit.py",
+      "target": "file:models/audit.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:routes/ingestion.py",
+      "target": "file:extensions.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:routes/ingestion.py",
+      "target": "file:models/audit.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:routes/ingestion.py",
+      "target": "file:models/bc.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:routes/ingestion.py",
+      "target": "file:models/ingestion.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:routes/ingestion.py",
+      "target": "file:services/ingestion.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:tests/conftest.py",
+      "target": "file:app.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:tests/conftest.py",
+      "target": "file:extensions.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:tests/conftest.py",
+      "target": "file:models/audit.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:tests/conftest.py",
+      "target": "file:models/bc.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:tests/conftest.py",
+      "target": "file:models/governance.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:tests/conftest.py",
+      "target": "file:models/ingestion.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+
+    {
+      "source": "file:models/audit.py",
+      "target": "class:models/audit.py:AuditLog",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:models/bc.py",
+      "target": "class:models/bc.py:BiomedicalConcept",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:models/bc.py",
+      "target": "class:models/bc.py:DataElementConcept",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:models/ingestion.py",
+      "target": "class:models/ingestion.py:IngestionRecord",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:routes/audit.py",
+      "target": "function:routes/audit.py:index",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:routes/ingestion.py",
+      "target": "function:routes/ingestion.py:_bc_from_mapped",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:routes/ingestion.py",
+      "target": "function:routes/ingestion.py:_create_decs",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:routes/ingestion.py",
+      "target": "function:routes/ingestion.py:upload",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:routes/ingestion.py",
+      "target": "function:routes/ingestion.py:approve",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:routes/ingestion.py",
+      "target": "function:routes/ingestion.py:approve_all",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:services/ingestion.py",
+      "target": "function:services/ingestion.py:_match_field",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:services/ingestion.py",
+      "target": "function:services/ingestion.py:map_fields",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:services/ingestion.py",
+      "target": "function:services/ingestion.py:validate_bc",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:services/ingestion.py",
+      "target": "function:services/ingestion.py:_group_by_bc",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:services/ingestion.py",
+      "target": "function:services/ingestion.py:parse_xlsx",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:services/ingestion.py",
+      "target": "function:services/ingestion.py:parse_csv",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:services/ingestion.py",
+      "target": "function:services/ingestion.py:parse_json",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:services/ingestion.py",
+      "target": "function:services/ingestion.py:deduplicate",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:tests/conftest.py",
+      "target": "function:tests/conftest.py:sample_bc",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+
+    {
+      "source": "file:models/audit.py",
+      "target": "class:models/audit.py:AuditLog",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:models/bc.py",
+      "target": "class:models/bc.py:BiomedicalConcept",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:models/bc.py",
+      "target": "class:models/bc.py:DataElementConcept",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:models/ingestion.py",
+      "target": "class:models/ingestion.py:IngestionRecord",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:routes/audit.py",
+      "target": "function:routes/audit.py:index",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:routes/ingestion.py",
+      "target": "function:routes/ingestion.py:_bc_from_mapped",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:routes/ingestion.py",
+      "target": "function:routes/ingestion.py:_create_decs",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:routes/ingestion.py",
+      "target": "function:routes/ingestion.py:upload",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:routes/ingestion.py",
+      "target": "function:routes/ingestion.py:approve",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:routes/ingestion.py",
+      "target": "function:routes/ingestion.py:approve_all",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:services/ingestion.py",
+      "target": "function:services/ingestion.py:_match_field",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:services/ingestion.py",
+      "target": "function:services/ingestion.py:map_fields",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:services/ingestion.py",
+      "target": "function:services/ingestion.py:validate_bc",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:services/ingestion.py",
+      "target": "function:services/ingestion.py:_group_by_bc",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:services/ingestion.py",
+      "target": "function:services/ingestion.py:parse_xlsx",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:services/ingestion.py",
+      "target": "function:services/ingestion.py:parse_csv",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:services/ingestion.py",
+      "target": "function:services/ingestion.py:parse_json",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:services/ingestion.py",
+      "target": "function:services/ingestion.py:deduplicate",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+
+    {
+      "source": "function:routes/ingestion.py:_bc_from_mapped",
+      "target": "class:models/bc.py:BiomedicalConcept",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:routes/ingestion.py:_create_decs",
+      "target": "class:models/bc.py:DataElementConcept",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:routes/ingestion.py:approve",
+      "target": "class:models/audit.py:AuditLog",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:routes/ingestion.py:approve_all",
+      "target": "class:models/audit.py:AuditLog",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:routes/ingestion.py:upload",
+      "target": "function:services/ingestion.py:parse_xlsx",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:routes/ingestion.py:upload",
+      "target": "function:services/ingestion.py:parse_csv",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:routes/ingestion.py:upload",
+      "target": "function:services/ingestion.py:parse_json",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:routes/ingestion.py:upload",
+      "target": "function:services/ingestion.py:deduplicate",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:routes/audit.py:index",
+      "target": "class:models/audit.py:AuditLog",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+
+    {
+      "source": "file:models/audit.py",
+      "target": "file:tests/test_models.py",
+      "type": "tested_by",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "file:models/bc.py",
+      "target": "file:tests/test_models.py",
+      "type": "tested_by",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "file:models/bc.py",
+      "target": "file:tests/test_bc_routes.py",
+      "type": "tested_by",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "file:models/ingestion.py",
+      "target": "file:tests/test_models.py",
+      "type": "tested_by",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "file:routes/audit.py",
+      "target": "file:tests/test_audit_routes.py",
+      "type": "tested_by",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "file:routes/ingestion.py",
+      "target": "file:tests/test_ingestion_routes.py",
+      "type": "tested_by",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "file:services/ingestion.py",
+      "target": "file:tests/test_ingestion_service.py",
+      "type": "tested_by",
+      "direction": "forward",
+      "weight": 0.5
+    }
+  ]
+}

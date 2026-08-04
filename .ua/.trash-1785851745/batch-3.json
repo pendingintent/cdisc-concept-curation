@@ -1,0 +1,674 @@
+{
+  "nodes": [
+    {
+      "id": "file:routes/dashboard.py",
+      "type": "file",
+      "name": "dashboard.py",
+      "filePath": "routes/dashboard.py",
+      "summary": "Flask blueprint for the dashboard home page; fetches CDISC Library BC and specialization counts concurrently via a thread pool and combines them with local KPI stats (BC status counts, recent activity, audit log) for the landing page.",
+      "tags": ["dashboard", "api-handler", "kpi", "route"],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:routes/loinc.py",
+      "type": "file",
+      "name": "loinc.py",
+      "filePath": "routes/loinc.py",
+      "summary": "Flask blueprint exposing a single AJAX search endpoint that proxies term queries to the NLM LOINC API client and returns JSON results.",
+      "tags": ["api-handler", "loinc", "search", "route"],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:routes/specializations.py",
+      "type": "file",
+      "name": "specializations.py",
+      "filePath": "routes/specializations.py",
+      "summary": "Flask blueprint managing CDISC dataset specializations: lists local and CDISC Library specializations, and supports manual creation, deletion, and auto-generation of variable-level specializations from a BC's data element concepts.",
+      "tags": ["api-handler", "crud", "specialization", "route"],
+      "complexity": "complex"
+    },
+    {
+      "id": "file:services/api_cache.py",
+      "type": "file",
+      "name": "api_cache.py",
+      "filePath": "services/api_cache.py",
+      "summary": "Shared stale-tolerant in-memory cache helper used by the CDISC Library, NCI EVS, and LOINC API clients; serves fresh data for 5 minutes and falls back to stale data for up to an hour if a refresh fails, so a slow upstream never blanks a page that rendered fine a minute ago.",
+      "tags": ["utility", "caching", "resilience", "service"],
+      "complexity": "simple",
+      "languageNotes": "Stale-while-revalidate cache pattern shared across multiple API client modules via a single module-level dict."
+    },
+    {
+      "id": "file:services/cdisc_api.py",
+      "type": "file",
+      "name": "cdisc_api.py",
+      "filePath": "services/cdisc_api.py",
+      "summary": "REST client for the CDISC Library COSMOS API; wraps biomedical concept, specialization, and duplicate-check lookups with a 5-minute in-memory cache and provides a publish_bc method for pushing approved BCs to the Library.",
+      "tags": ["api-client", "service", "cdisc-library", "http"],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:services/loinc_api.py",
+      "type": "file",
+      "name": "loinc_api.py",
+      "filePath": "services/loinc_api.py",
+      "summary": "Client for the NLM Clinical Tables LOINC search API; builds the query with a configurable set of extra fields, optionally applies HTTP Basic Auth, and normalizes results through the shared API cache.",
+      "tags": ["api-client", "service", "loinc", "http"],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:tests/test_cdisc_api_cache.py",
+      "type": "file",
+      "name": "test_cdisc_api_cache.py",
+      "filePath": "tests/test_cdisc_api_cache.py",
+      "summary": "Unit tests for the shared cache helper and CDISCApiClient cache-key behavior, covering fresh/stale/expired cache states, refresh-failure fallback, and that raw API keys never leak into cache keys.",
+      "tags": ["test", "caching", "cdisc-library"],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:tests/test_loinc.py",
+      "type": "file",
+      "name": "test_loinc.py",
+      "filePath": "tests/test_loinc.py",
+      "summary": "Unit tests for LoincApiClient.search normalization, extra-field handling, Basic Auth toggling, and error handling, plus tests for the /loinc/search Flask route's JSON responses.",
+      "tags": ["test", "loinc", "route"],
+      "complexity": "complex"
+    },
+    {
+      "id": "function:routes/dashboard.py:index",
+      "type": "function",
+      "name": "index",
+      "filePath": "routes/dashboard.py",
+      "lineRange": [17, 60],
+      "summary": "Renders the dashboard home page, fetching CDISC Library BC and specialization counts in parallel via a ThreadPoolExecutor and combining them with local BC status counts, recent-activity queries, and audit log entries.",
+      "tags": ["route", "dashboard", "concurrency"],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:routes/loinc.py:search",
+      "type": "function",
+      "name": "search",
+      "filePath": "routes/loinc.py",
+      "lineRange": [13, 23],
+      "summary": "Handles GET /loinc/search: reads the search term, detects AJAX/JSON requests, and returns LOINC search results as JSON via LoincApiClient.",
+      "tags": ["route", "api-handler", "loinc"],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:routes/specializations.py:_get_bc_options",
+      "type": "function",
+      "name": "_get_bc_options",
+      "filePath": "routes/specializations.py",
+      "lineRange": [16, 25],
+      "summary": "Builds the dropdown option list of approved Biomedical Concepts for specialization forms, merging CDISC Library BC links with locally curated BiomedicalConcept records.",
+      "tags": ["helper", "dropdown", "bc"],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:routes/specializations.py:index",
+      "type": "function",
+      "name": "index",
+      "filePath": "routes/specializations.py",
+      "lineRange": [29, 38],
+      "summary": "Lists all locally stored dataset specializations alongside available BC options for the specializations index page.",
+      "tags": ["route", "list"],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:routes/specializations.py:library_detail",
+      "type": "function",
+      "name": "library_detail",
+      "filePath": "routes/specializations.py",
+      "lineRange": [42, 52],
+      "summary": "Fetches and renders a single dataset specialization directly from the CDISC Library by its specialization path, redirecting with a flash message if the lookup fails.",
+      "tags": ["route", "cdisc-library"],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:routes/specializations.py:detail",
+      "type": "function",
+      "name": "detail",
+      "filePath": "routes/specializations.py",
+      "lineRange": [56, 67],
+      "summary": "Renders the detail page for a locally stored dataset specialization identified by its VLM group ID.",
+      "tags": ["route", "detail"],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:routes/specializations.py:_variables_from_form",
+      "type": "function",
+      "name": "_variables_from_form",
+      "filePath": "routes/specializations.py",
+      "lineRange": [70, 87],
+      "summary": "Parses indexed variables[i][name]/variables[i][label] form fields into a list of variable dicts for specialization create/generate forms.",
+      "tags": ["helper", "form-parsing"],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:routes/specializations.py:create",
+      "type": "function",
+      "name": "create",
+      "filePath": "routes/specializations.py",
+      "lineRange": [91, 124],
+      "summary": "Handles manual creation of a dataset specialization from form input, either updating an existing record or inserting a new DatasetSpecialization, and logs the change via the audit service.",
+      "tags": ["route", "crud", "audit"],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:routes/specializations.py:delete",
+      "type": "function",
+      "name": "delete",
+      "filePath": "routes/specializations.py",
+      "lineRange": [128, 134],
+      "summary": "Deletes a dataset specialization by VLM group ID and records the deletion in the audit log.",
+      "tags": ["route", "crud", "audit"],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:routes/specializations.py:generate_from_dec",
+      "type": "function",
+      "name": "generate_from_dec",
+      "filePath": "routes/specializations.py",
+      "lineRange": [138, 146],
+      "summary": "AJAX endpoint that checks whether a given BC has any Data Element Concepts available to auto-generate a specialization from.",
+      "tags": ["route", "ajax", "validation"],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:routes/specializations.py:generate",
+      "type": "function",
+      "name": "generate",
+      "filePath": "routes/specializations.py",
+      "lineRange": [150, 172],
+      "summary": "Auto-generates a dataset specialization's variables from a BC's Data Element Concepts and saves it as a new DatasetSpecialization, logging the change via the audit service.",
+      "tags": ["route", "generation", "audit"],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:services/api_cache.py:cached",
+      "type": "function",
+      "name": "cached",
+      "filePath": "services/api_cache.py",
+      "lineRange": [22, 42],
+      "summary": "Core stale-while-revalidate cache primitive: returns a fresh cached value if within CACHE_TTL, otherwise attempts to refetch via the given callable, falling back to a stale value (up to CACHE_STALE_TTL) if the refresh raises.",
+      "tags": ["caching", "resilience", "utility"],
+      "complexity": "moderate",
+      "languageNotes": "The broad except Exception is intentional — it's the resilience seam preventing upstream failures from blanking a page that previously rendered fine."
+    },
+    {
+      "id": "function:services/cdisc_api.py:_config_value",
+      "type": "function",
+      "name": "_config_value",
+      "filePath": "services/cdisc_api.py",
+      "lineRange": [19, 26],
+      "summary": "Resolves a configuration value by checking Flask's current_app.config first, then falling back to an environment variable, so config can be read even outside an app context.",
+      "tags": ["helper", "config"],
+      "complexity": "simple"
+    },
+    {
+      "id": "class:services/cdisc_api.py:CDISCApiClient",
+      "type": "class",
+      "name": "CDISCApiClient",
+      "filePath": "services/cdisc_api.py",
+      "lineRange": [29, 127],
+      "summary": "REST client wrapping the CDISC Library COSMOS v2 API: fetches biomedical concepts, individual BC/specialization detail, and dataset specializations (cached via the shared api_cache helper), checks for duplicate BC titles, and publishes approved BCs back to the Library.",
+      "tags": ["api-client", "cdisc-library", "service", "http"],
+      "complexity": "complex",
+      "languageNotes": "Cache keys are derived from a SHA-256 hash of the API key material rather than the raw key, so secrets never end up as cache dictionary keys in memory dumps or logs."
+    },
+    {
+      "id": "class:services/loinc_api.py:LoincApiClient",
+      "type": "class",
+      "name": "LoincApiClient",
+      "filePath": "services/loinc_api.py",
+      "lineRange": [18, 62],
+      "summary": "Client for the NLM Clinical Tables LOINC /search endpoint; optionally attaches HTTP Basic Auth from LOINC_USER/LOINC_PASSWORD env vars, requests a configurable set of extra fields, normalizes the paginated response into a flat list, and caches results through the shared api_cache helper.",
+      "tags": ["api-client", "loinc", "service", "http"],
+      "complexity": "moderate"
+    },
+    {
+      "id": "class:tests/test_cdisc_api_cache.py:TestCachedHelper",
+      "type": "class",
+      "name": "TestCachedHelper",
+      "filePath": "tests/test_cdisc_api_cache.py",
+      "lineRange": [11, 64],
+      "summary": "Tests the cached() helper directly: first-call fetch-and-store, serving fresh entries without refetching, refreshing stale entries, falling back to stale data when refresh fails, and raising when there is no fallback available.",
+      "tags": ["test", "caching"],
+      "complexity": "moderate"
+    },
+    {
+      "id": "class:tests/test_cdisc_api_cache.py:TestClientCacheKeys",
+      "type": "class",
+      "name": "TestClientCacheKeys",
+      "filePath": "tests/test_cdisc_api_cache.py",
+      "lineRange": [67, 120],
+      "summary": "Tests that CDISCApiClient's cache keys are derived from a hash rather than the raw API key, that errors from get_biomedical_concepts are encoded into the cached result rather than raised, and that a stale error result is replaced once the cache TTL expires.",
+      "tags": ["test", "caching", "security"],
+      "complexity": "moderate"
+    },
+    {
+      "id": "class:tests/test_loinc.py:TestLoincApiClientSearch",
+      "type": "class",
+      "name": "TestLoincApiClientSearch",
+      "filePath": "tests/test_loinc.py",
+      "lineRange": [44, 168],
+      "summary": "Tests LoincApiClient.search's response normalization, presence of all requested extra fields, Basic Auth header toggling based on environment variables, and graceful handling of empty results, missing codes arrays, and network errors.",
+      "tags": ["test", "loinc", "api-client"],
+      "complexity": "complex"
+    },
+    {
+      "id": "class:tests/test_loinc.py:TestLoincSearchRoute",
+      "type": "class",
+      "name": "TestLoincSearchRoute",
+      "filePath": "tests/test_loinc.py",
+      "lineRange": [176, 205],
+      "summary": "Tests the /loinc/search Flask route: JSON response for AJAX requests, empty-term short-circuiting, that the search term is passed through to the client, and that the format=json query param triggers a JSON response.",
+      "tags": ["test", "route", "loinc"],
+      "complexity": "simple"
+    }
+  ],
+  "edges": [
+    {
+      "source": "file:routes/dashboard.py",
+      "target": "file:models/audit.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:routes/dashboard.py",
+      "target": "file:models/bc.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:routes/dashboard.py",
+      "target": "file:services/cdisc_api.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:routes/loinc.py",
+      "target": "file:services/loinc_api.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:routes/specializations.py",
+      "target": "file:extensions.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:routes/specializations.py",
+      "target": "file:models/bc.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:routes/specializations.py",
+      "target": "file:models/specialization.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:routes/specializations.py",
+      "target": "file:services/audit.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:routes/specializations.py",
+      "target": "file:services/cdisc_api.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:services/cdisc_api.py",
+      "target": "file:services/api_cache.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:services/loinc_api.py",
+      "target": "file:services/api_cache.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:tests/test_cdisc_api_cache.py",
+      "target": "file:services/cdisc_api.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:tests/test_loinc.py",
+      "target": "file:services/loinc_api.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+
+    {
+      "source": "file:routes/dashboard.py",
+      "target": "function:routes/dashboard.py:index",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:routes/loinc.py",
+      "target": "function:routes/loinc.py:search",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:routes/specializations.py",
+      "target": "function:routes/specializations.py:_get_bc_options",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:routes/specializations.py",
+      "target": "function:routes/specializations.py:index",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:routes/specializations.py",
+      "target": "function:routes/specializations.py:library_detail",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:routes/specializations.py",
+      "target": "function:routes/specializations.py:detail",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:routes/specializations.py",
+      "target": "function:routes/specializations.py:_variables_from_form",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:routes/specializations.py",
+      "target": "function:routes/specializations.py:create",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:routes/specializations.py",
+      "target": "function:routes/specializations.py:delete",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:routes/specializations.py",
+      "target": "function:routes/specializations.py:generate_from_dec",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:routes/specializations.py",
+      "target": "function:routes/specializations.py:generate",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:services/api_cache.py",
+      "target": "function:services/api_cache.py:cached",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:services/cdisc_api.py",
+      "target": "function:services/cdisc_api.py:_config_value",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:services/cdisc_api.py",
+      "target": "class:services/cdisc_api.py:CDISCApiClient",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:services/loinc_api.py",
+      "target": "class:services/loinc_api.py:LoincApiClient",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:tests/test_cdisc_api_cache.py",
+      "target": "class:tests/test_cdisc_api_cache.py:TestCachedHelper",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:tests/test_cdisc_api_cache.py",
+      "target": "class:tests/test_cdisc_api_cache.py:TestClientCacheKeys",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:tests/test_loinc.py",
+      "target": "class:tests/test_loinc.py:TestLoincApiClientSearch",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:tests/test_loinc.py",
+      "target": "class:tests/test_loinc.py:TestLoincSearchRoute",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+
+    {
+      "source": "file:services/cdisc_api.py",
+      "target": "class:services/cdisc_api.py:CDISCApiClient",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:services/loinc_api.py",
+      "target": "class:services/loinc_api.py:LoincApiClient",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:services/api_cache.py",
+      "target": "function:services/api_cache.py:cached",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+
+    {
+      "source": "function:routes/dashboard.py:index",
+      "target": "class:services/cdisc_api.py:CDISCApiClient",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:routes/dashboard.py:index",
+      "target": "class:models/bc.py:BiomedicalConcept",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:routes/dashboard.py:index",
+      "target": "class:models/audit.py:AuditLog",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:routes/loinc.py:search",
+      "target": "class:services/loinc_api.py:LoincApiClient",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:routes/specializations.py:_get_bc_options",
+      "target": "class:services/cdisc_api.py:CDISCApiClient",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:routes/specializations.py:_get_bc_options",
+      "target": "class:models/bc.py:BiomedicalConcept",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:routes/specializations.py:index",
+      "target": "class:models/specialization.py:DatasetSpecialization",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:routes/specializations.py:library_detail",
+      "target": "class:services/cdisc_api.py:CDISCApiClient",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:routes/specializations.py:detail",
+      "target": "class:models/specialization.py:DatasetSpecialization",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:routes/specializations.py:create",
+      "target": "function:services/audit.py:log_change",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:routes/specializations.py:create",
+      "target": "class:models/specialization.py:DatasetSpecialization",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:routes/specializations.py:delete",
+      "target": "function:services/audit.py:log_change",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:routes/specializations.py:generate_from_dec",
+      "target": "class:models/bc.py:DataElementConcept",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:routes/specializations.py:generate",
+      "target": "class:models/bc.py:DataElementConcept",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:routes/specializations.py:generate",
+      "target": "class:models/specialization.py:DatasetSpecialization",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:routes/specializations.py:generate",
+      "target": "function:services/audit.py:log_change",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "class:services/cdisc_api.py:CDISCApiClient",
+      "target": "function:services/api_cache.py:cached",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "class:services/loinc_api.py:LoincApiClient",
+      "target": "function:services/api_cache.py:cached",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+
+    {
+      "source": "file:services/cdisc_api.py",
+      "target": "file:tests/test_cdisc_api_cache.py",
+      "type": "tested_by",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "file:services/api_cache.py",
+      "target": "file:tests/test_cdisc_api_cache.py",
+      "type": "tested_by",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "file:services/loinc_api.py",
+      "target": "file:tests/test_loinc.py",
+      "type": "tested_by",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "file:routes/loinc.py",
+      "target": "file:tests/test_loinc.py",
+      "type": "tested_by",
+      "direction": "forward",
+      "weight": 0.5
+    }
+  ]
+}

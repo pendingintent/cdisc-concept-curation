@@ -1,0 +1,15 @@
+{
+  "nodes": [
+    {
+      "id": "pipeline:.github/workflows/ci.yml",
+      "type": "pipeline",
+      "name": "ci.yml",
+      "filePath": ".github/workflows/ci.yml",
+      "summary": "GitHub Actions CI workflow that runs on every push and pull request across all branches: installs project and dev dependencies, lints with isort/black/flake8, and runs the pytest suite on Python 3.12.",
+      "tags": ["ci-cd", "deployment", "testing", "linting", "github-actions"],
+      "complexity": "simple",
+      "languageNotes": "Single-job workflow (`test`) with pip caching enabled via actions/setup-python; lint and test steps are separate shell steps within the same job rather than a matrix build."
+    }
+  ],
+  "edges": []
+}

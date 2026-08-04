@@ -1,0 +1,340 @@
+{
+  "nodes": [
+    {
+      "id": "file:app.py",
+      "type": "file",
+      "name": "app.py",
+      "filePath": "app.py",
+      "summary": "Flask application factory that configures logging, initializes the shared database and migration extensions, registers all eight feature blueprints, and doubles as the dev-server entry point via `python app.py`.",
+      "tags": [
+        "entry-point",
+        "flask",
+        "application-factory",
+        "blueprint-registration"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:config.py",
+      "type": "file",
+      "name": "config.py",
+      "filePath": "config.py",
+      "summary": "Centralizes all environment-driven configuration for the Flask app, including the secret key, database URI, CDISC/NCIt API base URLs and credentials, upload size limit, and dev server port.",
+      "tags": ["configuration", "environment-variables", "flask", "settings"],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:db_bootstrap.py",
+      "type": "file",
+      "name": "db_bootstrap.py",
+      "filePath": "db_bootstrap.py",
+      "summary": "Brings the app's database to the current Alembic migration head at startup, distinguishing fresh, legacy create_all(), and pre-squash-stamped databases, and raising if the schema predates the squashed baseline.",
+      "tags": ["database-migration", "alembic", "bootstrap", "startup"],
+      "complexity": "moderate",
+      "languageNotes": "Encodes a one-time schema-squash migration strategy: legacy databases are schema-validated then stamped rather than replayed through the old revision chain."
+    },
+    {
+      "id": "file:extensions.py",
+      "type": "file",
+      "name": "extensions.py",
+      "filePath": "extensions.py",
+      "summary": "Defines the shared SQLAlchemy `db` and Flask-Migrate `migrate` instances used across the app to avoid circular imports, and configures SQLite WAL mode with a busy timeout so the Flask app and MCP server can coexist as concurrent writers.",
+      "tags": ["database", "sqlalchemy", "shared-extension", "sqlite"],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:models/__init__.py",
+      "type": "file",
+      "name": "__init__.py",
+      "filePath": "models/__init__.py",
+      "summary": "Package marker for the `models` module that imports the shared `db` instance so all SQLAlchemy model classes register against a single metadata registry.",
+      "tags": ["entry-point", "package-init", "barrel"],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:tests/test_dashboard.py",
+      "type": "file",
+      "name": "test_dashboard.py",
+      "filePath": "tests/test_dashboard.py",
+      "summary": "Unit tests for the dashboard route, verifying it renders correctly with live CDISC/NCIt API data, degrades gracefully on API errors and empty results, reflects local DB stats accurately, and issues both API calls concurrently.",
+      "tags": ["test", "dashboard", "mocking", "concurrency"],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:tests/test_db_bootstrap.py",
+      "type": "file",
+      "name": "test_db_bootstrap.py",
+      "filePath": "tests/test_db_bootstrap.py",
+      "summary": "Unit tests for `ensure_db()` covering a fresh baseline upgrade, stamping of a legacy create_all() database, restamping of a pre-squash-stamped database, raising on an outdated schema, and idempotency across repeated runs.",
+      "tags": ["test", "database-migration", "alembic", "fixtures"],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:app.py:_configure_logging",
+      "type": "function",
+      "name": "_configure_logging",
+      "filePath": "app.py",
+      "lineRange": [10, 21],
+      "summary": "Attaches a basic logging handler to the root logger exactly once, deferring to any handler already installed by pytest, gunicorn, or the MCP server.",
+      "tags": ["logging", "initialization", "utility"],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:app.py:create_app",
+      "type": "function",
+      "name": "create_app",
+      "filePath": "app.py",
+      "lineRange": [24, 50],
+      "summary": "Application factory that builds the Flask app, applies configuration, initializes the `db` and `migrate` extensions, and registers all eight route blueprints under their URL prefixes.",
+      "tags": [
+        "entry-point",
+        "application-factory",
+        "flask",
+        "blueprint-registration"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "class:config.py:Config",
+      "type": "class",
+      "name": "Config",
+      "filePath": "config.py",
+      "lineRange": [4, 14],
+      "summary": "Flask configuration object sourcing the secret key, database URI, CDISC/NCIt API settings, upload size limit, and dev server port from environment variables with sensible defaults.",
+      "tags": ["configuration", "environment-variables", "settings"],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:db_bootstrap.py:ensure_db",
+      "type": "function",
+      "name": "ensure_db",
+      "filePath": "db_bootstrap.py",
+      "lineRange": [36, 71],
+      "summary": "Idempotently brings the configured database to the current Alembic migration head, handling fresh databases, legacy create_all() databases, and pre-squash-stamped databases, and raising RuntimeError if the schema predates the squashed baseline.",
+      "tags": ["database-migration", "alembic", "idempotent", "startup"],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:extensions.py:_set_sqlite_pragmas",
+      "type": "function",
+      "name": "_set_sqlite_pragmas",
+      "filePath": "extensions.py",
+      "lineRange": [13, 25],
+      "summary": "SQLAlchemy connect-event listener that enables WAL journal mode and a 15-second busy timeout on every SQLite connection so the Flask app and MCP server can write concurrently without lock errors.",
+      "tags": ["sqlite", "event-handler", "concurrency", "database"],
+      "complexity": "simple"
+    },
+    {
+      "id": "class:tests/test_dashboard.py:TestDashboardIndex",
+      "type": "class",
+      "name": "TestDashboardIndex",
+      "filePath": "tests/test_dashboard.py",
+      "lineRange": [24, 75],
+      "summary": "Test suite for the dashboard index route, covering successful rendering with live API stats, graceful handling of API errors and empty results, correctness of locally computed DB stats, and concurrent execution of the two upstream API calls.",
+      "tags": ["test", "dashboard", "mocking"],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:tests/test_db_bootstrap.py:_make_app",
+      "type": "function",
+      "name": "_make_app",
+      "filePath": "tests/test_db_bootstrap.py",
+      "lineRange": [20, 30],
+      "summary": "Test helper that builds a Flask app configured against a temporary SQLite file so each `ensure_db()` test runs against an isolated on-disk database.",
+      "tags": ["test", "fixture", "utility"],
+      "complexity": "simple"
+    },
+    {
+      "id": "class:tests/test_db_bootstrap.py:TestEnsureDb",
+      "type": "class",
+      "name": "TestEnsureDb",
+      "filePath": "tests/test_db_bootstrap.py",
+      "lineRange": [43, 87],
+      "summary": "Test suite for `ensure_db()` verifying correct behavior across a fresh baseline database, a legacy create_all() database, a pre-squash-stamped database, an outdated/unrecognized schema, and repeated (idempotent) invocations.",
+      "tags": ["test", "database-migration", "alembic"],
+      "complexity": "moderate"
+    }
+  ],
+  "edges": [
+    {
+      "source": "file:app.py",
+      "target": "file:config.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:app.py",
+      "target": "file:extensions.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:db_bootstrap.py",
+      "target": "file:extensions.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:models/__init__.py",
+      "target": "file:extensions.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:tests/test_dashboard.py",
+      "target": "file:extensions.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:tests/test_dashboard.py",
+      "target": "file:models/bc.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:tests/test_db_bootstrap.py",
+      "target": "file:app.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:tests/test_db_bootstrap.py",
+      "target": "file:db_bootstrap.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:tests/test_db_bootstrap.py",
+      "target": "file:extensions.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+
+    {
+      "source": "file:app.py",
+      "target": "function:app.py:_configure_logging",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:app.py",
+      "target": "function:app.py:create_app",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:config.py",
+      "target": "class:config.py:Config",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:db_bootstrap.py",
+      "target": "function:db_bootstrap.py:ensure_db",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:extensions.py",
+      "target": "function:extensions.py:_set_sqlite_pragmas",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:tests/test_dashboard.py",
+      "target": "class:tests/test_dashboard.py:TestDashboardIndex",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:tests/test_db_bootstrap.py",
+      "target": "function:tests/test_db_bootstrap.py:_make_app",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:tests/test_db_bootstrap.py",
+      "target": "class:tests/test_db_bootstrap.py:TestEnsureDb",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+
+    {
+      "source": "file:app.py",
+      "target": "function:app.py:create_app",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:db_bootstrap.py",
+      "target": "function:db_bootstrap.py:ensure_db",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:config.py",
+      "target": "class:config.py:Config",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+
+    {
+      "source": "function:tests/test_db_bootstrap.py:_make_app",
+      "target": "function:app.py:create_app",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "class:tests/test_db_bootstrap.py:TestEnsureDb",
+      "target": "function:db_bootstrap.py:ensure_db",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "class:tests/test_dashboard.py:TestDashboardIndex",
+      "target": "class:models/bc.py:BiomedicalConcept",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+
+    {
+      "source": "file:app.py",
+      "target": "file:db_bootstrap.py",
+      "type": "depends_on",
+      "direction": "forward",
+      "weight": 0.6
+    },
+
+    {
+      "source": "file:db_bootstrap.py",
+      "target": "file:tests/test_db_bootstrap.py",
+      "type": "tested_by",
+      "direction": "forward",
+      "weight": 0.5
+    }
+  ]
+}

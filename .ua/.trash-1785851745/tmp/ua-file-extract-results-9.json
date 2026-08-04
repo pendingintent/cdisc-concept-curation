@@ -1,0 +1,322 @@
+{
+  "scriptCompleted": true,
+  "filesAnalyzed": 6,
+  "filesSkipped": [
+    "requirements-dev.txt",
+    "requirements.txt"
+  ],
+  "analysisOutcomes": {
+    "structure": {
+      "succeeded": 6,
+      "failed": 0
+    },
+    "callGraph": {
+      "succeeded": 0,
+      "failed": 0,
+      "skipped": 6
+    }
+  },
+  "results": [
+    {
+      "path": ".mcp.json",
+      "language": "json",
+      "fileCategory": "config",
+      "totalLines": 9,
+      "nonEmptyLines": 9,
+      "sections": [
+        {
+          "heading": "mcpServers",
+          "level": 1,
+          "line": 2
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0,
+        "sectionCount": 1
+      }
+    },
+    {
+      "path": ".pre-commit-config.yaml",
+      "language": "yaml",
+      "fileCategory": "config",
+      "totalLines": 24,
+      "nonEmptyLines": 21,
+      "sections": [
+        {
+          "heading": "repos",
+          "level": 1,
+          "line": 1
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0,
+        "sectionCount": 1
+      }
+    },
+    {
+      "path": "CLAUDE.md",
+      "language": "markdown",
+      "fileCategory": "docs",
+      "totalLines": 129,
+      "nonEmptyLines": 101,
+      "sections": [
+        {
+          "heading": "CLAUDE.md",
+          "level": 1,
+          "line": 1
+        },
+        {
+          "heading": "What This App Does",
+          "level": 2,
+          "line": 5
+        },
+        {
+          "heading": "Running the App",
+          "level": 2,
+          "line": 9
+        },
+        {
+          "heading": "Linting",
+          "level": 2,
+          "line": 29
+        },
+        {
+          "heading": "Testing",
+          "level": 2,
+          "line": 42
+        },
+        {
+          "heading": "Architecture",
+          "level": 2,
+          "line": 56
+        },
+        {
+          "heading": "Config",
+          "level": 2,
+          "line": 109
+        },
+        {
+          "heading": "Conventions",
+          "level": 2,
+          "line": 125
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0,
+        "sectionCount": 8
+      }
+    },
+    {
+      "path": "README-PROGRESS.md",
+      "language": "markdown",
+      "fileCategory": "docs",
+      "totalLines": 147,
+      "nonEmptyLines": 120,
+      "sections": [
+        {
+          "heading": "Project Progress",
+          "level": 1,
+          "line": 1
+        },
+        {
+          "heading": "Overview",
+          "level": 2,
+          "line": 3
+        },
+        {
+          "heading": "Feature Status",
+          "level": 2,
+          "line": 7
+        },
+        {
+          "heading": "Daily Changelog",
+          "level": 2,
+          "line": 29
+        },
+        {
+          "heading": "2026-08-03",
+          "level": 3,
+          "line": 31
+        },
+        {
+          "heading": "Fixed New Copilot Comment on PR #39 — \"Code\" Column Still Blank in `export_xlsx()`",
+          "level": 4,
+          "line": 33
+        },
+        {
+          "heading": "Closed Out Workstream B.1 — Module-Level Loggers",
+          "level": 4,
+          "line": 40
+        },
+        {
+          "heading": "Fixed Broken Governance Export Fix-Up Commits from PR #39",
+          "level": 4,
+          "line": 46
+        },
+        {
+          "heading": "Fixed BC ID Promotion Orphaning Dependent Rows",
+          "level": 4,
+          "line": 54
+        },
+        {
+          "heading": "Resolved Remaining Copilot Review Comments on PR #39",
+          "level": 4,
+          "line": 61
+        },
+        {
+          "heading": "2026-04-15",
+          "level": 3,
+          "line": 69
+        },
+        {
+          "heading": "Audit Trail Coverage Completion + Specialization Delete Route",
+          "level": 4,
+          "line": 71
+        },
+        {
+          "heading": "2026-04-14",
+          "level": 3,
+          "line": 81
+        },
+        {
+          "heading": "LOINC API Explorer + BC Detail Performance + Specializations + Config",
+          "level": 4,
+          "line": 83
+        },
+        {
+          "heading": "2026-03-30",
+          "level": 3,
+          "line": 100
+        },
+        {
+          "heading": "Dashboard: API Integration + BC/Specialization Display",
+          "level": 4,
+          "line": 102
+        },
+        {
+          "heading": "2026-03-27",
+          "level": 3,
+          "line": 114
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0,
+        "sectionCount": 17
+      }
+    },
+    {
+      "path": "README.md",
+      "language": "markdown",
+      "fileCategory": "docs",
+      "totalLines": 185,
+      "nonEmptyLines": 136,
+      "sections": [
+        {
+          "heading": "CDISC Biomedical Concept Curation Platform",
+          "level": 1,
+          "line": 1
+        },
+        {
+          "heading": "Prerequisites",
+          "level": 2,
+          "line": 7
+        },
+        {
+          "heading": "Installation",
+          "level": 2,
+          "line": 14
+        },
+        {
+          "heading": "Dependencies installed",
+          "level": 3,
+          "line": 35
+        },
+        {
+          "heading": "Configuration",
+          "level": 2,
+          "line": 54
+        },
+        {
+          "heading": "Environment Variables",
+          "level": 3,
+          "line": 56
+        },
+        {
+          "heading": "Code Quality",
+          "level": 3,
+          "line": 75
+        },
+        {
+          "heading": "Running the App",
+          "level": 2,
+          "line": 86
+        },
+        {
+          "heading": "Running Tests",
+          "level": 2,
+          "line": 100
+        },
+        {
+          "heading": "Key Screens",
+          "level": 2,
+          "line": 122
+        },
+        {
+          "heading": "Project Structure",
+          "level": 2,
+          "line": 138
+        },
+        {
+          "heading": "External APIs",
+          "level": 2,
+          "line": 179
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0,
+        "sectionCount": 12
+      }
+    },
+    {
+      "path": "pyproject.toml",
+      "language": "toml",
+      "fileCategory": "config",
+      "totalLines": 7,
+      "nonEmptyLines": 6,
+      "sections": [
+        {
+          "heading": "tool.black",
+          "level": 2,
+          "line": 1
+        },
+        {
+          "heading": "tool.isort",
+          "level": 2,
+          "line": 5
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0,
+        "sectionCount": 2
+      }
+    }
+  ]
+}

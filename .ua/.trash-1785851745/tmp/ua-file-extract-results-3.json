@@ -1,0 +1,1935 @@
+{
+  "scriptCompleted": true,
+  "filesAnalyzed": 8,
+  "filesSkipped": [],
+  "analysisOutcomes": {
+    "structure": {
+      "succeeded": 8,
+      "failed": 0
+    },
+    "callGraph": {
+      "succeeded": 8,
+      "failed": 0,
+      "skipped": 0
+    }
+  },
+  "results": [
+    {
+      "path": "routes/dashboard.py",
+      "language": "python",
+      "fileCategory": "code",
+      "totalLines": 60,
+      "nonEmptyLines": 49,
+      "functions": [
+        {
+          "name": "index",
+          "startLine": 17,
+          "endLine": 60,
+          "params": []
+        }
+      ],
+      "exports": [
+        {
+          "name": "index",
+          "line": 16,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "index",
+          "callee": "CDISCApiClient",
+          "lineNumber": 19
+        },
+        {
+          "caller": "index",
+          "callee": "ThreadPoolExecutor",
+          "lineNumber": 20
+        },
+        {
+          "caller": "index",
+          "callee": "pool.submit",
+          "lineNumber": 21
+        },
+        {
+          "caller": "index",
+          "callee": "pool.submit",
+          "lineNumber": 22
+        },
+        {
+          "caller": "index",
+          "callee": "fut_bcs.result",
+          "lineNumber": 23
+        },
+        {
+          "caller": "index",
+          "callee": "fut_specs.result",
+          "lineNumber": 24
+        },
+        {
+          "caller": "index",
+          "callee": "api_bcs[0].get",
+          "lineNumber": 26
+        },
+        {
+          "caller": "index",
+          "callee": "api_specs[0].get",
+          "lineNumber": 27
+        },
+        {
+          "caller": "index",
+          "callee": "len",
+          "lineNumber": 28
+        },
+        {
+          "caller": "index",
+          "callee": "len",
+          "lineNumber": 29
+        },
+        {
+          "caller": "index",
+          "callee": "BiomedicalConcept.query.count",
+          "lineNumber": 32
+        },
+        {
+          "caller": "index",
+          "callee": "BiomedicalConcept.query.filter(BiomedicalConcept.status.in_([\"provisional\", \"sme_review\", \"cdisc_approval\"])).count",
+          "lineNumber": 33
+        },
+        {
+          "caller": "index",
+          "callee": "BiomedicalConcept.query.filter",
+          "lineNumber": 33
+        },
+        {
+          "caller": "index",
+          "callee": "BiomedicalConcept.status.in_",
+          "lineNumber": 33
+        },
+        {
+          "caller": "index",
+          "callee": "BiomedicalConcept.query.filter(BiomedicalConcept.created_at >= datetime.now(timezone.utc) - timedelta(days=7)).count",
+          "lineNumber": 34
+        },
+        {
+          "caller": "index",
+          "callee": "BiomedicalConcept.query.filter",
+          "lineNumber": 34
+        },
+        {
+          "caller": "index",
+          "callee": "datetime.now",
+          "lineNumber": 34
+        },
+        {
+          "caller": "index",
+          "callee": "timedelta",
+          "lineNumber": 34
+        },
+        {
+          "caller": "index",
+          "callee": "BiomedicalConcept.query.filter(BiomedicalConcept.status != \"published\").order_by(BiomedicalConcept.updated_at.desc()).limit(10).all",
+          "lineNumber": 36
+        },
+        {
+          "caller": "index",
+          "callee": "BiomedicalConcept.query.filter(BiomedicalConcept.status != \"published\").order_by(BiomedicalConcept.updated_at.desc()).limit",
+          "lineNumber": 36
+        },
+        {
+          "caller": "index",
+          "callee": "BiomedicalConcept.query.filter(BiomedicalConcept.status != \"published\").order_by",
+          "lineNumber": 36
+        },
+        {
+          "caller": "index",
+          "callee": "BiomedicalConcept.query.filter",
+          "lineNumber": 36
+        },
+        {
+          "caller": "index",
+          "callee": "BiomedicalConcept.updated_at.desc",
+          "lineNumber": 36
+        },
+        {
+          "caller": "index",
+          "callee": "AuditLog.query.order_by(AuditLog.timestamp.desc()).limit(10).all",
+          "lineNumber": 37
+        },
+        {
+          "caller": "index",
+          "callee": "AuditLog.query.order_by(AuditLog.timestamp.desc()).limit",
+          "lineNumber": 37
+        },
+        {
+          "caller": "index",
+          "callee": "AuditLog.query.order_by",
+          "lineNumber": 37
+        },
+        {
+          "caller": "index",
+          "callee": "AuditLog.timestamp.desc",
+          "lineNumber": 37
+        },
+        {
+          "caller": "index",
+          "callee": "render_template",
+          "lineNumber": 47
+        },
+        {
+          "caller": "index",
+          "callee": "sorted",
+          "lineNumber": 50
+        },
+        {
+          "caller": "index",
+          "callee": "(x.get(\"title\") or \"\").lower",
+          "lineNumber": 50
+        },
+        {
+          "caller": "index",
+          "callee": "x.get",
+          "lineNumber": 50
+        },
+        {
+          "caller": "index",
+          "callee": "sorted",
+          "lineNumber": 51
+        },
+        {
+          "caller": "index",
+          "callee": "(x.get(\"title\") or \"\").lower",
+          "lineNumber": 51
+        },
+        {
+          "caller": "index",
+          "callee": "x.get",
+          "lineNumber": 51
+        },
+        {
+          "caller": "index",
+          "callee": "BiomedicalConcept.query.order_by(BiomedicalConcept.created_at.desc()).limit(10).all",
+          "lineNumber": 56
+        },
+        {
+          "caller": "index",
+          "callee": "BiomedicalConcept.query.order_by(BiomedicalConcept.created_at.desc()).limit",
+          "lineNumber": 56
+        },
+        {
+          "caller": "index",
+          "callee": "BiomedicalConcept.query.order_by",
+          "lineNumber": 56
+        },
+        {
+          "caller": "index",
+          "callee": "BiomedicalConcept.created_at.desc",
+          "lineNumber": 56
+        }
+      ],
+      "metrics": {
+        "importCount": 3,
+        "exportCount": 1,
+        "functionCount": 1,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "routes/loinc.py",
+      "language": "python",
+      "fileCategory": "code",
+      "totalLines": 23,
+      "nonEmptyLines": 16,
+      "functions": [
+        {
+          "name": "search",
+          "startLine": 13,
+          "endLine": 23,
+          "params": []
+        }
+      ],
+      "exports": [
+        {
+          "name": "search",
+          "line": 12,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "search",
+          "callee": "request.args.get(\"term\", \"\").strip",
+          "lineNumber": 14
+        },
+        {
+          "caller": "search",
+          "callee": "request.args.get",
+          "lineNumber": 14
+        },
+        {
+          "caller": "search",
+          "callee": "request.headers.get",
+          "lineNumber": 15
+        },
+        {
+          "caller": "search",
+          "callee": "request.args.get",
+          "lineNumber": 15
+        },
+        {
+          "caller": "search",
+          "callee": "request.headers.get",
+          "lineNumber": 15
+        },
+        {
+          "caller": "search",
+          "callee": "jsonify",
+          "lineNumber": 18
+        },
+        {
+          "caller": "search",
+          "callee": "jsonify",
+          "lineNumber": 19
+        },
+        {
+          "caller": "search",
+          "callee": "LoincApiClient",
+          "lineNumber": 21
+        },
+        {
+          "caller": "search",
+          "callee": "client.search",
+          "lineNumber": 22
+        },
+        {
+          "caller": "search",
+          "callee": "jsonify",
+          "lineNumber": 23
+        }
+      ],
+      "metrics": {
+        "importCount": 1,
+        "exportCount": 1,
+        "functionCount": 1,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "routes/specializations.py",
+      "language": "python",
+      "fileCategory": "code",
+      "totalLines": 172,
+      "nonEmptyLines": 147,
+      "functions": [
+        {
+          "name": "_get_bc_options",
+          "startLine": 16,
+          "endLine": 25,
+          "params": []
+        },
+        {
+          "name": "index",
+          "startLine": 29,
+          "endLine": 38,
+          "params": []
+        },
+        {
+          "name": "library_detail",
+          "startLine": 42,
+          "endLine": 52,
+          "params": [
+            "spec_path"
+          ]
+        },
+        {
+          "name": "detail",
+          "startLine": 56,
+          "endLine": 67,
+          "params": [
+            "vlm_group_id"
+          ]
+        },
+        {
+          "name": "_variables_from_form",
+          "startLine": 70,
+          "endLine": 87,
+          "params": [
+            "form"
+          ]
+        },
+        {
+          "name": "create",
+          "startLine": 91,
+          "endLine": 124,
+          "params": []
+        },
+        {
+          "name": "delete",
+          "startLine": 128,
+          "endLine": 134,
+          "params": [
+            "vlm_group_id"
+          ]
+        },
+        {
+          "name": "generate_from_dec",
+          "startLine": 138,
+          "endLine": 146,
+          "params": []
+        },
+        {
+          "name": "generate",
+          "startLine": 150,
+          "endLine": 172,
+          "params": [
+            "bc_id"
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "_get_bc_options",
+          "line": 16,
+          "isDefault": false
+        },
+        {
+          "name": "index",
+          "line": 28,
+          "isDefault": false
+        },
+        {
+          "name": "library_detail",
+          "line": 41,
+          "isDefault": false
+        },
+        {
+          "name": "detail",
+          "line": 55,
+          "isDefault": false
+        },
+        {
+          "name": "_variables_from_form",
+          "line": 70,
+          "isDefault": false
+        },
+        {
+          "name": "create",
+          "line": 90,
+          "isDefault": false
+        },
+        {
+          "name": "delete",
+          "line": 127,
+          "isDefault": false
+        },
+        {
+          "name": "generate_from_dec",
+          "line": 137,
+          "isDefault": false
+        },
+        {
+          "name": "generate",
+          "line": 149,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "_get_bc_options",
+          "callee": "CDISCApiClient().get_biomedical_concepts",
+          "lineNumber": 22
+        },
+        {
+          "caller": "_get_bc_options",
+          "callee": "CDISCApiClient",
+          "lineNumber": 22
+        },
+        {
+          "caller": "_get_bc_options",
+          "callee": "lnk[\"href\"].rstrip(\"/\").split",
+          "lineNumber": 23
+        },
+        {
+          "caller": "_get_bc_options",
+          "callee": "lnk[\"href\"].rstrip",
+          "lineNumber": 23
+        },
+        {
+          "caller": "_get_bc_options",
+          "callee": "lnk.get",
+          "lineNumber": 23
+        },
+        {
+          "caller": "_get_bc_options",
+          "callee": "BiomedicalConcept.query.order_by(BiomedicalConcept.short_name).all",
+          "lineNumber": 24
+        },
+        {
+          "caller": "_get_bc_options",
+          "callee": "BiomedicalConcept.query.order_by",
+          "lineNumber": 24
+        },
+        {
+          "caller": "index",
+          "callee": "DatasetSpecialization.query.all",
+          "lineNumber": 30
+        },
+        {
+          "caller": "index",
+          "callee": "_get_bc_options",
+          "lineNumber": 31
+        },
+        {
+          "caller": "index",
+          "callee": "render_template",
+          "lineNumber": 32
+        },
+        {
+          "caller": "library_detail",
+          "callee": "CDISCApiClient",
+          "lineNumber": 43
+        },
+        {
+          "caller": "library_detail",
+          "callee": "client.get_specialization",
+          "lineNumber": 44
+        },
+        {
+          "caller": "library_detail",
+          "callee": "flash",
+          "lineNumber": 46
+        },
+        {
+          "caller": "library_detail",
+          "callee": "redirect",
+          "lineNumber": 47
+        },
+        {
+          "caller": "library_detail",
+          "callee": "url_for",
+          "lineNumber": 47
+        },
+        {
+          "caller": "library_detail",
+          "callee": "render_template",
+          "lineNumber": 48
+        },
+        {
+          "caller": "library_detail",
+          "callee": "spec.get",
+          "lineNumber": 51
+        },
+        {
+          "caller": "library_detail",
+          "callee": "spec.get",
+          "lineNumber": 51
+        },
+        {
+          "caller": "library_detail",
+          "callee": "spec_path.split",
+          "lineNumber": 51
+        },
+        {
+          "caller": "detail",
+          "callee": "db.get_or_404",
+          "lineNumber": 57
+        },
+        {
+          "caller": "detail",
+          "callee": "DatasetSpecialization.query.all",
+          "lineNumber": 58
+        },
+        {
+          "caller": "detail",
+          "callee": "_get_bc_options",
+          "lineNumber": 59
+        },
+        {
+          "caller": "detail",
+          "callee": "render_template",
+          "lineNumber": 60
+        },
+        {
+          "caller": "_variables_from_form",
+          "callee": "(form.get(f\"variables[{i}][name]\") or \"\").strip",
+          "lineNumber": 75
+        },
+        {
+          "caller": "_variables_from_form",
+          "callee": "form.get",
+          "lineNumber": 75
+        },
+        {
+          "caller": "_variables_from_form",
+          "callee": "(form.get(f\"variables[{i}][label]\") or \"\").strip",
+          "lineNumber": 76
+        },
+        {
+          "caller": "_variables_from_form",
+          "callee": "form.get",
+          "lineNumber": 76
+        },
+        {
+          "caller": "_variables_from_form",
+          "callee": "variables.append",
+          "lineNumber": 78
+        },
+        {
+          "caller": "_variables_from_form",
+          "callee": "form.get",
+          "lineNumber": 82
+        },
+        {
+          "caller": "_variables_from_form",
+          "callee": "form.get",
+          "lineNumber": 83
+        },
+        {
+          "caller": "create",
+          "callee": "request.form.get(\"vlm_group_id\", \"\").strip",
+          "lineNumber": 92
+        },
+        {
+          "caller": "create",
+          "callee": "request.form.get",
+          "lineNumber": 92
+        },
+        {
+          "caller": "create",
+          "callee": "request.form.get(\"bc_id\", \"\").strip",
+          "lineNumber": 93
+        },
+        {
+          "caller": "create",
+          "callee": "request.form.get",
+          "lineNumber": 93
+        },
+        {
+          "caller": "create",
+          "callee": "flash",
+          "lineNumber": 95
+        },
+        {
+          "caller": "create",
+          "callee": "redirect",
+          "lineNumber": 96
+        },
+        {
+          "caller": "create",
+          "callee": "url_for",
+          "lineNumber": 96
+        },
+        {
+          "caller": "create",
+          "callee": "request.form.get",
+          "lineNumber": 97
+        },
+        {
+          "caller": "create",
+          "callee": "request.form.get",
+          "lineNumber": 98
+        },
+        {
+          "caller": "create",
+          "callee": "_variables_from_form",
+          "lineNumber": 99
+        },
+        {
+          "caller": "create",
+          "callee": "db.session.get",
+          "lineNumber": 101
+        },
+        {
+          "caller": "create",
+          "callee": "spec.to_dict",
+          "lineNumber": 103
+        },
+        {
+          "caller": "create",
+          "callee": "log_change",
+          "lineNumber": 108
+        },
+        {
+          "caller": "create",
+          "callee": "spec.to_dict",
+          "lineNumber": 108
+        },
+        {
+          "caller": "create",
+          "callee": "db.session.commit",
+          "lineNumber": 109
+        },
+        {
+          "caller": "create",
+          "callee": "flash",
+          "lineNumber": 110
+        },
+        {
+          "caller": "create",
+          "callee": "redirect",
+          "lineNumber": 111
+        },
+        {
+          "caller": "create",
+          "callee": "url_for",
+          "lineNumber": 111
+        },
+        {
+          "caller": "create",
+          "callee": "DatasetSpecialization",
+          "lineNumber": 113
+        },
+        {
+          "caller": "create",
+          "callee": "db.session.add",
+          "lineNumber": 120
+        },
+        {
+          "caller": "create",
+          "callee": "log_change",
+          "lineNumber": 121
+        },
+        {
+          "caller": "create",
+          "callee": "spec.to_dict",
+          "lineNumber": 121
+        },
+        {
+          "caller": "create",
+          "callee": "db.session.commit",
+          "lineNumber": 122
+        },
+        {
+          "caller": "create",
+          "callee": "flash",
+          "lineNumber": 123
+        },
+        {
+          "caller": "create",
+          "callee": "redirect",
+          "lineNumber": 124
+        },
+        {
+          "caller": "create",
+          "callee": "url_for",
+          "lineNumber": 124
+        },
+        {
+          "caller": "delete",
+          "callee": "db.get_or_404",
+          "lineNumber": 129
+        },
+        {
+          "caller": "delete",
+          "callee": "log_change",
+          "lineNumber": 130
+        },
+        {
+          "caller": "delete",
+          "callee": "spec.to_dict",
+          "lineNumber": 130
+        },
+        {
+          "caller": "delete",
+          "callee": "db.session.delete",
+          "lineNumber": 131
+        },
+        {
+          "caller": "delete",
+          "callee": "db.session.commit",
+          "lineNumber": 132
+        },
+        {
+          "caller": "delete",
+          "callee": "flash",
+          "lineNumber": 133
+        },
+        {
+          "caller": "delete",
+          "callee": "redirect",
+          "lineNumber": 134
+        },
+        {
+          "caller": "delete",
+          "callee": "url_for",
+          "lineNumber": 134
+        },
+        {
+          "caller": "generate_from_dec",
+          "callee": "request.get_json",
+          "lineNumber": 140
+        },
+        {
+          "caller": "generate_from_dec",
+          "callee": "data.get(\"bc_id\", \"\").strip",
+          "lineNumber": 141
+        },
+        {
+          "caller": "generate_from_dec",
+          "callee": "data.get",
+          "lineNumber": 141
+        },
+        {
+          "caller": "generate_from_dec",
+          "callee": "jsonify",
+          "lineNumber": 143
+        },
+        {
+          "caller": "generate_from_dec",
+          "callee": "DataElementConcept.query.filter_by(bc_id=bc_id).all",
+          "lineNumber": 144
+        },
+        {
+          "caller": "generate_from_dec",
+          "callee": "DataElementConcept.query.filter_by",
+          "lineNumber": 144
+        },
+        {
+          "caller": "generate_from_dec",
+          "callee": "bool",
+          "lineNumber": 145
+        },
+        {
+          "caller": "generate_from_dec",
+          "callee": "jsonify",
+          "lineNumber": 146
+        },
+        {
+          "caller": "generate",
+          "callee": "db.get_or_404",
+          "lineNumber": 152
+        },
+        {
+          "caller": "generate",
+          "callee": "DataElementConcept.query.filter_by(bc_id=bc_id).all",
+          "lineNumber": 153
+        },
+        {
+          "caller": "generate",
+          "callee": "DataElementConcept.query.filter_by",
+          "lineNumber": 153
+        },
+        {
+          "caller": "generate",
+          "callee": "request.form.get",
+          "lineNumber": 154
+        },
+        {
+          "caller": "generate",
+          "callee": "db.session.get",
+          "lineNumber": 156
+        },
+        {
+          "caller": "generate",
+          "callee": "flash",
+          "lineNumber": 158
+        },
+        {
+          "caller": "generate",
+          "callee": "redirect",
+          "lineNumber": 159
+        },
+        {
+          "caller": "generate",
+          "callee": "url_for",
+          "lineNumber": 159
+        },
+        {
+          "caller": "generate",
+          "callee": "DatasetSpecialization",
+          "lineNumber": 161
+        },
+        {
+          "caller": "generate",
+          "callee": "db.session.add",
+          "lineNumber": 168
+        },
+        {
+          "caller": "generate",
+          "callee": "log_change",
+          "lineNumber": 169
+        },
+        {
+          "caller": "generate",
+          "callee": "spec.to_dict",
+          "lineNumber": 169
+        },
+        {
+          "caller": "generate",
+          "callee": "db.session.commit",
+          "lineNumber": 170
+        },
+        {
+          "caller": "generate",
+          "callee": "flash",
+          "lineNumber": 171
+        },
+        {
+          "caller": "generate",
+          "callee": "redirect",
+          "lineNumber": 172
+        },
+        {
+          "caller": "generate",
+          "callee": "url_for",
+          "lineNumber": 172
+        }
+      ],
+      "metrics": {
+        "importCount": 5,
+        "exportCount": 9,
+        "functionCount": 9,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "services/api_cache.py",
+      "language": "python",
+      "fileCategory": "code",
+      "totalLines": 42,
+      "nonEmptyLines": 34,
+      "functions": [
+        {
+          "name": "cached",
+          "startLine": 22,
+          "endLine": 42,
+          "params": [
+            "cache_key",
+            "fn"
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "cached",
+          "line": 22,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "cached",
+          "callee": "time.time",
+          "lineNumber": 25
+        },
+        {
+          "caller": "cached",
+          "callee": "_cache.get",
+          "lineNumber": 26
+        },
+        {
+          "caller": "cached",
+          "callee": "fn",
+          "lineNumber": 34
+        },
+        {
+          "caller": "cached",
+          "callee": "logger.warning",
+          "lineNumber": 39
+        },
+        {
+          "caller": "cached",
+          "callee": "logger.error",
+          "lineNumber": 41
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 1,
+        "functionCount": 1,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "services/cdisc_api.py",
+      "language": "python",
+      "fileCategory": "code",
+      "totalLines": 127,
+      "nonEmptyLines": 107,
+      "functions": [
+        {
+          "name": "_config_value",
+          "startLine": 19,
+          "endLine": 26,
+          "params": [
+            "name",
+            "default"
+          ]
+        }
+      ],
+      "classes": [
+        {
+          "name": "CDISCApiClient",
+          "startLine": 29,
+          "endLine": 127,
+          "methods": [
+            "__init__",
+            "_cache_key",
+            "_get",
+            "get_biomedical_concepts",
+            "get_bc",
+            "get_specialization",
+            "get_dataset_specializations",
+            "check_duplicate",
+            "publish_bc"
+          ],
+          "properties": []
+        }
+      ],
+      "exports": [
+        {
+          "name": "_config_value",
+          "line": 19,
+          "isDefault": false
+        },
+        {
+          "name": "CDISCApiClient",
+          "line": 29,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "_config_value",
+          "callee": "current_app.config.get",
+          "lineNumber": 24
+        },
+        {
+          "caller": "_config_value",
+          "callee": "os.environ.get",
+          "lineNumber": 24
+        },
+        {
+          "caller": "_config_value",
+          "callee": "os.environ.get",
+          "lineNumber": 26
+        },
+        {
+          "caller": "__init__",
+          "callee": "_config_value",
+          "lineNumber": 31
+        },
+        {
+          "caller": "__init__",
+          "callee": "_config_value",
+          "lineNumber": 32
+        },
+        {
+          "caller": "__init__",
+          "callee": "_config_value",
+          "lineNumber": 33
+        },
+        {
+          "caller": "__init__",
+          "callee": "hashlib.sha256(key_material.encode()).hexdigest",
+          "lineNumber": 44
+        },
+        {
+          "caller": "__init__",
+          "callee": "hashlib.sha256",
+          "lineNumber": 44
+        },
+        {
+          "caller": "__init__",
+          "callee": "key_material.encode",
+          "lineNumber": 44
+        },
+        {
+          "caller": "_get",
+          "callee": "requests.get",
+          "lineNumber": 51
+        },
+        {
+          "caller": "_get",
+          "callee": "response.raise_for_status",
+          "lineNumber": 52
+        },
+        {
+          "caller": "_get",
+          "callee": "response.json",
+          "lineNumber": 53
+        },
+        {
+          "caller": "_fetch",
+          "callee": "self._get",
+          "lineNumber": 65
+        },
+        {
+          "caller": "_fetch",
+          "callee": "data.get(\"_links\", {}).get",
+          "lineNumber": 66
+        },
+        {
+          "caller": "_fetch",
+          "callee": "data.get",
+          "lineNumber": 66
+        },
+        {
+          "caller": "_fetch",
+          "callee": "logger.error",
+          "lineNumber": 68
+        },
+        {
+          "caller": "_fetch",
+          "callee": "str",
+          "lineNumber": 69
+        },
+        {
+          "caller": "get_biomedical_concepts",
+          "callee": "_cached",
+          "lineNumber": 71
+        },
+        {
+          "caller": "get_biomedical_concepts",
+          "callee": "self._cache_key",
+          "lineNumber": 71
+        },
+        {
+          "caller": "get_bc",
+          "callee": "self._get",
+          "lineNumber": 76
+        },
+        {
+          "caller": "get_bc",
+          "callee": "logger.error",
+          "lineNumber": 78
+        },
+        {
+          "caller": "get_bc",
+          "callee": "str",
+          "lineNumber": 79
+        },
+        {
+          "caller": "get_specialization",
+          "callee": "self._get",
+          "lineNumber": 84
+        },
+        {
+          "caller": "get_specialization",
+          "callee": "logger.error",
+          "lineNumber": 86
+        },
+        {
+          "caller": "get_specialization",
+          "callee": "str",
+          "lineNumber": 87
+        },
+        {
+          "caller": "_fetch",
+          "callee": "self._get",
+          "lineNumber": 99
+        },
+        {
+          "caller": "_fetch",
+          "callee": "data.get(\"_links\", {}).get",
+          "lineNumber": 100
+        },
+        {
+          "caller": "_fetch",
+          "callee": "data.get",
+          "lineNumber": 100
+        },
+        {
+          "caller": "_fetch",
+          "callee": "isinstance",
+          "lineNumber": 102
+        },
+        {
+          "caller": "_fetch",
+          "callee": "links.values",
+          "lineNumber": 104
+        },
+        {
+          "caller": "_fetch",
+          "callee": "isinstance",
+          "lineNumber": 104
+        },
+        {
+          "caller": "_fetch",
+          "callee": "logger.error",
+          "lineNumber": 106
+        },
+        {
+          "caller": "_fetch",
+          "callee": "str",
+          "lineNumber": 107
+        },
+        {
+          "caller": "get_dataset_specializations",
+          "callee": "_cached",
+          "lineNumber": 109
+        },
+        {
+          "caller": "get_dataset_specializations",
+          "callee": "self._cache_key",
+          "lineNumber": 109
+        },
+        {
+          "caller": "check_duplicate",
+          "callee": "self.get_biomedical_concepts",
+          "lineNumber": 116
+        },
+        {
+          "caller": "check_duplicate",
+          "callee": "any",
+          "lineNumber": 117
+        },
+        {
+          "caller": "check_duplicate",
+          "callee": "bc.get(\"title\", \"\").lower",
+          "lineNumber": 117
+        },
+        {
+          "caller": "check_duplicate",
+          "callee": "bc.get",
+          "lineNumber": 117
+        },
+        {
+          "caller": "check_duplicate",
+          "callee": "short_name.lower",
+          "lineNumber": 117
+        },
+        {
+          "caller": "check_duplicate",
+          "callee": "logger.error",
+          "lineNumber": 119
+        },
+        {
+          "caller": "publish_bc",
+          "callee": "requests.post",
+          "lineNumber": 125
+        },
+        {
+          "caller": "publish_bc",
+          "callee": "response.raise_for_status",
+          "lineNumber": 126
+        },
+        {
+          "caller": "publish_bc",
+          "callee": "response.json",
+          "lineNumber": 127
+        }
+      ],
+      "metrics": {
+        "importCount": 1,
+        "exportCount": 2,
+        "functionCount": 1,
+        "classCount": 1
+      }
+    },
+    {
+      "path": "services/loinc_api.py",
+      "language": "python",
+      "fileCategory": "code",
+      "totalLines": 62,
+      "nonEmptyLines": 51,
+      "classes": [
+        {
+          "name": "LoincApiClient",
+          "startLine": 18,
+          "endLine": 62,
+          "methods": [
+            "_auth",
+            "search"
+          ],
+          "properties": []
+        }
+      ],
+      "exports": [
+        {
+          "name": "LoincApiClient",
+          "line": 18,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "_auth",
+          "callee": "os.environ.get",
+          "lineNumber": 22
+        },
+        {
+          "caller": "_auth",
+          "callee": "os.environ.get",
+          "lineNumber": 23
+        },
+        {
+          "caller": "_fetch",
+          "callee": "requests.get",
+          "lineNumber": 36
+        },
+        {
+          "caller": "_fetch",
+          "callee": "self._auth",
+          "lineNumber": 39
+        },
+        {
+          "caller": "_fetch",
+          "callee": "response.raise_for_status",
+          "lineNumber": 42
+        },
+        {
+          "caller": "_fetch",
+          "callee": "response.json",
+          "lineNumber": 43
+        },
+        {
+          "caller": "_fetch",
+          "callee": "len",
+          "lineNumber": 46
+        },
+        {
+          "caller": "_fetch",
+          "callee": "len",
+          "lineNumber": 47
+        },
+        {
+          "caller": "_fetch",
+          "callee": "range",
+          "lineNumber": 49
+        },
+        {
+          "caller": "_fetch",
+          "callee": "len",
+          "lineNumber": 49
+        },
+        {
+          "caller": "_fetch",
+          "callee": "extra.items",
+          "lineNumber": 51
+        },
+        {
+          "caller": "_fetch",
+          "callee": "len",
+          "lineNumber": 52
+        },
+        {
+          "caller": "_fetch",
+          "callee": "results.append",
+          "lineNumber": 53
+        },
+        {
+          "caller": "search",
+          "callee": "cached",
+          "lineNumber": 57
+        },
+        {
+          "caller": "search",
+          "callee": "logger.error",
+          "lineNumber": 61
+        },
+        {
+          "caller": "search",
+          "callee": "str",
+          "lineNumber": 62
+        }
+      ],
+      "metrics": {
+        "importCount": 1,
+        "exportCount": 1,
+        "functionCount": 0,
+        "classCount": 1
+      }
+    },
+    {
+      "path": "tests/test_cdisc_api_cache.py",
+      "language": "python",
+      "fileCategory": "code",
+      "totalLines": 120,
+      "nonEmptyLines": 86,
+      "classes": [
+        {
+          "name": "TestCachedHelper",
+          "startLine": 11,
+          "endLine": 64,
+          "methods": [
+            "setup_method",
+            "test_first_call_fetches_and_stores",
+            "test_fresh_entry_served_without_refetch",
+            "test_stale_entry_refreshes_successfully",
+            "test_stale_entry_served_when_refresh_fails",
+            "test_expired_entry_raises_when_refresh_fails",
+            "test_no_entry_raises_when_fetch_fails"
+          ],
+          "properties": []
+        },
+        {
+          "name": "TestClientCacheKeys",
+          "startLine": 67,
+          "endLine": 120,
+          "methods": [
+            "setup_method",
+            "test_cache_key_excludes_raw_api_key",
+            "test_get_biomedical_concepts_error_encoded_not_raised",
+            "test_error_result_replaced_after_ttl"
+          ],
+          "properties": []
+        }
+      ],
+      "exports": [
+        {
+          "name": "TestCachedHelper",
+          "line": 11,
+          "isDefault": false
+        },
+        {
+          "name": "TestClientCacheKeys",
+          "line": 67,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "setup_method",
+          "callee": "cdisc_api._cache.clear",
+          "lineNumber": 13
+        },
+        {
+          "caller": "fn",
+          "callee": "calls.append",
+          "lineNumber": 19
+        },
+        {
+          "caller": "test_first_call_fetches_and_stores",
+          "callee": "_cached",
+          "lineNumber": 22
+        },
+        {
+          "caller": "test_first_call_fetches_and_stores",
+          "callee": "len",
+          "lineNumber": 23
+        },
+        {
+          "caller": "fn",
+          "callee": "calls.append",
+          "lineNumber": 30
+        },
+        {
+          "caller": "test_fresh_entry_served_without_refetch",
+          "callee": "_cached",
+          "lineNumber": 33
+        },
+        {
+          "caller": "test_fresh_entry_served_without_refetch",
+          "callee": "_cached",
+          "lineNumber": 34
+        },
+        {
+          "caller": "test_fresh_entry_served_without_refetch",
+          "callee": "len",
+          "lineNumber": 35
+        },
+        {
+          "caller": "test_stale_entry_refreshes_successfully",
+          "callee": "time.time",
+          "lineNumber": 38
+        },
+        {
+          "caller": "test_stale_entry_refreshes_successfully",
+          "callee": "_cached",
+          "lineNumber": 39
+        },
+        {
+          "caller": "test_stale_entry_served_when_refresh_fails",
+          "callee": "time.time",
+          "lineNumber": 43
+        },
+        {
+          "caller": "failing",
+          "callee": "ConnectionError",
+          "lineNumber": 46
+        },
+        {
+          "caller": "test_stale_entry_served_when_refresh_fails",
+          "callee": "_cached",
+          "lineNumber": 48
+        },
+        {
+          "caller": "test_expired_entry_raises_when_refresh_fails",
+          "callee": "time.time",
+          "lineNumber": 51
+        },
+        {
+          "caller": "failing",
+          "callee": "ConnectionError",
+          "lineNumber": 54
+        },
+        {
+          "caller": "test_expired_entry_raises_when_refresh_fails",
+          "callee": "pytest.raises",
+          "lineNumber": 56
+        },
+        {
+          "caller": "test_expired_entry_raises_when_refresh_fails",
+          "callee": "_cached",
+          "lineNumber": 57
+        },
+        {
+          "caller": "failing",
+          "callee": "ConnectionError",
+          "lineNumber": 61
+        },
+        {
+          "caller": "test_no_entry_raises_when_fetch_fails",
+          "callee": "pytest.raises",
+          "lineNumber": 63
+        },
+        {
+          "caller": "test_no_entry_raises_when_fetch_fails",
+          "callee": "_cached",
+          "lineNumber": 64
+        },
+        {
+          "caller": "setup_method",
+          "callee": "cdisc_api._cache.clear",
+          "lineNumber": 69
+        },
+        {
+          "caller": "test_cache_key_excludes_raw_api_key",
+          "callee": "app.app_context",
+          "lineNumber": 72
+        },
+        {
+          "caller": "test_cache_key_excludes_raw_api_key",
+          "callee": "CDISCApiClient",
+          "lineNumber": 73
+        },
+        {
+          "caller": "test_cache_key_excludes_raw_api_key",
+          "callee": "client._cache_key",
+          "lineNumber": 74
+        },
+        {
+          "caller": "boom",
+          "callee": "requests.ConnectionError",
+          "lineNumber": 83
+        },
+        {
+          "caller": "test_get_biomedical_concepts_error_encoded_not_raised",
+          "callee": "monkeypatch.setattr",
+          "lineNumber": 85
+        },
+        {
+          "caller": "test_get_biomedical_concepts_error_encoded_not_raised",
+          "callee": "app.app_context",
+          "lineNumber": 86
+        },
+        {
+          "caller": "test_get_biomedical_concepts_error_encoded_not_raised",
+          "callee": "CDISCApiClient().get_biomedical_concepts",
+          "lineNumber": 87
+        },
+        {
+          "caller": "test_get_biomedical_concepts_error_encoded_not_raised",
+          "callee": "CDISCApiClient",
+          "lineNumber": 87
+        },
+        {
+          "caller": "test_get_biomedical_concepts_error_encoded_not_raised",
+          "callee": "len",
+          "lineNumber": 88
+        },
+        {
+          "caller": "test_error_result_replaced_after_ttl",
+          "callee": "app.app_context",
+          "lineNumber": 95
+        },
+        {
+          "caller": "test_error_result_replaced_after_ttl",
+          "callee": "CDISCApiClient",
+          "lineNumber": 96
+        },
+        {
+          "caller": "boom",
+          "callee": "requests.ConnectionError",
+          "lineNumber": 99
+        },
+        {
+          "caller": "test_error_result_replaced_after_ttl",
+          "callee": "monkeypatch.setattr",
+          "lineNumber": 101
+        },
+        {
+          "caller": "test_error_result_replaced_after_ttl",
+          "callee": "app.app_context",
+          "lineNumber": 102
+        },
+        {
+          "caller": "test_error_result_replaced_after_ttl",
+          "callee": "CDISCApiClient().get_biomedical_concepts",
+          "lineNumber": 103
+        },
+        {
+          "caller": "test_error_result_replaced_after_ttl",
+          "callee": "CDISCApiClient",
+          "lineNumber": 103
+        },
+        {
+          "caller": "test_error_result_replaced_after_ttl",
+          "callee": "client._cache_key",
+          "lineNumber": 106
+        },
+        {
+          "caller": "test_error_result_replaced_after_ttl",
+          "callee": "monkeypatch.setattr",
+          "lineNumber": 117
+        },
+        {
+          "caller": "test_error_result_replaced_after_ttl",
+          "callee": "FakeResp",
+          "lineNumber": 117
+        },
+        {
+          "caller": "test_error_result_replaced_after_ttl",
+          "callee": "app.app_context",
+          "lineNumber": 118
+        },
+        {
+          "caller": "test_error_result_replaced_after_ttl",
+          "callee": "CDISCApiClient().get_biomedical_concepts",
+          "lineNumber": 119
+        },
+        {
+          "caller": "test_error_result_replaced_after_ttl",
+          "callee": "CDISCApiClient",
+          "lineNumber": 119
+        }
+      ],
+      "metrics": {
+        "importCount": 1,
+        "exportCount": 2,
+        "functionCount": 0,
+        "classCount": 2
+      }
+    },
+    {
+      "path": "tests/test_loinc.py",
+      "language": "python",
+      "fileCategory": "code",
+      "totalLines": 205,
+      "nonEmptyLines": 169,
+      "classes": [
+        {
+          "name": "TestLoincApiClientSearch",
+          "startLine": 44,
+          "endLine": 168,
+          "methods": [
+            "_mock_response",
+            "test_returns_normalized_list",
+            "test_all_ef_fields_present_in_result",
+            "test_uses_ef_parameter",
+            "test_ef_fields_constant_contains_all_required_fields",
+            "test_uses_basic_auth_when_env_vars_set",
+            "test_no_auth_when_env_vars_missing",
+            "test_empty_results",
+            "test_missing_codes_array_returns_empty",
+            "test_network_error_returns_error_entry"
+          ],
+          "properties": []
+        },
+        {
+          "name": "TestLoincSearchRoute",
+          "startLine": 176,
+          "endLine": 205,
+          "methods": [
+            "test_returns_json_for_ajax",
+            "test_empty_term_returns_empty_list",
+            "test_calls_client_with_term",
+            "test_format_json_param_triggers_json_response"
+          ],
+          "properties": []
+        }
+      ],
+      "exports": [
+        {
+          "name": "TestLoincApiClientSearch",
+          "line": 44,
+          "isDefault": false
+        },
+        {
+          "name": "TestLoincSearchRoute",
+          "line": 176,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "_mock_response",
+          "callee": "MagicMock",
+          "lineNumber": 46
+        },
+        {
+          "caller": "_mock_response",
+          "callee": "MagicMock",
+          "lineNumber": 49
+        },
+        {
+          "caller": "test_returns_normalized_list",
+          "callee": "patch",
+          "lineNumber": 53
+        },
+        {
+          "caller": "test_returns_normalized_list",
+          "callee": "self._mock_response",
+          "lineNumber": 54
+        },
+        {
+          "caller": "test_returns_normalized_list",
+          "callee": "LoincApiClient().search",
+          "lineNumber": 55
+        },
+        {
+          "caller": "test_returns_normalized_list",
+          "callee": "LoincApiClient",
+          "lineNumber": 55
+        },
+        {
+          "caller": "test_returns_normalized_list",
+          "callee": "len",
+          "lineNumber": 57
+        },
+        {
+          "caller": "test_all_ef_fields_present_in_result",
+          "callee": "patch",
+          "lineNumber": 69
+        },
+        {
+          "caller": "test_all_ef_fields_present_in_result",
+          "callee": "self._mock_response",
+          "lineNumber": 70
+        },
+        {
+          "caller": "test_all_ef_fields_present_in_result",
+          "callee": "LoincApiClient().search",
+          "lineNumber": 71
+        },
+        {
+          "caller": "test_all_ef_fields_present_in_result",
+          "callee": "LoincApiClient",
+          "lineNumber": 71
+        },
+        {
+          "caller": "test_uses_ef_parameter",
+          "callee": "patch",
+          "lineNumber": 94
+        },
+        {
+          "caller": "test_uses_ef_parameter",
+          "callee": "self._mock_response",
+          "lineNumber": 95
+        },
+        {
+          "caller": "test_uses_ef_parameter",
+          "callee": "LoincApiClient().search",
+          "lineNumber": 96
+        },
+        {
+          "caller": "test_uses_ef_parameter",
+          "callee": "LoincApiClient",
+          "lineNumber": 96
+        },
+        {
+          "caller": "test_uses_basic_auth_when_env_vars_set",
+          "callee": "monkeypatch.setenv",
+          "lineNumber": 129
+        },
+        {
+          "caller": "test_uses_basic_auth_when_env_vars_set",
+          "callee": "monkeypatch.setenv",
+          "lineNumber": 130
+        },
+        {
+          "caller": "test_uses_basic_auth_when_env_vars_set",
+          "callee": "patch",
+          "lineNumber": 131
+        },
+        {
+          "caller": "test_uses_basic_auth_when_env_vars_set",
+          "callee": "self._mock_response",
+          "lineNumber": 132
+        },
+        {
+          "caller": "test_uses_basic_auth_when_env_vars_set",
+          "callee": "LoincApiClient().search",
+          "lineNumber": 133
+        },
+        {
+          "caller": "test_uses_basic_auth_when_env_vars_set",
+          "callee": "LoincApiClient",
+          "lineNumber": 133
+        },
+        {
+          "caller": "test_uses_basic_auth_when_env_vars_set",
+          "callee": "mock_get.call_args[1].get",
+          "lineNumber": 135
+        },
+        {
+          "caller": "test_no_auth_when_env_vars_missing",
+          "callee": "monkeypatch.delenv",
+          "lineNumber": 139
+        },
+        {
+          "caller": "test_no_auth_when_env_vars_missing",
+          "callee": "monkeypatch.delenv",
+          "lineNumber": 140
+        },
+        {
+          "caller": "test_no_auth_when_env_vars_missing",
+          "callee": "patch",
+          "lineNumber": 141
+        },
+        {
+          "caller": "test_no_auth_when_env_vars_missing",
+          "callee": "self._mock_response",
+          "lineNumber": 142
+        },
+        {
+          "caller": "test_no_auth_when_env_vars_missing",
+          "callee": "LoincApiClient().search",
+          "lineNumber": 143
+        },
+        {
+          "caller": "test_no_auth_when_env_vars_missing",
+          "callee": "LoincApiClient",
+          "lineNumber": 143
+        },
+        {
+          "caller": "test_no_auth_when_env_vars_missing",
+          "callee": "mock_get.call_args[1].get",
+          "lineNumber": 145
+        },
+        {
+          "caller": "test_empty_results",
+          "callee": "patch",
+          "lineNumber": 149
+        },
+        {
+          "caller": "test_empty_results",
+          "callee": "self._mock_response",
+          "lineNumber": 150
+        },
+        {
+          "caller": "test_empty_results",
+          "callee": "LoincApiClient().search",
+          "lineNumber": 151
+        },
+        {
+          "caller": "test_empty_results",
+          "callee": "LoincApiClient",
+          "lineNumber": 151
+        },
+        {
+          "caller": "test_missing_codes_array_returns_empty",
+          "callee": "patch",
+          "lineNumber": 156
+        },
+        {
+          "caller": "test_missing_codes_array_returns_empty",
+          "callee": "self._mock_response",
+          "lineNumber": 157
+        },
+        {
+          "caller": "test_missing_codes_array_returns_empty",
+          "callee": "LoincApiClient().search",
+          "lineNumber": 158
+        },
+        {
+          "caller": "test_missing_codes_array_returns_empty",
+          "callee": "LoincApiClient",
+          "lineNumber": 158
+        },
+        {
+          "caller": "test_network_error_returns_error_entry",
+          "callee": "patch",
+          "lineNumber": 163
+        },
+        {
+          "caller": "test_network_error_returns_error_entry",
+          "callee": "requests.RequestException",
+          "lineNumber": 163
+        },
+        {
+          "caller": "test_network_error_returns_error_entry",
+          "callee": "LoincApiClient().search",
+          "lineNumber": 164
+        },
+        {
+          "caller": "test_network_error_returns_error_entry",
+          "callee": "LoincApiClient",
+          "lineNumber": 164
+        },
+        {
+          "caller": "test_network_error_returns_error_entry",
+          "callee": "len",
+          "lineNumber": 166
+        },
+        {
+          "caller": "test_returns_json_for_ajax",
+          "callee": "patch",
+          "lineNumber": 178
+        },
+        {
+          "caller": "test_returns_json_for_ajax",
+          "callee": "client.get",
+          "lineNumber": 180
+        },
+        {
+          "caller": "test_returns_json_for_ajax",
+          "callee": "json.loads",
+          "lineNumber": 183
+        },
+        {
+          "caller": "test_returns_json_for_ajax",
+          "callee": "isinstance",
+          "lineNumber": 184
+        },
+        {
+          "caller": "test_empty_term_returns_empty_list",
+          "callee": "client.get",
+          "lineNumber": 188
+        },
+        {
+          "caller": "test_empty_term_returns_empty_list",
+          "callee": "json.loads",
+          "lineNumber": 190
+        },
+        {
+          "caller": "test_calls_client_with_term",
+          "callee": "patch",
+          "lineNumber": 193
+        },
+        {
+          "caller": "test_calls_client_with_term",
+          "callee": "client.get",
+          "lineNumber": 195
+        },
+        {
+          "caller": "test_calls_client_with_term",
+          "callee": "MockClient.return_value.search.assert_called_once_with",
+          "lineNumber": 197
+        },
+        {
+          "caller": "test_format_json_param_triggers_json_response",
+          "callee": "patch",
+          "lineNumber": 200
+        },
+        {
+          "caller": "test_format_json_param_triggers_json_response",
+          "callee": "client.get",
+          "lineNumber": 202
+        },
+        {
+          "caller": "test_format_json_param_triggers_json_response",
+          "callee": "r.content_type.startswith",
+          "lineNumber": 205
+        }
+      ],
+      "metrics": {
+        "importCount": 1,
+        "exportCount": 2,
+        "functionCount": 0,
+        "classCount": 2
+      }
+    }
+  ]
+}

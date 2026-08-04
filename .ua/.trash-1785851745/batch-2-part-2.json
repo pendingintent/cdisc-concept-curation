@@ -1,0 +1,743 @@
+{
+  "nodes": [
+    {
+      "id": "file:services/bc_service.py",
+      "type": "file",
+      "name": "bc_service.py",
+      "filePath": "services/bc_service.py",
+      "summary": "Core business logic for creating, updating, and managing Biomedical Concepts and their Data Element Concepts, including NCIt remapping/merging and review submission.",
+      "tags": ["service", "business-logic", "crud"],
+      "complexity": "complex"
+    },
+    {
+      "id": "function:services/bc_service.py:_get_bc_or_raise",
+      "type": "function",
+      "name": "_get_bc_or_raise",
+      "filePath": "services/bc_service.py",
+      "lineRange": [28, 32],
+      "summary": "Looks up a BiomedicalConcept by its bc_id, raising NotFoundError when it does not exist.",
+      "tags": ["utility", "data-access"],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:services/bc_service.py:apply_bc_fields",
+      "type": "function",
+      "name": "apply_bc_fields",
+      "filePath": "services/bc_service.py",
+      "lineRange": [35, 63],
+      "summary": "Applies submitted field data onto a BiomedicalConcept instance, handling boolean coercion and LOINC/NCIt/parent-BC field normalization.",
+      "tags": ["business-logic", "data-model"],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:services/bc_service.py:create_bc",
+      "type": "function",
+      "name": "create_bc",
+      "filePath": "services/bc_service.py",
+      "lineRange": [66, 85],
+      "summary": "Creates a new BiomedicalConcept from submitted data, validates uniqueness of the bc_id, persists it, and logs an audit entry.",
+      "tags": ["service", "crud", "audit"],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:services/bc_service.py:update_bc",
+      "type": "function",
+      "name": "update_bc",
+      "filePath": "services/bc_service.py",
+      "lineRange": [88, 95],
+      "summary": "Updates an existing BiomedicalConcept's fields and records the before/after change in the audit log.",
+      "tags": ["service", "crud", "audit"],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:services/bc_service.py:save_decs",
+      "type": "function",
+      "name": "save_decs",
+      "filePath": "services/bc_service.py",
+      "lineRange": [98, 121],
+      "summary": "Replaces a BC's Data Element Concept rows, deleting existing DECs and inserting the submitted set with sort order.",
+      "tags": ["service", "crud"],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:services/bc_service.py:map_ncit_to_bc",
+      "type": "function",
+      "name": "map_ncit_to_bc",
+      "filePath": "services/bc_service.py",
+      "lineRange": [124, 148],
+      "summary": "Remaps a BC's NCIt code, and when the target NCIt-derived id already exists, merges the current BC's DECs, specializations, and governance history into it.",
+      "tags": ["service", "ncit", "merge"],
+      "complexity": "complex"
+    },
+    {
+      "id": "function:services/bc_service.py:submit_bc_for_review",
+      "type": "function",
+      "name": "submit_bc_for_review",
+      "filePath": "services/bc_service.py",
+      "lineRange": [151, 159],
+      "summary": "Transitions a BC's status to under-review and logs the change to the audit trail.",
+      "tags": ["service", "governance", "audit"],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:services/export.py",
+      "type": "file",
+      "name": "export.py",
+      "filePath": "services/export.py",
+      "summary": "Exporters that render Biomedical Concept collections to JSON, styled XLSX, governance XLSX, and CDISC ODM-XML formats.",
+      "tags": ["export", "serialization", "service"],
+      "complexity": "complex"
+    },
+    {
+      "id": "function:services/export.py:export_json",
+      "type": "function",
+      "name": "export_json",
+      "filePath": "services/export.py",
+      "lineRange": [37, 39],
+      "summary": "Serializes a list of BC dictionaries to a pretty-printed JSON string.",
+      "tags": ["export", "serialization"],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:services/export.py:export_xlsx",
+      "type": "function",
+      "name": "export_xlsx",
+      "filePath": "services/export.py",
+      "lineRange": [42, 67],
+      "summary": "Builds a styled openpyxl workbook of BC export fields with a bold header row, falling back to LOINC code when no NCIt code is present.",
+      "tags": ["export", "xlsx"],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:services/export.py:export_governance_xlsx",
+      "type": "function",
+      "name": "export_governance_xlsx",
+      "filePath": "services/export.py",
+      "lineRange": [88, 143],
+      "summary": "Builds a governance-focused workbook containing a BC summary row followed by its Data Element Concept rows for CDISC governance review.",
+      "tags": ["export", "xlsx", "governance"],
+      "complexity": "complex"
+    },
+    {
+      "id": "function:services/export.py:export_odm_xml",
+      "type": "function",
+      "name": "export_odm_xml",
+      "filePath": "services/export.py",
+      "lineRange": [146, 185],
+      "summary": "Builds a CDISC ODM-XML document with ItemDefs and NCIt Aliases from a list of Biomedical Concepts.",
+      "tags": ["export", "xml", "odm"],
+      "complexity": "complex"
+    },
+    {
+      "id": "file:services/governance_service.py",
+      "type": "file",
+      "name": "governance_service.py",
+      "filePath": "services/governance_service.py",
+      "summary": "Implements governance stage transitions (advance/reject) for Biomedical Concepts, creating GovernanceRecord history rows and audit log entries.",
+      "tags": ["service", "governance", "workflow"],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:services/governance_service.py:advance_governance",
+      "type": "function",
+      "name": "advance_governance",
+      "filePath": "services/governance_service.py",
+      "lineRange": [16, 40],
+      "summary": "Moves a BC forward through the STATUS_ORDER stage sequence, recording a GovernanceRecord and audit log entry for the transition.",
+      "tags": ["service", "governance", "workflow"],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:services/governance_service.py:reject_bc",
+      "type": "function",
+      "name": "reject_bc",
+      "filePath": "services/governance_service.py",
+      "lineRange": [43, 60],
+      "summary": "Reverts a BC's governance stage on rejection, recording a GovernanceRecord and audit log entry with the rejection comment.",
+      "tags": ["service", "governance", "workflow"],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:services/ncit_api.py",
+      "type": "file",
+      "name": "ncit_api.py",
+      "filePath": "services/ncit_api.py",
+      "summary": "NCI Thesaurus EVS REST API client providing concept search and detailed concept retrieval (parents, semantic type, synonyms, definitions) with caching.",
+      "tags": ["api-client", "ncit", "integration", "service"],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:services/ncit_api.py:_pick_definition",
+      "type": "function",
+      "name": "_pick_definition",
+      "filePath": "services/ncit_api.py",
+      "lineRange": [14, 21],
+      "summary": "Selects the NCI-source or, failing that, first available definition from a concept's list of definitions.",
+      "tags": ["utility", "data-transform"],
+      "complexity": "simple"
+    },
+    {
+      "id": "class:services/ncit_api.py:NCItApiClient",
+      "type": "class",
+      "name": "NCItApiClient",
+      "filePath": "services/ncit_api.py",
+      "lineRange": [24, 85],
+      "summary": "HTTP client wrapping the NCI EVS REST API, exposing concept search and cached, extended concept-detail lookups (parents, semantic type, synonyms, definitions) used throughout the NCIt mapping workflow.",
+      "tags": ["api-client", "integration", "caching"],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:tests/test_export_service.py",
+      "type": "file",
+      "name": "test_export_service.py",
+      "filePath": "tests/test_export_service.py",
+      "summary": "Unit tests covering JSON, XLSX, governance XLSX, and ODM-XML export functions in services/export.py, verifying headers, blanking rules, and document structure.",
+      "tags": ["test", "export", "unit-test"],
+      "complexity": "complex"
+    },
+    {
+      "id": "class:tests/test_export_service.py:TestExportJson",
+      "type": "class",
+      "name": "TestExportJson",
+      "filePath": "tests/test_export_service.py",
+      "lineRange": [55, 70],
+      "summary": "Tests export_json's round-trip serialization, empty-list handling, and coercion of non-JSON-serializable values.",
+      "tags": ["test", "export"],
+      "complexity": "simple"
+    },
+    {
+      "id": "class:tests/test_export_service.py:TestExportXlsx",
+      "type": "class",
+      "name": "TestExportXlsx",
+      "filePath": "tests/test_export_service.py",
+      "lineRange": [73, 104],
+      "summary": "Tests export_xlsx's header and row output, empty-list behavior, blank rendering of missing fields, and the LOINC-code fallback in the Code column.",
+      "tags": ["test", "export", "xlsx"],
+      "complexity": "moderate"
+    },
+    {
+      "id": "class:tests/test_export_service.py:TestExportGovernanceXlsx",
+      "type": "class",
+      "name": "TestExportGovernanceXlsx",
+      "filePath": "tests/test_export_service.py",
+      "lineRange": [107, 180],
+      "summary": "Tests export_governance_xlsx's BC-row-then-DEC-rows layout and the blanking of system fields for BCs without a LOINC code.",
+      "tags": ["test", "export", "governance"],
+      "complexity": "moderate"
+    },
+    {
+      "id": "class:tests/test_export_service.py:TestExportOdmXml",
+      "type": "class",
+      "name": "TestExportOdmXml",
+      "filePath": "tests/test_export_service.py",
+      "lineRange": [183, 207],
+      "summary": "Tests export_odm_xml's document structure, conditional inclusion of the Alias element only when an NCIt code is present, and empty-list handling.",
+      "tags": ["test", "export", "xml"],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:tests/test_ncit.py",
+      "type": "file",
+      "name": "test_ncit.py",
+      "filePath": "tests/test_ncit.py",
+      "summary": "Unit tests for NCItApiClient.get_concept's extended metadata extraction and the /ncit concept-detail route's JSON responses and error handling.",
+      "tags": ["test", "ncit", "unit-test"],
+      "complexity": "moderate"
+    },
+    {
+      "id": "class:tests/test_ncit.py:TestNcitGetConceptExtended",
+      "type": "class",
+      "name": "TestNcitGetConceptExtended",
+      "filePath": "tests/test_ncit.py",
+      "lineRange": [43, 112],
+      "summary": "Tests NCItApiClient.get_concept's extraction of parents, semantic type, source synonyms, and full definitions list, plus empty and error-path handling.",
+      "tags": ["test", "ncit", "api-client"],
+      "complexity": "moderate"
+    },
+    {
+      "id": "class:tests/test_ncit.py:TestNcitConceptRoute",
+      "type": "class",
+      "name": "TestNcitConceptRoute",
+      "filePath": "tests/test_ncit.py",
+      "lineRange": [131, 156],
+      "summary": "Tests the /ncit concept-detail route's JSON response shape, correct pass-through of the requested code, and 404 response when the service errors.",
+      "tags": ["test", "ncit", "api-handler"],
+      "complexity": "simple"
+    }
+  ],
+  "edges": [
+    {
+      "source": "file:services/bc_service.py",
+      "target": "file:extensions.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:services/bc_service.py",
+      "target": "file:models/bc.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:services/bc_service.py",
+      "target": "file:models/governance.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:services/bc_service.py",
+      "target": "file:models/specialization.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:services/bc_service.py",
+      "target": "file:services/audit.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:services/governance_service.py",
+      "target": "file:extensions.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:services/governance_service.py",
+      "target": "file:models/governance.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:services/governance_service.py",
+      "target": "file:services/audit.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:services/governance_service.py",
+      "target": "file:services/bc_service.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:services/ncit_api.py",
+      "target": "file:services/api_cache.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:tests/test_export_service.py",
+      "target": "file:extensions.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:tests/test_export_service.py",
+      "target": "file:models/bc.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:tests/test_export_service.py",
+      "target": "file:services/export.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:tests/test_ncit.py",
+      "target": "file:services/ncit_api.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+
+    {
+      "source": "file:services/bc_service.py",
+      "target": "function:services/bc_service.py:_get_bc_or_raise",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:services/bc_service.py",
+      "target": "function:services/bc_service.py:apply_bc_fields",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:services/bc_service.py",
+      "target": "function:services/bc_service.py:create_bc",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:services/bc_service.py",
+      "target": "function:services/bc_service.py:update_bc",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:services/bc_service.py",
+      "target": "function:services/bc_service.py:save_decs",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:services/bc_service.py",
+      "target": "function:services/bc_service.py:map_ncit_to_bc",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:services/bc_service.py",
+      "target": "function:services/bc_service.py:submit_bc_for_review",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:services/export.py",
+      "target": "function:services/export.py:export_json",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:services/export.py",
+      "target": "function:services/export.py:export_xlsx",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:services/export.py",
+      "target": "function:services/export.py:export_governance_xlsx",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:services/export.py",
+      "target": "function:services/export.py:export_odm_xml",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:services/governance_service.py",
+      "target": "function:services/governance_service.py:advance_governance",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:services/governance_service.py",
+      "target": "function:services/governance_service.py:reject_bc",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:services/ncit_api.py",
+      "target": "function:services/ncit_api.py:_pick_definition",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:services/ncit_api.py",
+      "target": "class:services/ncit_api.py:NCItApiClient",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:tests/test_export_service.py",
+      "target": "class:tests/test_export_service.py:TestExportJson",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:tests/test_export_service.py",
+      "target": "class:tests/test_export_service.py:TestExportXlsx",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:tests/test_export_service.py",
+      "target": "class:tests/test_export_service.py:TestExportGovernanceXlsx",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:tests/test_export_service.py",
+      "target": "class:tests/test_export_service.py:TestExportOdmXml",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:tests/test_ncit.py",
+      "target": "class:tests/test_ncit.py:TestNcitGetConceptExtended",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:tests/test_ncit.py",
+      "target": "class:tests/test_ncit.py:TestNcitConceptRoute",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+
+    {
+      "source": "file:services/bc_service.py",
+      "target": "function:services/bc_service.py:_get_bc_or_raise",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:services/bc_service.py",
+      "target": "function:services/bc_service.py:apply_bc_fields",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:services/bc_service.py",
+      "target": "function:services/bc_service.py:create_bc",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:services/bc_service.py",
+      "target": "function:services/bc_service.py:update_bc",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:services/bc_service.py",
+      "target": "function:services/bc_service.py:save_decs",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:services/bc_service.py",
+      "target": "function:services/bc_service.py:map_ncit_to_bc",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:services/bc_service.py",
+      "target": "function:services/bc_service.py:submit_bc_for_review",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:services/export.py",
+      "target": "function:services/export.py:export_json",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:services/export.py",
+      "target": "function:services/export.py:export_xlsx",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:services/export.py",
+      "target": "function:services/export.py:export_governance_xlsx",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:services/export.py",
+      "target": "function:services/export.py:export_odm_xml",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:services/governance_service.py",
+      "target": "function:services/governance_service.py:advance_governance",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:services/governance_service.py",
+      "target": "function:services/governance_service.py:reject_bc",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:services/ncit_api.py",
+      "target": "function:services/ncit_api.py:_pick_definition",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:services/ncit_api.py",
+      "target": "class:services/ncit_api.py:NCItApiClient",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:tests/test_export_service.py",
+      "target": "class:tests/test_export_service.py:TestExportJson",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:tests/test_export_service.py",
+      "target": "class:tests/test_export_service.py:TestExportXlsx",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:tests/test_export_service.py",
+      "target": "class:tests/test_export_service.py:TestExportGovernanceXlsx",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:tests/test_export_service.py",
+      "target": "class:tests/test_export_service.py:TestExportOdmXml",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:tests/test_ncit.py",
+      "target": "class:tests/test_ncit.py:TestNcitGetConceptExtended",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:tests/test_ncit.py",
+      "target": "class:tests/test_ncit.py:TestNcitConceptRoute",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+
+    {
+      "source": "function:services/bc_service.py:create_bc",
+      "target": "function:services/audit.py:log_change",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:services/bc_service.py:update_bc",
+      "target": "function:services/audit.py:log_change",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:services/bc_service.py:map_ncit_to_bc",
+      "target": "function:services/audit.py:log_change",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:services/bc_service.py:submit_bc_for_review",
+      "target": "function:services/audit.py:log_change",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:services/governance_service.py:advance_governance",
+      "target": "function:services/audit.py:log_change",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:services/governance_service.py:advance_governance",
+      "target": "class:models/governance.py:GovernanceRecord",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:services/governance_service.py:reject_bc",
+      "target": "function:services/audit.py:log_change",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:services/governance_service.py:reject_bc",
+      "target": "class:models/governance.py:GovernanceRecord",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "class:services/ncit_api.py:NCItApiClient",
+      "target": "function:services/api_cache.py:cached",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+
+    {
+      "source": "file:services/export.py",
+      "target": "file:tests/test_export_service.py",
+      "type": "tested_by",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "file:services/ncit_api.py",
+      "target": "file:tests/test_ncit.py",
+      "type": "tested_by",
+      "direction": "forward",
+      "weight": 0.5
+    }
+  ]
+}

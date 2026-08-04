@@ -1,0 +1,28 @@
+{
+  "projectRoot": "/Users/dmoreland/projects/cdisc-concept-curation",
+  "batchFiles": [
+    {
+      "path": "files/implementation.md",
+      "language": "markdown",
+      "sizeLines": 205,
+      "fileCategory": "docs"
+    },
+    {
+      "path": "files/plan.md",
+      "language": "markdown",
+      "sizeLines": 47,
+      "fileCategory": "docs"
+    },
+    {
+      "path": "files/result.md",
+      "language": "markdown",
+      "sizeLines": 27,
+      "fileCategory": "docs"
+    }
+  ],
+  "batchImportData": {
+    "files/implementation.md": [],
+    "files/plan.md": [],
+    "files/result.md": []
+  }
+}

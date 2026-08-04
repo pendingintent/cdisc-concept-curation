@@ -1,0 +1,84 @@
+{
+  "projectRoot": "/Users/dmoreland/projects/cdisc-concept-curation",
+  "batchFiles": [
+    {
+      "path": "templates/audit.html",
+      "language": "html",
+      "sizeLines": 213,
+      "fileCategory": "markup"
+    },
+    {
+      "path": "templates/base.html",
+      "language": "html",
+      "sizeLines": 130,
+      "fileCategory": "markup"
+    },
+    {
+      "path": "templates/bc_detail.html",
+      "language": "html",
+      "sizeLines": 533,
+      "fileCategory": "markup"
+    },
+    {
+      "path": "templates/bc_list.html",
+      "language": "html",
+      "sizeLines": 238,
+      "fileCategory": "markup"
+    },
+    {
+      "path": "templates/dashboard.html",
+      "language": "html",
+      "sizeLines": 392,
+      "fileCategory": "markup"
+    },
+    {
+      "path": "templates/governance.html",
+      "language": "html",
+      "sizeLines": 243,
+      "fileCategory": "markup"
+    },
+    {
+      "path": "templates/ingestion.html",
+      "language": "html",
+      "sizeLines": 174,
+      "fileCategory": "markup"
+    },
+    {
+      "path": "templates/library_bc_detail.html",
+      "language": "html",
+      "sizeLines": 162,
+      "fileCategory": "markup"
+    },
+    {
+      "path": "templates/library_spec_detail.html",
+      "language": "html",
+      "sizeLines": 197,
+      "fileCategory": "markup"
+    },
+    {
+      "path": "templates/ncit_mapping.html",
+      "language": "html",
+      "sizeLines": 135,
+      "fileCategory": "markup"
+    },
+    {
+      "path": "templates/specializations.html",
+      "language": "html",
+      "sizeLines": 394,
+      "fileCategory": "markup"
+    }
+  ],
+  "batchImportData": {
+    "templates/audit.html": [],
+    "templates/base.html": [],
+    "templates/bc_detail.html": [],
+    "templates/bc_list.html": [],
+    "templates/dashboard.html": [],
+    "templates/governance.html": [],
+    "templates/ingestion.html": [],
+    "templates/library_bc_detail.html": [],
+    "templates/library_spec_detail.html": [],
+    "templates/ncit_mapping.html": [],
+    "templates/specializations.html": []
+  }
+}

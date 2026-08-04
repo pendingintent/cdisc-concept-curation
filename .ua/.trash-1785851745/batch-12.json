@@ -1,0 +1,790 @@
+{
+  "nodes": [
+    {
+      "id": "document:.claude/agent-memory/cdisc-concept-explorer/MEMORY.md",
+      "type": "document",
+      "name": "MEMORY.md",
+      "filePath": ".claude/agent-memory/cdisc-concept-explorer/MEMORY.md",
+      "summary": "Single-line agent memory index for the cdisc-concept-explorer agent, pointing to the verified CDISC API reference notes.",
+      "tags": ["documentation", "agent-memory", "reference"],
+      "complexity": "simple"
+    },
+    {
+      "id": "document:.claude/agent-memory/cdisc-concept-explorer/reference_api_endpoints.md",
+      "type": "document",
+      "name": "reference_api_endpoints.md",
+      "filePath": ".claude/agent-memory/cdisc-concept-explorer/reference_api_endpoints.md",
+      "summary": "Verified reference notes on the CDISC Library COSMOS v2 API: base URL, working endpoints, lack of pagination, and field names for biomedical concept and dataset specialization records.",
+      "tags": [
+        "documentation",
+        "api-reference",
+        "cdisc-library",
+        "agent-memory"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "document:.claude/skills/code-review/SKILL.md",
+      "type": "document",
+      "name": "SKILL.md",
+      "filePath": ".claude/skills/code-review/SKILL.md",
+      "summary": "Project-specific code review checklist for cdisc-concept-curation covering route/service/model layering, audit log coverage, Alembic migration discipline, API client error handling, test isolation, and TDD conventions.",
+      "tags": ["documentation", "code-review", "development", "checklist"],
+      "complexity": "simple"
+    },
+    {
+      "id": "document:.claude/skills/run-concept-curation/SKILL.md",
+      "type": "document",
+      "name": "SKILL.md",
+      "filePath": ".claude/skills/run-concept-curation/SKILL.md",
+      "summary": "Instructions for running and smoke-testing the Flask dev server, including the preferred automated smoke-test script, manual startup steps, and troubleshooting tips.",
+      "tags": ["documentation", "development", "smoke-test", "deployment"],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:.claude/skills/run-concept-curation/smoke.sh",
+      "type": "file",
+      "name": "smoke.sh",
+      "filePath": ".claude/skills/run-concept-curation/smoke.sh",
+      "summary": "Shell script that boots the Flask app on a throwaway SQLite database and port, runs a battery of HTTP checks against key routes (dashboard, BC CRUD, governance, NCIt, audit, ingestion, specializations, export), and tears the server down.",
+      "tags": ["script", "smoke-test", "automation", "development"],
+      "complexity": "moderate",
+      "languageNotes": "Bash script using a trap-based cleanup function and small curl-wrapping helpers (check/get_code/post_code) to assert HTTP status codes."
+    },
+    {
+      "id": "function:.claude/skills/run-concept-curation/smoke.sh:cleanup",
+      "type": "function",
+      "name": "cleanup",
+      "filePath": ".claude/skills/run-concept-curation/smoke.sh",
+      "lineRange": [16, 22],
+      "summary": "Trap handler that kills the background dev server process and removes the throwaway SQLite database directory on script exit.",
+      "tags": ["cleanup", "process-management", "script"],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:.claude/skills/run-concept-curation/smoke.sh:check",
+      "type": "function",
+      "name": "check",
+      "filePath": ".claude/skills/run-concept-curation/smoke.sh",
+      "lineRange": [25, 34],
+      "summary": "Assertion helper that compares an actual HTTP status code against an expected value and prints a PASS/FAIL line for the smoke test report.",
+      "tags": ["assertion", "smoke-test", "validation"],
+      "complexity": "simple"
+    },
+    {
+      "id": "config:.flake8",
+      "type": "config",
+      "name": ".flake8",
+      "filePath": ".flake8",
+      "summary": "Flake8 lint configuration setting max line length to 200, ignoring black-conflicting rules (E203/W503) and SQLAlchemy's `== None` idiom (E711), and excluding build/venv directories.",
+      "tags": ["configuration", "linting", "build-system", "python"],
+      "complexity": "simple"
+    },
+    {
+      "id": "config:.hintrc",
+      "type": "config",
+      "name": ".hintrc",
+      "filePath": ".hintrc",
+      "summary": "webhint configuration extending the 'development' ruleset and disabling the no-inline-styles rule for HTML/CSS linting.",
+      "tags": ["configuration", "linting", "frontend"],
+      "complexity": "simple"
+    },
+    {
+      "id": "config:.ua/.understandignore",
+      "type": "config",
+      "name": ".understandignore",
+      "filePath": ".ua/.understandignore",
+      "summary": "Gitignore-style exclusion list for the Understand-Anything analysis tool, with commented-out suggestions mirroring the project's .gitignore (Python caches, virtualenvs, egg metadata) that can be uncommented to activate.",
+      "tags": ["configuration", "tooling", "analysis"],
+      "complexity": "simple"
+    },
+    {
+      "id": "config:.ua/config.json",
+      "type": "config",
+      "name": "config.json",
+      "filePath": ".ua/config.json",
+      "summary": "Single-key configuration for the Understand-Anything tool setting the output language for generated analysis text to English.",
+      "tags": ["configuration", "tooling", "analysis"],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:files/BC Curation Principles and Completion GLs.xlsx",
+      "type": "file",
+      "name": "BC Curation Principles and Completion GLs.xlsx",
+      "filePath": "files/BC Curation Principles and Completion GLs.xlsx",
+      "summary": "Reference spreadsheet documenting BC curation principles and field-completion guidelines used by curators when authoring Biomedical Concepts.",
+      "tags": [
+        "reference",
+        "documentation",
+        "spreadsheet",
+        "curation-guidance"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:files/BC DEC Templates.xlsx",
+      "type": "file",
+      "name": "BC DEC Templates.xlsx",
+      "filePath": "files/BC DEC Templates.xlsx",
+      "summary": "Template spreadsheet defining the standard row/column layout for Data Element Concepts, used as an ingestion source template for curators.",
+      "tags": ["template", "spreadsheet", "ingestion", "reference"],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:files/BC Examples.xlsx",
+      "type": "file",
+      "name": "BC Examples.xlsx",
+      "filePath": "files/BC Examples.xlsx",
+      "summary": "Example spreadsheet of fully-populated Biomedical Concepts, used as a reference/sample dataset for the ingestion pipeline and curator training.",
+      "tags": ["reference", "spreadsheet", "sample-data", "ingestion"],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:files/BC Governance.docx",
+      "type": "file",
+      "name": "BC Governance.docx",
+      "filePath": "files/BC Governance.docx",
+      "summary": "Word document describing the governance process and stages (Provisional, SME Review, CDISC Approval, Published) that a curated Biomedical Concept moves through.",
+      "tags": ["documentation", "governance", "reference"],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:mcp_server/__init__.py",
+      "type": "file",
+      "name": "__init__.py",
+      "filePath": "mcp_server/__init__.py",
+      "summary": "Package marker and docstring for the mcp_server package, noting it is run via `python -m mcp_server` and deliberately named to avoid shadowing the MCP SDK package.",
+      "tags": ["entry-point", "package-init", "mcp"],
+      "complexity": "simple"
+    },
+    {
+      "id": "document:migrations/README",
+      "type": "document",
+      "name": "README",
+      "filePath": "migrations/README",
+      "summary": "One-line note identifying the migrations directory as a single-database Flask-Migrate/Alembic configuration.",
+      "tags": ["documentation", "database", "migration"],
+      "complexity": "simple"
+    },
+    {
+      "id": "config:migrations/alembic.ini",
+      "type": "config",
+      "name": "alembic.ini",
+      "filePath": "migrations/alembic.ini",
+      "summary": "Alembic configuration file controlling migration script location, logging setup, and version-file naming for the Flask-Migrate managed schema.",
+      "tags": ["configuration", "database", "migration", "alembic"],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:migrations/env.py",
+      "type": "file",
+      "name": "env.py",
+      "filePath": "migrations/env.py",
+      "summary": "Alembic environment script that wires Flask-Migrate's engine/metadata into Alembic's migration context, supporting both offline (SQL-only) and online (live-connection) migration runs.",
+      "tags": ["database", "migration", "alembic", "flask-migrate"],
+      "complexity": "moderate",
+      "languageNotes": "Handles both Flask-SQLAlchemy <3 and >=3 engine-access APIs via a try/except fallback, and skips autogenerating empty migrations via a process_revision_directives hook."
+    },
+    {
+      "id": "function:migrations/env.py:get_engine",
+      "type": "function",
+      "name": "get_engine",
+      "filePath": "migrations/env.py",
+      "lineRange": [17, 23],
+      "summary": "Returns the active SQLAlchemy engine from the Flask-Migrate extension, falling back between the Flask-SQLAlchemy 2.x and 3.x APIs.",
+      "tags": ["database", "migration", "compatibility"],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:migrations/env.py:get_engine_url",
+      "type": "function",
+      "name": "get_engine_url",
+      "filePath": "migrations/env.py",
+      "lineRange": [26, 30],
+      "summary": "Renders the database engine's connection URL as a string with percent signs escaped, for use as Alembic's sqlalchemy.url option.",
+      "tags": ["database", "migration", "utility"],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:migrations/env.py:run_migrations_offline",
+      "type": "function",
+      "name": "run_migrations_offline",
+      "filePath": "migrations/env.py",
+      "lineRange": [52, 68],
+      "summary": "Runs Alembic migrations in offline mode by configuring the context with just the database URL and emitting SQL without requiring a live connection.",
+      "tags": ["database", "migration", "alembic"],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:migrations/env.py:run_migrations_online",
+      "type": "function",
+      "name": "run_migrations_online",
+      "filePath": "migrations/env.py",
+      "lineRange": [71, 99],
+      "summary": "Runs Alembic migrations in online mode against a live database connection, registering a hook that skips autogenerating a migration when no schema changes are detected.",
+      "tags": ["database", "migration", "alembic"],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:migrations/script.py.mako",
+      "type": "file",
+      "name": "script.py.mako",
+      "filePath": "migrations/script.py.mako",
+      "summary": "Mako template used by `flask db migrate` to scaffold new Alembic revision files with the standard revision metadata and upgrade/downgrade function stubs.",
+      "tags": ["template", "database", "migration", "code-generation"],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:migrations/versions/51d4a009d291_baseline_initial_schema.py",
+      "type": "file",
+      "name": "51d4a009d291_baseline_initial_schema.py",
+      "filePath": "migrations/versions/51d4a009d291_baseline_initial_schema.py",
+      "summary": "Baseline Alembic migration that creates the initial database schema: audit_logs, biomedical_concepts, ingestion_records, data_element_concepts, dataset_specializations, and governance_records tables, with their downgrade counterparts.",
+      "tags": ["database", "migration", "schema", "baseline"],
+      "complexity": "complex",
+      "languageNotes": "Auto-generated Alembic revision consisting almost entirely of repetitive op.create_table/sa.Column calls plus a batch_alter_table index creation."
+    },
+    {
+      "id": "function:migrations/versions/51d4a009d291_baseline_initial_schema.py:upgrade",
+      "type": "function",
+      "name": "upgrade",
+      "filePath": "migrations/versions/51d4a009d291_baseline_initial_schema.py",
+      "lineRange": [19, 128],
+      "summary": "Creates the six baseline tables (audit_logs, biomedical_concepts, ingestion_records, data_element_concepts, dataset_specializations, governance_records) with their columns, primary keys, foreign keys, and one index.",
+      "tags": ["database", "migration", "schema-creation"],
+      "complexity": "complex"
+    },
+    {
+      "id": "function:migrations/versions/51d4a009d291_baseline_initial_schema.py:downgrade",
+      "type": "function",
+      "name": "downgrade",
+      "filePath": "migrations/versions/51d4a009d291_baseline_initial_schema.py",
+      "lineRange": [131, 142],
+      "summary": "Reverses the baseline migration by dropping the index and all six tables created in upgrade().",
+      "tags": ["database", "migration", "rollback"],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:routes/__init__.py",
+      "type": "file",
+      "name": "__init__.py",
+      "filePath": "routes/__init__.py",
+      "summary": "Empty package marker file that makes routes/ a Python package for the Flask blueprint modules it contains.",
+      "tags": ["package-init", "empty"],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:static/css/custom.css",
+      "type": "file",
+      "name": "custom.css",
+      "filePath": "static/css/custom.css",
+      "summary": "Main application stylesheet defining design tokens (colors, spacing), base resets, app shell layout (sidebar, topbar, content area), and component styles (cards, flash messages, nav items, badges) for the CDISC BC curation UI.",
+      "tags": ["stylesheet", "design-system", "layout", "ui"],
+      "complexity": "complex",
+      "languageNotes": "Organized around CSS custom properties (design tokens) under :root, consistent with the project's CDISC brand color requirements."
+    },
+    {
+      "id": "file:static/js/main.js",
+      "type": "file",
+      "name": "main.js",
+      "filePath": "static/js/main.js",
+      "summary": "Client-side interactivity module for the BC curation platform: flash-message dismissal, drag-and-drop file upload, NCIt/LOINC lookup and search panels, dynamic DEC table rows, governance Kanban actions, audit-diff toggles, and shared fetch/toast helpers, all wired up on DOMContentLoaded.",
+      "tags": ["frontend", "vanilla-js", "ui-interactivity", "fetch-api"],
+      "complexity": "complex",
+      "languageNotes": "Entire file is wrapped in an IIFE for scope isolation; all functions are private and invoked from a single DOMContentLoaded listener at the bottom of the file."
+    },
+    {
+      "id": "function:static/js/main.js:initFileUpload",
+      "type": "function",
+      "name": "initFileUpload",
+      "filePath": "static/js/main.js",
+      "lineRange": [25, 76],
+      "summary": "Wires up the file-input and drag-and-drop upload zone: updates the displayed filename, toggles drag-over styling, and assigns dropped files to the hidden file input.",
+      "tags": ["ui-interactivity", "file-upload", "drag-and-drop"],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:static/js/main.js:initNcitLookup",
+      "type": "function",
+      "name": "initNcitLookup",
+      "filePath": "static/js/main.js",
+      "lineRange": [84, 131],
+      "summary": "Handles the NCIt code lookup button: fetches /ncit/search for a typed NCIt code and renders matches into the results panel, or shows an error state on failure.",
+      "tags": ["api-handler", "fetch-api", "ncit", "ui-interactivity"],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:static/js/main.js:renderNcitResults",
+      "type": "function",
+      "name": "renderNcitResults",
+      "filePath": "static/js/main.js",
+      "lineRange": [132, 207],
+      "summary": "Renders NCIt lookup result cards into a container and wires each card's 'Use this concept' button to populate the BC form and fetch full concept metadata for display.",
+      "tags": ["rendering", "ui-interactivity", "ncit", "fetch-api"],
+      "complexity": "complex"
+    },
+    {
+      "id": "function:static/js/main.js:renderNcitMetaDisplay",
+      "type": "function",
+      "name": "renderNcitMetaDisplay",
+      "filePath": "static/js/main.js",
+      "lineRange": [208, 265],
+      "summary": "Formats and displays selected NCIt concept metadata fields (definitions, parents, synonyms, etc.) as a labeled list, handling both scalar and array-shaped fields.",
+      "tags": ["rendering", "ncit", "ui-interactivity"],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:static/js/main.js:initDecTable",
+      "type": "function",
+      "name": "initDecTable",
+      "filePath": "static/js/main.js",
+      "lineRange": [266, 290],
+      "summary": "Initializes the Data Element Concept table: wires the 'add DEC row' button and delegates row-delete clicks to remove table rows.",
+      "tags": ["ui-interactivity", "dynamic-table", "dec"],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:static/js/main.js:buildDecRow",
+      "type": "function",
+      "name": "buildDecRow",
+      "filePath": "static/js/main.js",
+      "lineRange": [291, 331],
+      "summary": "Builds and returns a new table row element containing the input fields for a Data Element Concept entry, indexed for form submission.",
+      "tags": ["dom-construction", "dynamic-table", "dec"],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:static/js/main.js:initKanban",
+      "type": "function",
+      "name": "initKanban",
+      "filePath": "static/js/main.js",
+      "lineRange": [332, 386],
+      "summary": "Wires the governance Kanban board's advance and reject buttons to POST stage-transition requests and reload or toast on success/failure.",
+      "tags": ["api-handler", "governance", "kanban", "fetch-api"],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:static/js/main.js:initAuditDiff",
+      "type": "function",
+      "name": "initAuditDiff",
+      "filePath": "static/js/main.js",
+      "lineRange": [387, 402],
+      "summary": "Toggles the visibility of before/after diff panels on the audit log page when a diff-toggle button is clicked.",
+      "tags": ["ui-interactivity", "audit", "toggle"],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:static/js/main.js:initNcitSearch",
+      "type": "function",
+      "name": "initNcitSearch",
+      "filePath": "static/js/main.js",
+      "lineRange": [403, 444],
+      "summary": "Wires the NCIt search page's search button and Enter key to trigger a debounced-free search request and render results.",
+      "tags": ["api-handler", "ncit", "search", "ui-interactivity"],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:static/js/main.js:renderNcitSearchResults",
+      "type": "function",
+      "name": "renderNcitSearchResults",
+      "filePath": "static/js/main.js",
+      "lineRange": [445, 529],
+      "summary": "Renders NCIt search result cards with synonyms and a 'Use this concept' button that stores the chosen concept in sessionStorage and navigates to the BC creation page.",
+      "tags": ["rendering", "ncit", "search", "ui-interactivity"],
+      "complexity": "complex"
+    },
+    {
+      "id": "function:static/js/main.js:showInlineToast",
+      "type": "function",
+      "name": "showInlineToast",
+      "filePath": "static/js/main.js",
+      "lineRange": [537, 563],
+      "summary": "Creates and displays a Bootstrap toast notification with the given message and style, appending it to a shared toast container.",
+      "tags": ["ui-interactivity", "toast", "notification"],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:static/js/main.js:getOrCreateToastContainer",
+      "type": "function",
+      "name": "getOrCreateToastContainer",
+      "filePath": "static/js/main.js",
+      "lineRange": [564, 578],
+      "summary": "Finds or lazily creates the fixed-position container element that hosts stacked toast notifications.",
+      "tags": ["dom-construction", "toast", "utility"],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:static/js/main.js:initLoincLookup",
+      "type": "function",
+      "name": "initLoincLookup",
+      "filePath": "static/js/main.js",
+      "lineRange": [593, 680],
+      "summary": "Handles the LOINC code lookup button: fetches /loinc/search for a typed LOINC code and renders matches, mirroring the NCIt lookup flow.",
+      "tags": ["api-handler", "fetch-api", "loinc", "ui-interactivity"],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:static/js/main.js:renderLoincResults",
+      "type": "function",
+      "name": "renderLoincResults",
+      "filePath": "static/js/main.js",
+      "lineRange": [681, 755],
+      "summary": "Renders LOINC lookup result cards into a container and wires each card's selection button to populate form fields and display LOINC metadata.",
+      "tags": ["rendering", "loinc", "ui-interactivity", "fetch-api"],
+      "complexity": "complex"
+    },
+    {
+      "id": "function:static/js/main.js:renderLoincMetaDisplay",
+      "type": "function",
+      "name": "renderLoincMetaDisplay",
+      "filePath": "static/js/main.js",
+      "lineRange": [756, 782],
+      "summary": "Formats and displays selected LOINC metadata fields as a labeled list on the BC detail page.",
+      "tags": ["rendering", "loinc", "ui-interactivity"],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:static/js/main.js:initPendingNcitConcept",
+      "type": "function",
+      "name": "initPendingNcitConcept",
+      "filePath": "static/js/main.js",
+      "lineRange": [783, 801],
+      "summary": "On page load, consumes a pending NCIt concept stashed in sessionStorage (from the NCIt search page) and auto-populates the BC detail page's metadata display and hidden field.",
+      "tags": ["ui-interactivity", "ncit", "session-storage"],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:tests/__init__.py",
+      "type": "file",
+      "name": "__init__.py",
+      "filePath": "tests/__init__.py",
+      "summary": "Empty package marker file that makes tests/ a discoverable Python package for pytest.",
+      "tags": ["package-init", "test", "empty"],
+      "complexity": "simple"
+    }
+  ],
+  "edges": [
+    {
+      "source": "file:.claude/skills/run-concept-curation/smoke.sh",
+      "target": "function:.claude/skills/run-concept-curation/smoke.sh:cleanup",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:.claude/skills/run-concept-curation/smoke.sh",
+      "target": "function:.claude/skills/run-concept-curation/smoke.sh:check",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "document:.claude/skills/run-concept-curation/SKILL.md",
+      "target": "file:.claude/skills/run-concept-curation/smoke.sh",
+      "type": "documents",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "document:.claude/agent-memory/cdisc-concept-explorer/MEMORY.md",
+      "target": "document:.claude/agent-memory/cdisc-concept-explorer/reference_api_endpoints.md",
+      "type": "related",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "config:migrations/alembic.ini",
+      "target": "file:migrations/env.py",
+      "type": "configures",
+      "direction": "forward",
+      "weight": 0.6
+    },
+    {
+      "source": "file:migrations/env.py",
+      "target": "function:migrations/env.py:get_engine",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:migrations/env.py",
+      "target": "function:migrations/env.py:get_engine_url",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:migrations/env.py",
+      "target": "function:migrations/env.py:run_migrations_offline",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:migrations/env.py",
+      "target": "function:migrations/env.py:run_migrations_online",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:migrations/env.py",
+      "target": "function:migrations/env.py:get_engine",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:migrations/env.py",
+      "target": "function:migrations/env.py:get_engine_url",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:migrations/env.py",
+      "target": "function:migrations/env.py:run_migrations_offline",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:migrations/env.py",
+      "target": "function:migrations/env.py:run_migrations_online",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:migrations/env.py:run_migrations_offline",
+      "target": "function:migrations/env.py:get_engine_url",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:migrations/env.py:run_migrations_online",
+      "target": "function:migrations/env.py:get_engine",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:migrations/env.py:get_engine_url",
+      "target": "function:migrations/env.py:get_engine",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:migrations/script.py.mako",
+      "target": "file:migrations/versions/51d4a009d291_baseline_initial_schema.py",
+      "type": "related",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "file:migrations/versions/51d4a009d291_baseline_initial_schema.py",
+      "target": "function:migrations/versions/51d4a009d291_baseline_initial_schema.py:upgrade",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:migrations/versions/51d4a009d291_baseline_initial_schema.py",
+      "target": "function:migrations/versions/51d4a009d291_baseline_initial_schema.py:downgrade",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:migrations/versions/51d4a009d291_baseline_initial_schema.py",
+      "target": "function:migrations/versions/51d4a009d291_baseline_initial_schema.py:upgrade",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:migrations/versions/51d4a009d291_baseline_initial_schema.py",
+      "target": "function:migrations/versions/51d4a009d291_baseline_initial_schema.py:downgrade",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:static/js/main.js",
+      "target": "function:static/js/main.js:initFileUpload",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:static/js/main.js",
+      "target": "function:static/js/main.js:initNcitLookup",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:static/js/main.js",
+      "target": "function:static/js/main.js:renderNcitResults",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:static/js/main.js",
+      "target": "function:static/js/main.js:renderNcitMetaDisplay",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:static/js/main.js",
+      "target": "function:static/js/main.js:initDecTable",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:static/js/main.js",
+      "target": "function:static/js/main.js:buildDecRow",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:static/js/main.js",
+      "target": "function:static/js/main.js:initKanban",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:static/js/main.js",
+      "target": "function:static/js/main.js:initAuditDiff",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:static/js/main.js",
+      "target": "function:static/js/main.js:initNcitSearch",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:static/js/main.js",
+      "target": "function:static/js/main.js:renderNcitSearchResults",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:static/js/main.js",
+      "target": "function:static/js/main.js:showInlineToast",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:static/js/main.js",
+      "target": "function:static/js/main.js:getOrCreateToastContainer",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:static/js/main.js",
+      "target": "function:static/js/main.js:initLoincLookup",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:static/js/main.js",
+      "target": "function:static/js/main.js:renderLoincResults",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:static/js/main.js",
+      "target": "function:static/js/main.js:renderLoincMetaDisplay",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:static/js/main.js",
+      "target": "function:static/js/main.js:initPendingNcitConcept",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "function:static/js/main.js:initNcitLookup",
+      "target": "function:static/js/main.js:renderNcitResults",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:static/js/main.js:renderNcitResults",
+      "target": "function:static/js/main.js:renderNcitMetaDisplay",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:static/js/main.js:initDecTable",
+      "target": "function:static/js/main.js:buildDecRow",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:static/js/main.js:initKanban",
+      "target": "function:static/js/main.js:showInlineToast",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:static/js/main.js:initNcitSearch",
+      "target": "function:static/js/main.js:renderNcitSearchResults",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:static/js/main.js:showInlineToast",
+      "target": "function:static/js/main.js:getOrCreateToastContainer",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:static/js/main.js:initPendingNcitConcept",
+      "target": "function:static/js/main.js:renderNcitMetaDisplay",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:static/css/custom.css",
+      "target": "file:static/js/main.js",
+      "type": "related",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "document:.claude/skills/code-review/SKILL.md",
+      "target": "file:mcp_server/__init__.py",
+      "type": "related",
+      "direction": "forward",
+      "weight": 0.5
+    }
+  ]
+}

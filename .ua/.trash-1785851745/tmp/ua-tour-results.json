@@ -1,0 +1,953 @@
+{
+  "scriptCompleted": true,
+  "entryPointCandidates": [
+    {
+      "id": "file:mcp_server/__main__.py",
+      "score": 5,
+      "name": "__main__.py",
+      "summary": "Module entry point for `python -m mcp_server`; imports the server's main() coroutine runner and invokes it immediately to start the stdio MCP server loop."
+    },
+    {
+      "id": "document:README.md",
+      "score": 5,
+      "name": "README.md",
+      "summary": "Primary project README covering prerequisites, installation, environment-variable configuration, running the app and tests, key screens, project structure, and the external CDISC/NCIt/LOINC APIs the platform integrates with."
+    },
+    {
+      "id": "file:app.py",
+      "score": 4,
+      "name": "app.py",
+      "summary": "Flask application factory that configures logging, initializes the shared database and migration extensions, registers all eight feature blueprints, and doubles as the dev-server entry point via `python app.py`."
+    },
+    {
+      "id": "file:tests/conftest.py",
+      "score": 3,
+      "name": "conftest.py",
+      "summary": "Pytest fixtures shared across the test suite: Flask app/test client factories, a per-test DB reset fixture, API cache clearing, and a sample BiomedicalConcept fixture."
+    },
+    {
+      "id": "file:static/js/main.js",
+      "score": 3,
+      "name": "main.js",
+      "summary": "Client-side interactivity module for the BC curation platform: flash-message dismissal, drag-and-drop file upload, NCIt/LOINC lookup and search panels, dynamic DEC table rows, governance Kanban actions, audit-diff toggles, and shared fetch/toast helpers, all wired up on DOMContentLoaded."
+    }
+  ],
+  "fanInRanking": [
+    {
+      "id": "file:extensions.py",
+      "fanIn": 30,
+      "name": "extensions.py"
+    },
+    {
+      "id": "file:models/bc.py",
+      "fanIn": 19,
+      "name": "bc.py"
+    },
+    {
+      "id": "file:models/audit.py",
+      "fanIn": 14,
+      "name": "audit.py"
+    },
+    {
+      "id": "file:templates/base.html",
+      "fanIn": 12,
+      "name": "base.html"
+    },
+    {
+      "id": "file:models/governance.py",
+      "fanIn": 9,
+      "name": "governance.py"
+    },
+    {
+      "id": "file:models/ingestion.py",
+      "fanIn": 7,
+      "name": "ingestion.py"
+    },
+    {
+      "id": "file:services/cdisc_api.py",
+      "fanIn": 7,
+      "name": "cdisc_api.py"
+    },
+    {
+      "id": "file:services/ncit_api.py",
+      "fanIn": 6,
+      "name": "ncit_api.py"
+    },
+    {
+      "id": "file:app.py",
+      "fanIn": 6,
+      "name": "app.py"
+    },
+    {
+      "id": "file:models/specialization.py",
+      "fanIn": 6,
+      "name": "specialization.py"
+    },
+    {
+      "id": "file:services/export.py",
+      "fanIn": 5,
+      "name": "export.py"
+    },
+    {
+      "id": "file:services/loinc_api.py",
+      "fanIn": 5,
+      "name": "loinc_api.py"
+    },
+    {
+      "id": "file:services/ingestion.py",
+      "fanIn": 4,
+      "name": "ingestion.py"
+    },
+    {
+      "id": "file:services/audit.py",
+      "fanIn": 4,
+      "name": "audit.py"
+    },
+    {
+      "id": "file:services/bc_service.py",
+      "fanIn": 4,
+      "name": "bc_service.py"
+    },
+    {
+      "id": "file:tests/test_governance_routes.py",
+      "fanIn": 3,
+      "name": "test_governance_routes.py"
+    },
+    {
+      "id": "file:tests/test_ingestion_routes.py",
+      "fanIn": 3,
+      "name": "test_ingestion_routes.py"
+    },
+    {
+      "id": "file:tests/test_models.py",
+      "fanIn": 3,
+      "name": "test_models.py"
+    },
+    {
+      "id": "file:services/__init__.py",
+      "fanIn": 3,
+      "name": "__init__.py"
+    },
+    {
+      "id": "file:services/api_cache.py",
+      "fanIn": 3,
+      "name": "api_cache.py"
+    }
+  ],
+  "fanOutRanking": [
+    {
+      "id": "document:files/implementation.md",
+      "fanOut": 20,
+      "name": "implementation.md"
+    },
+    {
+      "id": "file:mcp_server/server.py",
+      "fanOut": 12,
+      "name": "server.py"
+    },
+    {
+      "id": "document:.claude/agent-memory/cdisc-frontend-dev/project_foundation.md",
+      "fanOut": 12,
+      "name": "project_foundation.md"
+    },
+    {
+      "id": "file:routes/bc.py",
+      "fanOut": 11,
+      "name": "bc.py"
+    },
+    {
+      "id": "file:tests/test_mcp_server.py",
+      "fanOut": 7,
+      "name": "test_mcp_server.py"
+    },
+    {
+      "id": "document:files/plan.md",
+      "fanOut": 7,
+      "name": "plan.md"
+    },
+    {
+      "id": "file:routes/ingestion.py",
+      "fanOut": 6,
+      "name": "ingestion.py"
+    },
+    {
+      "id": "file:tests/conftest.py",
+      "fanOut": 6,
+      "name": "conftest.py"
+    },
+    {
+      "id": "file:routes/governance.py",
+      "fanOut": 6,
+      "name": "governance.py"
+    },
+    {
+      "id": "file:routes/ncit.py",
+      "fanOut": 6,
+      "name": "ncit.py"
+    },
+    {
+      "id": "file:routes/specializations.py",
+      "fanOut": 6,
+      "name": "specializations.py"
+    },
+    {
+      "id": "file:models/bc.py",
+      "fanOut": 5,
+      "name": "bc.py"
+    },
+    {
+      "id": "file:services/bc_service.py",
+      "fanOut": 5,
+      "name": "bc_service.py"
+    },
+    {
+      "id": "document:README.md",
+      "fanOut": 5,
+      "name": "README.md"
+    },
+    {
+      "id": "file:tests/test_governance_routes.py",
+      "fanOut": 4,
+      "name": "test_governance_routes.py"
+    },
+    {
+      "id": "file:tests/test_ingestion_routes.py",
+      "fanOut": 4,
+      "name": "test_ingestion_routes.py"
+    },
+    {
+      "id": "file:tests/test_models.py",
+      "fanOut": 4,
+      "name": "test_models.py"
+    },
+    {
+      "id": "file:services/governance_service.py",
+      "fanOut": 4,
+      "name": "governance_service.py"
+    },
+    {
+      "id": "file:tests/test_specializations_routes.py",
+      "fanOut": 4,
+      "name": "test_specializations_routes.py"
+    },
+    {
+      "id": "document:files/result.md",
+      "fanOut": 4,
+      "name": "result.md"
+    }
+  ],
+  "bfsTraversal": {
+    "startNode": "file:mcp_server/__main__.py",
+    "order": [
+      "file:mcp_server/__main__.py",
+      "file:mcp_server/server.py"
+    ],
+    "depthMap": {
+      "file:mcp_server/__main__.py": 0,
+      "file:mcp_server/server.py": 1
+    },
+    "byDepth": {
+      "0": [
+        "file:mcp_server/__main__.py"
+      ],
+      "1": [
+        "file:mcp_server/server.py"
+      ]
+    }
+  },
+  "nonCodeFiles": {
+    "documentation": [
+      {
+        "id": "document:.claude/agent-memory/cdisc-frontend-dev/MEMORY.md",
+        "name": "MEMORY.md",
+        "summary": "Index file for the cdisc-frontend-dev sub-agent's persistent memory, linking to the project foundation and frontend architecture notes."
+      },
+      {
+        "id": "document:.claude/agent-memory/cdisc-frontend-dev/frontend_architecture.md",
+        "name": "frontend_architecture.md",
+        "summary": "Persistent agent memory documenting the front-end template hierarchy, custom.css class naming conventions, main.js module functions, template-to-route mapping, and Jinja context variable conventions for the CDISC BC Curation UI."
+      },
+      {
+        "id": "document:.claude/agent-memory/cdisc-frontend-dev/project_foundation.md",
+        "name": "project_foundation.md",
+        "summary": "Persistent agent memory describing the Flask application factory pattern, registered blueprints, model and service locations, database setup, and key route implementation decisions for the CDISC BC Curation app."
+      },
+      {
+        "id": "document:.claude/agents/cdisc-concept-explorer.md",
+        "name": "cdisc-concept-explorer.md",
+        "summary": "Defines the cdisc-concept-explorer Claude subagent, a CDISC standards specialist that queries the live CDISC Library API to detect duplicate Biomedical Concepts against local drafts, enrich drafts with authoritative metadata, and find dataset specializations for a given BC."
+      },
+      {
+        "id": "document:.claude/agents/cdisc-frontend-dev.md",
+        "name": "cdisc-frontend-dev.md",
+        "summary": "Defines the cdisc-frontend-dev Claude subagent, a front-end specialist scoped to Jinja2 templates, CSS, vanilla JavaScript, and Flask view wiring for the BC curation tool, with mandatory CDISC brand-guideline compliance and an extensive persistent project-memory protocol appended to the spec."
+      },
+      {
+        "id": "document:.claude/agents/mike.md",
+        "name": "mike.md",
+        "summary": "Defines the mike Claude subagent, a project-manager assistant for cdisc-concept-curation that tracks daily progress in README-PROGRESS.md, prepares git commit messages, flags documentation drift against the code, and always asks before committing or pushing."
+      },
+      {
+        "id": "document:CLAUDE.md",
+        "name": "CLAUDE.md",
+        "summary": "Guidance document for Claude Code covering the app's purpose, how to run it, linting and testing commands, the Route-Service-Model architecture with its 8 Flask blueprints and key services, the MCP server, and environment-variable configuration."
+      },
+      {
+        "id": "document:README-PROGRESS.md",
+        "name": "README-PROGRESS.md",
+        "summary": "Running project progress log tracking feature status and a dated changelog of fixes and workstream completions such as governance export corrections, audit trail coverage, and LOINC API explorer work."
+      },
+      {
+        "id": "document:README.md",
+        "name": "README.md",
+        "summary": "Primary project README covering prerequisites, installation, environment-variable configuration, running the app and tests, key screens, project structure, and the external CDISC/NCIt/LOINC APIs the platform integrates with."
+      },
+      {
+        "id": "document:requirements-dev.txt",
+        "name": "requirements-dev.txt",
+        "summary": "Pinned development-only dependency list: black, flake8 (with mccabe/pycodestyle/pyflakes), isort, pre-commit, pytest, and pytest-flask, used for linting and testing."
+      },
+      {
+        "id": "document:requirements.txt",
+        "name": "requirements.txt",
+        "summary": "Pinned runtime dependency list for the Flask application, including Flask, Flask-SQLAlchemy, Flask-Migrate, SQLAlchemy, Alembic, pandas, openpyxl, lxml, requests, and the mcp SDK."
+      },
+      {
+        "id": "document:files/plan.md",
+        "name": "plan.md",
+        "summary": "Initial high-level project brief for the CDISC Biomedical Concept Curation application, specifying the target UI mockup to match, the key reference files to review, the required agents (cdisc-concept-explorer, ncit-concept-resolver, cdisc-frontend-dev, mike), and the constraint that only the CDISC_API_KEY environment variable be used for API authentication."
+      },
+      {
+        "id": "document:files/implementation.md",
+        "name": "implementation.md",
+        "summary": "Detailed implementation plan for the Flask/Jinja BC curation app, laying out the directory structure, SQLAlchemy data models, Flask blueprint/route table, service-layer API surface, template inventory, and a four-phase build roadmap from MVP through export and polish."
+      },
+      {
+        "id": "document:files/result.md",
+        "name": "result.md",
+        "summary": "Post-implementation status report confirming all 8 Flask routes return HTTP 200 and enumerating delivered capabilities: file ingestion with AI field mapping, BC CRUD, NCIt mapping, a 4-stage governance Kanban, an immutable audit trail, and JSON/XLSX/ODM-XML export."
+      },
+      {
+        "id": "document:.claude/agent-memory/cdisc-concept-explorer/MEMORY.md",
+        "name": "MEMORY.md",
+        "summary": "Single-line agent memory index for the cdisc-concept-explorer agent, pointing to the verified CDISC API reference notes."
+      },
+      {
+        "id": "document:.claude/agent-memory/cdisc-concept-explorer/reference_api_endpoints.md",
+        "name": "reference_api_endpoints.md",
+        "summary": "Verified reference notes on the CDISC Library COSMOS v2 API: base URL, working endpoints, lack of pagination, and field names for biomedical concept and dataset specialization records."
+      },
+      {
+        "id": "document:.claude/skills/code-review/SKILL.md",
+        "name": "SKILL.md",
+        "summary": "Project-specific code review checklist for cdisc-concept-curation covering route/service/model layering, audit log coverage, Alembic migration discipline, API client error handling, test isolation, and TDD conventions."
+      },
+      {
+        "id": "document:.claude/skills/run-concept-curation/SKILL.md",
+        "name": "SKILL.md",
+        "summary": "Instructions for running and smoke-testing the Flask dev server, including the preferred automated smoke-test script, manual startup steps, and troubleshooting tips."
+      },
+      {
+        "id": "document:migrations/README",
+        "name": "README",
+        "summary": "One-line note identifying the migrations directory as a single-database Flask-Migrate/Alembic configuration."
+      }
+    ],
+    "infrastructure": [
+      {
+        "id": "pipeline:.github/workflows/ci.yml",
+        "name": "ci.yml",
+        "summary": "GitHub Actions CI workflow that runs on every push and pull request across all branches: installs project and dev dependencies, lints with isort/black/flake8, and runs the pytest suite on Python 3.12.",
+        "type": "pipeline"
+      }
+    ],
+    "data": [],
+    "config": [
+      {
+        "id": "config:.mcp.json",
+        "name": ".mcp.json",
+        "summary": "Registers the cdisc-curation MCP server, launching it via the project virtualenv's Python interpreter running the `mcp_server` package as a module."
+      },
+      {
+        "id": "config:.pre-commit-config.yaml",
+        "name": ".pre-commit-config.yaml",
+        "summary": "Pre-commit hook configuration that runs isort, black, and flake8 on staged files and executes the full pytest suite before every commit."
+      },
+      {
+        "id": "config:pyproject.toml",
+        "name": "pyproject.toml",
+        "summary": "Tool configuration setting a shared 200-character line length for black (targeting Python 3.9-3.11) and isort (using the black-compatible profile)."
+      },
+      {
+        "id": "config:.flake8",
+        "name": ".flake8",
+        "summary": "Flake8 lint configuration setting max line length to 200, ignoring black-conflicting rules (E203/W503) and SQLAlchemy's `== None` idiom (E711), and excluding build/venv directories."
+      },
+      {
+        "id": "config:.hintrc",
+        "name": ".hintrc",
+        "summary": "webhint configuration extending the 'development' ruleset and disabling the no-inline-styles rule for HTML/CSS linting."
+      },
+      {
+        "id": "config:.ua/.understandignore",
+        "name": ".understandignore",
+        "summary": "Gitignore-style exclusion list for the Understand-Anything analysis tool, with commented-out suggestions mirroring the project's .gitignore (Python caches, virtualenvs, egg metadata) that can be uncommented to activate."
+      },
+      {
+        "id": "config:.ua/config.json",
+        "name": "config.json",
+        "summary": "Single-key configuration for the Understand-Anything tool setting the output language for generated analysis text to English."
+      },
+      {
+        "id": "config:migrations/alembic.ini",
+        "name": "alembic.ini",
+        "summary": "Alembic configuration file controlling migration script location, logging setup, and version-file naming for the Flask-Migrate managed schema."
+      }
+    ]
+  },
+  "clusters": [],
+  "layers": {
+    "count": 8,
+    "list": [
+      {
+        "id": "layer:api",
+        "name": "API Layer",
+        "description": "Flask blueprint route handlers (dashboard, ingestion, bc, ncit, loinc, specializations, governance, audit) plus the MCP server package that exposes the same read/write operations as a second tool-based API surface for AI agents."
+      },
+      {
+        "id": "layer:service",
+        "name": "Service Layer",
+        "description": "Business logic and external API clients — BC/governance/audit orchestration, the ingestion parser and field mapper, the XLSX/JSON/ODM-XML exporter, and the CDISC Library, NCIt, and LOINC API clients (with in-memory caching)."
+      },
+      {
+        "id": "layer:data",
+        "name": "Data Layer",
+        "description": "SQLAlchemy ORM models (BiomedicalConcept, DataElementConcept, IngestionRecord, AuditLog, GovernanceRecord, Specialization) together with the Alembic migration environment and baseline schema revision that bring the SQLite database to head."
+      },
+      {
+        "id": "layer:ui",
+        "name": "UI Layer",
+        "description": "Jinja2 + Bootstrap 5 templates for every page (dashboard, ingestion, BC detail/list, governance Kanban, NCIt mapping, specializations, audit log) plus the shared CSS and JavaScript assets that render them in the browser."
+      },
+      {
+        "id": "layer:config",
+        "name": "Configuration & Application Setup",
+        "description": "The application factory, extension singletons, and DB-bootstrap entry points (app.py, extensions.py, db_bootstrap.py) alongside project-level configuration — config.py, dependency pins, lint/format tool config, and the MCP server registration."
+      },
+      {
+        "id": "layer:test",
+        "name": "Test Layer",
+        "description": "The pytest suite covering every blueprint, service, and model, plus shared fixtures in conftest.py, run against the in-memory SQLite TestConfig database used by both CI and local development."
+      },
+      {
+        "id": "layer:documentation",
+        "name": "Documentation & Reference Materials",
+        "description": "Project-level documentation (CLAUDE.md, README, progress log) and the domain reference materials in files/ — BC curation principles, DEC templates, worked examples, governance guidance, and platform planning docs — that ground the curation workflow the app implements."
+      },
+      {
+        "id": "layer:dev-tooling",
+        "name": "Dev Tooling & CI/CD",
+        "description": "The GitHub Actions CI pipeline plus Claude Code agent configuration and memory (.claude/agents, .claude/agent-memory, .claude/skills) that automate linting, testing, and AI-assisted development for this repository."
+      }
+    ]
+  },
+  "nodeSummaryIndex": {
+    "file:models/audit.py": {
+      "name": "audit.py",
+      "type": "file",
+      "summary": "SQLAlchemy model for the AuditLog table that records before/after JSON state for every change made to BCs, DECs, and governance records."
+    },
+    "file:models/bc.py": {
+      "name": "bc.py",
+      "type": "file",
+      "summary": "Core SQLAlchemy models for BiomedicalConcept and DataElementConcept, the central entities of the CDISC BC curation pipeline, including NCIt/LOINC coding fields and governance status."
+    },
+    "file:models/ingestion.py": {
+      "name": "ingestion.py",
+      "type": "file",
+      "summary": "SQLAlchemy model for IngestionRecord, which stages parsed upload rows (with field mappings, confidence scores, and validation errors) in the DB prior to SME approval."
+    },
+    "file:routes/audit.py": {
+      "name": "audit.py",
+      "type": "file",
+      "summary": "Flask blueprint exposing the read-only audit trail view with filtering by entity type, action, and actor, and pagination."
+    },
+    "file:routes/ingestion.py": {
+      "name": "ingestion.py",
+      "type": "file",
+      "summary": "Flask blueprint implementing the file-upload ingestion workflow: parsing uploaded files, staging rows as IngestionRecord, and approving/rejecting them into BiomedicalConcept/DataElementConcept records with audit logging."
+    },
+    "file:services/ingestion.py": {
+      "name": "ingestion.py",
+      "type": "file",
+      "summary": "Business logic for the ingestion pipeline: fuzzy field-name mapping via SequenceMatcher similarity scoring, BC/DEC row validation, multi-row grouping by BC ID, and XLSX/CSV/JSON parsers."
+    },
+    "file:tests/conftest.py": {
+      "name": "conftest.py",
+      "type": "file",
+      "summary": "Pytest fixtures shared across the test suite: Flask app/test client factories, a per-test DB reset fixture, API cache clearing, and a sample BiomedicalConcept fixture."
+    },
+    "file:tests/test_audit_routes.py": {
+      "name": "test_audit_routes.py",
+      "type": "file",
+      "summary": "Test suite for the audit log route, covering empty listing, log rendering, and filtering by entity type, action, actor, and pagination parameters."
+    },
+    "file:tests/test_bc_routes.py": {
+      "name": "test_bc_routes.py",
+      "type": "file",
+      "summary": "Large test suite covering BC CRUD routes: listing/search, creation, detail view (including LOINC lookups), editing, clearing NCIt/LOINC codes, submission for review, deletion, export formats, and the CDISC Library detail page."
+    },
+    "file:tests/test_governance_routes.py": {
+      "name": "test_governance_routes.py",
+      "type": "file",
+      "summary": "Test suite for the governance Kanban board routes: stage advancement, rejection, and XLSX export of stage-3 BCs with LOINC-derived system columns."
+    },
+    "file:tests/test_ingestion_routes.py": {
+      "name": "test_ingestion_routes.py",
+      "type": "file",
+      "summary": "Test suite for the ingestion pipeline routes: file upload (CSV/JSON), duplicate BC flagging, per-record approve/reject, and bulk approve-all with audit logging."
+    },
+    "file:tests/test_ingestion_service.py": {
+      "name": "test_ingestion_service.py",
+      "type": "file",
+      "summary": "Unit test suite for the ingestion service module, covering field similarity scoring, field mapping/matching, BC validation, deduplication, and XLSX/CSV/JSON parsing and grouping logic."
+    },
+    "file:tests/test_models.py": {
+      "name": "test_models.py",
+      "type": "file",
+      "summary": "Unit tests for the AuditLog, IngestionRecord, and BiomedicalConcept ORM models, verifying JSON-backed property round-tripping, computed averages, and dictionary serialization."
+    },
+    "file:models/governance.py": {
+      "name": "governance.py",
+      "type": "file",
+      "summary": "SQLAlchemy model for GovernanceRecord, tracking Biomedical Concept approval workflow stage transitions."
+    },
+    "file:routes/bc.py": {
+      "name": "bc.py",
+      "type": "file",
+      "summary": "Flask blueprint implementing BC CRUD, NCIt/LOINC metadata lookup, export, and lifecycle actions (submit for review, delete) for Biomedical Concepts."
+    },
+    "file:routes/governance.py": {
+      "name": "governance.py",
+      "type": "file",
+      "summary": "Flask blueprint for the governance Kanban board — viewing BCs by stage, exporting the published set, and advancing/rejecting BCs through the approval workflow."
+    },
+    "file:routes/ncit.py": {
+      "name": "ncit.py",
+      "type": "file",
+      "summary": "Flask blueprint for NCI Thesaurus search and mapping to Biomedical Concepts, including AJAX search and single-concept detail lookups."
+    },
+    "file:services/__init__.py": {
+      "name": "__init__.py",
+      "type": "file",
+      "summary": "Empty package marker enabling the services directory to be imported as a Python package."
+    },
+    "file:services/audit.py": {
+      "name": "audit.py",
+      "type": "file",
+      "summary": "Provides the log_change helper used across services and routes to persist immutable AuditLog rows for every entity mutation."
+    },
+    "file:services/bc_service.py": {
+      "name": "bc_service.py",
+      "type": "file",
+      "summary": "Core business logic for creating, updating, and managing Biomedical Concepts and their Data Element Concepts, including NCIt remapping/merging and review submission."
+    },
+    "file:services/export.py": {
+      "name": "export.py",
+      "type": "file",
+      "summary": "Exporters that render Biomedical Concept collections to JSON, styled XLSX, governance XLSX, and CDISC ODM-XML formats."
+    },
+    "file:services/governance_service.py": {
+      "name": "governance_service.py",
+      "type": "file",
+      "summary": "Implements governance stage transitions (advance/reject) for Biomedical Concepts, creating GovernanceRecord history rows and audit log entries."
+    },
+    "file:services/ncit_api.py": {
+      "name": "ncit_api.py",
+      "type": "file",
+      "summary": "NCI Thesaurus EVS REST API client providing concept search and detailed concept retrieval (parents, semantic type, synonyms, definitions) with caching."
+    },
+    "file:tests/test_export_service.py": {
+      "name": "test_export_service.py",
+      "type": "file",
+      "summary": "Unit tests covering JSON, XLSX, governance XLSX, and ODM-XML export functions in services/export.py, verifying headers, blanking rules, and document structure."
+    },
+    "file:tests/test_ncit.py": {
+      "name": "test_ncit.py",
+      "type": "file",
+      "summary": "Unit tests for NCItApiClient.get_concept's extended metadata extraction and the /ncit concept-detail route's JSON responses and error handling."
+    },
+    "file:routes/dashboard.py": {
+      "name": "dashboard.py",
+      "type": "file",
+      "summary": "Flask blueprint for the dashboard home page; fetches CDISC Library BC and specialization counts concurrently via a thread pool and combines them with local KPI stats (BC status counts, recent activity, audit log) for the landing page."
+    },
+    "file:routes/loinc.py": {
+      "name": "loinc.py",
+      "type": "file",
+      "summary": "Flask blueprint exposing a single AJAX search endpoint that proxies term queries to the NLM LOINC API client and returns JSON results."
+    },
+    "file:routes/specializations.py": {
+      "name": "specializations.py",
+      "type": "file",
+      "summary": "Flask blueprint managing CDISC dataset specializations: lists local and CDISC Library specializations, and supports manual creation, deletion, and auto-generation of variable-level specializations from a BC's data element concepts."
+    },
+    "file:services/api_cache.py": {
+      "name": "api_cache.py",
+      "type": "file",
+      "summary": "Shared stale-tolerant in-memory cache helper used by the CDISC Library, NCI EVS, and LOINC API clients; serves fresh data for 5 minutes and falls back to stale data for up to an hour if a refresh fails, so a slow upstream never blanks a page that rendered fine a minute ago."
+    },
+    "file:services/cdisc_api.py": {
+      "name": "cdisc_api.py",
+      "type": "file",
+      "summary": "REST client for the CDISC Library COSMOS API; wraps biomedical concept, specialization, and duplicate-check lookups with a 5-minute in-memory cache and provides a publish_bc method for pushing approved BCs to the Library."
+    },
+    "file:services/loinc_api.py": {
+      "name": "loinc_api.py",
+      "type": "file",
+      "summary": "Client for the NLM Clinical Tables LOINC search API; builds the query with a configurable set of extra fields, optionally applies HTTP Basic Auth, and normalizes results through the shared API cache."
+    },
+    "file:tests/test_cdisc_api_cache.py": {
+      "name": "test_cdisc_api_cache.py",
+      "type": "file",
+      "summary": "Unit tests for the shared cache helper and CDISCApiClient cache-key behavior, covering fresh/stale/expired cache states, refresh-failure fallback, and that raw API keys never leak into cache keys."
+    },
+    "file:tests/test_loinc.py": {
+      "name": "test_loinc.py",
+      "type": "file",
+      "summary": "Unit tests for LoincApiClient.search normalization, extra-field handling, Basic Auth toggling, and error handling, plus tests for the /loinc/search Flask route's JSON responses."
+    },
+    "file:app.py": {
+      "name": "app.py",
+      "type": "file",
+      "summary": "Flask application factory that configures logging, initializes the shared database and migration extensions, registers all eight feature blueprints, and doubles as the dev-server entry point via `python app.py`."
+    },
+    "file:config.py": {
+      "name": "config.py",
+      "type": "file",
+      "summary": "Centralizes all environment-driven configuration for the Flask app, including the secret key, database URI, CDISC/NCIt API base URLs and credentials, upload size limit, and dev server port."
+    },
+    "file:db_bootstrap.py": {
+      "name": "db_bootstrap.py",
+      "type": "file",
+      "summary": "Brings the app's database to the current Alembic migration head at startup, distinguishing fresh, legacy create_all(), and pre-squash-stamped databases, and raising if the schema predates the squashed baseline."
+    },
+    "file:extensions.py": {
+      "name": "extensions.py",
+      "type": "file",
+      "summary": "Defines the shared SQLAlchemy `db` and Flask-Migrate `migrate` instances used across the app to avoid circular imports, and configures SQLite WAL mode with a busy timeout so the Flask app and MCP server can coexist as concurrent writers."
+    },
+    "file:models/__init__.py": {
+      "name": "__init__.py",
+      "type": "file",
+      "summary": "Package marker for the `models` module that imports the shared `db` instance so all SQLAlchemy model classes register against a single metadata registry."
+    },
+    "file:tests/test_dashboard.py": {
+      "name": "test_dashboard.py",
+      "type": "file",
+      "summary": "Unit tests for the dashboard route, verifying it renders correctly with live CDISC/NCIt API data, degrades gracefully on API errors and empty results, reflects local DB stats accurately, and issues both API calls concurrently."
+    },
+    "file:tests/test_db_bootstrap.py": {
+      "name": "test_db_bootstrap.py",
+      "type": "file",
+      "summary": "Unit tests for `ensure_db()` covering a fresh baseline upgrade, stamping of a legacy create_all() database, restamping of a pre-squash-stamped database, raising on an outdated schema, and idempotency across repeated runs."
+    },
+    "file:mcp_server/__main__.py": {
+      "name": "__main__.py",
+      "type": "file",
+      "summary": "Module entry point for `python -m mcp_server`; imports the server's main() coroutine runner and invokes it immediately to start the stdio MCP server loop."
+    },
+    "file:mcp_server/server.py": {
+      "name": "server.py",
+      "type": "file",
+      "summary": "MCP server exposing the CDISC curation app's data and write operations as 14 stdio tools (8 read, 6 write); each call is dispatched into a Flask app context shared with the web app so both processes hit the same SQLite database and service layer."
+    },
+    "file:models/specialization.py": {
+      "name": "specialization.py",
+      "type": "file",
+      "summary": "SQLAlchemy model for a dataset specialization (SDTM/CDASH variable-level metadata group) tied to a Biomedical Concept, storing its variable list as a JSON-serialized text column."
+    },
+    "file:tests/test_mcp_server.py": {
+      "name": "test_mcp_server.py",
+      "type": "file",
+      "summary": "Unit tests for the MCP server's `_dispatch` routing and all 14 tool handlers, exercising them directly against a shared in-memory test Flask app (no stdio transport) and asserting on returned data plus AuditLog/GovernanceRecord side effects."
+    },
+    "file:tests/test_specializations_routes.py": {
+      "name": "test_specializations_routes.py",
+      "type": "file",
+      "summary": "Route-level tests for the dataset specializations blueprint covering listing, creating, editing/upserting, deleting, detail views, and generating variables from DECs, including audit log verification and CDISC Library error handling."
+    },
+    "pipeline:.github/workflows/ci.yml": {
+      "name": "ci.yml",
+      "type": "pipeline",
+      "summary": "GitHub Actions CI workflow that runs on every push and pull request across all branches: installs project and dev dependencies, lints with isort/black/flake8, and runs the pytest suite on Python 3.12."
+    },
+    "document:.claude/agent-memory/cdisc-frontend-dev/MEMORY.md": {
+      "name": "MEMORY.md",
+      "type": "document",
+      "summary": "Index file for the cdisc-frontend-dev sub-agent's persistent memory, linking to the project foundation and frontend architecture notes."
+    },
+    "document:.claude/agent-memory/cdisc-frontend-dev/frontend_architecture.md": {
+      "name": "frontend_architecture.md",
+      "type": "document",
+      "summary": "Persistent agent memory documenting the front-end template hierarchy, custom.css class naming conventions, main.js module functions, template-to-route mapping, and Jinja context variable conventions for the CDISC BC Curation UI."
+    },
+    "document:.claude/agent-memory/cdisc-frontend-dev/project_foundation.md": {
+      "name": "project_foundation.md",
+      "type": "document",
+      "summary": "Persistent agent memory describing the Flask application factory pattern, registered blueprints, model and service locations, database setup, and key route implementation decisions for the CDISC BC Curation app."
+    },
+    "document:.claude/agents/cdisc-concept-explorer.md": {
+      "name": "cdisc-concept-explorer.md",
+      "type": "document",
+      "summary": "Defines the cdisc-concept-explorer Claude subagent, a CDISC standards specialist that queries the live CDISC Library API to detect duplicate Biomedical Concepts against local drafts, enrich drafts with authoritative metadata, and find dataset specializations for a given BC."
+    },
+    "document:.claude/agents/cdisc-frontend-dev.md": {
+      "name": "cdisc-frontend-dev.md",
+      "type": "document",
+      "summary": "Defines the cdisc-frontend-dev Claude subagent, a front-end specialist scoped to Jinja2 templates, CSS, vanilla JavaScript, and Flask view wiring for the BC curation tool, with mandatory CDISC brand-guideline compliance and an extensive persistent project-memory protocol appended to the spec."
+    },
+    "document:.claude/agents/mike.md": {
+      "name": "mike.md",
+      "type": "document",
+      "summary": "Defines the mike Claude subagent, a project-manager assistant for cdisc-concept-curation that tracks daily progress in README-PROGRESS.md, prepares git commit messages, flags documentation drift against the code, and always asks before committing or pushing."
+    },
+    "config:.mcp.json": {
+      "name": ".mcp.json",
+      "type": "config",
+      "summary": "Registers the cdisc-curation MCP server, launching it via the project virtualenv's Python interpreter running the `mcp_server` package as a module."
+    },
+    "config:.pre-commit-config.yaml": {
+      "name": ".pre-commit-config.yaml",
+      "type": "config",
+      "summary": "Pre-commit hook configuration that runs isort, black, and flake8 on staged files and executes the full pytest suite before every commit."
+    },
+    "document:CLAUDE.md": {
+      "name": "CLAUDE.md",
+      "type": "document",
+      "summary": "Guidance document for Claude Code covering the app's purpose, how to run it, linting and testing commands, the Route-Service-Model architecture with its 8 Flask blueprints and key services, the MCP server, and environment-variable configuration."
+    },
+    "document:README-PROGRESS.md": {
+      "name": "README-PROGRESS.md",
+      "type": "document",
+      "summary": "Running project progress log tracking feature status and a dated changelog of fixes and workstream completions such as governance export corrections, audit trail coverage, and LOINC API explorer work."
+    },
+    "document:README.md": {
+      "name": "README.md",
+      "type": "document",
+      "summary": "Primary project README covering prerequisites, installation, environment-variable configuration, running the app and tests, key screens, project structure, and the external CDISC/NCIt/LOINC APIs the platform integrates with."
+    },
+    "config:pyproject.toml": {
+      "name": "pyproject.toml",
+      "type": "config",
+      "summary": "Tool configuration setting a shared 200-character line length for black (targeting Python 3.9-3.11) and isort (using the black-compatible profile)."
+    },
+    "document:requirements-dev.txt": {
+      "name": "requirements-dev.txt",
+      "type": "document",
+      "summary": "Pinned development-only dependency list: black, flake8 (with mccabe/pycodestyle/pyflakes), isort, pre-commit, pytest, and pytest-flask, used for linting and testing."
+    },
+    "document:requirements.txt": {
+      "name": "requirements.txt",
+      "type": "document",
+      "summary": "Pinned runtime dependency list for the Flask application, including Flask, Flask-SQLAlchemy, Flask-Migrate, SQLAlchemy, Alembic, pandas, openpyxl, lxml, requests, and the mcp SDK."
+    },
+    "document:files/plan.md": {
+      "name": "plan.md",
+      "type": "document",
+      "summary": "Initial high-level project brief for the CDISC Biomedical Concept Curation application, specifying the target UI mockup to match, the key reference files to review, the required agents (cdisc-concept-explorer, ncit-concept-resolver, cdisc-frontend-dev, mike), and the constraint that only the CDISC_API_KEY environment variable be used for API authentication."
+    },
+    "document:files/implementation.md": {
+      "name": "implementation.md",
+      "type": "document",
+      "summary": "Detailed implementation plan for the Flask/Jinja BC curation app, laying out the directory structure, SQLAlchemy data models, Flask blueprint/route table, service-layer API surface, template inventory, and a four-phase build roadmap from MVP through export and polish."
+    },
+    "document:files/result.md": {
+      "name": "result.md",
+      "type": "document",
+      "summary": "Post-implementation status report confirming all 8 Flask routes return HTTP 200 and enumerating delivered capabilities: file ingestion with AI field mapping, BC CRUD, NCIt mapping, a 4-stage governance Kanban, an immutable audit trail, and JSON/XLSX/ODM-XML export."
+    },
+    "file:templates/base.html": {
+      "name": "base.html",
+      "type": "file",
+      "summary": "Master Jinja2 layout providing the sidebar navigation, top bar, flash-message rendering, and template blocks (title, page_title, user_info, content, extra_js) that every other page in the app extends."
+    },
+    "file:templates/audit.html": {
+      "name": "audit.html",
+      "type": "file",
+      "summary": "Audit trail page listing all curation actions (create/update/delete/advance/reject/publish/ingest) with actor/entity/date filters, CSV/JSON export links, expandable before/after diff rows, and pagination."
+    },
+    "file:templates/bc_detail.html": {
+      "name": "bc_detail.html",
+      "type": "file",
+      "summary": "Create/edit form for a single Biomedical Concept covering identification, NCIt and LOINC lookups (with async metadata fetch in extra_js), classification, definition, metadata/status, and an editable Data Element Concepts (DECs) table."
+    },
+    "file:templates/bc_list.html": {
+      "name": "bc_list.html",
+      "type": "file",
+      "summary": "Searchable, filterable, paginated table of locally curated Biomedical Concepts with status badges, JSON/XLSX/ODM-XML export links, and a delete-confirmation modal."
+    },
+    "file:templates/dashboard.html": {
+      "name": "dashboard.html",
+      "type": "file",
+      "summary": "Main landing dashboard showing KPI cards, recent submissions, the governance pipeline snapshot, paginated/searchable views of CDISC Library BCs and dataset specializations, an AI curation pipeline progress tracker, and quick action links."
+    },
+    "file:templates/governance.html": {
+      "name": "governance.html",
+      "type": "file",
+      "summary": "Four-column Kanban board (Provisional -> SME Review -> CDISC Approval -> Published) for advancing or rejecting Biomedical Concepts through the governance workflow, with summary counts and an export-filename modal."
+    },
+    "file:templates/ingestion.html": {
+      "name": "ingestion.html",
+      "type": "file",
+      "summary": "File upload page (drag-and-drop or click) for XLSX/CSV/JSON ingestion, with a parsed-results queue table showing field-mapping confidence, validation errors, duplicate flags, and per-row approve/reject actions."
+    },
+    "file:templates/library_bc_detail.html": {
+      "name": "library_bc_detail.html",
+      "type": "file",
+      "summary": "Read-only detail view of a single Biomedical Concept fetched from the published CDISC Library, showing identification, definition, LOINC coding, metadata, and its Data Element Concepts."
+    },
+    "file:templates/library_spec_detail.html": {
+      "name": "library_spec_detail.html",
+      "type": "file",
+      "summary": "Read-only detail view of a Dataset Specialization from the published CDISC Library, showing identification/domain metadata and a full variables table (role, codelist, assigned term, mandatory flags, relationship)."
+    },
+    "file:templates/ncit_mapping.html": {
+      "name": "ncit_mapping.html",
+      "type": "file",
+      "summary": "NCI Thesaurus search page plus a conflict-resolution queue listing Biomedical Concepts with unresolved or low-confidence NCIt mappings that block governance advancement, with a confidence-score legend."
+    },
+    "file:templates/specializations.html": {
+      "name": "specializations.html",
+      "type": "file",
+      "summary": "Dataset Specialization management page with a collapsible create/edit form (VLM group ID, BC selector, SDTM/CDASH domain, dynamic variables table, generate-from-DEC-templates action) and a list/edit/delete table of existing specializations."
+    },
+    "document:.claude/agent-memory/cdisc-concept-explorer/MEMORY.md": {
+      "name": "MEMORY.md",
+      "type": "document",
+      "summary": "Single-line agent memory index for the cdisc-concept-explorer agent, pointing to the verified CDISC API reference notes."
+    },
+    "document:.claude/agent-memory/cdisc-concept-explorer/reference_api_endpoints.md": {
+      "name": "reference_api_endpoints.md",
+      "type": "document",
+      "summary": "Verified reference notes on the CDISC Library COSMOS v2 API: base URL, working endpoints, lack of pagination, and field names for biomedical concept and dataset specialization records."
+    },
+    "document:.claude/skills/code-review/SKILL.md": {
+      "name": "SKILL.md",
+      "type": "document",
+      "summary": "Project-specific code review checklist for cdisc-concept-curation covering route/service/model layering, audit log coverage, Alembic migration discipline, API client error handling, test isolation, and TDD conventions."
+    },
+    "document:.claude/skills/run-concept-curation/SKILL.md": {
+      "name": "SKILL.md",
+      "type": "document",
+      "summary": "Instructions for running and smoke-testing the Flask dev server, including the preferred automated smoke-test script, manual startup steps, and troubleshooting tips."
+    },
+    "file:.claude/skills/run-concept-curation/smoke.sh": {
+      "name": "smoke.sh",
+      "type": "file",
+      "summary": "Shell script that boots the Flask app on a throwaway SQLite database and port, runs a battery of HTTP checks against key routes (dashboard, BC CRUD, governance, NCIt, audit, ingestion, specializations, export), and tears the server down."
+    },
+    "config:.flake8": {
+      "name": ".flake8",
+      "type": "config",
+      "summary": "Flake8 lint configuration setting max line length to 200, ignoring black-conflicting rules (E203/W503) and SQLAlchemy's `== None` idiom (E711), and excluding build/venv directories."
+    },
+    "config:.hintrc": {
+      "name": ".hintrc",
+      "type": "config",
+      "summary": "webhint configuration extending the 'development' ruleset and disabling the no-inline-styles rule for HTML/CSS linting."
+    },
+    "config:.ua/.understandignore": {
+      "name": ".understandignore",
+      "type": "config",
+      "summary": "Gitignore-style exclusion list for the Understand-Anything analysis tool, with commented-out suggestions mirroring the project's .gitignore (Python caches, virtualenvs, egg metadata) that can be uncommented to activate."
+    },
+    "config:.ua/config.json": {
+      "name": "config.json",
+      "type": "config",
+      "summary": "Single-key configuration for the Understand-Anything tool setting the output language for generated analysis text to English."
+    },
+    "file:files/BC Curation Principles and Completion GLs.xlsx": {
+      "name": "BC Curation Principles and Completion GLs.xlsx",
+      "type": "file",
+      "summary": "Reference spreadsheet documenting BC curation principles and field-completion guidelines used by curators when authoring Biomedical Concepts."
+    },
+    "file:files/BC DEC Templates.xlsx": {
+      "name": "BC DEC Templates.xlsx",
+      "type": "file",
+      "summary": "Template spreadsheet defining the standard row/column layout for Data Element Concepts, used as an ingestion source template for curators."
+    },
+    "file:files/BC Examples.xlsx": {
+      "name": "BC Examples.xlsx",
+      "type": "file",
+      "summary": "Example spreadsheet of fully-populated Biomedical Concepts, used as a reference/sample dataset for the ingestion pipeline and curator training."
+    },
+    "file:files/BC Governance.docx": {
+      "name": "BC Governance.docx",
+      "type": "file",
+      "summary": "Word document describing the governance process and stages (Provisional, SME Review, CDISC Approval, Published) that a curated Biomedical Concept moves through."
+    },
+    "file:mcp_server/__init__.py": {
+      "name": "__init__.py",
+      "type": "file",
+      "summary": "Package marker and docstring for the mcp_server package, noting it is run via `python -m mcp_server` and deliberately named to avoid shadowing the MCP SDK package."
+    },
+    "document:migrations/README": {
+      "name": "README",
+      "type": "document",
+      "summary": "One-line note identifying the migrations directory as a single-database Flask-Migrate/Alembic configuration."
+    },
+    "config:migrations/alembic.ini": {
+      "name": "alembic.ini",
+      "type": "config",
+      "summary": "Alembic configuration file controlling migration script location, logging setup, and version-file naming for the Flask-Migrate managed schema."
+    },
+    "file:migrations/env.py": {
+      "name": "env.py",
+      "type": "file",
+      "summary": "Alembic environment script that wires Flask-Migrate's engine/metadata into Alembic's migration context, supporting both offline (SQL-only) and online (live-connection) migration runs."
+    },
+    "file:migrations/script.py.mako": {
+      "name": "script.py.mako",
+      "type": "file",
+      "summary": "Mako template used by `flask db migrate` to scaffold new Alembic revision files with the standard revision metadata and upgrade/downgrade function stubs."
+    },
+    "file:migrations/versions/51d4a009d291_baseline_initial_schema.py": {
+      "name": "51d4a009d291_baseline_initial_schema.py",
+      "type": "file",
+      "summary": "Baseline Alembic migration that creates the initial database schema: audit_logs, biomedical_concepts, ingestion_records, data_element_concepts, dataset_specializations, and governance_records tables, with their downgrade counterparts."
+    },
+    "file:routes/__init__.py": {
+      "name": "__init__.py",
+      "type": "file",
+      "summary": "Empty package marker file that makes routes/ a Python package for the Flask blueprint modules it contains."
+    },
+    "file:static/css/custom.css": {
+      "name": "custom.css",
+      "type": "file",
+      "summary": "Main application stylesheet defining design tokens (colors, spacing), base resets, app shell layout (sidebar, topbar, content area), and component styles (cards, flash messages, nav items, badges) for the CDISC BC curation UI."
+    },
+    "file:static/js/main.js": {
+      "name": "main.js",
+      "type": "file",
+      "summary": "Client-side interactivity module for the BC curation platform: flash-message dismissal, drag-and-drop file upload, NCIt/LOINC lookup and search panels, dynamic DEC table rows, governance Kanban actions, audit-diff toggles, and shared fetch/toast helpers, all wired up on DOMContentLoaded."
+    },
+    "file:tests/__init__.py": {
+      "name": "__init__.py",
+      "type": "file",
+      "summary": "Empty package marker file that makes tests/ a discoverable Python package for pytest."
+    },
+    "file:files/cdisc_bc_ai_platform.html": {
+      "name": "cdisc_bc_ai_platform.html",
+      "type": "file",
+      "summary": "No summary available"
+    },
+    "file:files/cdisc_smart_goals_infographic.html": {
+      "name": "cdisc_smart_goals_infographic.html",
+      "type": "file",
+      "summary": "No summary available"
+    }
+  },
+  "totalNodes": 99,
+  "totalEdges": 214
+}

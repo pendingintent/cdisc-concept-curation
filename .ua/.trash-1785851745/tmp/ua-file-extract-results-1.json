@@ -1,0 +1,4964 @@
+{
+  "scriptCompleted": true,
+  "filesAnalyzed": 13,
+  "filesSkipped": [],
+  "analysisOutcomes": {
+    "structure": {
+      "succeeded": 13,
+      "failed": 0
+    },
+    "callGraph": {
+      "succeeded": 13,
+      "failed": 0,
+      "skipped": 0
+    }
+  },
+  "results": [
+    {
+      "path": "models/audit.py",
+      "language": "python",
+      "fileCategory": "code",
+      "totalLines": 32,
+      "nonEmptyLines": 25,
+      "classes": [
+        {
+          "name": "AuditLog",
+          "startLine": 7,
+          "endLine": 32,
+          "methods": [
+            "before_state",
+            "before_state",
+            "after_state",
+            "after_state"
+          ],
+          "properties": []
+        }
+      ],
+      "exports": [
+        {
+          "name": "AuditLog",
+          "line": 7,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "before_state",
+          "callee": "json.loads",
+          "lineNumber": 20
+        },
+        {
+          "caller": "before_state",
+          "callee": "json.dumps",
+          "lineNumber": 24
+        },
+        {
+          "caller": "after_state",
+          "callee": "json.loads",
+          "lineNumber": 28
+        },
+        {
+          "caller": "after_state",
+          "callee": "json.dumps",
+          "lineNumber": 32
+        }
+      ],
+      "metrics": {
+        "importCount": 1,
+        "exportCount": 1,
+        "functionCount": 0,
+        "classCount": 1
+      }
+    },
+    {
+      "path": "models/bc.py",
+      "language": "python",
+      "fileCategory": "code",
+      "totalLines": 65,
+      "nonEmptyLines": 58,
+      "classes": [
+        {
+          "name": "BiomedicalConcept",
+          "startLine": 6,
+          "endLine": 50,
+          "methods": [
+            "to_dict"
+          ],
+          "properties": []
+        },
+        {
+          "name": "DataElementConcept",
+          "startLine": 53,
+          "endLine": 65,
+          "methods": [],
+          "properties": []
+        }
+      ],
+      "exports": [
+        {
+          "name": "BiomedicalConcept",
+          "line": 6,
+          "isDefault": false
+        },
+        {
+          "name": "DataElementConcept",
+          "line": 53,
+          "isDefault": false
+        }
+      ],
+      "metrics": {
+        "importCount": 1,
+        "exportCount": 2,
+        "functionCount": 0,
+        "classCount": 2
+      }
+    },
+    {
+      "path": "models/ingestion.py",
+      "language": "python",
+      "fileCategory": "code",
+      "totalLines": 56,
+      "nonEmptyLines": 44,
+      "classes": [
+        {
+          "name": "IngestionRecord",
+          "startLine": 7,
+          "endLine": 56,
+          "methods": [
+            "mapped",
+            "mapped",
+            "confidences",
+            "confidences",
+            "errors",
+            "errors",
+            "decs",
+            "decs",
+            "avg_confidence"
+          ],
+          "properties": []
+        }
+      ],
+      "exports": [
+        {
+          "name": "IngestionRecord",
+          "line": 7,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "mapped",
+          "callee": "json.loads",
+          "lineNumber": 23
+        },
+        {
+          "caller": "mapped",
+          "callee": "json.dumps",
+          "lineNumber": 27
+        },
+        {
+          "caller": "confidences",
+          "callee": "json.loads",
+          "lineNumber": 31
+        },
+        {
+          "caller": "confidences",
+          "callee": "json.dumps",
+          "lineNumber": 35
+        },
+        {
+          "caller": "errors",
+          "callee": "json.loads",
+          "lineNumber": 39
+        },
+        {
+          "caller": "errors",
+          "callee": "json.dumps",
+          "lineNumber": 43
+        },
+        {
+          "caller": "decs",
+          "callee": "json.loads",
+          "lineNumber": 47
+        },
+        {
+          "caller": "decs",
+          "callee": "json.dumps",
+          "lineNumber": 51
+        },
+        {
+          "caller": "avg_confidence",
+          "callee": "self.confidences.values",
+          "lineNumber": 55
+        },
+        {
+          "caller": "avg_confidence",
+          "callee": "isinstance",
+          "lineNumber": 55
+        },
+        {
+          "caller": "avg_confidence",
+          "callee": "round",
+          "lineNumber": 56
+        },
+        {
+          "caller": "avg_confidence",
+          "callee": "sum",
+          "lineNumber": 56
+        },
+        {
+          "caller": "avg_confidence",
+          "callee": "len",
+          "lineNumber": 56
+        }
+      ],
+      "metrics": {
+        "importCount": 1,
+        "exportCount": 1,
+        "functionCount": 0,
+        "classCount": 1
+      }
+    },
+    {
+      "path": "routes/audit.py",
+      "language": "python",
+      "fileCategory": "code",
+      "totalLines": 44,
+      "nonEmptyLines": 36,
+      "functions": [
+        {
+          "name": "index",
+          "startLine": 13,
+          "endLine": 44,
+          "params": []
+        }
+      ],
+      "exports": [
+        {
+          "name": "index",
+          "line": 12,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "index",
+          "callee": "request.args.get",
+          "lineNumber": 14
+        },
+        {
+          "caller": "index",
+          "callee": "request.args.get",
+          "lineNumber": 15
+        },
+        {
+          "caller": "index",
+          "callee": "request.args.get",
+          "lineNumber": 16
+        },
+        {
+          "caller": "index",
+          "callee": "request.args.get",
+          "lineNumber": 17
+        },
+        {
+          "caller": "index",
+          "callee": "request.args.get",
+          "lineNumber": 18
+        },
+        {
+          "caller": "index",
+          "callee": "request.args.get",
+          "lineNumber": 19
+        },
+        {
+          "caller": "index",
+          "callee": "query.filter_by",
+          "lineNumber": 23
+        },
+        {
+          "caller": "index",
+          "callee": "query.filter",
+          "lineNumber": 25
+        },
+        {
+          "caller": "index",
+          "callee": "AuditLog.action.ilike",
+          "lineNumber": 25
+        },
+        {
+          "caller": "index",
+          "callee": "query.filter",
+          "lineNumber": 27
+        },
+        {
+          "caller": "index",
+          "callee": "AuditLog.actor.ilike",
+          "lineNumber": 27
+        },
+        {
+          "caller": "index",
+          "callee": "query.filter",
+          "lineNumber": 29
+        },
+        {
+          "caller": "index",
+          "callee": "query.filter",
+          "lineNumber": 31
+        },
+        {
+          "caller": "index",
+          "callee": "query.order_by(AuditLog.timestamp.desc()).paginate",
+          "lineNumber": 33
+        },
+        {
+          "caller": "index",
+          "callee": "query.order_by",
+          "lineNumber": 33
+        },
+        {
+          "caller": "index",
+          "callee": "AuditLog.timestamp.desc",
+          "lineNumber": 33
+        },
+        {
+          "caller": "index",
+          "callee": "render_template",
+          "lineNumber": 34
+        }
+      ],
+      "metrics": {
+        "importCount": 1,
+        "exportCount": 1,
+        "functionCount": 1,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "routes/ingestion.py",
+      "language": "python",
+      "fileCategory": "code",
+      "totalLines": 186,
+      "nonEmptyLines": 157,
+      "functions": [
+        {
+          "name": "_allowed_file",
+          "startLine": 27,
+          "endLine": 29,
+          "params": [
+            "filename"
+          ]
+        },
+        {
+          "name": "_get_session_key",
+          "startLine": 32,
+          "endLine": 35,
+          "params": []
+        },
+        {
+          "name": "_bc_from_mapped",
+          "startLine": 38,
+          "endLine": 54,
+          "params": [
+            "bc_id",
+            "mapped"
+          ]
+        },
+        {
+          "name": "_create_decs",
+          "startLine": 57,
+          "endLine": 68,
+          "params": [
+            "bc_id",
+            "decs"
+          ]
+        },
+        {
+          "name": "index",
+          "startLine": 72,
+          "endLine": 75,
+          "params": []
+        },
+        {
+          "name": "upload",
+          "startLine": 79,
+          "endLine": 118,
+          "params": []
+        },
+        {
+          "name": "approve",
+          "startLine": 122,
+          "endLine": 143,
+          "params": [
+            "record_id"
+          ]
+        },
+        {
+          "name": "reject",
+          "startLine": 147,
+          "endLine": 151,
+          "params": [
+            "record_id"
+          ]
+        },
+        {
+          "name": "approve_all",
+          "startLine": 155,
+          "endLine": 186,
+          "params": []
+        }
+      ],
+      "exports": [
+        {
+          "name": "_allowed_file",
+          "line": 27,
+          "isDefault": false
+        },
+        {
+          "name": "_get_session_key",
+          "line": 32,
+          "isDefault": false
+        },
+        {
+          "name": "_bc_from_mapped",
+          "line": 38,
+          "isDefault": false
+        },
+        {
+          "name": "_create_decs",
+          "line": 57,
+          "isDefault": false
+        },
+        {
+          "name": "index",
+          "line": 71,
+          "isDefault": false
+        },
+        {
+          "name": "upload",
+          "line": 78,
+          "isDefault": false
+        },
+        {
+          "name": "approve",
+          "line": 121,
+          "isDefault": false
+        },
+        {
+          "name": "reject",
+          "line": 146,
+          "isDefault": false
+        },
+        {
+          "name": "approve_all",
+          "line": 154,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "_allowed_file",
+          "callee": "filename.rsplit(\".\", 1)[1].lower",
+          "lineNumber": 28
+        },
+        {
+          "caller": "_allowed_file",
+          "callee": "filename.rsplit",
+          "lineNumber": 28
+        },
+        {
+          "caller": "_get_session_key",
+          "callee": "uuid.uuid4",
+          "lineNumber": 34
+        },
+        {
+          "caller": "_bc_from_mapped",
+          "callee": "BiomedicalConcept",
+          "lineNumber": 39
+        },
+        {
+          "caller": "_bc_from_mapped",
+          "callee": "mapped.get",
+          "lineNumber": 41
+        },
+        {
+          "caller": "_bc_from_mapped",
+          "callee": "mapped.get",
+          "lineNumber": 42
+        },
+        {
+          "caller": "_bc_from_mapped",
+          "callee": "mapped.get",
+          "lineNumber": 43
+        },
+        {
+          "caller": "_bc_from_mapped",
+          "callee": "mapped.get",
+          "lineNumber": 44
+        },
+        {
+          "caller": "_bc_from_mapped",
+          "callee": "mapped.get",
+          "lineNumber": 45
+        },
+        {
+          "caller": "_bc_from_mapped",
+          "callee": "mapped.get",
+          "lineNumber": 46
+        },
+        {
+          "caller": "_bc_from_mapped",
+          "callee": "mapped.get",
+          "lineNumber": 47
+        },
+        {
+          "caller": "_bc_from_mapped",
+          "callee": "mapped.get",
+          "lineNumber": 48
+        },
+        {
+          "caller": "_bc_from_mapped",
+          "callee": "mapped.get",
+          "lineNumber": 49
+        },
+        {
+          "caller": "_bc_from_mapped",
+          "callee": "mapped.get",
+          "lineNumber": 50
+        },
+        {
+          "caller": "_bc_from_mapped",
+          "callee": "mapped.get",
+          "lineNumber": 51
+        },
+        {
+          "caller": "_create_decs",
+          "callee": "enumerate",
+          "lineNumber": 58
+        },
+        {
+          "caller": "_create_decs",
+          "callee": "DataElementConcept",
+          "lineNumber": 59
+        },
+        {
+          "caller": "_create_decs",
+          "callee": "d.get",
+          "lineNumber": 60
+        },
+        {
+          "caller": "_create_decs",
+          "callee": "d.get",
+          "lineNumber": 62
+        },
+        {
+          "caller": "_create_decs",
+          "callee": "d.get",
+          "lineNumber": 63
+        },
+        {
+          "caller": "_create_decs",
+          "callee": "d.get",
+          "lineNumber": 64
+        },
+        {
+          "caller": "_create_decs",
+          "callee": "d.get",
+          "lineNumber": 65
+        },
+        {
+          "caller": "_create_decs",
+          "callee": "db.session.add",
+          "lineNumber": 68
+        },
+        {
+          "caller": "index",
+          "callee": "session.get",
+          "lineNumber": 73
+        },
+        {
+          "caller": "index",
+          "callee": "IngestionRecord.query.filter_by(session_key=key, status=\"pending\").all",
+          "lineNumber": 74
+        },
+        {
+          "caller": "index",
+          "callee": "IngestionRecord.query.filter_by",
+          "lineNumber": 74
+        },
+        {
+          "caller": "index",
+          "callee": "render_template",
+          "lineNumber": 75
+        },
+        {
+          "caller": "upload",
+          "callee": "flash",
+          "lineNumber": 81
+        },
+        {
+          "caller": "upload",
+          "callee": "redirect",
+          "lineNumber": 82
+        },
+        {
+          "caller": "upload",
+          "callee": "url_for",
+          "lineNumber": 82
+        },
+        {
+          "caller": "upload",
+          "callee": "_allowed_file",
+          "lineNumber": 84
+        },
+        {
+          "caller": "upload",
+          "callee": "flash",
+          "lineNumber": 85
+        },
+        {
+          "caller": "upload",
+          "callee": "redirect",
+          "lineNumber": 86
+        },
+        {
+          "caller": "upload",
+          "callee": "url_for",
+          "lineNumber": 86
+        },
+        {
+          "caller": "upload",
+          "callee": "f.filename.rsplit(\".\", 1)[1].lower",
+          "lineNumber": 88
+        },
+        {
+          "caller": "upload",
+          "callee": "f.filename.rsplit",
+          "lineNumber": 88
+        },
+        {
+          "caller": "upload",
+          "callee": "BiomedicalConcept.query.with_entities(BiomedicalConcept.bc_id).all",
+          "lineNumber": 89
+        },
+        {
+          "caller": "upload",
+          "callee": "BiomedicalConcept.query.with_entities",
+          "lineNumber": 89
+        },
+        {
+          "caller": "upload",
+          "callee": "parse_xlsx",
+          "lineNumber": 92
+        },
+        {
+          "caller": "upload",
+          "callee": "parse_csv",
+          "lineNumber": 94
+        },
+        {
+          "caller": "upload",
+          "callee": "parse_json",
+          "lineNumber": 96
+        },
+        {
+          "caller": "upload",
+          "callee": "deduplicate",
+          "lineNumber": 98
+        },
+        {
+          "caller": "upload",
+          "callee": "_get_session_key",
+          "lineNumber": 100
+        },
+        {
+          "caller": "upload",
+          "callee": "IngestionRecord.query.filter_by(session_key=key, status=\"pending\").delete",
+          "lineNumber": 101
+        },
+        {
+          "caller": "upload",
+          "callee": "IngestionRecord.query.filter_by",
+          "lineNumber": 101
+        },
+        {
+          "caller": "upload",
+          "callee": "IngestionRecord",
+          "lineNumber": 104
+        },
+        {
+          "caller": "upload",
+          "callee": "rec.get",
+          "lineNumber": 107
+        },
+        {
+          "caller": "upload",
+          "callee": "rec.get",
+          "lineNumber": 108
+        },
+        {
+          "caller": "upload",
+          "callee": "rec.get",
+          "lineNumber": 110
+        },
+        {
+          "caller": "upload",
+          "callee": "rec.get",
+          "lineNumber": 111
+        },
+        {
+          "caller": "upload",
+          "callee": "rec.get",
+          "lineNumber": 112
+        },
+        {
+          "caller": "upload",
+          "callee": "rec.get",
+          "lineNumber": 113
+        },
+        {
+          "caller": "upload",
+          "callee": "db.session.add",
+          "lineNumber": 114
+        },
+        {
+          "caller": "upload",
+          "callee": "db.session.commit",
+          "lineNumber": 116
+        },
+        {
+          "caller": "upload",
+          "callee": "flash",
+          "lineNumber": 117
+        },
+        {
+          "caller": "upload",
+          "callee": "len",
+          "lineNumber": 117
+        },
+        {
+          "caller": "upload",
+          "callee": "redirect",
+          "lineNumber": 118
+        },
+        {
+          "caller": "upload",
+          "callee": "url_for",
+          "lineNumber": 118
+        },
+        {
+          "caller": "approve",
+          "callee": "db.get_or_404",
+          "lineNumber": 123
+        },
+        {
+          "caller": "approve",
+          "callee": "mapped.get",
+          "lineNumber": 125
+        },
+        {
+          "caller": "approve",
+          "callee": "mapped.get",
+          "lineNumber": 125
+        },
+        {
+          "caller": "approve",
+          "callee": "db.session.get",
+          "lineNumber": 126
+        },
+        {
+          "caller": "approve",
+          "callee": "_bc_from_mapped",
+          "lineNumber": 127
+        },
+        {
+          "caller": "approve",
+          "callee": "db.session.add",
+          "lineNumber": 128
+        },
+        {
+          "caller": "approve",
+          "callee": "_create_decs",
+          "lineNumber": 129
+        },
+        {
+          "caller": "approve",
+          "callee": "AuditLog",
+          "lineNumber": 130
+        },
+        {
+          "caller": "approve",
+          "callee": "db.session.add",
+          "lineNumber": 137
+        },
+        {
+          "caller": "approve",
+          "callee": "flash",
+          "lineNumber": 138
+        },
+        {
+          "caller": "approve",
+          "callee": "flash",
+          "lineNumber": 140
+        },
+        {
+          "caller": "approve",
+          "callee": "db.session.commit",
+          "lineNumber": 142
+        },
+        {
+          "caller": "approve",
+          "callee": "redirect",
+          "lineNumber": 143
+        },
+        {
+          "caller": "approve",
+          "callee": "url_for",
+          "lineNumber": 143
+        },
+        {
+          "caller": "reject",
+          "callee": "db.get_or_404",
+          "lineNumber": 148
+        },
+        {
+          "caller": "reject",
+          "callee": "db.session.commit",
+          "lineNumber": 150
+        },
+        {
+          "caller": "reject",
+          "callee": "redirect",
+          "lineNumber": 151
+        },
+        {
+          "caller": "reject",
+          "callee": "url_for",
+          "lineNumber": 151
+        },
+        {
+          "caller": "approve_all",
+          "callee": "session.get",
+          "lineNumber": 156
+        },
+        {
+          "caller": "approve_all",
+          "callee": "redirect",
+          "lineNumber": 158
+        },
+        {
+          "caller": "approve_all",
+          "callee": "url_for",
+          "lineNumber": 158
+        },
+        {
+          "caller": "approve_all",
+          "callee": "IngestionRecord.query.filter_by(session_key=key, status=\"pending\").all",
+          "lineNumber": 159
+        },
+        {
+          "caller": "approve_all",
+          "callee": "IngestionRecord.query.filter_by",
+          "lineNumber": 159
+        },
+        {
+          "caller": "approve_all",
+          "callee": "mapped.get",
+          "lineNumber": 166
+        },
+        {
+          "caller": "approve_all",
+          "callee": "mapped.get",
+          "lineNumber": 166
+        },
+        {
+          "caller": "approve_all",
+          "callee": "db.session.get",
+          "lineNumber": 167
+        },
+        {
+          "caller": "approve_all",
+          "callee": "_bc_from_mapped",
+          "lineNumber": 168
+        },
+        {
+          "caller": "approve_all",
+          "callee": "db.session.add",
+          "lineNumber": 169
+        },
+        {
+          "caller": "approve_all",
+          "callee": "_create_decs",
+          "lineNumber": 170
+        },
+        {
+          "caller": "approve_all",
+          "callee": "db.session.add",
+          "lineNumber": 171
+        },
+        {
+          "caller": "approve_all",
+          "callee": "AuditLog",
+          "lineNumber": 172
+        },
+        {
+          "caller": "approve_all",
+          "callee": "db.session.commit",
+          "lineNumber": 184
+        },
+        {
+          "caller": "approve_all",
+          "callee": "flash",
+          "lineNumber": 185
+        },
+        {
+          "caller": "approve_all",
+          "callee": "redirect",
+          "lineNumber": 186
+        },
+        {
+          "caller": "approve_all",
+          "callee": "url_for",
+          "lineNumber": 186
+        }
+      ],
+      "metrics": {
+        "importCount": 5,
+        "exportCount": 9,
+        "functionCount": 9,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "services/ingestion.py",
+      "language": "python",
+      "fileCategory": "code",
+      "totalLines": 227,
+      "nonEmptyLines": 204,
+      "functions": [
+        {
+          "name": "_similarity",
+          "startLine": 31,
+          "endLine": 32,
+          "params": [
+            "a",
+            "b"
+          ]
+        },
+        {
+          "name": "_match_field",
+          "startLine": 35,
+          "endLine": 45,
+          "params": [
+            "col_name"
+          ]
+        },
+        {
+          "name": "map_fields",
+          "startLine": 48,
+          "endLine": 62,
+          "params": [
+            "raw_dict"
+          ]
+        },
+        {
+          "name": "validate_bc",
+          "startLine": 65,
+          "endLine": 81,
+          "params": [
+            "bc_dict"
+          ]
+        },
+        {
+          "name": "_group_by_bc",
+          "startLine": 84,
+          "endLine": 137,
+          "params": [
+            "rows",
+            "sheet"
+          ]
+        },
+        {
+          "name": "parse_xlsx",
+          "startLine": 140,
+          "endLine": 162,
+          "params": [
+            "file_obj"
+          ]
+        },
+        {
+          "name": "parse_csv",
+          "startLine": 165,
+          "endLine": 188,
+          "params": [
+            "file_obj"
+          ]
+        },
+        {
+          "name": "parse_json",
+          "startLine": 191,
+          "endLine": 215,
+          "params": [
+            "file_obj"
+          ]
+        },
+        {
+          "name": "deduplicate",
+          "startLine": 218,
+          "endLine": 227,
+          "params": [
+            "parsed_records",
+            "existing_ids"
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "_similarity",
+          "line": 31,
+          "isDefault": false
+        },
+        {
+          "name": "_match_field",
+          "line": 35,
+          "isDefault": false
+        },
+        {
+          "name": "map_fields",
+          "line": 48,
+          "isDefault": false
+        },
+        {
+          "name": "validate_bc",
+          "line": 65,
+          "isDefault": false
+        },
+        {
+          "name": "_group_by_bc",
+          "line": 84,
+          "isDefault": false
+        },
+        {
+          "name": "parse_xlsx",
+          "line": 140,
+          "isDefault": false
+        },
+        {
+          "name": "parse_csv",
+          "line": 165,
+          "isDefault": false
+        },
+        {
+          "name": "parse_json",
+          "line": 191,
+          "isDefault": false
+        },
+        {
+          "name": "deduplicate",
+          "line": 218,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "_similarity",
+          "callee": "SequenceMatcher(None, a.lower().strip(), b.lower().strip()).ratio",
+          "lineNumber": 32
+        },
+        {
+          "caller": "_similarity",
+          "callee": "SequenceMatcher",
+          "lineNumber": 32
+        },
+        {
+          "caller": "_similarity",
+          "callee": "a.lower().strip",
+          "lineNumber": 32
+        },
+        {
+          "caller": "_similarity",
+          "callee": "a.lower",
+          "lineNumber": 32
+        },
+        {
+          "caller": "_similarity",
+          "callee": "b.lower().strip",
+          "lineNumber": 32
+        },
+        {
+          "caller": "_similarity",
+          "callee": "b.lower",
+          "lineNumber": 32
+        },
+        {
+          "caller": "_match_field",
+          "callee": "col_name.lower().replace(\" \", \"_\").replace",
+          "lineNumber": 37
+        },
+        {
+          "caller": "_match_field",
+          "callee": "col_name.lower().replace",
+          "lineNumber": 37
+        },
+        {
+          "caller": "_match_field",
+          "callee": "col_name.lower",
+          "lineNumber": 37
+        },
+        {
+          "caller": "_match_field",
+          "callee": "FIELD_MAP.items",
+          "lineNumber": 39
+        },
+        {
+          "caller": "_match_field",
+          "callee": "_similarity",
+          "lineNumber": 41
+        },
+        {
+          "caller": "_match_field",
+          "callee": "round",
+          "lineNumber": 45
+        },
+        {
+          "caller": "map_fields",
+          "callee": "raw_dict.items",
+          "lineNumber": 55
+        },
+        {
+          "caller": "map_fields",
+          "callee": "isinstance",
+          "lineNumber": 56
+        },
+        {
+          "caller": "map_fields",
+          "callee": "str",
+          "lineNumber": 56
+        },
+        {
+          "caller": "map_fields",
+          "callee": "_match_field",
+          "lineNumber": 58
+        },
+        {
+          "caller": "map_fields",
+          "callee": "str",
+          "lineNumber": 58
+        },
+        {
+          "caller": "map_fields",
+          "callee": "str(value).strip",
+          "lineNumber": 60
+        },
+        {
+          "caller": "map_fields",
+          "callee": "str",
+          "lineNumber": 60
+        },
+        {
+          "caller": "validate_bc",
+          "callee": "bc_dict.get",
+          "lineNumber": 71
+        },
+        {
+          "caller": "validate_bc",
+          "callee": "errors.append",
+          "lineNumber": 72
+        },
+        {
+          "caller": "validate_bc",
+          "callee": "bc_dict.get",
+          "lineNumber": 73
+        },
+        {
+          "caller": "validate_bc",
+          "callee": "errors.append",
+          "lineNumber": 74
+        },
+        {
+          "caller": "validate_bc",
+          "callee": "bc_dict.get",
+          "lineNumber": 75
+        },
+        {
+          "caller": "validate_bc",
+          "callee": "bc_dict.get",
+          "lineNumber": 75
+        },
+        {
+          "caller": "validate_bc",
+          "callee": "errors.append",
+          "lineNumber": 76
+        },
+        {
+          "caller": "validate_bc",
+          "callee": "bc_dict.get",
+          "lineNumber": 78
+        },
+        {
+          "caller": "validate_bc",
+          "callee": "bc_dict.get",
+          "lineNumber": 78
+        },
+        {
+          "caller": "validate_bc",
+          "callee": "ncit.upper().startswith",
+          "lineNumber": 79
+        },
+        {
+          "caller": "validate_bc",
+          "callee": "ncit.upper",
+          "lineNumber": 79
+        },
+        {
+          "caller": "validate_bc",
+          "callee": "errors.append",
+          "lineNumber": 80
+        },
+        {
+          "caller": "_group_by_bc",
+          "callee": "OrderedDict",
+          "lineNumber": 93
+        },
+        {
+          "caller": "_group_by_bc",
+          "callee": "mapped.get",
+          "lineNumber": 95
+        },
+        {
+          "caller": "_group_by_bc",
+          "callee": "mapped.get",
+          "lineNumber": 95
+        },
+        {
+          "caller": "_group_by_bc",
+          "callee": "mapped.get",
+          "lineNumber": 101
+        },
+        {
+          "caller": "_group_by_bc",
+          "callee": "g[\"mapped\"].get",
+          "lineNumber": 101
+        },
+        {
+          "caller": "_group_by_bc",
+          "callee": "mapped.items",
+          "lineNumber": 103
+        },
+        {
+          "caller": "_group_by_bc",
+          "callee": "g[\"confidences\"].update",
+          "lineNumber": 106
+        },
+        {
+          "caller": "_group_by_bc",
+          "callee": "mapped.get",
+          "lineNumber": 107
+        },
+        {
+          "caller": "_group_by_bc",
+          "callee": "mapped.get",
+          "lineNumber": 107
+        },
+        {
+          "caller": "_group_by_bc",
+          "callee": "g[\"decs\"].append",
+          "lineNumber": 108
+        },
+        {
+          "caller": "_group_by_bc",
+          "callee": "mapped.get",
+          "lineNumber": 110
+        },
+        {
+          "caller": "_group_by_bc",
+          "callee": "mapped.get",
+          "lineNumber": 111
+        },
+        {
+          "caller": "_group_by_bc",
+          "callee": "mapped.get",
+          "lineNumber": 112
+        },
+        {
+          "caller": "_group_by_bc",
+          "callee": "mapped.get",
+          "lineNumber": 113
+        },
+        {
+          "caller": "_group_by_bc",
+          "callee": "mapped.get",
+          "lineNumber": 114
+        },
+        {
+          "caller": "_group_by_bc",
+          "callee": "g[\"mapped\"].update",
+          "lineNumber": 119
+        },
+        {
+          "caller": "_group_by_bc",
+          "callee": "g[\"confidences\"].update",
+          "lineNumber": 120
+        },
+        {
+          "caller": "_group_by_bc",
+          "callee": "groups.items",
+          "lineNumber": 123
+        },
+        {
+          "caller": "_group_by_bc",
+          "callee": "mapped.get",
+          "lineNumber": 125
+        },
+        {
+          "caller": "_group_by_bc",
+          "callee": "validate_bc",
+          "lineNumber": 127
+        },
+        {
+          "caller": "_group_by_bc",
+          "callee": "results.append",
+          "lineNumber": 128
+        },
+        {
+          "caller": "parse_xlsx",
+          "callee": "pd.ExcelFile",
+          "lineNumber": 147
+        },
+        {
+          "caller": "parse_xlsx",
+          "callee": "xl.parse",
+          "lineNumber": 149
+        },
+        {
+          "caller": "parse_xlsx",
+          "callee": "df.iterrows",
+          "lineNumber": 151
+        },
+        {
+          "caller": "parse_xlsx",
+          "callee": "row.to_dict",
+          "lineNumber": 152
+        },
+        {
+          "caller": "parse_xlsx",
+          "callee": "map_fields",
+          "lineNumber": 153
+        },
+        {
+          "caller": "parse_xlsx",
+          "callee": "rows.append",
+          "lineNumber": 155
+        },
+        {
+          "caller": "parse_xlsx",
+          "callee": "results.extend",
+          "lineNumber": 156
+        },
+        {
+          "caller": "parse_xlsx",
+          "callee": "_group_by_bc",
+          "lineNumber": 156
+        },
+        {
+          "caller": "parse_xlsx",
+          "callee": "logger.error",
+          "lineNumber": 160
+        },
+        {
+          "caller": "parse_xlsx",
+          "callee": "results.append",
+          "lineNumber": 161
+        },
+        {
+          "caller": "parse_xlsx",
+          "callee": "str",
+          "lineNumber": 161
+        },
+        {
+          "caller": "parse_xlsx",
+          "callee": "str",
+          "lineNumber": 161
+        },
+        {
+          "caller": "parse_csv",
+          "callee": "pd.read_csv",
+          "lineNumber": 169
+        },
+        {
+          "caller": "parse_csv",
+          "callee": "df.iterrows",
+          "lineNumber": 170
+        },
+        {
+          "caller": "parse_csv",
+          "callee": "row.to_dict",
+          "lineNumber": 171
+        },
+        {
+          "caller": "parse_csv",
+          "callee": "map_fields",
+          "lineNumber": 172
+        },
+        {
+          "caller": "parse_csv",
+          "callee": "validate_bc",
+          "lineNumber": 175
+        },
+        {
+          "caller": "parse_csv",
+          "callee": "results.append",
+          "lineNumber": 176
+        },
+        {
+          "caller": "parse_csv",
+          "callee": "str",
+          "lineNumber": 178
+        },
+        {
+          "caller": "parse_csv",
+          "callee": "raw.items",
+          "lineNumber": 178
+        },
+        {
+          "caller": "parse_csv",
+          "callee": "logger.error",
+          "lineNumber": 186
+        },
+        {
+          "caller": "parse_csv",
+          "callee": "results.append",
+          "lineNumber": 187
+        },
+        {
+          "caller": "parse_csv",
+          "callee": "str",
+          "lineNumber": 187
+        },
+        {
+          "caller": "parse_csv",
+          "callee": "str",
+          "lineNumber": 187
+        },
+        {
+          "caller": "parse_json",
+          "callee": "json.load",
+          "lineNumber": 195
+        },
+        {
+          "caller": "parse_json",
+          "callee": "isinstance",
+          "lineNumber": 196
+        },
+        {
+          "caller": "parse_json",
+          "callee": "map_fields",
+          "lineNumber": 199
+        },
+        {
+          "caller": "parse_json",
+          "callee": "validate_bc",
+          "lineNumber": 202
+        },
+        {
+          "caller": "parse_json",
+          "callee": "results.append",
+          "lineNumber": 203
+        },
+        {
+          "caller": "parse_json",
+          "callee": "str",
+          "lineNumber": 205
+        },
+        {
+          "caller": "parse_json",
+          "callee": "item.items",
+          "lineNumber": 205
+        },
+        {
+          "caller": "parse_json",
+          "callee": "logger.error",
+          "lineNumber": 213
+        },
+        {
+          "caller": "parse_json",
+          "callee": "results.append",
+          "lineNumber": 214
+        },
+        {
+          "caller": "parse_json",
+          "callee": "str",
+          "lineNumber": 214
+        },
+        {
+          "caller": "parse_json",
+          "callee": "str",
+          "lineNumber": 214
+        },
+        {
+          "caller": "deduplicate",
+          "callee": "rec.get(\"mapped\", {}).get",
+          "lineNumber": 225
+        },
+        {
+          "caller": "deduplicate",
+          "callee": "rec.get",
+          "lineNumber": 225
+        },
+        {
+          "caller": "deduplicate",
+          "callee": "rec.get(\"mapped\", {}).get",
+          "lineNumber": 225
+        },
+        {
+          "caller": "deduplicate",
+          "callee": "rec.get",
+          "lineNumber": 225
+        },
+        {
+          "caller": "deduplicate",
+          "callee": "bc_id.upper",
+          "lineNumber": 226
+        },
+        {
+          "caller": "deduplicate",
+          "callee": "e.upper",
+          "lineNumber": 226
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 9,
+        "functionCount": 9,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "tests/conftest.py",
+      "language": "python",
+      "fileCategory": "code",
+      "totalLines": 68,
+      "nonEmptyLines": 54,
+      "functions": [
+        {
+          "name": "app",
+          "startLine": 24,
+          "endLine": 26,
+          "params": []
+        },
+        {
+          "name": "client",
+          "startLine": 30,
+          "endLine": 31,
+          "params": [
+            "app"
+          ]
+        },
+        {
+          "name": "clean_db",
+          "startLine": 35,
+          "endLine": 41,
+          "params": [
+            "app"
+          ]
+        },
+        {
+          "name": "clear_api_cache",
+          "startLine": 45,
+          "endLine": 51,
+          "params": []
+        },
+        {
+          "name": "sample_bc",
+          "startLine": 55,
+          "endLine": 68,
+          "params": [
+            "app"
+          ]
+        }
+      ],
+      "classes": [
+        {
+          "name": "TestConfig",
+          "startLine": 11,
+          "endLine": 20,
+          "methods": [],
+          "properties": []
+        }
+      ],
+      "exports": [
+        {
+          "name": "TestConfig",
+          "line": 11,
+          "isDefault": false
+        },
+        {
+          "name": "app",
+          "line": 23,
+          "isDefault": false
+        },
+        {
+          "name": "client",
+          "line": 29,
+          "isDefault": false
+        },
+        {
+          "name": "clean_db",
+          "line": 34,
+          "isDefault": false
+        },
+        {
+          "name": "clear_api_cache",
+          "line": 44,
+          "isDefault": false
+        },
+        {
+          "name": "sample_bc",
+          "line": 54,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "app",
+          "callee": "create_app",
+          "lineNumber": 25
+        },
+        {
+          "caller": "client",
+          "callee": "app.test_client",
+          "lineNumber": 31
+        },
+        {
+          "caller": "clean_db",
+          "callee": "app.app_context",
+          "lineNumber": 37
+        },
+        {
+          "caller": "clean_db",
+          "callee": "_db.drop_all",
+          "lineNumber": 38
+        },
+        {
+          "caller": "clean_db",
+          "callee": "_db.create_all",
+          "lineNumber": 39
+        },
+        {
+          "caller": "clean_db",
+          "callee": "_db.session.remove",
+          "lineNumber": 41
+        },
+        {
+          "caller": "clear_api_cache",
+          "callee": "api_cache._cache.clear",
+          "lineNumber": 50
+        },
+        {
+          "caller": "sample_bc",
+          "callee": "app.app_context",
+          "lineNumber": 57
+        },
+        {
+          "caller": "sample_bc",
+          "callee": "BiomedicalConcept",
+          "lineNumber": 58
+        },
+        {
+          "caller": "sample_bc",
+          "callee": "_db.session.add",
+          "lineNumber": 66
+        },
+        {
+          "caller": "sample_bc",
+          "callee": "_db.session.commit",
+          "lineNumber": 67
+        }
+      ],
+      "metrics": {
+        "importCount": 6,
+        "exportCount": 6,
+        "functionCount": 5,
+        "classCount": 1
+      }
+    },
+    {
+      "path": "tests/test_audit_routes.py",
+      "language": "python",
+      "fileCategory": "code",
+      "totalLines": 49,
+      "nonEmptyLines": 39,
+      "functions": [
+        {
+          "name": "_add_log",
+          "startLine": 7,
+          "endLine": 11,
+          "params": [
+            "app",
+            "entity_type",
+            "entity_id",
+            "action",
+            "actor"
+          ]
+        }
+      ],
+      "classes": [
+        {
+          "name": "TestAuditIndex",
+          "startLine": 14,
+          "endLine": 49,
+          "methods": [
+            "test_returns_200_empty",
+            "test_shows_log_entries",
+            "test_filter_by_entity_type",
+            "test_filter_by_action",
+            "test_filter_by_actor",
+            "test_pagination_param_accepted"
+          ],
+          "properties": []
+        }
+      ],
+      "exports": [
+        {
+          "name": "_add_log",
+          "line": 7,
+          "isDefault": false
+        },
+        {
+          "name": "TestAuditIndex",
+          "line": 14,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "_add_log",
+          "callee": "app.app_context",
+          "lineNumber": 8
+        },
+        {
+          "caller": "_add_log",
+          "callee": "AuditLog",
+          "lineNumber": 9
+        },
+        {
+          "caller": "_add_log",
+          "callee": "db.session.add",
+          "lineNumber": 10
+        },
+        {
+          "caller": "_add_log",
+          "callee": "db.session.commit",
+          "lineNumber": 11
+        },
+        {
+          "caller": "test_returns_200_empty",
+          "callee": "client.get",
+          "lineNumber": 16
+        },
+        {
+          "caller": "test_shows_log_entries",
+          "callee": "_add_log",
+          "lineNumber": 20
+        },
+        {
+          "caller": "test_shows_log_entries",
+          "callee": "client.get",
+          "lineNumber": 21
+        },
+        {
+          "caller": "test_filter_by_entity_type",
+          "callee": "_add_log",
+          "lineNumber": 26
+        },
+        {
+          "caller": "test_filter_by_entity_type",
+          "callee": "_add_log",
+          "lineNumber": 27
+        },
+        {
+          "caller": "test_filter_by_entity_type",
+          "callee": "client.get",
+          "lineNumber": 28
+        },
+        {
+          "caller": "test_filter_by_action",
+          "callee": "_add_log",
+          "lineNumber": 33
+        },
+        {
+          "caller": "test_filter_by_action",
+          "callee": "_add_log",
+          "lineNumber": 34
+        },
+        {
+          "caller": "test_filter_by_action",
+          "callee": "client.get",
+          "lineNumber": 35
+        },
+        {
+          "caller": "test_filter_by_actor",
+          "callee": "_add_log",
+          "lineNumber": 40
+        },
+        {
+          "caller": "test_filter_by_actor",
+          "callee": "_add_log",
+          "lineNumber": 41
+        },
+        {
+          "caller": "test_filter_by_actor",
+          "callee": "client.get",
+          "lineNumber": 42
+        },
+        {
+          "caller": "test_pagination_param_accepted",
+          "callee": "_add_log",
+          "lineNumber": 47
+        },
+        {
+          "caller": "test_pagination_param_accepted",
+          "callee": "client.get",
+          "lineNumber": 48
+        }
+      ],
+      "metrics": {
+        "importCount": 2,
+        "exportCount": 2,
+        "functionCount": 1,
+        "classCount": 1
+      }
+    },
+    {
+      "path": "tests/test_bc_routes.py",
+      "language": "python",
+      "fileCategory": "code",
+      "totalLines": 547,
+      "nonEmptyLines": 446,
+      "functions": [
+        {
+          "name": "_bc_form",
+          "startLine": 10,
+          "endLine": 19,
+          "params": [
+            "**kwargs"
+          ]
+        }
+      ],
+      "classes": [
+        {
+          "name": "TestBcIndex",
+          "startLine": 27,
+          "endLine": 43,
+          "methods": [
+            "test_returns_200",
+            "test_search_by_name",
+            "test_search_no_match",
+            "test_filter_by_status"
+          ],
+          "properties": []
+        },
+        {
+          "name": "TestNewBc",
+          "startLine": 51,
+          "endLine": 54,
+          "methods": [
+            "test_returns_200"
+          ],
+          "properties": []
+        },
+        {
+          "name": "TestCreateBc",
+          "startLine": 62,
+          "endLine": 109,
+          "methods": [
+            "test_creates_bc_and_redirects",
+            "test_missing_bc_id_redirects_with_error",
+            "test_duplicate_bc_id_rejected",
+            "test_create_writes_audit_log",
+            "test_create_does_not_set_system_without_loinc_code",
+            "test_create_sets_system_when_loinc_code_provided",
+            "test_create_with_decs"
+          ],
+          "properties": []
+        },
+        {
+          "name": "TestBcDetail",
+          "startLine": 117,
+          "endLine": 224,
+          "methods": [
+            "test_existing_bc_returns_200",
+            "test_missing_bc_returns_404",
+            "test_loinc_api_called_when_code_set",
+            "test_loinc_api_not_called_when_no_code",
+            "test_loinc_api_error_does_not_break_page",
+            "test_loinc_spinner_not_shown_when_loinc_fetched_server_side",
+            "test_loinc_metadata_saved_when_fetched_in_detail"
+          ],
+          "properties": []
+        },
+        {
+          "name": "TestEditBc",
+          "startLine": 232,
+          "endLine": 332,
+          "methods": [
+            "test_updates_short_name",
+            "test_edit_writes_audit_log",
+            "test_nonexistent_bc_returns_404",
+            "test_edit_clears_ncit_code_when_submitted_empty",
+            "test_edit_clears_ncit_metadata_when_ncit_code_cleared",
+            "test_edit_clears_parent_bc_id_when_submitted_empty",
+            "test_edit_clears_loinc_code_and_metadata_when_submitted_empty",
+            "test_edit_clears_system_and_system_name_when_loinc_code_cleared",
+            "test_edit_preserves_system_when_loinc_code_present",
+            "test_edit_strips_whitespace_from_ncit_code",
+            "test_detail_renders_empty_ncit_code_when_none"
+          ],
+          "properties": []
+        },
+        {
+          "name": "TestClearNcitCode",
+          "startLine": 340,
+          "endLine": 370,
+          "methods": [
+            "test_clears_ncit_code_and_metadata",
+            "test_clear_ncit_writes_audit_log",
+            "test_clear_ncit_nonexistent_bc_returns_404",
+            "test_clear_ncit_also_clears_parent_bc_id"
+          ],
+          "properties": []
+        },
+        {
+          "name": "TestClearLoincCode",
+          "startLine": 378,
+          "endLine": 416,
+          "methods": [
+            "test_clears_loinc_code_and_metadata",
+            "test_clear_loinc_writes_audit_log",
+            "test_clear_loinc_also_clears_system_and_system_name",
+            "test_clear_loinc_nonexistent_bc_returns_404"
+          ],
+          "properties": []
+        },
+        {
+          "name": "TestSubmitForReview",
+          "startLine": 424,
+          "endLine": 435,
+          "methods": [
+            "test_advances_status_to_sme_review",
+            "test_submit_writes_audit_log"
+          ],
+          "properties": []
+        },
+        {
+          "name": "TestDeleteBc",
+          "startLine": 443,
+          "endLine": 457,
+          "methods": [
+            "test_deletes_bc",
+            "test_delete_writes_audit_log",
+            "test_nonexistent_bc_returns_404"
+          ],
+          "properties": []
+        },
+        {
+          "name": "TestExport",
+          "startLine": 465,
+          "endLine": 479,
+          "methods": [
+            "test_json_export",
+            "test_xlsx_export",
+            "test_odm_xml_export"
+          ],
+          "properties": []
+        },
+        {
+          "name": "TestLibraryDetail",
+          "startLine": 511,
+          "endLine": 547,
+          "methods": [
+            "test_renders_page_for_valid_concept",
+            "test_redirects_on_api_error",
+            "test_loinc_api_called_when_loinc_coding_present",
+            "test_loinc_api_not_called_when_no_loinc_coding",
+            "test_loinc_api_error_does_not_break_page"
+          ],
+          "properties": []
+        }
+      ],
+      "exports": [
+        {
+          "name": "_bc_form",
+          "line": 10,
+          "isDefault": false
+        },
+        {
+          "name": "TestBcIndex",
+          "line": 27,
+          "isDefault": false
+        },
+        {
+          "name": "TestNewBc",
+          "line": 51,
+          "isDefault": false
+        },
+        {
+          "name": "TestCreateBc",
+          "line": 62,
+          "isDefault": false
+        },
+        {
+          "name": "TestBcDetail",
+          "line": 117,
+          "isDefault": false
+        },
+        {
+          "name": "TestEditBc",
+          "line": 232,
+          "isDefault": false
+        },
+        {
+          "name": "TestClearNcitCode",
+          "line": 340,
+          "isDefault": false
+        },
+        {
+          "name": "TestClearLoincCode",
+          "line": 378,
+          "isDefault": false
+        },
+        {
+          "name": "TestSubmitForReview",
+          "line": 424,
+          "isDefault": false
+        },
+        {
+          "name": "TestDeleteBc",
+          "line": 443,
+          "isDefault": false
+        },
+        {
+          "name": "TestExport",
+          "line": 465,
+          "isDefault": false
+        },
+        {
+          "name": "TestLibraryDetail",
+          "line": 511,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "_bc_form",
+          "callee": "defaults.update",
+          "lineNumber": 18
+        },
+        {
+          "caller": "test_returns_200",
+          "callee": "client.get",
+          "lineNumber": 29
+        },
+        {
+          "caller": "test_search_by_name",
+          "callee": "client.get",
+          "lineNumber": 33
+        },
+        {
+          "caller": "test_search_no_match",
+          "callee": "client.get",
+          "lineNumber": 38
+        },
+        {
+          "caller": "test_filter_by_status",
+          "callee": "client.get",
+          "lineNumber": 42
+        },
+        {
+          "caller": "test_returns_200",
+          "callee": "client.get",
+          "lineNumber": 53
+        },
+        {
+          "caller": "test_creates_bc_and_redirects",
+          "callee": "client.post",
+          "lineNumber": 64
+        },
+        {
+          "caller": "test_creates_bc_and_redirects",
+          "callee": "_bc_form",
+          "lineNumber": 64
+        },
+        {
+          "caller": "test_creates_bc_and_redirects",
+          "callee": "app.app_context",
+          "lineNumber": 66
+        },
+        {
+          "caller": "test_creates_bc_and_redirects",
+          "callee": "db.session.get",
+          "lineNumber": 67
+        },
+        {
+          "caller": "test_missing_bc_id_redirects_with_error",
+          "callee": "client.post",
+          "lineNumber": 70
+        },
+        {
+          "caller": "test_missing_bc_id_redirects_with_error",
+          "callee": "_bc_form",
+          "lineNumber": 70
+        },
+        {
+          "caller": "test_missing_bc_id_redirects_with_error",
+          "callee": "r.data.lower",
+          "lineNumber": 71
+        },
+        {
+          "caller": "test_duplicate_bc_id_rejected",
+          "callee": "client.post",
+          "lineNumber": 75
+        },
+        {
+          "caller": "test_duplicate_bc_id_rejected",
+          "callee": "_bc_form",
+          "lineNumber": 75
+        },
+        {
+          "caller": "test_create_writes_audit_log",
+          "callee": "client.post",
+          "lineNumber": 79
+        },
+        {
+          "caller": "test_create_writes_audit_log",
+          "callee": "_bc_form",
+          "lineNumber": 79
+        },
+        {
+          "caller": "test_create_writes_audit_log",
+          "callee": "app.app_context",
+          "lineNumber": 80
+        },
+        {
+          "caller": "test_create_writes_audit_log",
+          "callee": "AuditLog.query.filter_by(entity_id=\"C00001\", action=\"created\").first",
+          "lineNumber": 81
+        },
+        {
+          "caller": "test_create_writes_audit_log",
+          "callee": "AuditLog.query.filter_by",
+          "lineNumber": 81
+        },
+        {
+          "caller": "test_create_does_not_set_system_without_loinc_code",
+          "callee": "client.post",
+          "lineNumber": 85
+        },
+        {
+          "caller": "test_create_does_not_set_system_without_loinc_code",
+          "callee": "_bc_form",
+          "lineNumber": 85
+        },
+        {
+          "caller": "test_create_does_not_set_system_without_loinc_code",
+          "callee": "app.app_context",
+          "lineNumber": 86
+        },
+        {
+          "caller": "test_create_does_not_set_system_without_loinc_code",
+          "callee": "db.session.get",
+          "lineNumber": 87
+        },
+        {
+          "caller": "test_create_sets_system_when_loinc_code_provided",
+          "callee": "client.post",
+          "lineNumber": 92
+        },
+        {
+          "caller": "test_create_sets_system_when_loinc_code_provided",
+          "callee": "_bc_form",
+          "lineNumber": 92
+        },
+        {
+          "caller": "test_create_sets_system_when_loinc_code_provided",
+          "callee": "app.app_context",
+          "lineNumber": 93
+        },
+        {
+          "caller": "test_create_sets_system_when_loinc_code_provided",
+          "callee": "db.session.get",
+          "lineNumber": 94
+        },
+        {
+          "caller": "test_create_with_decs",
+          "callee": "_bc_form",
+          "lineNumber": 99
+        },
+        {
+          "caller": "test_create_with_decs",
+          "callee": "client.post",
+          "lineNumber": 105
+        },
+        {
+          "caller": "test_create_with_decs",
+          "callee": "app.app_context",
+          "lineNumber": 106
+        },
+        {
+          "caller": "test_create_with_decs",
+          "callee": "DataElementConcept.query.filter_by(bc_id=\"C00001\").all",
+          "lineNumber": 107
+        },
+        {
+          "caller": "test_create_with_decs",
+          "callee": "DataElementConcept.query.filter_by",
+          "lineNumber": 107
+        },
+        {
+          "caller": "test_create_with_decs",
+          "callee": "len",
+          "lineNumber": 108
+        },
+        {
+          "caller": "test_existing_bc_returns_200",
+          "callee": "patch",
+          "lineNumber": 119
+        },
+        {
+          "caller": "test_existing_bc_returns_200",
+          "callee": "client.get",
+          "lineNumber": 121
+        },
+        {
+          "caller": "test_missing_bc_returns_404",
+          "callee": "client.get",
+          "lineNumber": 125
+        },
+        {
+          "caller": "test_loinc_api_called_when_code_set",
+          "callee": "app.app_context",
+          "lineNumber": 129
+        },
+        {
+          "caller": "test_loinc_api_called_when_code_set",
+          "callee": "BiomedicalConcept",
+          "lineNumber": 130
+        },
+        {
+          "caller": "test_loinc_api_called_when_code_set",
+          "callee": "db.session.add",
+          "lineNumber": 137
+        },
+        {
+          "caller": "test_loinc_api_called_when_code_set",
+          "callee": "db.session.commit",
+          "lineNumber": 138
+        },
+        {
+          "caller": "test_loinc_api_called_when_code_set",
+          "callee": "patch",
+          "lineNumber": 141
+        },
+        {
+          "caller": "test_loinc_api_called_when_code_set",
+          "callee": "client.get",
+          "lineNumber": 143
+        },
+        {
+          "caller": "test_loinc_api_called_when_code_set",
+          "callee": "MockLoinc.return_value.search.assert_called_once_with",
+          "lineNumber": 146
+        },
+        {
+          "caller": "test_loinc_api_not_called_when_no_code",
+          "callee": "app.app_context",
+          "lineNumber": 150
+        },
+        {
+          "caller": "test_loinc_api_not_called_when_no_code",
+          "callee": "BiomedicalConcept",
+          "lineNumber": 151
+        },
+        {
+          "caller": "test_loinc_api_not_called_when_no_code",
+          "callee": "db.session.add",
+          "lineNumber": 157
+        },
+        {
+          "caller": "test_loinc_api_not_called_when_no_code",
+          "callee": "db.session.commit",
+          "lineNumber": 158
+        },
+        {
+          "caller": "test_loinc_api_not_called_when_no_code",
+          "callee": "patch",
+          "lineNumber": 160
+        },
+        {
+          "caller": "test_loinc_api_not_called_when_no_code",
+          "callee": "client.get",
+          "lineNumber": 161
+        },
+        {
+          "caller": "test_loinc_api_not_called_when_no_code",
+          "callee": "MockLoinc.return_value.search.assert_not_called",
+          "lineNumber": 164
+        },
+        {
+          "caller": "test_loinc_api_error_does_not_break_page",
+          "callee": "app.app_context",
+          "lineNumber": 167
+        },
+        {
+          "caller": "test_loinc_api_error_does_not_break_page",
+          "callee": "BiomedicalConcept",
+          "lineNumber": 168
+        },
+        {
+          "caller": "test_loinc_api_error_does_not_break_page",
+          "callee": "db.session.add",
+          "lineNumber": 175
+        },
+        {
+          "caller": "test_loinc_api_error_does_not_break_page",
+          "callee": "db.session.commit",
+          "lineNumber": 176
+        },
+        {
+          "caller": "test_loinc_api_error_does_not_break_page",
+          "callee": "patch",
+          "lineNumber": 178
+        },
+        {
+          "caller": "test_loinc_api_error_does_not_break_page",
+          "callee": "client.get",
+          "lineNumber": 180
+        },
+        {
+          "caller": "test_loinc_spinner_not_shown_when_loinc_fetched_server_side",
+          "callee": "app.app_context",
+          "lineNumber": 185
+        },
+        {
+          "caller": "test_loinc_spinner_not_shown_when_loinc_fetched_server_side",
+          "callee": "BiomedicalConcept",
+          "lineNumber": 186
+        },
+        {
+          "caller": "test_loinc_spinner_not_shown_when_loinc_fetched_server_side",
+          "callee": "db.session.add",
+          "lineNumber": 193
+        },
+        {
+          "caller": "test_loinc_spinner_not_shown_when_loinc_fetched_server_side",
+          "callee": "db.session.commit",
+          "lineNumber": 194
+        },
+        {
+          "caller": "test_loinc_spinner_not_shown_when_loinc_fetched_server_side",
+          "callee": "patch",
+          "lineNumber": 197
+        },
+        {
+          "caller": "test_loinc_spinner_not_shown_when_loinc_fetched_server_side",
+          "callee": "client.get",
+          "lineNumber": 199
+        },
+        {
+          "caller": "test_loinc_metadata_saved_when_fetched_in_detail",
+          "callee": "app.app_context",
+          "lineNumber": 205
+        },
+        {
+          "caller": "test_loinc_metadata_saved_when_fetched_in_detail",
+          "callee": "BiomedicalConcept",
+          "lineNumber": 206
+        },
+        {
+          "caller": "test_loinc_metadata_saved_when_fetched_in_detail",
+          "callee": "db.session.add",
+          "lineNumber": 213
+        },
+        {
+          "caller": "test_loinc_metadata_saved_when_fetched_in_detail",
+          "callee": "db.session.commit",
+          "lineNumber": 214
+        },
+        {
+          "caller": "test_loinc_metadata_saved_when_fetched_in_detail",
+          "callee": "patch",
+          "lineNumber": 217
+        },
+        {
+          "caller": "test_loinc_metadata_saved_when_fetched_in_detail",
+          "callee": "client.get",
+          "lineNumber": 219
+        },
+        {
+          "caller": "test_loinc_metadata_saved_when_fetched_in_detail",
+          "callee": "app.app_context",
+          "lineNumber": 221
+        },
+        {
+          "caller": "test_loinc_metadata_saved_when_fetched_in_detail",
+          "callee": "db.session.get",
+          "lineNumber": 222
+        },
+        {
+          "caller": "test_updates_short_name",
+          "callee": "client.post",
+          "lineNumber": 234
+        },
+        {
+          "caller": "test_updates_short_name",
+          "callee": "app.app_context",
+          "lineNumber": 235
+        },
+        {
+          "caller": "test_updates_short_name",
+          "callee": "db.session.get",
+          "lineNumber": 236
+        },
+        {
+          "caller": "test_edit_writes_audit_log",
+          "callee": "client.post",
+          "lineNumber": 240
+        },
+        {
+          "caller": "test_edit_writes_audit_log",
+          "callee": "app.app_context",
+          "lineNumber": 241
+        },
+        {
+          "caller": "test_edit_writes_audit_log",
+          "callee": "AuditLog.query.filter_by(entity_id=\"C12345\", action=\"updated\").first",
+          "lineNumber": 242
+        },
+        {
+          "caller": "test_edit_writes_audit_log",
+          "callee": "AuditLog.query.filter_by",
+          "lineNumber": 242
+        },
+        {
+          "caller": "test_nonexistent_bc_returns_404",
+          "callee": "client.post",
+          "lineNumber": 247
+        },
+        {
+          "caller": "test_edit_clears_ncit_code_when_submitted_empty",
+          "callee": "client.post",
+          "lineNumber": 251
+        },
+        {
+          "caller": "test_edit_clears_ncit_code_when_submitted_empty",
+          "callee": "app.app_context",
+          "lineNumber": 252
+        },
+        {
+          "caller": "test_edit_clears_ncit_code_when_submitted_empty",
+          "callee": "db.session.get",
+          "lineNumber": 253
+        },
+        {
+          "caller": "test_edit_clears_ncit_metadata_when_ncit_code_cleared",
+          "callee": "app.app_context",
+          "lineNumber": 257
+        },
+        {
+          "caller": "test_edit_clears_ncit_metadata_when_ncit_code_cleared",
+          "callee": "db.session.get",
+          "lineNumber": 258
+        },
+        {
+          "caller": "test_edit_clears_ncit_metadata_when_ncit_code_cleared",
+          "callee": "db.session.commit",
+          "lineNumber": 260
+        },
+        {
+          "caller": "test_edit_clears_ncit_metadata_when_ncit_code_cleared",
+          "callee": "client.post",
+          "lineNumber": 261
+        },
+        {
+          "caller": "test_edit_clears_ncit_metadata_when_ncit_code_cleared",
+          "callee": "app.app_context",
+          "lineNumber": 262
+        },
+        {
+          "caller": "test_edit_clears_ncit_metadata_when_ncit_code_cleared",
+          "callee": "db.session.get",
+          "lineNumber": 263
+        },
+        {
+          "caller": "test_edit_clears_parent_bc_id_when_submitted_empty",
+          "callee": "app.app_context",
+          "lineNumber": 267
+        },
+        {
+          "caller": "test_edit_clears_parent_bc_id_when_submitted_empty",
+          "callee": "db.session.get",
+          "lineNumber": 268
+        },
+        {
+          "caller": "test_edit_clears_parent_bc_id_when_submitted_empty",
+          "callee": "db.session.commit",
+          "lineNumber": 270
+        },
+        {
+          "caller": "test_edit_clears_parent_bc_id_when_submitted_empty",
+          "callee": "client.post",
+          "lineNumber": 271
+        },
+        {
+          "caller": "test_edit_clears_parent_bc_id_when_submitted_empty",
+          "callee": "app.app_context",
+          "lineNumber": 272
+        },
+        {
+          "caller": "test_edit_clears_parent_bc_id_when_submitted_empty",
+          "callee": "db.session.get",
+          "lineNumber": 273
+        },
+        {
+          "caller": "test_edit_clears_loinc_code_and_metadata_when_submitted_empty",
+          "callee": "app.app_context",
+          "lineNumber": 277
+        },
+        {
+          "caller": "test_edit_clears_loinc_code_and_metadata_when_submitted_empty",
+          "callee": "db.session.get",
+          "lineNumber": 278
+        },
+        {
+          "caller": "test_edit_clears_loinc_code_and_metadata_when_submitted_empty",
+          "callee": "db.session.commit",
+          "lineNumber": 281
+        },
+        {
+          "caller": "test_edit_clears_loinc_code_and_metadata_when_submitted_empty",
+          "callee": "client.post",
+          "lineNumber": 282
+        },
+        {
+          "caller": "test_edit_clears_loinc_code_and_metadata_when_submitted_empty",
+          "callee": "app.app_context",
+          "lineNumber": 283
+        },
+        {
+          "caller": "test_edit_clears_loinc_code_and_metadata_when_submitted_empty",
+          "callee": "db.session.get",
+          "lineNumber": 284
+        },
+        {
+          "caller": "test_edit_clears_system_and_system_name_when_loinc_code_cleared",
+          "callee": "app.app_context",
+          "lineNumber": 289
+        },
+        {
+          "caller": "test_edit_clears_system_and_system_name_when_loinc_code_cleared",
+          "callee": "db.session.get",
+          "lineNumber": 290
+        },
+        {
+          "caller": "test_edit_clears_system_and_system_name_when_loinc_code_cleared",
+          "callee": "db.session.commit",
+          "lineNumber": 294
+        },
+        {
+          "caller": "test_edit_clears_system_and_system_name_when_loinc_code_cleared",
+          "callee": "client.post",
+          "lineNumber": 295
+        },
+        {
+          "caller": "test_edit_clears_system_and_system_name_when_loinc_code_cleared",
+          "callee": "app.app_context",
+          "lineNumber": 296
+        },
+        {
+          "caller": "test_edit_clears_system_and_system_name_when_loinc_code_cleared",
+          "callee": "db.session.get",
+          "lineNumber": 297
+        },
+        {
+          "caller": "test_edit_preserves_system_when_loinc_code_present",
+          "callee": "app.app_context",
+          "lineNumber": 302
+        },
+        {
+          "caller": "test_edit_preserves_system_when_loinc_code_present",
+          "callee": "db.session.get",
+          "lineNumber": 303
+        },
+        {
+          "caller": "test_edit_preserves_system_when_loinc_code_present",
+          "callee": "db.session.commit",
+          "lineNumber": 307
+        },
+        {
+          "caller": "test_edit_preserves_system_when_loinc_code_present",
+          "callee": "client.post",
+          "lineNumber": 308
+        },
+        {
+          "caller": "test_edit_preserves_system_when_loinc_code_present",
+          "callee": "app.app_context",
+          "lineNumber": 309
+        },
+        {
+          "caller": "test_edit_preserves_system_when_loinc_code_present",
+          "callee": "db.session.get",
+          "lineNumber": 310
+        },
+        {
+          "caller": "test_edit_strips_whitespace_from_ncit_code",
+          "callee": "client.post",
+          "lineNumber": 315
+        },
+        {
+          "caller": "test_edit_strips_whitespace_from_ncit_code",
+          "callee": "app.app_context",
+          "lineNumber": 316
+        },
+        {
+          "caller": "test_edit_strips_whitespace_from_ncit_code",
+          "callee": "db.session.get",
+          "lineNumber": 317
+        },
+        {
+          "caller": "test_detail_renders_empty_ncit_code_when_none",
+          "callee": "app.app_context",
+          "lineNumber": 324
+        },
+        {
+          "caller": "test_detail_renders_empty_ncit_code_when_none",
+          "callee": "db.session.get",
+          "lineNumber": 325
+        },
+        {
+          "caller": "test_detail_renders_empty_ncit_code_when_none",
+          "callee": "db.session.commit",
+          "lineNumber": 327
+        },
+        {
+          "caller": "test_detail_renders_empty_ncit_code_when_none",
+          "callee": "patch",
+          "lineNumber": 328
+        },
+        {
+          "caller": "test_detail_renders_empty_ncit_code_when_none",
+          "callee": "client.get",
+          "lineNumber": 330
+        },
+        {
+          "caller": "test_clears_ncit_code_and_metadata",
+          "callee": "app.app_context",
+          "lineNumber": 342
+        },
+        {
+          "caller": "test_clears_ncit_code_and_metadata",
+          "callee": "db.session.get",
+          "lineNumber": 343
+        },
+        {
+          "caller": "test_clears_ncit_code_and_metadata",
+          "callee": "db.session.commit",
+          "lineNumber": 345
+        },
+        {
+          "caller": "test_clears_ncit_code_and_metadata",
+          "callee": "client.post",
+          "lineNumber": 346
+        },
+        {
+          "caller": "test_clears_ncit_code_and_metadata",
+          "callee": "app.app_context",
+          "lineNumber": 347
+        },
+        {
+          "caller": "test_clears_ncit_code_and_metadata",
+          "callee": "db.session.get",
+          "lineNumber": 348
+        },
+        {
+          "caller": "test_clear_ncit_writes_audit_log",
+          "callee": "client.post",
+          "lineNumber": 353
+        },
+        {
+          "caller": "test_clear_ncit_writes_audit_log",
+          "callee": "app.app_context",
+          "lineNumber": 354
+        },
+        {
+          "caller": "test_clear_ncit_writes_audit_log",
+          "callee": "AuditLog.query.filter_by(entity_id=\"C12345\", action=\"ncit_cleared\").first",
+          "lineNumber": 355
+        },
+        {
+          "caller": "test_clear_ncit_writes_audit_log",
+          "callee": "AuditLog.query.filter_by",
+          "lineNumber": 355
+        },
+        {
+          "caller": "test_clear_ncit_nonexistent_bc_returns_404",
+          "callee": "client.post",
+          "lineNumber": 359
+        },
+        {
+          "caller": "test_clear_ncit_also_clears_parent_bc_id",
+          "callee": "app.app_context",
+          "lineNumber": 363
+        },
+        {
+          "caller": "test_clear_ncit_also_clears_parent_bc_id",
+          "callee": "db.session.get",
+          "lineNumber": 364
+        },
+        {
+          "caller": "test_clear_ncit_also_clears_parent_bc_id",
+          "callee": "db.session.commit",
+          "lineNumber": 366
+        },
+        {
+          "caller": "test_clear_ncit_also_clears_parent_bc_id",
+          "callee": "client.post",
+          "lineNumber": 367
+        },
+        {
+          "caller": "test_clear_ncit_also_clears_parent_bc_id",
+          "callee": "app.app_context",
+          "lineNumber": 368
+        },
+        {
+          "caller": "test_clear_ncit_also_clears_parent_bc_id",
+          "callee": "db.session.get",
+          "lineNumber": 369
+        },
+        {
+          "caller": "test_clears_loinc_code_and_metadata",
+          "callee": "app.app_context",
+          "lineNumber": 380
+        },
+        {
+          "caller": "test_clears_loinc_code_and_metadata",
+          "callee": "db.session.get",
+          "lineNumber": 381
+        },
+        {
+          "caller": "test_clears_loinc_code_and_metadata",
+          "callee": "db.session.commit",
+          "lineNumber": 384
+        },
+        {
+          "caller": "test_clears_loinc_code_and_metadata",
+          "callee": "client.post",
+          "lineNumber": 385
+        },
+        {
+          "caller": "test_clears_loinc_code_and_metadata",
+          "callee": "app.app_context",
+          "lineNumber": 386
+        },
+        {
+          "caller": "test_clears_loinc_code_and_metadata",
+          "callee": "db.session.get",
+          "lineNumber": 387
+        },
+        {
+          "caller": "test_clear_loinc_writes_audit_log",
+          "callee": "app.app_context",
+          "lineNumber": 392
+        },
+        {
+          "caller": "test_clear_loinc_writes_audit_log",
+          "callee": "db.session.get",
+          "lineNumber": 393
+        },
+        {
+          "caller": "test_clear_loinc_writes_audit_log",
+          "callee": "db.session.commit",
+          "lineNumber": 395
+        },
+        {
+          "caller": "test_clear_loinc_writes_audit_log",
+          "callee": "client.post",
+          "lineNumber": 396
+        },
+        {
+          "caller": "test_clear_loinc_writes_audit_log",
+          "callee": "app.app_context",
+          "lineNumber": 397
+        },
+        {
+          "caller": "test_clear_loinc_writes_audit_log",
+          "callee": "AuditLog.query.filter_by(entity_id=\"C12345\", action=\"loinc_cleared\").first",
+          "lineNumber": 398
+        },
+        {
+          "caller": "test_clear_loinc_writes_audit_log",
+          "callee": "AuditLog.query.filter_by",
+          "lineNumber": 398
+        },
+        {
+          "caller": "test_clear_loinc_also_clears_system_and_system_name",
+          "callee": "app.app_context",
+          "lineNumber": 402
+        },
+        {
+          "caller": "test_clear_loinc_also_clears_system_and_system_name",
+          "callee": "db.session.get",
+          "lineNumber": 403
+        },
+        {
+          "caller": "test_clear_loinc_also_clears_system_and_system_name",
+          "callee": "db.session.commit",
+          "lineNumber": 407
+        },
+        {
+          "caller": "test_clear_loinc_also_clears_system_and_system_name",
+          "callee": "client.post",
+          "lineNumber": 408
+        },
+        {
+          "caller": "test_clear_loinc_also_clears_system_and_system_name",
+          "callee": "app.app_context",
+          "lineNumber": 409
+        },
+        {
+          "caller": "test_clear_loinc_also_clears_system_and_system_name",
+          "callee": "db.session.get",
+          "lineNumber": 410
+        },
+        {
+          "caller": "test_clear_loinc_nonexistent_bc_returns_404",
+          "callee": "client.post",
+          "lineNumber": 415
+        },
+        {
+          "caller": "test_advances_status_to_sme_review",
+          "callee": "client.post",
+          "lineNumber": 426
+        },
+        {
+          "caller": "test_advances_status_to_sme_review",
+          "callee": "app.app_context",
+          "lineNumber": 427
+        },
+        {
+          "caller": "test_advances_status_to_sme_review",
+          "callee": "db.session.get",
+          "lineNumber": 428
+        },
+        {
+          "caller": "test_submit_writes_audit_log",
+          "callee": "client.post",
+          "lineNumber": 432
+        },
+        {
+          "caller": "test_submit_writes_audit_log",
+          "callee": "app.app_context",
+          "lineNumber": 433
+        },
+        {
+          "caller": "test_submit_writes_audit_log",
+          "callee": "AuditLog.query.filter_by(entity_id=\"C12345\", action=\"submitted_for_review\").first",
+          "lineNumber": 434
+        },
+        {
+          "caller": "test_submit_writes_audit_log",
+          "callee": "AuditLog.query.filter_by",
+          "lineNumber": 434
+        },
+        {
+          "caller": "test_deletes_bc",
+          "callee": "client.post",
+          "lineNumber": 445
+        },
+        {
+          "caller": "test_deletes_bc",
+          "callee": "app.app_context",
+          "lineNumber": 446
+        },
+        {
+          "caller": "test_deletes_bc",
+          "callee": "db.session.get",
+          "lineNumber": 447
+        },
+        {
+          "caller": "test_delete_writes_audit_log",
+          "callee": "client.post",
+          "lineNumber": 450
+        },
+        {
+          "caller": "test_delete_writes_audit_log",
+          "callee": "app.app_context",
+          "lineNumber": 451
+        },
+        {
+          "caller": "test_delete_writes_audit_log",
+          "callee": "AuditLog.query.filter_by(entity_id=\"C12345\", action=\"deleted\").first",
+          "lineNumber": 452
+        },
+        {
+          "caller": "test_delete_writes_audit_log",
+          "callee": "AuditLog.query.filter_by",
+          "lineNumber": 452
+        },
+        {
+          "caller": "test_nonexistent_bc_returns_404",
+          "callee": "client.post",
+          "lineNumber": 456
+        },
+        {
+          "caller": "test_json_export",
+          "callee": "client.get",
+          "lineNumber": 467
+        },
+        {
+          "caller": "test_xlsx_export",
+          "callee": "client.get",
+          "lineNumber": 472
+        },
+        {
+          "caller": "test_odm_xml_export",
+          "callee": "client.get",
+          "lineNumber": 477
+        },
+        {
+          "caller": "test_renders_page_for_valid_concept",
+          "callee": "patch",
+          "lineNumber": 513
+        },
+        {
+          "caller": "test_renders_page_for_valid_concept",
+          "callee": "patch",
+          "lineNumber": 513
+        },
+        {
+          "caller": "test_renders_page_for_valid_concept",
+          "callee": "client.get",
+          "lineNumber": 516
+        },
+        {
+          "caller": "test_redirects_on_api_error",
+          "callee": "patch",
+          "lineNumber": 521
+        },
+        {
+          "caller": "test_redirects_on_api_error",
+          "callee": "client.get",
+          "lineNumber": 523
+        },
+        {
+          "caller": "test_loinc_api_called_when_loinc_coding_present",
+          "callee": "patch",
+          "lineNumber": 527
+        },
+        {
+          "caller": "test_loinc_api_called_when_loinc_coding_present",
+          "callee": "patch",
+          "lineNumber": 527
+        },
+        {
+          "caller": "test_loinc_api_called_when_loinc_coding_present",
+          "callee": "client.get",
+          "lineNumber": 530
+        },
+        {
+          "caller": "test_loinc_api_called_when_loinc_coding_present",
+          "callee": "MockLoinc.return_value.search.assert_called_once_with",
+          "lineNumber": 532
+        },
+        {
+          "caller": "test_loinc_api_not_called_when_no_loinc_coding",
+          "callee": "patch",
+          "lineNumber": 536
+        },
+        {
+          "caller": "test_loinc_api_not_called_when_no_loinc_coding",
+          "callee": "patch",
+          "lineNumber": 536
+        },
+        {
+          "caller": "test_loinc_api_not_called_when_no_loinc_coding",
+          "callee": "client.get",
+          "lineNumber": 538
+        },
+        {
+          "caller": "test_loinc_api_not_called_when_no_loinc_coding",
+          "callee": "MockLoinc.return_value.search.assert_not_called",
+          "lineNumber": 540
+        },
+        {
+          "caller": "test_loinc_api_error_does_not_break_page",
+          "callee": "patch",
+          "lineNumber": 543
+        },
+        {
+          "caller": "test_loinc_api_error_does_not_break_page",
+          "callee": "patch",
+          "lineNumber": 543
+        },
+        {
+          "caller": "test_loinc_api_error_does_not_break_page",
+          "callee": "client.get",
+          "lineNumber": 546
+        }
+      ],
+      "metrics": {
+        "importCount": 3,
+        "exportCount": 12,
+        "functionCount": 1,
+        "classCount": 11
+      }
+    },
+    {
+      "path": "tests/test_governance_routes.py",
+      "language": "python",
+      "fileCategory": "code",
+      "totalLines": 236,
+      "nonEmptyLines": 196,
+      "classes": [
+        {
+          "name": "TestGovernanceBoard",
+          "startLine": 11,
+          "endLine": 14,
+          "methods": [
+            "test_board_returns_200"
+          ],
+          "properties": []
+        },
+        {
+          "name": "TestAdvance",
+          "startLine": 17,
+          "endLine": 68,
+          "methods": [
+            "test_advances_provisional_to_sme_review",
+            "test_advance_through_all_stages",
+            "test_already_published_stays_published",
+            "test_advance_creates_governance_record",
+            "test_advance_writes_audit_log",
+            "test_advance_nonexistent_bc_returns_404",
+            "test_advance_ajax_returns_json"
+          ],
+          "properties": []
+        },
+        {
+          "name": "TestReject",
+          "startLine": 71,
+          "endLine": 105,
+          "methods": [
+            "test_reject_returns_to_provisional",
+            "test_reject_creates_governance_record",
+            "test_reject_writes_audit_log",
+            "test_reject_ajax_returns_json",
+            "test_reject_nonexistent_bc_returns_404"
+          ],
+          "properties": []
+        },
+        {
+          "name": "TestGovernanceExport",
+          "startLine": 108,
+          "endLine": 236,
+          "methods": [
+            "test_export_returns_xlsx",
+            "test_export_filename_in_content_disposition",
+            "test_export_enforces_xlsx_extension",
+            "test_export_excludes_non_stage3_bcs",
+            "test_export_includes_stage3_bcs",
+            "test_export_system_columns_blank_without_loinc_code",
+            "test_export_system_columns_populated_with_loinc_code",
+            "test_export_code_column_uses_loinc_code"
+          ],
+          "properties": []
+        }
+      ],
+      "exports": [
+        {
+          "name": "TestGovernanceBoard",
+          "line": 11,
+          "isDefault": false
+        },
+        {
+          "name": "TestAdvance",
+          "line": 17,
+          "isDefault": false
+        },
+        {
+          "name": "TestReject",
+          "line": 71,
+          "isDefault": false
+        },
+        {
+          "name": "TestGovernanceExport",
+          "line": 108,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "test_board_returns_200",
+          "callee": "client.get",
+          "lineNumber": 13
+        },
+        {
+          "caller": "test_advances_provisional_to_sme_review",
+          "callee": "client.post",
+          "lineNumber": 19
+        },
+        {
+          "caller": "test_advances_provisional_to_sme_review",
+          "callee": "app.app_context",
+          "lineNumber": 20
+        },
+        {
+          "caller": "test_advances_provisional_to_sme_review",
+          "callee": "db.session.get",
+          "lineNumber": 21
+        },
+        {
+          "caller": "test_advance_through_all_stages",
+          "callee": "client.post",
+          "lineNumber": 26
+        },
+        {
+          "caller": "test_advance_through_all_stages",
+          "callee": "app.app_context",
+          "lineNumber": 27
+        },
+        {
+          "caller": "test_advance_through_all_stages",
+          "callee": "db.session.get",
+          "lineNumber": 28
+        },
+        {
+          "caller": "test_already_published_stays_published",
+          "callee": "range",
+          "lineNumber": 33
+        },
+        {
+          "caller": "test_already_published_stays_published",
+          "callee": "client.post",
+          "lineNumber": 34
+        },
+        {
+          "caller": "test_already_published_stays_published",
+          "callee": "client.post",
+          "lineNumber": 36
+        },
+        {
+          "caller": "test_already_published_stays_published",
+          "callee": "app.app_context",
+          "lineNumber": 38
+        },
+        {
+          "caller": "test_already_published_stays_published",
+          "callee": "db.session.get",
+          "lineNumber": 39
+        },
+        {
+          "caller": "test_advance_creates_governance_record",
+          "callee": "client.post",
+          "lineNumber": 43
+        },
+        {
+          "caller": "test_advance_creates_governance_record",
+          "callee": "app.app_context",
+          "lineNumber": 44
+        },
+        {
+          "caller": "test_advance_creates_governance_record",
+          "callee": "GovernanceRecord.query.filter_by(bc_id=\"C12345\", action=\"advanced\").first",
+          "lineNumber": 45
+        },
+        {
+          "caller": "test_advance_creates_governance_record",
+          "callee": "GovernanceRecord.query.filter_by",
+          "lineNumber": 45
+        },
+        {
+          "caller": "test_advance_writes_audit_log",
+          "callee": "client.post",
+          "lineNumber": 49
+        },
+        {
+          "caller": "test_advance_writes_audit_log",
+          "callee": "app.app_context",
+          "lineNumber": 50
+        },
+        {
+          "caller": "test_advance_writes_audit_log",
+          "callee": "AuditLog.query.filter_by(entity_id=\"C12345\", action=\"status_changed\").first",
+          "lineNumber": 51
+        },
+        {
+          "caller": "test_advance_writes_audit_log",
+          "callee": "AuditLog.query.filter_by",
+          "lineNumber": 51
+        },
+        {
+          "caller": "test_advance_nonexistent_bc_returns_404",
+          "callee": "client.post",
+          "lineNumber": 57
+        },
+        {
+          "caller": "test_advance_ajax_returns_json",
+          "callee": "client.post",
+          "lineNumber": 61
+        },
+        {
+          "caller": "test_advance_ajax_returns_json",
+          "callee": "r.get_json",
+          "lineNumber": 66
+        },
+        {
+          "caller": "test_reject_returns_to_provisional",
+          "callee": "client.post",
+          "lineNumber": 74
+        },
+        {
+          "caller": "test_reject_returns_to_provisional",
+          "callee": "client.post",
+          "lineNumber": 75
+        },
+        {
+          "caller": "test_reject_returns_to_provisional",
+          "callee": "app.app_context",
+          "lineNumber": 76
+        },
+        {
+          "caller": "test_reject_returns_to_provisional",
+          "callee": "db.session.get",
+          "lineNumber": 77
+        },
+        {
+          "caller": "test_reject_creates_governance_record",
+          "callee": "client.post",
+          "lineNumber": 81
+        },
+        {
+          "caller": "test_reject_creates_governance_record",
+          "callee": "app.app_context",
+          "lineNumber": 82
+        },
+        {
+          "caller": "test_reject_creates_governance_record",
+          "callee": "GovernanceRecord.query.filter_by(bc_id=\"C12345\", action=\"rejected\").first",
+          "lineNumber": 83
+        },
+        {
+          "caller": "test_reject_creates_governance_record",
+          "callee": "GovernanceRecord.query.filter_by",
+          "lineNumber": 83
+        },
+        {
+          "caller": "test_reject_writes_audit_log",
+          "callee": "client.post",
+          "lineNumber": 87
+        },
+        {
+          "caller": "test_reject_writes_audit_log",
+          "callee": "client.post",
+          "lineNumber": 88
+        },
+        {
+          "caller": "test_reject_writes_audit_log",
+          "callee": "app.app_context",
+          "lineNumber": 89
+        },
+        {
+          "caller": "test_reject_writes_audit_log",
+          "callee": "AuditLog.query.filter_by(entity_id=\"C12345\", action=\"rejected\").first",
+          "lineNumber": 90
+        },
+        {
+          "caller": "test_reject_writes_audit_log",
+          "callee": "AuditLog.query.filter_by",
+          "lineNumber": 90
+        },
+        {
+          "caller": "test_reject_ajax_returns_json",
+          "callee": "client.post",
+          "lineNumber": 95
+        },
+        {
+          "caller": "test_reject_ajax_returns_json",
+          "callee": "r.get_json",
+          "lineNumber": 100
+        },
+        {
+          "caller": "test_reject_nonexistent_bc_returns_404",
+          "callee": "client.post",
+          "lineNumber": 104
+        },
+        {
+          "caller": "test_export_returns_xlsx",
+          "callee": "range",
+          "lineNumber": 110
+        },
+        {
+          "caller": "test_export_returns_xlsx",
+          "callee": "client.post",
+          "lineNumber": 111
+        },
+        {
+          "caller": "test_export_returns_xlsx",
+          "callee": "client.get",
+          "lineNumber": 112
+        },
+        {
+          "caller": "test_export_filename_in_content_disposition",
+          "callee": "range",
+          "lineNumber": 117
+        },
+        {
+          "caller": "test_export_filename_in_content_disposition",
+          "callee": "client.post",
+          "lineNumber": 118
+        },
+        {
+          "caller": "test_export_filename_in_content_disposition",
+          "callee": "client.get",
+          "lineNumber": 119
+        },
+        {
+          "caller": "test_export_enforces_xlsx_extension",
+          "callee": "range",
+          "lineNumber": 123
+        },
+        {
+          "caller": "test_export_enforces_xlsx_extension",
+          "callee": "client.post",
+          "lineNumber": 124
+        },
+        {
+          "caller": "test_export_enforces_xlsx_extension",
+          "callee": "client.get",
+          "lineNumber": 125
+        },
+        {
+          "caller": "test_export_excludes_non_stage3_bcs",
+          "callee": "client.get",
+          "lineNumber": 130
+        },
+        {
+          "caller": "test_export_excludes_non_stage3_bcs",
+          "callee": "openpyxl.load_workbook",
+          "lineNumber": 136
+        },
+        {
+          "caller": "test_export_excludes_non_stage3_bcs",
+          "callee": "io.BytesIO",
+          "lineNumber": 136
+        },
+        {
+          "caller": "test_export_includes_stage3_bcs",
+          "callee": "range",
+          "lineNumber": 141
+        },
+        {
+          "caller": "test_export_includes_stage3_bcs",
+          "callee": "client.post",
+          "lineNumber": 142
+        },
+        {
+          "caller": "test_export_includes_stage3_bcs",
+          "callee": "client.get",
+          "lineNumber": 143
+        },
+        {
+          "caller": "test_export_includes_stage3_bcs",
+          "callee": "openpyxl.load_workbook",
+          "lineNumber": 148
+        },
+        {
+          "caller": "test_export_includes_stage3_bcs",
+          "callee": "io.BytesIO",
+          "lineNumber": 148
+        },
+        {
+          "caller": "test_export_system_columns_blank_without_loinc_code",
+          "callee": "app.app_context",
+          "lineNumber": 153
+        },
+        {
+          "caller": "test_export_system_columns_blank_without_loinc_code",
+          "callee": "BiomedicalConcept",
+          "lineNumber": 156
+        },
+        {
+          "caller": "test_export_system_columns_blank_without_loinc_code",
+          "callee": "_db.session.add",
+          "lineNumber": 164
+        },
+        {
+          "caller": "test_export_system_columns_blank_without_loinc_code",
+          "callee": "_db.session.commit",
+          "lineNumber": 165
+        },
+        {
+          "caller": "test_export_system_columns_blank_without_loinc_code",
+          "callee": "range",
+          "lineNumber": 166
+        },
+        {
+          "caller": "test_export_system_columns_blank_without_loinc_code",
+          "callee": "client.post",
+          "lineNumber": 167
+        },
+        {
+          "caller": "test_export_system_columns_blank_without_loinc_code",
+          "callee": "client.get",
+          "lineNumber": 168
+        },
+        {
+          "caller": "test_export_system_columns_blank_without_loinc_code",
+          "callee": "openpyxl.load_workbook",
+          "lineNumber": 173
+        },
+        {
+          "caller": "test_export_system_columns_blank_without_loinc_code",
+          "callee": "io.BytesIO",
+          "lineNumber": 173
+        },
+        {
+          "caller": "test_export_system_columns_blank_without_loinc_code",
+          "callee": "ws.cell",
+          "lineNumber": 175
+        },
+        {
+          "caller": "test_export_system_columns_blank_without_loinc_code",
+          "callee": "range",
+          "lineNumber": 175
+        },
+        {
+          "caller": "test_export_system_columns_blank_without_loinc_code",
+          "callee": "headers.index",
+          "lineNumber": 176
+        },
+        {
+          "caller": "test_export_system_columns_blank_without_loinc_code",
+          "callee": "headers.index",
+          "lineNumber": 177
+        },
+        {
+          "caller": "test_export_system_columns_blank_without_loinc_code",
+          "callee": "ws.cell",
+          "lineNumber": 178
+        },
+        {
+          "caller": "test_export_system_columns_blank_without_loinc_code",
+          "callee": "ws.cell",
+          "lineNumber": 179
+        },
+        {
+          "caller": "test_export_system_columns_populated_with_loinc_code",
+          "callee": "app.app_context",
+          "lineNumber": 182
+        },
+        {
+          "caller": "test_export_system_columns_populated_with_loinc_code",
+          "callee": "BiomedicalConcept",
+          "lineNumber": 185
+        },
+        {
+          "caller": "test_export_system_columns_populated_with_loinc_code",
+          "callee": "_db.session.add",
+          "lineNumber": 194
+        },
+        {
+          "caller": "test_export_system_columns_populated_with_loinc_code",
+          "callee": "_db.session.commit",
+          "lineNumber": 195
+        },
+        {
+          "caller": "test_export_system_columns_populated_with_loinc_code",
+          "callee": "range",
+          "lineNumber": 196
+        },
+        {
+          "caller": "test_export_system_columns_populated_with_loinc_code",
+          "callee": "client.post",
+          "lineNumber": 197
+        },
+        {
+          "caller": "test_export_system_columns_populated_with_loinc_code",
+          "callee": "client.get",
+          "lineNumber": 198
+        },
+        {
+          "caller": "test_export_system_columns_populated_with_loinc_code",
+          "callee": "openpyxl.load_workbook",
+          "lineNumber": 203
+        },
+        {
+          "caller": "test_export_system_columns_populated_with_loinc_code",
+          "callee": "io.BytesIO",
+          "lineNumber": 203
+        },
+        {
+          "caller": "test_export_system_columns_populated_with_loinc_code",
+          "callee": "ws.cell",
+          "lineNumber": 205
+        },
+        {
+          "caller": "test_export_system_columns_populated_with_loinc_code",
+          "callee": "range",
+          "lineNumber": 205
+        },
+        {
+          "caller": "test_export_system_columns_populated_with_loinc_code",
+          "callee": "headers.index",
+          "lineNumber": 206
+        },
+        {
+          "caller": "test_export_system_columns_populated_with_loinc_code",
+          "callee": "headers.index",
+          "lineNumber": 207
+        },
+        {
+          "caller": "test_export_system_columns_populated_with_loinc_code",
+          "callee": "ws.cell",
+          "lineNumber": 208
+        },
+        {
+          "caller": "test_export_system_columns_populated_with_loinc_code",
+          "callee": "ws.cell",
+          "lineNumber": 209
+        },
+        {
+          "caller": "test_export_code_column_uses_loinc_code",
+          "callee": "app.app_context",
+          "lineNumber": 212
+        },
+        {
+          "caller": "test_export_code_column_uses_loinc_code",
+          "callee": "BiomedicalConcept",
+          "lineNumber": 215
+        },
+        {
+          "caller": "test_export_code_column_uses_loinc_code",
+          "callee": "_db.session.add",
+          "lineNumber": 222
+        },
+        {
+          "caller": "test_export_code_column_uses_loinc_code",
+          "callee": "_db.session.commit",
+          "lineNumber": 223
+        },
+        {
+          "caller": "test_export_code_column_uses_loinc_code",
+          "callee": "range",
+          "lineNumber": 224
+        },
+        {
+          "caller": "test_export_code_column_uses_loinc_code",
+          "callee": "client.post",
+          "lineNumber": 225
+        },
+        {
+          "caller": "test_export_code_column_uses_loinc_code",
+          "callee": "client.get",
+          "lineNumber": 226
+        },
+        {
+          "caller": "test_export_code_column_uses_loinc_code",
+          "callee": "openpyxl.load_workbook",
+          "lineNumber": 231
+        },
+        {
+          "caller": "test_export_code_column_uses_loinc_code",
+          "callee": "io.BytesIO",
+          "lineNumber": 231
+        },
+        {
+          "caller": "test_export_code_column_uses_loinc_code",
+          "callee": "ws.cell",
+          "lineNumber": 233
+        },
+        {
+          "caller": "test_export_code_column_uses_loinc_code",
+          "callee": "range",
+          "lineNumber": 233
+        },
+        {
+          "caller": "test_export_code_column_uses_loinc_code",
+          "callee": "headers.index",
+          "lineNumber": 234
+        },
+        {
+          "caller": "test_export_code_column_uses_loinc_code",
+          "callee": "ws.cell",
+          "lineNumber": 235
+        }
+      ],
+      "metrics": {
+        "importCount": 4,
+        "exportCount": 4,
+        "functionCount": 0,
+        "classCount": 4
+      }
+    },
+    {
+      "path": "tests/test_ingestion_routes.py",
+      "language": "python",
+      "fileCategory": "code",
+      "totalLines": 204,
+      "nonEmptyLines": 175,
+      "functions": [
+        {
+          "name": "_csv_file",
+          "startLine": 13,
+          "endLine": 19,
+          "params": [
+            "rows"
+          ]
+        },
+        {
+          "name": "_json_file",
+          "startLine": 22,
+          "endLine": 23,
+          "params": [
+            "data"
+          ]
+        }
+      ],
+      "classes": [
+        {
+          "name": "TestIngestionIndex",
+          "startLine": 26,
+          "endLine": 29,
+          "methods": [
+            "test_returns_200"
+          ],
+          "properties": []
+        },
+        {
+          "name": "TestUpload",
+          "startLine": 32,
+          "endLine": 83,
+          "methods": [
+            "test_upload_csv_creates_ingestion_records",
+            "test_upload_json_creates_ingestion_records",
+            "test_no_file_redirects_with_error",
+            "test_wrong_extension_rejected",
+            "test_duplicate_bc_flagged"
+          ],
+          "properties": []
+        },
+        {
+          "name": "TestApprove",
+          "startLine": 86,
+          "endLine": 131,
+          "methods": [
+            "_upload_and_get_record_id",
+            "test_approve_creates_bc",
+            "test_approve_sets_status_approved",
+            "test_approve_nonexistent_record_returns_404",
+            "test_approve_already_existing_bc_does_not_duplicate"
+          ],
+          "properties": []
+        },
+        {
+          "name": "TestReject",
+          "startLine": 134,
+          "endLine": 170,
+          "methods": [
+            "test_reject_sets_status_rejected",
+            "test_reject_does_not_create_bc",
+            "test_reject_nonexistent_record_returns_404"
+          ],
+          "properties": []
+        },
+        {
+          "name": "TestApproveAll",
+          "startLine": 173,
+          "endLine": 204,
+          "methods": [
+            "test_approve_all_skips_records_with_errors",
+            "test_approve_all_writes_audit_log_per_bc"
+          ],
+          "properties": []
+        }
+      ],
+      "exports": [
+        {
+          "name": "_csv_file",
+          "line": 13,
+          "isDefault": false
+        },
+        {
+          "name": "_json_file",
+          "line": 22,
+          "isDefault": false
+        },
+        {
+          "name": "TestIngestionIndex",
+          "line": 26,
+          "isDefault": false
+        },
+        {
+          "name": "TestUpload",
+          "line": 32,
+          "isDefault": false
+        },
+        {
+          "name": "TestApprove",
+          "line": 86,
+          "isDefault": false
+        },
+        {
+          "name": "TestReject",
+          "line": 134,
+          "isDefault": false
+        },
+        {
+          "name": "TestApproveAll",
+          "line": 173,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "_csv_file",
+          "callee": "io.StringIO",
+          "lineNumber": 15
+        },
+        {
+          "caller": "_csv_file",
+          "callee": "csv.DictWriter",
+          "lineNumber": 16
+        },
+        {
+          "caller": "_csv_file",
+          "callee": "rows[0].keys",
+          "lineNumber": 16
+        },
+        {
+          "caller": "_csv_file",
+          "callee": "writer.writeheader",
+          "lineNumber": 17
+        },
+        {
+          "caller": "_csv_file",
+          "callee": "writer.writerows",
+          "lineNumber": 18
+        },
+        {
+          "caller": "_csv_file",
+          "callee": "io.BytesIO",
+          "lineNumber": 19
+        },
+        {
+          "caller": "_csv_file",
+          "callee": "buf.getvalue().encode",
+          "lineNumber": 19
+        },
+        {
+          "caller": "_csv_file",
+          "callee": "buf.getvalue",
+          "lineNumber": 19
+        },
+        {
+          "caller": "_json_file",
+          "callee": "io.BytesIO",
+          "lineNumber": 23
+        },
+        {
+          "caller": "_json_file",
+          "callee": "json.dumps(data).encode",
+          "lineNumber": 23
+        },
+        {
+          "caller": "_json_file",
+          "callee": "json.dumps",
+          "lineNumber": 23
+        },
+        {
+          "caller": "test_returns_200",
+          "callee": "client.get",
+          "lineNumber": 28
+        },
+        {
+          "caller": "test_upload_csv_creates_ingestion_records",
+          "callee": "_csv_file",
+          "lineNumber": 35
+        },
+        {
+          "caller": "test_upload_csv_creates_ingestion_records",
+          "callee": "client.post",
+          "lineNumber": 36
+        },
+        {
+          "caller": "test_upload_csv_creates_ingestion_records",
+          "callee": "app.app_context",
+          "lineNumber": 43
+        },
+        {
+          "caller": "test_upload_csv_creates_ingestion_records",
+          "callee": "IngestionRecord.query.count",
+          "lineNumber": 44
+        },
+        {
+          "caller": "test_upload_json_creates_ingestion_records",
+          "callee": "_json_file",
+          "lineNumber": 48
+        },
+        {
+          "caller": "test_upload_json_creates_ingestion_records",
+          "callee": "client.post",
+          "lineNumber": 49
+        },
+        {
+          "caller": "test_upload_json_creates_ingestion_records",
+          "callee": "app.app_context",
+          "lineNumber": 56
+        },
+        {
+          "caller": "test_upload_json_creates_ingestion_records",
+          "callee": "IngestionRecord.query.count",
+          "lineNumber": 57
+        },
+        {
+          "caller": "test_no_file_redirects_with_error",
+          "callee": "client.post",
+          "lineNumber": 60
+        },
+        {
+          "caller": "test_wrong_extension_rejected",
+          "callee": "client.post",
+          "lineNumber": 64
+        },
+        {
+          "caller": "test_wrong_extension_rejected",
+          "callee": "io.BytesIO",
+          "lineNumber": 66
+        },
+        {
+          "caller": "test_duplicate_bc_flagged",
+          "callee": "_csv_file",
+          "lineNumber": 74
+        },
+        {
+          "caller": "test_duplicate_bc_flagged",
+          "callee": "client.post",
+          "lineNumber": 75
+        },
+        {
+          "caller": "test_duplicate_bc_flagged",
+          "callee": "app.app_context",
+          "lineNumber": 80
+        },
+        {
+          "caller": "test_duplicate_bc_flagged",
+          "callee": "IngestionRecord.query.first",
+          "lineNumber": 81
+        },
+        {
+          "caller": "_upload_and_get_record_id",
+          "callee": "_csv_file",
+          "lineNumber": 89
+        },
+        {
+          "caller": "_upload_and_get_record_id",
+          "callee": "client.post",
+          "lineNumber": 90
+        },
+        {
+          "caller": "_upload_and_get_record_id",
+          "callee": "app.app_context",
+          "lineNumber": 95
+        },
+        {
+          "caller": "_upload_and_get_record_id",
+          "callee": "IngestionRecord.query.filter_by(status=\"pending\").first",
+          "lineNumber": 96
+        },
+        {
+          "caller": "_upload_and_get_record_id",
+          "callee": "IngestionRecord.query.filter_by",
+          "lineNumber": 96
+        },
+        {
+          "caller": "test_approve_creates_bc",
+          "callee": "self._upload_and_get_record_id",
+          "lineNumber": 100
+        },
+        {
+          "caller": "test_approve_creates_bc",
+          "callee": "client.post",
+          "lineNumber": 102
+        },
+        {
+          "caller": "test_approve_creates_bc",
+          "callee": "app.app_context",
+          "lineNumber": 103
+        },
+        {
+          "caller": "test_approve_creates_bc",
+          "callee": "db.session.get",
+          "lineNumber": 104
+        },
+        {
+          "caller": "test_approve_sets_status_approved",
+          "callee": "self._upload_and_get_record_id",
+          "lineNumber": 107
+        },
+        {
+          "caller": "test_approve_sets_status_approved",
+          "callee": "client.post",
+          "lineNumber": 108
+        },
+        {
+          "caller": "test_approve_sets_status_approved",
+          "callee": "app.app_context",
+          "lineNumber": 109
+        },
+        {
+          "caller": "test_approve_sets_status_approved",
+          "callee": "db.session.get",
+          "lineNumber": 110
+        },
+        {
+          "caller": "test_approve_nonexistent_record_returns_404",
+          "callee": "client.post",
+          "lineNumber": 114
+        },
+        {
+          "caller": "test_approve_already_existing_bc_does_not_duplicate",
+          "callee": "_csv_file",
+          "lineNumber": 119
+        },
+        {
+          "caller": "test_approve_already_existing_bc_does_not_duplicate",
+          "callee": "client.post",
+          "lineNumber": 120
+        },
+        {
+          "caller": "test_approve_already_existing_bc_does_not_duplicate",
+          "callee": "app.app_context",
+          "lineNumber": 125
+        },
+        {
+          "caller": "test_approve_already_existing_bc_does_not_duplicate",
+          "callee": "IngestionRecord.query.filter_by(status=\"pending\").first",
+          "lineNumber": 126
+        },
+        {
+          "caller": "test_approve_already_existing_bc_does_not_duplicate",
+          "callee": "IngestionRecord.query.filter_by",
+          "lineNumber": 126
+        },
+        {
+          "caller": "test_approve_already_existing_bc_does_not_duplicate",
+          "callee": "client.post",
+          "lineNumber": 128
+        },
+        {
+          "caller": "test_approve_already_existing_bc_does_not_duplicate",
+          "callee": "app.app_context",
+          "lineNumber": 129
+        },
+        {
+          "caller": "test_approve_already_existing_bc_does_not_duplicate",
+          "callee": "BiomedicalConcept.query.filter_by(bc_id=\"C12345\").count",
+          "lineNumber": 131
+        },
+        {
+          "caller": "test_approve_already_existing_bc_does_not_duplicate",
+          "callee": "BiomedicalConcept.query.filter_by",
+          "lineNumber": 131
+        },
+        {
+          "caller": "test_reject_sets_status_rejected",
+          "callee": "_csv_file",
+          "lineNumber": 137
+        },
+        {
+          "caller": "test_reject_sets_status_rejected",
+          "callee": "client.post",
+          "lineNumber": 138
+        },
+        {
+          "caller": "test_reject_sets_status_rejected",
+          "callee": "app.app_context",
+          "lineNumber": 143
+        },
+        {
+          "caller": "test_reject_sets_status_rejected",
+          "callee": "IngestionRecord.query.filter_by(status=\"pending\").first",
+          "lineNumber": 144
+        },
+        {
+          "caller": "test_reject_sets_status_rejected",
+          "callee": "IngestionRecord.query.filter_by",
+          "lineNumber": 144
+        },
+        {
+          "caller": "test_reject_sets_status_rejected",
+          "callee": "client.post",
+          "lineNumber": 147
+        },
+        {
+          "caller": "test_reject_sets_status_rejected",
+          "callee": "app.app_context",
+          "lineNumber": 148
+        },
+        {
+          "caller": "test_reject_sets_status_rejected",
+          "callee": "db.session.get",
+          "lineNumber": 149
+        },
+        {
+          "caller": "test_reject_does_not_create_bc",
+          "callee": "_csv_file",
+          "lineNumber": 154
+        },
+        {
+          "caller": "test_reject_does_not_create_bc",
+          "callee": "client.post",
+          "lineNumber": 155
+        },
+        {
+          "caller": "test_reject_does_not_create_bc",
+          "callee": "app.app_context",
+          "lineNumber": 160
+        },
+        {
+          "caller": "test_reject_does_not_create_bc",
+          "callee": "IngestionRecord.query.filter_by(status=\"pending\").first",
+          "lineNumber": 161
+        },
+        {
+          "caller": "test_reject_does_not_create_bc",
+          "callee": "IngestionRecord.query.filter_by",
+          "lineNumber": 161
+        },
+        {
+          "caller": "test_reject_does_not_create_bc",
+          "callee": "client.post",
+          "lineNumber": 164
+        },
+        {
+          "caller": "test_reject_does_not_create_bc",
+          "callee": "app.app_context",
+          "lineNumber": 165
+        },
+        {
+          "caller": "test_reject_does_not_create_bc",
+          "callee": "db.session.get",
+          "lineNumber": 166
+        },
+        {
+          "caller": "test_reject_nonexistent_record_returns_404",
+          "callee": "client.post",
+          "lineNumber": 169
+        },
+        {
+          "caller": "test_approve_all_skips_records_with_errors",
+          "callee": "_csv_file",
+          "lineNumber": 178
+        },
+        {
+          "caller": "test_approve_all_skips_records_with_errors",
+          "callee": "client.session_transaction",
+          "lineNumber": 179
+        },
+        {
+          "caller": "test_approve_all_skips_records_with_errors",
+          "callee": "client.post",
+          "lineNumber": 181
+        },
+        {
+          "caller": "test_approve_all_skips_records_with_errors",
+          "callee": "client.post",
+          "lineNumber": 186
+        },
+        {
+          "caller": "test_approve_all_skips_records_with_errors",
+          "callee": "app.app_context",
+          "lineNumber": 187
+        },
+        {
+          "caller": "test_approve_all_skips_records_with_errors",
+          "callee": "db.session.get",
+          "lineNumber": 188
+        },
+        {
+          "caller": "test_approve_all_writes_audit_log_per_bc",
+          "callee": "_csv_file",
+          "lineNumber": 192
+        },
+        {
+          "caller": "test_approve_all_writes_audit_log_per_bc",
+          "callee": "client.session_transaction",
+          "lineNumber": 193
+        },
+        {
+          "caller": "test_approve_all_writes_audit_log_per_bc",
+          "callee": "client.post",
+          "lineNumber": 195
+        },
+        {
+          "caller": "test_approve_all_writes_audit_log_per_bc",
+          "callee": "client.post",
+          "lineNumber": 200
+        },
+        {
+          "caller": "test_approve_all_writes_audit_log_per_bc",
+          "callee": "app.app_context",
+          "lineNumber": 201
+        },
+        {
+          "caller": "test_approve_all_writes_audit_log_per_bc",
+          "callee": "db.session.get",
+          "lineNumber": 202
+        },
+        {
+          "caller": "test_approve_all_writes_audit_log_per_bc",
+          "callee": "AuditLog.query.filter_by(entity_type=\"BiomedicalConcept\", entity_id=\"C001\", action=\"created_via_ingestion\").first",
+          "lineNumber": 203
+        },
+        {
+          "caller": "test_approve_all_writes_audit_log_per_bc",
+          "callee": "AuditLog.query.filter_by",
+          "lineNumber": 203
+        }
+      ],
+      "metrics": {
+        "importCount": 4,
+        "exportCount": 7,
+        "functionCount": 2,
+        "classCount": 5
+      }
+    },
+    {
+      "path": "tests/test_ingestion_service.py",
+      "language": "python",
+      "fileCategory": "code",
+      "totalLines": 259,
+      "nonEmptyLines": 196,
+      "classes": [
+        {
+          "name": "TestSimilarity",
+          "startLine": 22,
+          "endLine": 34,
+          "methods": [
+            "test_identical_strings",
+            "test_case_insensitive",
+            "test_completely_different",
+            "test_partial_match"
+          ],
+          "properties": []
+        },
+        {
+          "name": "TestMatchField",
+          "startLine": 42,
+          "endLine": 65,
+          "methods": [
+            "test_exact_alias_match",
+            "test_known_alias",
+            "test_definition_alias",
+            "test_spaces_normalised",
+            "test_unknown_column_returns_low_score"
+          ],
+          "properties": []
+        },
+        {
+          "name": "TestMapFields",
+          "startLine": 73,
+          "endLine": 93,
+          "methods": [
+            "test_canonical_columns_mapped_at_full_confidence",
+            "test_none_values_skipped",
+            "test_nan_values_skipped",
+            "test_low_confidence_columns_excluded",
+            "test_values_stripped"
+          ],
+          "properties": []
+        },
+        {
+          "name": "TestValidateBc",
+          "startLine": 101,
+          "endLine": 133,
+          "methods": [
+            "_valid",
+            "test_valid_record_has_no_errors",
+            "test_missing_short_name",
+            "test_missing_definition",
+            "test_missing_both_ids",
+            "test_invalid_ncit_format",
+            "test_ncit_starting_with_c_accepted"
+          ],
+          "properties": []
+        },
+        {
+          "name": "TestDeduplicate",
+          "startLine": 141,
+          "endLine": 164,
+          "methods": [
+            "_record",
+            "test_marks_existing_ids_as_duplicate",
+            "test_case_insensitive_comparison",
+            "test_empty_existing_ids",
+            "test_falls_back_to_ncit_code"
+          ],
+          "properties": []
+        },
+        {
+          "name": "TestParseCsv",
+          "startLine": 172,
+          "endLine": 198,
+          "methods": [
+            "_make_csv",
+            "test_valid_row_parsed",
+            "test_invalid_file_returns_error_record",
+            "test_missing_definition_produces_validation_error"
+          ],
+          "properties": []
+        },
+        {
+          "name": "TestParseJson",
+          "startLine": 206,
+          "endLine": 223,
+          "methods": [
+            "test_array_of_objects",
+            "test_single_object_wrapped",
+            "test_invalid_json_returns_error"
+          ],
+          "properties": []
+        },
+        {
+          "name": "TestGroupByBc",
+          "startLine": 231,
+          "endLine": 259,
+          "methods": [
+            "test_single_row_becomes_one_record",
+            "test_dec_sub_rows_grouped_under_parent",
+            "test_multiple_bcs_produce_separate_records",
+            "test_row_without_bc_id_skipped"
+          ],
+          "properties": []
+        }
+      ],
+      "exports": [
+        {
+          "name": "TestSimilarity",
+          "line": 22,
+          "isDefault": false
+        },
+        {
+          "name": "TestMatchField",
+          "line": 42,
+          "isDefault": false
+        },
+        {
+          "name": "TestMapFields",
+          "line": 73,
+          "isDefault": false
+        },
+        {
+          "name": "TestValidateBc",
+          "line": 101,
+          "isDefault": false
+        },
+        {
+          "name": "TestDeduplicate",
+          "line": 141,
+          "isDefault": false
+        },
+        {
+          "name": "TestParseCsv",
+          "line": 172,
+          "isDefault": false
+        },
+        {
+          "name": "TestParseJson",
+          "line": 206,
+          "isDefault": false
+        },
+        {
+          "name": "TestGroupByBc",
+          "line": 231,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "test_identical_strings",
+          "callee": "_similarity",
+          "lineNumber": 24
+        },
+        {
+          "caller": "test_case_insensitive",
+          "callee": "_similarity",
+          "lineNumber": 27
+        },
+        {
+          "caller": "test_completely_different",
+          "callee": "_similarity",
+          "lineNumber": 30
+        },
+        {
+          "caller": "test_partial_match",
+          "callee": "_similarity",
+          "lineNumber": 33
+        },
+        {
+          "caller": "test_exact_alias_match",
+          "callee": "_match_field",
+          "lineNumber": 44
+        },
+        {
+          "caller": "test_known_alias",
+          "callee": "_match_field",
+          "lineNumber": 49
+        },
+        {
+          "caller": "test_definition_alias",
+          "callee": "_match_field",
+          "lineNumber": 54
+        },
+        {
+          "caller": "test_spaces_normalised",
+          "callee": "_match_field",
+          "lineNumber": 59
+        },
+        {
+          "caller": "test_unknown_column_returns_low_score",
+          "callee": "_match_field",
+          "lineNumber": 64
+        },
+        {
+          "caller": "test_canonical_columns_mapped_at_full_confidence",
+          "callee": "map_fields",
+          "lineNumber": 75
+        },
+        {
+          "caller": "test_none_values_skipped",
+          "callee": "map_fields",
+          "lineNumber": 80
+        },
+        {
+          "caller": "test_nan_values_skipped",
+          "callee": "map_fields",
+          "lineNumber": 84
+        },
+        {
+          "caller": "test_nan_values_skipped",
+          "callee": "float",
+          "lineNumber": 84
+        },
+        {
+          "caller": "test_low_confidence_columns_excluded",
+          "callee": "map_fields",
+          "lineNumber": 88
+        },
+        {
+          "caller": "test_values_stripped",
+          "callee": "map_fields",
+          "lineNumber": 92
+        },
+        {
+          "caller": "test_valid_record_has_no_errors",
+          "callee": "validate_bc",
+          "lineNumber": 106
+        },
+        {
+          "caller": "test_valid_record_has_no_errors",
+          "callee": "self._valid",
+          "lineNumber": 106
+        },
+        {
+          "caller": "test_missing_short_name",
+          "callee": "self._valid",
+          "lineNumber": 109
+        },
+        {
+          "caller": "test_missing_short_name",
+          "callee": "validate_bc",
+          "lineNumber": 111
+        },
+        {
+          "caller": "test_missing_short_name",
+          "callee": "any",
+          "lineNumber": 112
+        },
+        {
+          "caller": "test_missing_definition",
+          "callee": "self._valid",
+          "lineNumber": 115
+        },
+        {
+          "caller": "test_missing_definition",
+          "callee": "validate_bc",
+          "lineNumber": 117
+        },
+        {
+          "caller": "test_missing_definition",
+          "callee": "any",
+          "lineNumber": 118
+        },
+        {
+          "caller": "test_missing_both_ids",
+          "callee": "validate_bc",
+          "lineNumber": 121
+        },
+        {
+          "caller": "test_missing_both_ids",
+          "callee": "any",
+          "lineNumber": 122
+        },
+        {
+          "caller": "test_invalid_ncit_format",
+          "callee": "self._valid",
+          "lineNumber": 125
+        },
+        {
+          "caller": "test_invalid_ncit_format",
+          "callee": "validate_bc",
+          "lineNumber": 127
+        },
+        {
+          "caller": "test_invalid_ncit_format",
+          "callee": "any",
+          "lineNumber": 128
+        },
+        {
+          "caller": "test_ncit_starting_with_c_accepted",
+          "callee": "self._valid",
+          "lineNumber": 131
+        },
+        {
+          "caller": "test_ncit_starting_with_c_accepted",
+          "callee": "validate_bc",
+          "lineNumber": 133
+        },
+        {
+          "caller": "test_marks_existing_ids_as_duplicate",
+          "callee": "self._record",
+          "lineNumber": 146
+        },
+        {
+          "caller": "test_marks_existing_ids_as_duplicate",
+          "callee": "self._record",
+          "lineNumber": 146
+        },
+        {
+          "caller": "test_marks_existing_ids_as_duplicate",
+          "callee": "deduplicate",
+          "lineNumber": 147
+        },
+        {
+          "caller": "test_case_insensitive_comparison",
+          "callee": "self._record",
+          "lineNumber": 152
+        },
+        {
+          "caller": "test_case_insensitive_comparison",
+          "callee": "deduplicate",
+          "lineNumber": 153
+        },
+        {
+          "caller": "test_empty_existing_ids",
+          "callee": "self._record",
+          "lineNumber": 157
+        },
+        {
+          "caller": "test_empty_existing_ids",
+          "callee": "deduplicate",
+          "lineNumber": 158
+        },
+        {
+          "caller": "test_empty_existing_ids",
+          "callee": "set",
+          "lineNumber": 158
+        },
+        {
+          "caller": "test_falls_back_to_ncit_code",
+          "callee": "deduplicate",
+          "lineNumber": 163
+        },
+        {
+          "caller": "_make_csv",
+          "callee": "io.StringIO",
+          "lineNumber": 177
+        },
+        {
+          "caller": "_make_csv",
+          "callee": "csv.DictWriter",
+          "lineNumber": 179
+        },
+        {
+          "caller": "_make_csv",
+          "callee": "rows[0].keys",
+          "lineNumber": 179
+        },
+        {
+          "caller": "_make_csv",
+          "callee": "writer.writeheader",
+          "lineNumber": 180
+        },
+        {
+          "caller": "_make_csv",
+          "callee": "writer.writerows",
+          "lineNumber": 181
+        },
+        {
+          "caller": "_make_csv",
+          "callee": "io.BytesIO",
+          "lineNumber": 182
+        },
+        {
+          "caller": "_make_csv",
+          "callee": "buf.getvalue().encode",
+          "lineNumber": 182
+        },
+        {
+          "caller": "_make_csv",
+          "callee": "buf.getvalue",
+          "lineNumber": 182
+        },
+        {
+          "caller": "test_valid_row_parsed",
+          "callee": "self._make_csv",
+          "lineNumber": 185
+        },
+        {
+          "caller": "test_valid_row_parsed",
+          "callee": "parse_csv",
+          "lineNumber": 186
+        },
+        {
+          "caller": "test_valid_row_parsed",
+          "callee": "len",
+          "lineNumber": 187
+        },
+        {
+          "caller": "test_invalid_file_returns_error_record",
+          "callee": "parse_csv",
+          "lineNumber": 191
+        },
+        {
+          "caller": "test_invalid_file_returns_error_record",
+          "callee": "io.BytesIO",
+          "lineNumber": 191
+        },
+        {
+          "caller": "test_invalid_file_returns_error_record",
+          "callee": "isinstance",
+          "lineNumber": 193
+        },
+        {
+          "caller": "test_missing_definition_produces_validation_error",
+          "callee": "self._make_csv",
+          "lineNumber": 196
+        },
+        {
+          "caller": "test_missing_definition_produces_validation_error",
+          "callee": "parse_csv",
+          "lineNumber": 197
+        },
+        {
+          "caller": "test_missing_definition_produces_validation_error",
+          "callee": "any",
+          "lineNumber": 198
+        },
+        {
+          "caller": "test_missing_definition_produces_validation_error",
+          "callee": "any",
+          "lineNumber": 198
+        },
+        {
+          "caller": "test_missing_definition_produces_validation_error",
+          "callee": "r.get",
+          "lineNumber": 198
+        },
+        {
+          "caller": "test_array_of_objects",
+          "callee": "io.BytesIO",
+          "lineNumber": 209
+        },
+        {
+          "caller": "test_array_of_objects",
+          "callee": "json.dumps(data).encode",
+          "lineNumber": 209
+        },
+        {
+          "caller": "test_array_of_objects",
+          "callee": "json.dumps",
+          "lineNumber": 209
+        },
+        {
+          "caller": "test_array_of_objects",
+          "callee": "parse_json",
+          "lineNumber": 210
+        },
+        {
+          "caller": "test_array_of_objects",
+          "callee": "len",
+          "lineNumber": 211
+        },
+        {
+          "caller": "test_single_object_wrapped",
+          "callee": "io.BytesIO",
+          "lineNumber": 216
+        },
+        {
+          "caller": "test_single_object_wrapped",
+          "callee": "json.dumps(data).encode",
+          "lineNumber": 216
+        },
+        {
+          "caller": "test_single_object_wrapped",
+          "callee": "json.dumps",
+          "lineNumber": 216
+        },
+        {
+          "caller": "test_single_object_wrapped",
+          "callee": "parse_json",
+          "lineNumber": 217
+        },
+        {
+          "caller": "test_single_object_wrapped",
+          "callee": "len",
+          "lineNumber": 218
+        },
+        {
+          "caller": "test_invalid_json_returns_error",
+          "callee": "parse_json",
+          "lineNumber": 221
+        },
+        {
+          "caller": "test_invalid_json_returns_error",
+          "callee": "io.BytesIO",
+          "lineNumber": 221
+        },
+        {
+          "caller": "test_invalid_json_returns_error",
+          "callee": "len",
+          "lineNumber": 222
+        },
+        {
+          "caller": "test_invalid_json_returns_error",
+          "callee": "records[0].get",
+          "lineNumber": 223
+        },
+        {
+          "caller": "test_invalid_json_returns_error",
+          "callee": "records[0].get",
+          "lineNumber": 223
+        },
+        {
+          "caller": "test_single_row_becomes_one_record",
+          "callee": "_group_by_bc",
+          "lineNumber": 234
+        },
+        {
+          "caller": "test_single_row_becomes_one_record",
+          "callee": "len",
+          "lineNumber": 235
+        },
+        {
+          "caller": "test_dec_sub_rows_grouped_under_parent",
+          "callee": "_group_by_bc",
+          "lineNumber": 243
+        },
+        {
+          "caller": "test_dec_sub_rows_grouped_under_parent",
+          "callee": "len",
+          "lineNumber": 244
+        },
+        {
+          "caller": "test_dec_sub_rows_grouped_under_parent",
+          "callee": "len",
+          "lineNumber": 245
+        },
+        {
+          "caller": "test_multiple_bcs_produce_separate_records",
+          "callee": "_group_by_bc",
+          "lineNumber": 253
+        },
+        {
+          "caller": "test_multiple_bcs_produce_separate_records",
+          "callee": "len",
+          "lineNumber": 254
+        },
+        {
+          "caller": "test_row_without_bc_id_skipped",
+          "callee": "_group_by_bc",
+          "lineNumber": 258
+        }
+      ],
+      "metrics": {
+        "importCount": 1,
+        "exportCount": 8,
+        "functionCount": 0,
+        "classCount": 8
+      }
+    },
+    {
+      "path": "tests/test_models.py",
+      "language": "python",
+      "fileCategory": "code",
+      "totalLines": 116,
+      "nonEmptyLines": 97,
+      "classes": [
+        {
+          "name": "TestAuditLogJsonProperties",
+          "startLine": 9,
+          "endLine": 44,
+          "methods": [
+            "test_before_state_round_trips",
+            "test_after_state_round_trips",
+            "test_none_before_state_returns_none",
+            "test_none_after_state_returns_none",
+            "test_persisted_log_retrieves_state"
+          ],
+          "properties": []
+        },
+        {
+          "name": "TestIngestionRecordProperties",
+          "startLine": 47,
+          "endLine": 87,
+          "methods": [
+            "test_mapped_round_trips",
+            "test_confidences_round_trips",
+            "test_errors_round_trips",
+            "test_decs_round_trips",
+            "test_empty_mapped_returns_empty_dict",
+            "test_avg_confidence_computed_correctly",
+            "test_avg_confidence_empty_confidences"
+          ],
+          "properties": []
+        },
+        {
+          "name": "TestBiomedicalConceptToDict",
+          "startLine": 90,
+          "endLine": 116,
+          "methods": [
+            "test_to_dict_contains_required_keys",
+            "test_to_dict_values_match",
+            "test_default_status_is_provisional"
+          ],
+          "properties": []
+        }
+      ],
+      "exports": [
+        {
+          "name": "TestAuditLogJsonProperties",
+          "line": 9,
+          "isDefault": false
+        },
+        {
+          "name": "TestIngestionRecordProperties",
+          "line": 47,
+          "isDefault": false
+        },
+        {
+          "name": "TestBiomedicalConceptToDict",
+          "line": 90,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "test_before_state_round_trips",
+          "callee": "app.app_context",
+          "lineNumber": 11
+        },
+        {
+          "caller": "test_before_state_round_trips",
+          "callee": "AuditLog",
+          "lineNumber": 12
+        },
+        {
+          "caller": "test_after_state_round_trips",
+          "callee": "app.app_context",
+          "lineNumber": 17
+        },
+        {
+          "caller": "test_after_state_round_trips",
+          "callee": "AuditLog",
+          "lineNumber": 18
+        },
+        {
+          "caller": "test_none_before_state_returns_none",
+          "callee": "app.app_context",
+          "lineNumber": 23
+        },
+        {
+          "caller": "test_none_before_state_returns_none",
+          "callee": "AuditLog",
+          "lineNumber": 24
+        },
+        {
+          "caller": "test_none_after_state_returns_none",
+          "callee": "app.app_context",
+          "lineNumber": 28
+        },
+        {
+          "caller": "test_none_after_state_returns_none",
+          "callee": "AuditLog",
+          "lineNumber": 29
+        },
+        {
+          "caller": "test_persisted_log_retrieves_state",
+          "callee": "app.app_context",
+          "lineNumber": 33
+        },
+        {
+          "caller": "test_persisted_log_retrieves_state",
+          "callee": "AuditLog",
+          "lineNumber": 34
+        },
+        {
+          "caller": "test_persisted_log_retrieves_state",
+          "callee": "db.session.add",
+          "lineNumber": 41
+        },
+        {
+          "caller": "test_persisted_log_retrieves_state",
+          "callee": "db.session.commit",
+          "lineNumber": 42
+        },
+        {
+          "caller": "test_persisted_log_retrieves_state",
+          "callee": "AuditLog.query.first",
+          "lineNumber": 43
+        },
+        {
+          "caller": "test_mapped_round_trips",
+          "callee": "app.app_context",
+          "lineNumber": 49
+        },
+        {
+          "caller": "test_mapped_round_trips",
+          "callee": "IngestionRecord",
+          "lineNumber": 50
+        },
+        {
+          "caller": "test_confidences_round_trips",
+          "callee": "app.app_context",
+          "lineNumber": 55
+        },
+        {
+          "caller": "test_confidences_round_trips",
+          "callee": "IngestionRecord",
+          "lineNumber": 56
+        },
+        {
+          "caller": "test_errors_round_trips",
+          "callee": "app.app_context",
+          "lineNumber": 61
+        },
+        {
+          "caller": "test_errors_round_trips",
+          "callee": "IngestionRecord",
+          "lineNumber": 62
+        },
+        {
+          "caller": "test_decs_round_trips",
+          "callee": "app.app_context",
+          "lineNumber": 67
+        },
+        {
+          "caller": "test_decs_round_trips",
+          "callee": "IngestionRecord",
+          "lineNumber": 68
+        },
+        {
+          "caller": "test_empty_mapped_returns_empty_dict",
+          "callee": "app.app_context",
+          "lineNumber": 73
+        },
+        {
+          "caller": "test_empty_mapped_returns_empty_dict",
+          "callee": "IngestionRecord",
+          "lineNumber": 74
+        },
+        {
+          "caller": "test_avg_confidence_computed_correctly",
+          "callee": "app.app_context",
+          "lineNumber": 78
+        },
+        {
+          "caller": "test_avg_confidence_computed_correctly",
+          "callee": "IngestionRecord",
+          "lineNumber": 79
+        },
+        {
+          "caller": "test_avg_confidence_computed_correctly",
+          "callee": "round",
+          "lineNumber": 81
+        },
+        {
+          "caller": "test_avg_confidence_empty_confidences",
+          "callee": "app.app_context",
+          "lineNumber": 84
+        },
+        {
+          "caller": "test_avg_confidence_empty_confidences",
+          "callee": "IngestionRecord",
+          "lineNumber": 85
+        },
+        {
+          "caller": "test_to_dict_contains_required_keys",
+          "callee": "app.app_context",
+          "lineNumber": 92
+        },
+        {
+          "caller": "test_to_dict_contains_required_keys",
+          "callee": "BiomedicalConcept",
+          "lineNumber": 93
+        },
+        {
+          "caller": "test_to_dict_contains_required_keys",
+          "callee": "bc.to_dict",
+          "lineNumber": 100
+        },
+        {
+          "caller": "test_to_dict_values_match",
+          "callee": "app.app_context",
+          "lineNumber": 105
+        },
+        {
+          "caller": "test_to_dict_values_match",
+          "callee": "BiomedicalConcept",
+          "lineNumber": 106
+        },
+        {
+          "caller": "test_to_dict_values_match",
+          "callee": "bc.to_dict",
+          "lineNumber": 107
+        },
+        {
+          "caller": "test_default_status_is_provisional",
+          "callee": "app.app_context",
+          "lineNumber": 112
+        },
+        {
+          "caller": "test_default_status_is_provisional",
+          "callee": "BiomedicalConcept",
+          "lineNumber": 113
+        },
+        {
+          "caller": "test_default_status_is_provisional",
+          "callee": "db.session.add",
+          "lineNumber": 114
+        },
+        {
+          "caller": "test_default_status_is_provisional",
+          "callee": "db.session.commit",
+          "lineNumber": 115
+        }
+      ],
+      "metrics": {
+        "importCount": 4,
+        "exportCount": 3,
+        "functionCount": 0,
+        "classCount": 3
+      }
+    }
+  ]
+}

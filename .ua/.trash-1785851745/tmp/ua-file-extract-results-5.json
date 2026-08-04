@@ -1,0 +1,2688 @@
+{
+  "scriptCompleted": true,
+  "filesAnalyzed": 5,
+  "filesSkipped": [],
+  "analysisOutcomes": {
+    "structure": {
+      "succeeded": 5,
+      "failed": 0
+    },
+    "callGraph": {
+      "succeeded": 5,
+      "failed": 0,
+      "skipped": 0
+    }
+  },
+  "results": [
+    {
+      "path": "mcp_server/__main__.py",
+      "language": "python",
+      "fileCategory": "code",
+      "totalLines": 3,
+      "nonEmptyLines": 2,
+      "metrics": {
+        "importCount": 1,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "mcp_server/server.py",
+      "language": "python",
+      "fileCategory": "code",
+      "totalLines": 572,
+      "nonEmptyLines": 486,
+      "functions": [
+        {
+          "name": "_get_app",
+          "startLine": 49,
+          "endLine": 57,
+          "params": []
+        },
+        {
+          "name": "_with_app_context",
+          "startLine": 60,
+          "endLine": 72,
+          "params": [
+            "fn"
+          ]
+        },
+        {
+          "name": "list_tools",
+          "startLine": 276,
+          "endLine": 277,
+          "params": []
+        },
+        {
+          "name": "call_tool",
+          "startLine": 281,
+          "endLine": 284,
+          "params": [
+            "name",
+            "arguments"
+          ]
+        },
+        {
+          "name": "_dispatch",
+          "startLine": 292,
+          "endLine": 312,
+          "params": [
+            "name",
+            "args"
+          ]
+        },
+        {
+          "name": "_bc_full_dict",
+          "startLine": 320,
+          "endLine": 332,
+          "params": [
+            "bc"
+          ]
+        },
+        {
+          "name": "_list_bcs",
+          "startLine": 336,
+          "endLine": 356,
+          "params": [
+            "args"
+          ]
+        },
+        {
+          "name": "_get_bc",
+          "startLine": 360,
+          "endLine": 405,
+          "params": [
+            "args"
+          ]
+        },
+        {
+          "name": "_search_ncit",
+          "startLine": 409,
+          "endLine": 416,
+          "params": [
+            "args"
+          ]
+        },
+        {
+          "name": "_get_ncit_concept",
+          "startLine": 420,
+          "endLine": 426,
+          "params": [
+            "args"
+          ]
+        },
+        {
+          "name": "_search_loinc",
+          "startLine": 430,
+          "endLine": 437,
+          "params": [
+            "args"
+          ]
+        },
+        {
+          "name": "_search_cdisc_library",
+          "startLine": 441,
+          "endLine": 450,
+          "params": [
+            "args"
+          ]
+        },
+        {
+          "name": "_get_library_bc",
+          "startLine": 454,
+          "endLine": 460,
+          "params": [
+            "args"
+          ]
+        },
+        {
+          "name": "_list_review_queue",
+          "startLine": 464,
+          "endLine": 477,
+          "params": [
+            "_args"
+          ]
+        },
+        {
+          "name": "_create_bc",
+          "startLine": 486,
+          "endLine": 494,
+          "params": [
+            "args"
+          ]
+        },
+        {
+          "name": "_update_bc",
+          "startLine": 498,
+          "endLine": 507,
+          "params": [
+            "args"
+          ]
+        },
+        {
+          "name": "_map_ncit_to_bc",
+          "startLine": 511,
+          "endLine": 519,
+          "params": [
+            "args"
+          ]
+        },
+        {
+          "name": "_submit_bc_for_review",
+          "startLine": 523,
+          "endLine": 531,
+          "params": [
+            "args"
+          ]
+        },
+        {
+          "name": "_advance_governance",
+          "startLine": 535,
+          "endLine": 542,
+          "params": [
+            "args"
+          ]
+        },
+        {
+          "name": "_reject_bc",
+          "startLine": 546,
+          "endLine": 553,
+          "params": [
+            "args"
+          ]
+        },
+        {
+          "name": "main",
+          "startLine": 561,
+          "endLine": 563,
+          "params": []
+        },
+        {
+          "name": "_run",
+          "startLine": 566,
+          "endLine": 568,
+          "params": []
+        }
+      ],
+      "exports": [
+        {
+          "name": "_get_app",
+          "line": 49,
+          "isDefault": false
+        },
+        {
+          "name": "_with_app_context",
+          "line": 60,
+          "isDefault": false
+        },
+        {
+          "name": "list_tools",
+          "line": 275,
+          "isDefault": false
+        },
+        {
+          "name": "call_tool",
+          "line": 280,
+          "isDefault": false
+        },
+        {
+          "name": "_dispatch",
+          "line": 292,
+          "isDefault": false
+        },
+        {
+          "name": "_bc_full_dict",
+          "line": 320,
+          "isDefault": false
+        },
+        {
+          "name": "_list_bcs",
+          "line": 335,
+          "isDefault": false
+        },
+        {
+          "name": "_get_bc",
+          "line": 359,
+          "isDefault": false
+        },
+        {
+          "name": "_search_ncit",
+          "line": 408,
+          "isDefault": false
+        },
+        {
+          "name": "_get_ncit_concept",
+          "line": 419,
+          "isDefault": false
+        },
+        {
+          "name": "_search_loinc",
+          "line": 429,
+          "isDefault": false
+        },
+        {
+          "name": "_search_cdisc_library",
+          "line": 440,
+          "isDefault": false
+        },
+        {
+          "name": "_get_library_bc",
+          "line": 453,
+          "isDefault": false
+        },
+        {
+          "name": "_list_review_queue",
+          "line": 463,
+          "isDefault": false
+        },
+        {
+          "name": "_create_bc",
+          "line": 485,
+          "isDefault": false
+        },
+        {
+          "name": "_update_bc",
+          "line": 497,
+          "isDefault": false
+        },
+        {
+          "name": "_map_ncit_to_bc",
+          "line": 510,
+          "isDefault": false
+        },
+        {
+          "name": "_submit_bc_for_review",
+          "line": 522,
+          "isDefault": false
+        },
+        {
+          "name": "_advance_governance",
+          "line": 534,
+          "isDefault": false
+        },
+        {
+          "name": "_reject_bc",
+          "line": 545,
+          "isDefault": false
+        },
+        {
+          "name": "main",
+          "line": 561,
+          "isDefault": false
+        },
+        {
+          "name": "_run",
+          "line": 566,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "_get_app",
+          "callee": "create_app",
+          "lineNumber": 55
+        },
+        {
+          "caller": "_get_app",
+          "callee": "ensure_db",
+          "lineNumber": 56
+        },
+        {
+          "caller": "_with_app_context",
+          "callee": "functools.wraps",
+          "lineNumber": 67
+        },
+        {
+          "caller": "wrapper",
+          "callee": "_get_app().app_context",
+          "lineNumber": 69
+        },
+        {
+          "caller": "wrapper",
+          "callee": "_get_app",
+          "lineNumber": 69
+        },
+        {
+          "caller": "wrapper",
+          "callee": "fn",
+          "lineNumber": 70
+        },
+        {
+          "caller": "call_tool",
+          "callee": "asyncio.get_event_loop",
+          "lineNumber": 282
+        },
+        {
+          "caller": "call_tool",
+          "callee": "loop.run_in_executor",
+          "lineNumber": 283
+        },
+        {
+          "caller": "call_tool",
+          "callee": "types.TextContent",
+          "lineNumber": 284
+        },
+        {
+          "caller": "call_tool",
+          "callee": "json.dumps",
+          "lineNumber": 284
+        },
+        {
+          "caller": "_dispatch",
+          "callee": "handlers.get",
+          "lineNumber": 309
+        },
+        {
+          "caller": "_dispatch",
+          "callee": "ValueError",
+          "lineNumber": 311
+        },
+        {
+          "caller": "_dispatch",
+          "callee": "fn",
+          "lineNumber": 312
+        },
+        {
+          "caller": "_bc_full_dict",
+          "callee": "bc.to_dict",
+          "lineNumber": 322
+        },
+        {
+          "caller": "_bc_full_dict",
+          "callee": "data.update",
+          "lineNumber": 323
+        },
+        {
+          "caller": "_list_bcs",
+          "callee": "str(args.get(\"q\") or \"\").strip",
+          "lineNumber": 339
+        },
+        {
+          "caller": "_list_bcs",
+          "callee": "str",
+          "lineNumber": 339
+        },
+        {
+          "caller": "_list_bcs",
+          "callee": "args.get",
+          "lineNumber": 339
+        },
+        {
+          "caller": "_list_bcs",
+          "callee": "str(args.get(\"status\") or \"\").strip",
+          "lineNumber": 340
+        },
+        {
+          "caller": "_list_bcs",
+          "callee": "str",
+          "lineNumber": 340
+        },
+        {
+          "caller": "_list_bcs",
+          "callee": "args.get",
+          "lineNumber": 340
+        },
+        {
+          "caller": "_list_bcs",
+          "callee": "max",
+          "lineNumber": 341
+        },
+        {
+          "caller": "_list_bcs",
+          "callee": "int",
+          "lineNumber": 341
+        },
+        {
+          "caller": "_list_bcs",
+          "callee": "args.get",
+          "lineNumber": 341
+        },
+        {
+          "caller": "_list_bcs",
+          "callee": "min",
+          "lineNumber": 342
+        },
+        {
+          "caller": "_list_bcs",
+          "callee": "max",
+          "lineNumber": 342
+        },
+        {
+          "caller": "_list_bcs",
+          "callee": "int",
+          "lineNumber": 342
+        },
+        {
+          "caller": "_list_bcs",
+          "callee": "args.get",
+          "lineNumber": 342
+        },
+        {
+          "caller": "_list_bcs",
+          "callee": "query.filter",
+          "lineNumber": 346
+        },
+        {
+          "caller": "_list_bcs",
+          "callee": "BiomedicalConcept.short_name.ilike",
+          "lineNumber": 346
+        },
+        {
+          "caller": "_list_bcs",
+          "callee": "BiomedicalConcept.bc_id.ilike",
+          "lineNumber": 346
+        },
+        {
+          "caller": "_list_bcs",
+          "callee": "BiomedicalConcept.ncit_code.ilike",
+          "lineNumber": 346
+        },
+        {
+          "caller": "_list_bcs",
+          "callee": "query.filter_by",
+          "lineNumber": 348
+        },
+        {
+          "caller": "_list_bcs",
+          "callee": "query.order_by(BiomedicalConcept.updated_at.desc()).paginate",
+          "lineNumber": 349
+        },
+        {
+          "caller": "_list_bcs",
+          "callee": "query.order_by",
+          "lineNumber": 349
+        },
+        {
+          "caller": "_list_bcs",
+          "callee": "BiomedicalConcept.updated_at.desc",
+          "lineNumber": 349
+        },
+        {
+          "caller": "_list_bcs",
+          "callee": "_bc_full_dict",
+          "lineNumber": 351
+        },
+        {
+          "caller": "_get_bc",
+          "callee": "str(args.get(\"bc_id\") or \"\").strip",
+          "lineNumber": 365
+        },
+        {
+          "caller": "_get_bc",
+          "callee": "str",
+          "lineNumber": 365
+        },
+        {
+          "caller": "_get_bc",
+          "callee": "args.get",
+          "lineNumber": 365
+        },
+        {
+          "caller": "_get_bc",
+          "callee": "ValueError",
+          "lineNumber": 367
+        },
+        {
+          "caller": "_get_bc",
+          "callee": "db.session.get",
+          "lineNumber": 368
+        },
+        {
+          "caller": "_get_bc",
+          "callee": "ValueError",
+          "lineNumber": 370
+        },
+        {
+          "caller": "_get_bc",
+          "callee": "DataElementConcept.query.filter_by(bc_id=bc_id).order_by(DataElementConcept.sort_order).all",
+          "lineNumber": 372
+        },
+        {
+          "caller": "_get_bc",
+          "callee": "DataElementConcept.query.filter_by(bc_id=bc_id).order_by",
+          "lineNumber": 372
+        },
+        {
+          "caller": "_get_bc",
+          "callee": "DataElementConcept.query.filter_by",
+          "lineNumber": 372
+        },
+        {
+          "caller": "_get_bc",
+          "callee": "_bc_full_dict",
+          "lineNumber": 373
+        },
+        {
+          "caller": "_get_bc",
+          "callee": "GovernanceRecord.query.filter_by(bc_id=bc_id).order_by(GovernanceRecord.id).all",
+          "lineNumber": 403
+        },
+        {
+          "caller": "_get_bc",
+          "callee": "GovernanceRecord.query.filter_by(bc_id=bc_id).order_by",
+          "lineNumber": 403
+        },
+        {
+          "caller": "_get_bc",
+          "callee": "GovernanceRecord.query.filter_by",
+          "lineNumber": 403
+        },
+        {
+          "caller": "_search_ncit",
+          "callee": "str(args.get(\"term\") or \"\").strip",
+          "lineNumber": 412
+        },
+        {
+          "caller": "_search_ncit",
+          "callee": "str",
+          "lineNumber": 412
+        },
+        {
+          "caller": "_search_ncit",
+          "callee": "args.get",
+          "lineNumber": 412
+        },
+        {
+          "caller": "_search_ncit",
+          "callee": "ValueError",
+          "lineNumber": 414
+        },
+        {
+          "caller": "_search_ncit",
+          "callee": "min",
+          "lineNumber": 415
+        },
+        {
+          "caller": "_search_ncit",
+          "callee": "max",
+          "lineNumber": 415
+        },
+        {
+          "caller": "_search_ncit",
+          "callee": "int",
+          "lineNumber": 415
+        },
+        {
+          "caller": "_search_ncit",
+          "callee": "args.get",
+          "lineNumber": 415
+        },
+        {
+          "caller": "_search_ncit",
+          "callee": "NCItApiClient().search_concept",
+          "lineNumber": 416
+        },
+        {
+          "caller": "_search_ncit",
+          "callee": "NCItApiClient",
+          "lineNumber": 416
+        },
+        {
+          "caller": "_get_ncit_concept",
+          "callee": "str(args.get(\"ncit_code\") or \"\").strip",
+          "lineNumber": 423
+        },
+        {
+          "caller": "_get_ncit_concept",
+          "callee": "str",
+          "lineNumber": 423
+        },
+        {
+          "caller": "_get_ncit_concept",
+          "callee": "args.get",
+          "lineNumber": 423
+        },
+        {
+          "caller": "_get_ncit_concept",
+          "callee": "ValueError",
+          "lineNumber": 425
+        },
+        {
+          "caller": "_get_ncit_concept",
+          "callee": "NCItApiClient().get_concept",
+          "lineNumber": 426
+        },
+        {
+          "caller": "_get_ncit_concept",
+          "callee": "NCItApiClient",
+          "lineNumber": 426
+        },
+        {
+          "caller": "_search_loinc",
+          "callee": "str(args.get(\"term\") or \"\").strip",
+          "lineNumber": 433
+        },
+        {
+          "caller": "_search_loinc",
+          "callee": "str",
+          "lineNumber": 433
+        },
+        {
+          "caller": "_search_loinc",
+          "callee": "args.get",
+          "lineNumber": 433
+        },
+        {
+          "caller": "_search_loinc",
+          "callee": "ValueError",
+          "lineNumber": 435
+        },
+        {
+          "caller": "_search_loinc",
+          "callee": "min",
+          "lineNumber": 436
+        },
+        {
+          "caller": "_search_loinc",
+          "callee": "max",
+          "lineNumber": 436
+        },
+        {
+          "caller": "_search_loinc",
+          "callee": "int",
+          "lineNumber": 436
+        },
+        {
+          "caller": "_search_loinc",
+          "callee": "args.get",
+          "lineNumber": 436
+        },
+        {
+          "caller": "_search_loinc",
+          "callee": "LoincApiClient().search",
+          "lineNumber": 437
+        },
+        {
+          "caller": "_search_loinc",
+          "callee": "LoincApiClient",
+          "lineNumber": 437
+        },
+        {
+          "caller": "_search_cdisc_library",
+          "callee": "str(args.get(\"q\") or \"\").strip().lower",
+          "lineNumber": 444
+        },
+        {
+          "caller": "_search_cdisc_library",
+          "callee": "str(args.get(\"q\") or \"\").strip",
+          "lineNumber": 444
+        },
+        {
+          "caller": "_search_cdisc_library",
+          "callee": "str",
+          "lineNumber": 444
+        },
+        {
+          "caller": "_search_cdisc_library",
+          "callee": "args.get",
+          "lineNumber": 444
+        },
+        {
+          "caller": "_search_cdisc_library",
+          "callee": "CDISCApiClient().get_biomedical_concepts",
+          "lineNumber": 445
+        },
+        {
+          "caller": "_search_cdisc_library",
+          "callee": "CDISCApiClient",
+          "lineNumber": 445
+        },
+        {
+          "caller": "_search_cdisc_library",
+          "callee": "(lnk.get(\"title\") or \"\").lower",
+          "lineNumber": 449
+        },
+        {
+          "caller": "_search_cdisc_library",
+          "callee": "lnk.get",
+          "lineNumber": 449
+        },
+        {
+          "caller": "_get_library_bc",
+          "callee": "str(args.get(\"concept_id\") or \"\").strip",
+          "lineNumber": 457
+        },
+        {
+          "caller": "_get_library_bc",
+          "callee": "str",
+          "lineNumber": 457
+        },
+        {
+          "caller": "_get_library_bc",
+          "callee": "args.get",
+          "lineNumber": 457
+        },
+        {
+          "caller": "_get_library_bc",
+          "callee": "ValueError",
+          "lineNumber": 459
+        },
+        {
+          "caller": "_get_library_bc",
+          "callee": "CDISCApiClient().get_bc",
+          "lineNumber": 460
+        },
+        {
+          "caller": "_get_library_bc",
+          "callee": "CDISCApiClient",
+          "lineNumber": 460
+        },
+        {
+          "caller": "_list_review_queue",
+          "callee": "BiomedicalConcept.query.filter_by(status=status).order_by(BiomedicalConcept.updated_at.desc()).all",
+          "lineNumber": 470
+        },
+        {
+          "caller": "_list_review_queue",
+          "callee": "BiomedicalConcept.query.filter_by(status=status).order_by",
+          "lineNumber": 470
+        },
+        {
+          "caller": "_list_review_queue",
+          "callee": "BiomedicalConcept.query.filter_by",
+          "lineNumber": 470
+        },
+        {
+          "caller": "_list_review_queue",
+          "callee": "BiomedicalConcept.updated_at.desc",
+          "lineNumber": 470
+        },
+        {
+          "caller": "_list_review_queue",
+          "callee": "IngestionRecord.query.filter_by(status=\"pending\").count",
+          "lineNumber": 472
+        },
+        {
+          "caller": "_list_review_queue",
+          "callee": "IngestionRecord.query.filter_by",
+          "lineNumber": 472
+        },
+        {
+          "caller": "_create_bc",
+          "callee": "str",
+          "lineNumber": 489
+        },
+        {
+          "caller": "_create_bc",
+          "callee": "args.get",
+          "lineNumber": 489
+        },
+        {
+          "caller": "_create_bc",
+          "callee": "bc_service.create_bc",
+          "lineNumber": 490
+        },
+        {
+          "caller": "_create_bc",
+          "callee": "args.get",
+          "lineNumber": 491
+        },
+        {
+          "caller": "_create_bc",
+          "callee": "bc_service.save_decs",
+          "lineNumber": 493
+        },
+        {
+          "caller": "_create_bc",
+          "callee": "_get_bc.__wrapped__",
+          "lineNumber": 494
+        },
+        {
+          "caller": "_update_bc",
+          "callee": "str(args.get(\"bc_id\") or \"\").strip",
+          "lineNumber": 501
+        },
+        {
+          "caller": "_update_bc",
+          "callee": "str",
+          "lineNumber": 501
+        },
+        {
+          "caller": "_update_bc",
+          "callee": "args.get",
+          "lineNumber": 501
+        },
+        {
+          "caller": "_update_bc",
+          "callee": "ValueError",
+          "lineNumber": 503
+        },
+        {
+          "caller": "_update_bc",
+          "callee": "str",
+          "lineNumber": 504
+        },
+        {
+          "caller": "_update_bc",
+          "callee": "args.get",
+          "lineNumber": 504
+        },
+        {
+          "caller": "_update_bc",
+          "callee": "bc_service.update_bc",
+          "lineNumber": 506
+        },
+        {
+          "caller": "_update_bc",
+          "callee": "_bc_full_dict",
+          "lineNumber": 507
+        },
+        {
+          "caller": "_map_ncit_to_bc",
+          "callee": "str(args.get(\"bc_id\") or \"\").strip",
+          "lineNumber": 514
+        },
+        {
+          "caller": "_map_ncit_to_bc",
+          "callee": "str",
+          "lineNumber": 514
+        },
+        {
+          "caller": "_map_ncit_to_bc",
+          "callee": "args.get",
+          "lineNumber": 514
+        },
+        {
+          "caller": "_map_ncit_to_bc",
+          "callee": "ValueError",
+          "lineNumber": 516
+        },
+        {
+          "caller": "_map_ncit_to_bc",
+          "callee": "str",
+          "lineNumber": 517
+        },
+        {
+          "caller": "_map_ncit_to_bc",
+          "callee": "args.get",
+          "lineNumber": 517
+        },
+        {
+          "caller": "_map_ncit_to_bc",
+          "callee": "bc_service.map_ncit_to_bc",
+          "lineNumber": 518
+        },
+        {
+          "caller": "_map_ncit_to_bc",
+          "callee": "args.get",
+          "lineNumber": 518
+        },
+        {
+          "caller": "_map_ncit_to_bc",
+          "callee": "_bc_full_dict",
+          "lineNumber": 519
+        },
+        {
+          "caller": "_submit_bc_for_review",
+          "callee": "str(args.get(\"bc_id\") or \"\").strip",
+          "lineNumber": 526
+        },
+        {
+          "caller": "_submit_bc_for_review",
+          "callee": "str",
+          "lineNumber": 526
+        },
+        {
+          "caller": "_submit_bc_for_review",
+          "callee": "args.get",
+          "lineNumber": 526
+        },
+        {
+          "caller": "_submit_bc_for_review",
+          "callee": "ValueError",
+          "lineNumber": 528
+        },
+        {
+          "caller": "_submit_bc_for_review",
+          "callee": "str",
+          "lineNumber": 529
+        },
+        {
+          "caller": "_submit_bc_for_review",
+          "callee": "args.get",
+          "lineNumber": 529
+        },
+        {
+          "caller": "_submit_bc_for_review",
+          "callee": "bc_service.submit_bc_for_review",
+          "lineNumber": 530
+        },
+        {
+          "caller": "_submit_bc_for_review",
+          "callee": "_bc_full_dict",
+          "lineNumber": 531
+        },
+        {
+          "caller": "_advance_governance",
+          "callee": "str(args.get(\"bc_id\") or \"\").strip",
+          "lineNumber": 538
+        },
+        {
+          "caller": "_advance_governance",
+          "callee": "str",
+          "lineNumber": 538
+        },
+        {
+          "caller": "_advance_governance",
+          "callee": "args.get",
+          "lineNumber": 538
+        },
+        {
+          "caller": "_advance_governance",
+          "callee": "ValueError",
+          "lineNumber": 540
+        },
+        {
+          "caller": "_advance_governance",
+          "callee": "str",
+          "lineNumber": 541
+        },
+        {
+          "caller": "_advance_governance",
+          "callee": "args.get",
+          "lineNumber": 541
+        },
+        {
+          "caller": "_advance_governance",
+          "callee": "governance_service.advance_governance",
+          "lineNumber": 542
+        },
+        {
+          "caller": "_advance_governance",
+          "callee": "str",
+          "lineNumber": 542
+        },
+        {
+          "caller": "_advance_governance",
+          "callee": "args.get",
+          "lineNumber": 542
+        },
+        {
+          "caller": "_reject_bc",
+          "callee": "str(args.get(\"bc_id\") or \"\").strip",
+          "lineNumber": 549
+        },
+        {
+          "caller": "_reject_bc",
+          "callee": "str",
+          "lineNumber": 549
+        },
+        {
+          "caller": "_reject_bc",
+          "callee": "args.get",
+          "lineNumber": 549
+        },
+        {
+          "caller": "_reject_bc",
+          "callee": "ValueError",
+          "lineNumber": 551
+        },
+        {
+          "caller": "_reject_bc",
+          "callee": "str",
+          "lineNumber": 552
+        },
+        {
+          "caller": "_reject_bc",
+          "callee": "args.get",
+          "lineNumber": 552
+        },
+        {
+          "caller": "_reject_bc",
+          "callee": "governance_service.reject_bc",
+          "lineNumber": 553
+        },
+        {
+          "caller": "_reject_bc",
+          "callee": "str",
+          "lineNumber": 553
+        },
+        {
+          "caller": "_reject_bc",
+          "callee": "args.get",
+          "lineNumber": 553
+        },
+        {
+          "caller": "main",
+          "callee": "logging.basicConfig",
+          "lineNumber": 562
+        },
+        {
+          "caller": "main",
+          "callee": "asyncio.run",
+          "lineNumber": 563
+        },
+        {
+          "caller": "main",
+          "callee": "_run",
+          "lineNumber": 563
+        },
+        {
+          "caller": "_run",
+          "callee": "stdio_server",
+          "lineNumber": 567
+        },
+        {
+          "caller": "_run",
+          "callee": "server.run",
+          "lineNumber": 568
+        },
+        {
+          "caller": "_run",
+          "callee": "server.create_initialization_options",
+          "lineNumber": 568
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 22,
+        "functionCount": 22,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "models/specialization.py",
+      "language": "python",
+      "fileCategory": "code",
+      "totalLines": 30,
+      "nonEmptyLines": 24,
+      "classes": [
+        {
+          "name": "DatasetSpecialization",
+          "startLine": 6,
+          "endLine": 30,
+          "methods": [
+            "variables",
+            "variables",
+            "to_dict"
+          ],
+          "properties": []
+        }
+      ],
+      "exports": [
+        {
+          "name": "DatasetSpecialization",
+          "line": 6,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "variables",
+          "callee": "json.loads",
+          "lineNumber": 17
+        },
+        {
+          "caller": "variables",
+          "callee": "json.dumps",
+          "lineNumber": 21
+        }
+      ],
+      "metrics": {
+        "importCount": 1,
+        "exportCount": 1,
+        "functionCount": 0,
+        "classCount": 1
+      }
+    },
+    {
+      "path": "tests/test_mcp_server.py",
+      "language": "python",
+      "fileCategory": "code",
+      "totalLines": 315,
+      "nonEmptyLines": 253,
+      "functions": [
+        {
+          "name": "inject_test_app",
+          "startLine": 21,
+          "endLine": 25,
+          "params": [
+            "app"
+          ]
+        },
+        {
+          "name": "_dispatch",
+          "startLine": 28,
+          "endLine": 29,
+          "params": [
+            "name",
+            "args"
+          ]
+        },
+        {
+          "name": "_audit_rows",
+          "startLine": 157,
+          "endLine": 159,
+          "params": [
+            "app",
+            "action"
+          ]
+        }
+      ],
+      "classes": [
+        {
+          "name": "TestDispatch",
+          "startLine": 32,
+          "endLine": 54,
+          "methods": [
+            "test_unknown_tool_raises",
+            "test_all_declared_tools_are_dispatchable"
+          ],
+          "properties": []
+        },
+        {
+          "name": "TestListBcs",
+          "startLine": 57,
+          "endLine": 86,
+          "methods": [
+            "test_empty_db",
+            "test_lists_and_filters",
+            "test_pagination"
+          ],
+          "properties": []
+        },
+        {
+          "name": "TestGetBc",
+          "startLine": 89,
+          "endLine": 109,
+          "methods": [
+            "test_requires_bc_id",
+            "test_missing_bc_raises",
+            "test_full_detail"
+          ],
+          "properties": []
+        },
+        {
+          "name": "TestExternalApiTools",
+          "startLine": 112,
+          "endLine": 154,
+          "methods": [
+            "test_search_ncit_requires_term",
+            "test_search_ncit",
+            "test_get_ncit_concept",
+            "test_search_loinc",
+            "test_search_cdisc_library_filters_by_title",
+            "test_search_cdisc_library_passes_error_through",
+            "test_get_library_bc"
+          ],
+          "properties": []
+        },
+        {
+          "name": "TestCreateBc",
+          "startLine": 162,
+          "endLine": 188,
+          "methods": [
+            "test_creates_with_decs_and_audit",
+            "test_duplicate_raises",
+            "test_missing_bc_id_raises"
+          ],
+          "properties": []
+        },
+        {
+          "name": "TestUpdateBc",
+          "startLine": 191,
+          "endLine": 203,
+          "methods": [
+            "test_updates_and_audits_before_after",
+            "test_missing_bc_raises"
+          ],
+          "properties": []
+        },
+        {
+          "name": "TestMapNcit",
+          "startLine": 206,
+          "endLine": 266,
+          "methods": [
+            "test_maps_and_audits",
+            "test_promotes_import_id",
+            "test_empty_code_raises",
+            "test_promotes_import_id_repoints_dependents",
+            "test_promotes_import_id_repoints_child_bcs",
+            "test_promotes_import_id_collision_raises"
+          ],
+          "properties": []
+        },
+        {
+          "name": "TestGovernanceWrites",
+          "startLine": 269,
+          "endLine": 300,
+          "methods": [
+            "test_submit_then_advance_to_published",
+            "test_reject_returns_to_provisional"
+          ],
+          "properties": []
+        },
+        {
+          "name": "TestReviewQueue",
+          "startLine": 303,
+          "endLine": 315,
+          "methods": [
+            "test_queue_summary"
+          ],
+          "properties": []
+        }
+      ],
+      "exports": [
+        {
+          "name": "inject_test_app",
+          "line": 20,
+          "isDefault": false
+        },
+        {
+          "name": "_dispatch",
+          "line": 28,
+          "isDefault": false
+        },
+        {
+          "name": "TestDispatch",
+          "line": 32,
+          "isDefault": false
+        },
+        {
+          "name": "TestListBcs",
+          "line": 57,
+          "isDefault": false
+        },
+        {
+          "name": "TestGetBc",
+          "line": 89,
+          "isDefault": false
+        },
+        {
+          "name": "TestExternalApiTools",
+          "line": 112,
+          "isDefault": false
+        },
+        {
+          "name": "_audit_rows",
+          "line": 157,
+          "isDefault": false
+        },
+        {
+          "name": "TestCreateBc",
+          "line": 162,
+          "isDefault": false
+        },
+        {
+          "name": "TestUpdateBc",
+          "line": 191,
+          "isDefault": false
+        },
+        {
+          "name": "TestMapNcit",
+          "line": 206,
+          "isDefault": false
+        },
+        {
+          "name": "TestGovernanceWrites",
+          "line": 269,
+          "isDefault": false
+        },
+        {
+          "name": "TestReviewQueue",
+          "line": 303,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "_dispatch",
+          "callee": "mcp_srv._dispatch",
+          "lineNumber": 29
+        },
+        {
+          "caller": "test_unknown_tool_raises",
+          "callee": "pytest.raises",
+          "lineNumber": 34
+        },
+        {
+          "caller": "test_unknown_tool_raises",
+          "callee": "_dispatch",
+          "lineNumber": 35
+        },
+        {
+          "caller": "test_empty_db",
+          "callee": "_dispatch",
+          "lineNumber": 59
+        },
+        {
+          "caller": "test_lists_and_filters",
+          "callee": "app.app_context",
+          "lineNumber": 63
+        },
+        {
+          "caller": "test_lists_and_filters",
+          "callee": "db.session.add",
+          "lineNumber": 64
+        },
+        {
+          "caller": "test_lists_and_filters",
+          "callee": "BiomedicalConcept",
+          "lineNumber": 64
+        },
+        {
+          "caller": "test_lists_and_filters",
+          "callee": "db.session.commit",
+          "lineNumber": 65
+        },
+        {
+          "caller": "test_lists_and_filters",
+          "callee": "_dispatch",
+          "lineNumber": 67
+        },
+        {
+          "caller": "test_lists_and_filters",
+          "callee": "_dispatch",
+          "lineNumber": 70
+        },
+        {
+          "caller": "test_lists_and_filters",
+          "callee": "_dispatch",
+          "lineNumber": 74
+        },
+        {
+          "caller": "test_pagination",
+          "callee": "app.app_context",
+          "lineNumber": 79
+        },
+        {
+          "caller": "test_pagination",
+          "callee": "range",
+          "lineNumber": 80
+        },
+        {
+          "caller": "test_pagination",
+          "callee": "db.session.add",
+          "lineNumber": 81
+        },
+        {
+          "caller": "test_pagination",
+          "callee": "BiomedicalConcept",
+          "lineNumber": 81
+        },
+        {
+          "caller": "test_pagination",
+          "callee": "db.session.commit",
+          "lineNumber": 82
+        },
+        {
+          "caller": "test_pagination",
+          "callee": "_dispatch",
+          "lineNumber": 83
+        },
+        {
+          "caller": "test_pagination",
+          "callee": "len",
+          "lineNumber": 85
+        },
+        {
+          "caller": "test_requires_bc_id",
+          "callee": "pytest.raises",
+          "lineNumber": 91
+        },
+        {
+          "caller": "test_requires_bc_id",
+          "callee": "_dispatch",
+          "lineNumber": 92
+        },
+        {
+          "caller": "test_missing_bc_raises",
+          "callee": "pytest.raises",
+          "lineNumber": 95
+        },
+        {
+          "caller": "test_missing_bc_raises",
+          "callee": "_dispatch",
+          "lineNumber": 96
+        },
+        {
+          "caller": "test_full_detail",
+          "callee": "app.app_context",
+          "lineNumber": 99
+        },
+        {
+          "caller": "test_full_detail",
+          "callee": "db.session.add",
+          "lineNumber": 100
+        },
+        {
+          "caller": "test_full_detail",
+          "callee": "DataElementConcept",
+          "lineNumber": 100
+        },
+        {
+          "caller": "test_full_detail",
+          "callee": "db.session.add",
+          "lineNumber": 101
+        },
+        {
+          "caller": "test_full_detail",
+          "callee": "DatasetSpecialization",
+          "lineNumber": 101
+        },
+        {
+          "caller": "test_full_detail",
+          "callee": "db.session.add",
+          "lineNumber": 102
+        },
+        {
+          "caller": "test_full_detail",
+          "callee": "GovernanceRecord",
+          "lineNumber": 102
+        },
+        {
+          "caller": "test_full_detail",
+          "callee": "db.session.commit",
+          "lineNumber": 103
+        },
+        {
+          "caller": "test_full_detail",
+          "callee": "_dispatch",
+          "lineNumber": 105
+        },
+        {
+          "caller": "test_search_ncit_requires_term",
+          "callee": "pytest.raises",
+          "lineNumber": 114
+        },
+        {
+          "caller": "test_search_ncit_requires_term",
+          "callee": "_dispatch",
+          "lineNumber": 115
+        },
+        {
+          "caller": "test_search_ncit",
+          "callee": "patch",
+          "lineNumber": 118
+        },
+        {
+          "caller": "test_search_ncit",
+          "callee": "_dispatch",
+          "lineNumber": 120
+        },
+        {
+          "caller": "test_search_ncit",
+          "callee": "mock_search.assert_called_once_with",
+          "lineNumber": 122
+        },
+        {
+          "caller": "test_get_ncit_concept",
+          "callee": "patch",
+          "lineNumber": 125
+        },
+        {
+          "caller": "test_get_ncit_concept",
+          "callee": "_dispatch",
+          "lineNumber": 127
+        },
+        {
+          "caller": "test_search_loinc",
+          "callee": "patch",
+          "lineNumber": 131
+        },
+        {
+          "caller": "test_search_loinc",
+          "callee": "_dispatch",
+          "lineNumber": 133
+        },
+        {
+          "caller": "test_search_cdisc_library_filters_by_title",
+          "callee": "patch",
+          "lineNumber": 141
+        },
+        {
+          "caller": "test_search_cdisc_library_filters_by_title",
+          "callee": "_dispatch",
+          "lineNumber": 142
+        },
+        {
+          "caller": "test_search_cdisc_library_filters_by_title",
+          "callee": "len",
+          "lineNumber": 143
+        },
+        {
+          "caller": "test_search_cdisc_library_passes_error_through",
+          "callee": "patch",
+          "lineNumber": 147
+        },
+        {
+          "caller": "test_search_cdisc_library_passes_error_through",
+          "callee": "_dispatch",
+          "lineNumber": 148
+        },
+        {
+          "caller": "test_get_library_bc",
+          "callee": "patch",
+          "lineNumber": 152
+        },
+        {
+          "caller": "test_get_library_bc",
+          "callee": "_dispatch",
+          "lineNumber": 153
+        },
+        {
+          "caller": "_audit_rows",
+          "callee": "app.app_context",
+          "lineNumber": 158
+        },
+        {
+          "caller": "_audit_rows",
+          "callee": "AuditLog.query.filter_by(action=action).all",
+          "lineNumber": 159
+        },
+        {
+          "caller": "_audit_rows",
+          "callee": "AuditLog.query.filter_by",
+          "lineNumber": 159
+        },
+        {
+          "caller": "test_creates_with_decs_and_audit",
+          "callee": "_dispatch",
+          "lineNumber": 164
+        },
+        {
+          "caller": "test_creates_with_decs_and_audit",
+          "callee": "_audit_rows",
+          "lineNumber": 177
+        },
+        {
+          "caller": "test_creates_with_decs_and_audit",
+          "callee": "len",
+          "lineNumber": 178
+        },
+        {
+          "caller": "test_duplicate_raises",
+          "callee": "pytest.raises",
+          "lineNumber": 183
+        },
+        {
+          "caller": "test_duplicate_raises",
+          "callee": "_dispatch",
+          "lineNumber": 184
+        },
+        {
+          "caller": "test_missing_bc_id_raises",
+          "callee": "pytest.raises",
+          "lineNumber": 187
+        },
+        {
+          "caller": "test_missing_bc_id_raises",
+          "callee": "_dispatch",
+          "lineNumber": 188
+        },
+        {
+          "caller": "test_updates_and_audits_before_after",
+          "callee": "_dispatch",
+          "lineNumber": 193
+        },
+        {
+          "caller": "test_updates_and_audits_before_after",
+          "callee": "_audit_rows",
+          "lineNumber": 195
+        },
+        {
+          "caller": "test_updates_and_audits_before_after",
+          "callee": "len",
+          "lineNumber": 196
+        },
+        {
+          "caller": "test_missing_bc_raises",
+          "callee": "pytest.raises",
+          "lineNumber": 202
+        },
+        {
+          "caller": "test_missing_bc_raises",
+          "callee": "_dispatch",
+          "lineNumber": 203
+        },
+        {
+          "caller": "test_maps_and_audits",
+          "callee": "_dispatch",
+          "lineNumber": 208
+        },
+        {
+          "caller": "test_maps_and_audits",
+          "callee": "_audit_rows",
+          "lineNumber": 210
+        },
+        {
+          "caller": "test_maps_and_audits",
+          "callee": "len",
+          "lineNumber": 211
+        },
+        {
+          "caller": "test_promotes_import_id",
+          "callee": "app.app_context",
+          "lineNumber": 215
+        },
+        {
+          "caller": "test_promotes_import_id",
+          "callee": "db.session.add",
+          "lineNumber": 216
+        },
+        {
+          "caller": "test_promotes_import_id",
+          "callee": "BiomedicalConcept",
+          "lineNumber": 216
+        },
+        {
+          "caller": "test_promotes_import_id",
+          "callee": "db.session.commit",
+          "lineNumber": 217
+        },
+        {
+          "caller": "test_promotes_import_id",
+          "callee": "_dispatch",
+          "lineNumber": 218
+        },
+        {
+          "caller": "test_promotes_import_id",
+          "callee": "app.app_context",
+          "lineNumber": 220
+        },
+        {
+          "caller": "test_promotes_import_id",
+          "callee": "db.session.get",
+          "lineNumber": 221
+        },
+        {
+          "caller": "test_promotes_import_id",
+          "callee": "db.session.get",
+          "lineNumber": 222
+        },
+        {
+          "caller": "test_empty_code_raises",
+          "callee": "pytest.raises",
+          "lineNumber": 225
+        },
+        {
+          "caller": "test_empty_code_raises",
+          "callee": "_dispatch",
+          "lineNumber": 226
+        },
+        {
+          "caller": "test_promotes_import_id_repoints_dependents",
+          "callee": "app.app_context",
+          "lineNumber": 229
+        },
+        {
+          "caller": "test_promotes_import_id_repoints_dependents",
+          "callee": "db.session.add",
+          "lineNumber": 230
+        },
+        {
+          "caller": "test_promotes_import_id_repoints_dependents",
+          "callee": "BiomedicalConcept",
+          "lineNumber": 230
+        },
+        {
+          "caller": "test_promotes_import_id_repoints_dependents",
+          "callee": "db.session.add",
+          "lineNumber": 231
+        },
+        {
+          "caller": "test_promotes_import_id_repoints_dependents",
+          "callee": "DataElementConcept",
+          "lineNumber": 231
+        },
+        {
+          "caller": "test_promotes_import_id_repoints_dependents",
+          "callee": "db.session.add",
+          "lineNumber": 232
+        },
+        {
+          "caller": "test_promotes_import_id_repoints_dependents",
+          "callee": "DatasetSpecialization",
+          "lineNumber": 232
+        },
+        {
+          "caller": "test_promotes_import_id_repoints_dependents",
+          "callee": "db.session.add",
+          "lineNumber": 233
+        },
+        {
+          "caller": "test_promotes_import_id_repoints_dependents",
+          "callee": "GovernanceRecord",
+          "lineNumber": 233
+        },
+        {
+          "caller": "test_promotes_import_id_repoints_dependents",
+          "callee": "db.session.commit",
+          "lineNumber": 234
+        },
+        {
+          "caller": "test_promotes_import_id_repoints_dependents",
+          "callee": "_dispatch",
+          "lineNumber": 236
+        },
+        {
+          "caller": "test_promotes_import_id_repoints_dependents",
+          "callee": "app.app_context",
+          "lineNumber": 239
+        },
+        {
+          "caller": "test_promotes_import_id_repoints_dependents",
+          "callee": "db.session.get",
+          "lineNumber": 240
+        },
+        {
+          "caller": "test_promotes_import_id_repoints_dependents",
+          "callee": "db.session.get",
+          "lineNumber": 241
+        },
+        {
+          "caller": "test_promotes_import_id_repoints_child_bcs",
+          "callee": "app.app_context",
+          "lineNumber": 248
+        },
+        {
+          "caller": "test_promotes_import_id_repoints_child_bcs",
+          "callee": "db.session.add",
+          "lineNumber": 249
+        },
+        {
+          "caller": "test_promotes_import_id_repoints_child_bcs",
+          "callee": "BiomedicalConcept",
+          "lineNumber": 249
+        },
+        {
+          "caller": "test_promotes_import_id_repoints_child_bcs",
+          "callee": "db.session.add",
+          "lineNumber": 250
+        },
+        {
+          "caller": "test_promotes_import_id_repoints_child_bcs",
+          "callee": "BiomedicalConcept",
+          "lineNumber": 250
+        },
+        {
+          "caller": "test_promotes_import_id_repoints_child_bcs",
+          "callee": "db.session.commit",
+          "lineNumber": 251
+        },
+        {
+          "caller": "test_promotes_import_id_repoints_child_bcs",
+          "callee": "_dispatch",
+          "lineNumber": 253
+        },
+        {
+          "caller": "test_promotes_import_id_repoints_child_bcs",
+          "callee": "app.app_context",
+          "lineNumber": 255
+        },
+        {
+          "caller": "test_promotes_import_id_repoints_child_bcs",
+          "callee": "db.session.get",
+          "lineNumber": 256
+        },
+        {
+          "caller": "test_promotes_import_id_collision_raises",
+          "callee": "app.app_context",
+          "lineNumber": 260
+        },
+        {
+          "caller": "test_promotes_import_id_collision_raises",
+          "callee": "db.session.add",
+          "lineNumber": 261
+        },
+        {
+          "caller": "test_promotes_import_id_collision_raises",
+          "callee": "BiomedicalConcept",
+          "lineNumber": 261
+        },
+        {
+          "caller": "test_promotes_import_id_collision_raises",
+          "callee": "db.session.add",
+          "lineNumber": 262
+        },
+        {
+          "caller": "test_promotes_import_id_collision_raises",
+          "callee": "BiomedicalConcept",
+          "lineNumber": 262
+        },
+        {
+          "caller": "test_promotes_import_id_collision_raises",
+          "callee": "db.session.commit",
+          "lineNumber": 263
+        },
+        {
+          "caller": "test_promotes_import_id_collision_raises",
+          "callee": "pytest.raises",
+          "lineNumber": 265
+        },
+        {
+          "caller": "test_promotes_import_id_collision_raises",
+          "callee": "_dispatch",
+          "lineNumber": 266
+        },
+        {
+          "caller": "test_submit_then_advance_to_published",
+          "callee": "_dispatch",
+          "lineNumber": 271
+        },
+        {
+          "caller": "test_submit_then_advance_to_published",
+          "callee": "_dispatch",
+          "lineNumber": 274
+        },
+        {
+          "caller": "test_submit_then_advance_to_published",
+          "callee": "_dispatch",
+          "lineNumber": 277
+        },
+        {
+          "caller": "test_submit_then_advance_to_published",
+          "callee": "_dispatch",
+          "lineNumber": 280
+        },
+        {
+          "caller": "test_submit_then_advance_to_published",
+          "callee": "app.app_context",
+          "lineNumber": 284
+        },
+        {
+          "caller": "test_submit_then_advance_to_published",
+          "callee": "GovernanceRecord.query.filter_by(bc_id=sample_bc).order_by(GovernanceRecord.id).all",
+          "lineNumber": 285
+        },
+        {
+          "caller": "test_submit_then_advance_to_published",
+          "callee": "GovernanceRecord.query.filter_by(bc_id=sample_bc).order_by",
+          "lineNumber": 285
+        },
+        {
+          "caller": "test_submit_then_advance_to_published",
+          "callee": "GovernanceRecord.query.filter_by",
+          "lineNumber": 285
+        },
+        {
+          "caller": "test_submit_then_advance_to_published",
+          "callee": "len",
+          "lineNumber": 289
+        },
+        {
+          "caller": "test_submit_then_advance_to_published",
+          "callee": "_audit_rows",
+          "lineNumber": 289
+        },
+        {
+          "caller": "test_submit_then_advance_to_published",
+          "callee": "len",
+          "lineNumber": 290
+        },
+        {
+          "caller": "test_submit_then_advance_to_published",
+          "callee": "_audit_rows",
+          "lineNumber": 290
+        },
+        {
+          "caller": "test_reject_returns_to_provisional",
+          "callee": "_dispatch",
+          "lineNumber": 293
+        },
+        {
+          "caller": "test_reject_returns_to_provisional",
+          "callee": "_dispatch",
+          "lineNumber": 294
+        },
+        {
+          "caller": "test_reject_returns_to_provisional",
+          "callee": "app.app_context",
+          "lineNumber": 296
+        },
+        {
+          "caller": "test_reject_returns_to_provisional",
+          "callee": "GovernanceRecord.query.filter_by(bc_id=sample_bc, action=\"rejected\").one",
+          "lineNumber": 297
+        },
+        {
+          "caller": "test_reject_returns_to_provisional",
+          "callee": "GovernanceRecord.query.filter_by",
+          "lineNumber": 297
+        },
+        {
+          "caller": "test_reject_returns_to_provisional",
+          "callee": "len",
+          "lineNumber": 300
+        },
+        {
+          "caller": "test_reject_returns_to_provisional",
+          "callee": "_audit_rows",
+          "lineNumber": 300
+        },
+        {
+          "caller": "test_queue_summary",
+          "callee": "app.app_context",
+          "lineNumber": 305
+        },
+        {
+          "caller": "test_queue_summary",
+          "callee": "db.session.get",
+          "lineNumber": 306
+        },
+        {
+          "caller": "test_queue_summary",
+          "callee": "db.session.add",
+          "lineNumber": 308
+        },
+        {
+          "caller": "test_queue_summary",
+          "callee": "IngestionRecord",
+          "lineNumber": 308
+        },
+        {
+          "caller": "test_queue_summary",
+          "callee": "db.session.add",
+          "lineNumber": 309
+        },
+        {
+          "caller": "test_queue_summary",
+          "callee": "IngestionRecord",
+          "lineNumber": 309
+        },
+        {
+          "caller": "test_queue_summary",
+          "callee": "db.session.commit",
+          "lineNumber": 310
+        },
+        {
+          "caller": "test_queue_summary",
+          "callee": "_dispatch",
+          "lineNumber": 312
+        }
+      ],
+      "metrics": {
+        "importCount": 7,
+        "exportCount": 12,
+        "functionCount": 3,
+        "classCount": 9
+      }
+    },
+    {
+      "path": "tests/test_specializations_routes.py",
+      "language": "python",
+      "fileCategory": "code",
+      "totalLines": 260,
+      "nonEmptyLines": 225,
+      "functions": [
+        {
+          "name": "_patch_client",
+          "startLine": 15,
+          "endLine": 21,
+          "params": [
+            "**kwargs"
+          ]
+        }
+      ],
+      "classes": [
+        {
+          "name": "TestIndex",
+          "startLine": 24,
+          "endLine": 40,
+          "methods": [
+            "test_lists_specializations",
+            "test_index_survives_library_error"
+          ],
+          "properties": []
+        },
+        {
+          "name": "TestCreate",
+          "startLine": 43,
+          "endLine": 97,
+          "methods": [
+            "test_create_persists_spec",
+            "test_create_requires_ids",
+            "test_create_writes_audit_log",
+            "test_create_persists_variable_rows_from_form"
+          ],
+          "properties": []
+        },
+        {
+          "name": "TestEditUpsert",
+          "startLine": 100,
+          "endLine": 141,
+          "methods": [
+            "test_posting_existing_vlm_group_id_updates_instead_of_duplicating",
+            "test_edit_writes_updated_audit_log"
+          ],
+          "properties": []
+        },
+        {
+          "name": "TestDelete",
+          "startLine": 144,
+          "endLine": 172,
+          "methods": [
+            "test_delete_removes_spec",
+            "test_delete_writes_audit_log",
+            "test_delete_unknown_404"
+          ],
+          "properties": []
+        },
+        {
+          "name": "TestDetail",
+          "startLine": 175,
+          "endLine": 189,
+          "methods": [
+            "test_detail_renders",
+            "test_detail_404_for_unknown"
+          ],
+          "properties": []
+        },
+        {
+          "name": "TestLibraryDetail",
+          "startLine": 192,
+          "endLine": 204,
+          "methods": [
+            "test_renders_library_spec",
+            "test_error_redirects_to_dashboard"
+          ],
+          "properties": []
+        },
+        {
+          "name": "TestGenerate",
+          "startLine": 207,
+          "endLine": 245,
+          "methods": [
+            "_add_decs",
+            "test_generate_builds_variables_from_decs",
+            "test_generate_duplicate_is_rejected",
+            "test_generate_unknown_bc_404",
+            "test_generate_writes_audit_log"
+          ],
+          "properties": []
+        },
+        {
+          "name": "TestGenerateFromDec",
+          "startLine": 248,
+          "endLine": 260,
+          "methods": [
+            "test_returns_variables_json",
+            "test_missing_bc_id_returns_400"
+          ],
+          "properties": []
+        }
+      ],
+      "exports": [
+        {
+          "name": "_patch_client",
+          "line": 15,
+          "isDefault": false
+        },
+        {
+          "name": "TestIndex",
+          "line": 24,
+          "isDefault": false
+        },
+        {
+          "name": "TestCreate",
+          "line": 43,
+          "isDefault": false
+        },
+        {
+          "name": "TestEditUpsert",
+          "line": 100,
+          "isDefault": false
+        },
+        {
+          "name": "TestDelete",
+          "line": 144,
+          "isDefault": false
+        },
+        {
+          "name": "TestDetail",
+          "line": 175,
+          "isDefault": false
+        },
+        {
+          "name": "TestLibraryDetail",
+          "line": 192,
+          "isDefault": false
+        },
+        {
+          "name": "TestGenerate",
+          "line": 207,
+          "isDefault": false
+        },
+        {
+          "name": "TestGenerateFromDec",
+          "line": 248,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "_patch_client",
+          "callee": "MagicMock",
+          "lineNumber": 17
+        },
+        {
+          "caller": "_patch_client",
+          "callee": "kwargs.get",
+          "lineNumber": 18
+        },
+        {
+          "caller": "_patch_client",
+          "callee": "kwargs.get",
+          "lineNumber": 19
+        },
+        {
+          "caller": "_patch_client",
+          "callee": "patch",
+          "lineNumber": 20
+        },
+        {
+          "caller": "test_lists_specializations",
+          "callee": "app.app_context",
+          "lineNumber": 26
+        },
+        {
+          "caller": "test_lists_specializations",
+          "callee": "DatasetSpecialization",
+          "lineNumber": 27
+        },
+        {
+          "caller": "test_lists_specializations",
+          "callee": "db.session.add",
+          "lineNumber": 28
+        },
+        {
+          "caller": "test_lists_specializations",
+          "callee": "db.session.commit",
+          "lineNumber": 29
+        },
+        {
+          "caller": "test_lists_specializations",
+          "callee": "_patch_client",
+          "lineNumber": 30
+        },
+        {
+          "caller": "test_lists_specializations",
+          "callee": "client.get",
+          "lineNumber": 32
+        },
+        {
+          "caller": "test_index_survives_library_error",
+          "callee": "_patch_client",
+          "lineNumber": 37
+        },
+        {
+          "caller": "test_index_survives_library_error",
+          "callee": "client.get",
+          "lineNumber": 39
+        },
+        {
+          "caller": "test_create_persists_spec",
+          "callee": "_patch_client",
+          "lineNumber": 45
+        },
+        {
+          "caller": "test_create_persists_spec",
+          "callee": "client.post",
+          "lineNumber": 47
+        },
+        {
+          "caller": "test_create_persists_spec",
+          "callee": "app.app_context",
+          "lineNumber": 52
+        },
+        {
+          "caller": "test_create_persists_spec",
+          "callee": "db.session.get",
+          "lineNumber": 53
+        },
+        {
+          "caller": "test_create_requires_ids",
+          "callee": "_patch_client",
+          "lineNumber": 59
+        },
+        {
+          "caller": "test_create_requires_ids",
+          "callee": "client.post",
+          "lineNumber": 61
+        },
+        {
+          "caller": "test_create_requires_ids",
+          "callee": "app.app_context",
+          "lineNumber": 63
+        },
+        {
+          "caller": "test_create_requires_ids",
+          "callee": "DatasetSpecialization.query.count",
+          "lineNumber": 64
+        },
+        {
+          "caller": "test_create_writes_audit_log",
+          "callee": "_patch_client",
+          "lineNumber": 67
+        },
+        {
+          "caller": "test_create_writes_audit_log",
+          "callee": "client.post",
+          "lineNumber": 69
+        },
+        {
+          "caller": "test_create_writes_audit_log",
+          "callee": "app.app_context",
+          "lineNumber": 73
+        },
+        {
+          "caller": "test_create_writes_audit_log",
+          "callee": "AuditLog.query.filter_by(entity_type=\"DatasetSpecialization\", entity_id=\"VLM1\", action=\"created\").first",
+          "lineNumber": 74
+        },
+        {
+          "caller": "test_create_writes_audit_log",
+          "callee": "AuditLog.query.filter_by",
+          "lineNumber": 74
+        },
+        {
+          "caller": "test_create_persists_variable_rows_from_form",
+          "callee": "_patch_client",
+          "lineNumber": 79
+        },
+        {
+          "caller": "test_create_persists_variable_rows_from_form",
+          "callee": "client.post",
+          "lineNumber": 81
+        },
+        {
+          "caller": "test_create_persists_variable_rows_from_form",
+          "callee": "app.app_context",
+          "lineNumber": 95
+        },
+        {
+          "caller": "test_create_persists_variable_rows_from_form",
+          "callee": "db.session.get",
+          "lineNumber": 96
+        },
+        {
+          "caller": "test_posting_existing_vlm_group_id_updates_instead_of_duplicating",
+          "callee": "app.app_context",
+          "lineNumber": 102
+        },
+        {
+          "caller": "test_posting_existing_vlm_group_id_updates_instead_of_duplicating",
+          "callee": "db.session.add",
+          "lineNumber": 103
+        },
+        {
+          "caller": "test_posting_existing_vlm_group_id_updates_instead_of_duplicating",
+          "callee": "DatasetSpecialization",
+          "lineNumber": 103
+        },
+        {
+          "caller": "test_posting_existing_vlm_group_id_updates_instead_of_duplicating",
+          "callee": "db.session.commit",
+          "lineNumber": 104
+        },
+        {
+          "caller": "test_posting_existing_vlm_group_id_updates_instead_of_duplicating",
+          "callee": "_patch_client",
+          "lineNumber": 105
+        },
+        {
+          "caller": "test_posting_existing_vlm_group_id_updates_instead_of_duplicating",
+          "callee": "client.post",
+          "lineNumber": 107
+        },
+        {
+          "caller": "test_posting_existing_vlm_group_id_updates_instead_of_duplicating",
+          "callee": "app.app_context",
+          "lineNumber": 120
+        },
+        {
+          "caller": "test_posting_existing_vlm_group_id_updates_instead_of_duplicating",
+          "callee": "DatasetSpecialization.query.count",
+          "lineNumber": 121
+        },
+        {
+          "caller": "test_posting_existing_vlm_group_id_updates_instead_of_duplicating",
+          "callee": "db.session.get",
+          "lineNumber": 122
+        },
+        {
+          "caller": "test_edit_writes_updated_audit_log",
+          "callee": "app.app_context",
+          "lineNumber": 128
+        },
+        {
+          "caller": "test_edit_writes_updated_audit_log",
+          "callee": "db.session.add",
+          "lineNumber": 129
+        },
+        {
+          "caller": "test_edit_writes_updated_audit_log",
+          "callee": "DatasetSpecialization",
+          "lineNumber": 129
+        },
+        {
+          "caller": "test_edit_writes_updated_audit_log",
+          "callee": "db.session.commit",
+          "lineNumber": 130
+        },
+        {
+          "caller": "test_edit_writes_updated_audit_log",
+          "callee": "_patch_client",
+          "lineNumber": 131
+        },
+        {
+          "caller": "test_edit_writes_updated_audit_log",
+          "callee": "client.post",
+          "lineNumber": 133
+        },
+        {
+          "caller": "test_edit_writes_updated_audit_log",
+          "callee": "app.app_context",
+          "lineNumber": 137
+        },
+        {
+          "caller": "test_edit_writes_updated_audit_log",
+          "callee": "AuditLog.query.filter_by(entity_type=\"DatasetSpecialization\", entity_id=\"VLM1\", action=\"updated\").first",
+          "lineNumber": 138
+        },
+        {
+          "caller": "test_edit_writes_updated_audit_log",
+          "callee": "AuditLog.query.filter_by",
+          "lineNumber": 138
+        },
+        {
+          "caller": "test_delete_removes_spec",
+          "callee": "app.app_context",
+          "lineNumber": 146
+        },
+        {
+          "caller": "test_delete_removes_spec",
+          "callee": "db.session.add",
+          "lineNumber": 147
+        },
+        {
+          "caller": "test_delete_removes_spec",
+          "callee": "DatasetSpecialization",
+          "lineNumber": 147
+        },
+        {
+          "caller": "test_delete_removes_spec",
+          "callee": "db.session.commit",
+          "lineNumber": 148
+        },
+        {
+          "caller": "test_delete_removes_spec",
+          "callee": "_patch_client",
+          "lineNumber": 149
+        },
+        {
+          "caller": "test_delete_removes_spec",
+          "callee": "client.post",
+          "lineNumber": 151
+        },
+        {
+          "caller": "test_delete_removes_spec",
+          "callee": "app.app_context",
+          "lineNumber": 153
+        },
+        {
+          "caller": "test_delete_removes_spec",
+          "callee": "db.session.get",
+          "lineNumber": 154
+        },
+        {
+          "caller": "test_delete_writes_audit_log",
+          "callee": "app.app_context",
+          "lineNumber": 157
+        },
+        {
+          "caller": "test_delete_writes_audit_log",
+          "callee": "db.session.add",
+          "lineNumber": 158
+        },
+        {
+          "caller": "test_delete_writes_audit_log",
+          "callee": "DatasetSpecialization",
+          "lineNumber": 158
+        },
+        {
+          "caller": "test_delete_writes_audit_log",
+          "callee": "db.session.commit",
+          "lineNumber": 159
+        },
+        {
+          "caller": "test_delete_writes_audit_log",
+          "callee": "_patch_client",
+          "lineNumber": 160
+        },
+        {
+          "caller": "test_delete_writes_audit_log",
+          "callee": "client.post",
+          "lineNumber": 162
+        },
+        {
+          "caller": "test_delete_writes_audit_log",
+          "callee": "app.app_context",
+          "lineNumber": 163
+        },
+        {
+          "caller": "test_delete_writes_audit_log",
+          "callee": "AuditLog.query.filter_by(entity_type=\"DatasetSpecialization\", entity_id=\"VLM1\", action=\"deleted\").first",
+          "lineNumber": 164
+        },
+        {
+          "caller": "test_delete_writes_audit_log",
+          "callee": "AuditLog.query.filter_by",
+          "lineNumber": 164
+        },
+        {
+          "caller": "test_delete_unknown_404",
+          "callee": "_patch_client",
+          "lineNumber": 169
+        },
+        {
+          "caller": "test_delete_unknown_404",
+          "callee": "client.post",
+          "lineNumber": 171
+        },
+        {
+          "caller": "test_detail_renders",
+          "callee": "app.app_context",
+          "lineNumber": 177
+        },
+        {
+          "caller": "test_detail_renders",
+          "callee": "db.session.add",
+          "lineNumber": 178
+        },
+        {
+          "caller": "test_detail_renders",
+          "callee": "DatasetSpecialization",
+          "lineNumber": 178
+        },
+        {
+          "caller": "test_detail_renders",
+          "callee": "db.session.commit",
+          "lineNumber": 179
+        },
+        {
+          "caller": "test_detail_renders",
+          "callee": "_patch_client",
+          "lineNumber": 180
+        },
+        {
+          "caller": "test_detail_renders",
+          "callee": "client.get",
+          "lineNumber": 182
+        },
+        {
+          "caller": "test_detail_404_for_unknown",
+          "callee": "_patch_client",
+          "lineNumber": 186
+        },
+        {
+          "caller": "test_detail_404_for_unknown",
+          "callee": "client.get",
+          "lineNumber": 188
+        },
+        {
+          "caller": "test_renders_library_spec",
+          "callee": "_patch_client",
+          "lineNumber": 194
+        },
+        {
+          "caller": "test_renders_library_spec",
+          "callee": "client.get",
+          "lineNumber": 196
+        },
+        {
+          "caller": "test_error_redirects_to_dashboard",
+          "callee": "_patch_client",
+          "lineNumber": 200
+        },
+        {
+          "caller": "test_error_redirects_to_dashboard",
+          "callee": "client.get",
+          "lineNumber": 202
+        },
+        {
+          "caller": "_add_decs",
+          "callee": "app.app_context",
+          "lineNumber": 209
+        },
+        {
+          "caller": "_add_decs",
+          "callee": "db.session.add_all",
+          "lineNumber": 210
+        },
+        {
+          "caller": "_add_decs",
+          "callee": "DataElementConcept",
+          "lineNumber": 212
+        },
+        {
+          "caller": "_add_decs",
+          "callee": "DataElementConcept",
+          "lineNumber": 213
+        },
+        {
+          "caller": "_add_decs",
+          "callee": "db.session.commit",
+          "lineNumber": 216
+        },
+        {
+          "caller": "test_generate_builds_variables_from_decs",
+          "callee": "self._add_decs",
+          "lineNumber": 219
+        },
+        {
+          "caller": "test_generate_builds_variables_from_decs",
+          "callee": "client.post",
+          "lineNumber": 220
+        },
+        {
+          "caller": "test_generate_builds_variables_from_decs",
+          "callee": "app.app_context",
+          "lineNumber": 222
+        },
+        {
+          "caller": "test_generate_builds_variables_from_decs",
+          "callee": "db.session.get",
+          "lineNumber": 223
+        },
+        {
+          "caller": "test_generate_duplicate_is_rejected",
+          "callee": "self._add_decs",
+          "lineNumber": 229
+        },
+        {
+          "caller": "test_generate_duplicate_is_rejected",
+          "callee": "client.post",
+          "lineNumber": 230
+        },
+        {
+          "caller": "test_generate_duplicate_is_rejected",
+          "callee": "client.post",
+          "lineNumber": 231
+        },
+        {
+          "caller": "test_generate_duplicate_is_rejected",
+          "callee": "app.app_context",
+          "lineNumber": 233
+        },
+        {
+          "caller": "test_generate_duplicate_is_rejected",
+          "callee": "DatasetSpecialization.query.count",
+          "lineNumber": 234
+        },
+        {
+          "caller": "test_generate_unknown_bc_404",
+          "callee": "client.post",
+          "lineNumber": 237
+        },
+        {
+          "caller": "test_generate_writes_audit_log",
+          "callee": "self._add_decs",
+          "lineNumber": 241
+        },
+        {
+          "caller": "test_generate_writes_audit_log",
+          "callee": "client.post",
+          "lineNumber": 242
+        },
+        {
+          "caller": "test_generate_writes_audit_log",
+          "callee": "app.app_context",
+          "lineNumber": 243
+        },
+        {
+          "caller": "test_generate_writes_audit_log",
+          "callee": "AuditLog.query.filter_by(entity_type=\"DatasetSpecialization\", entity_id=f\"{sample_bc}.SDTM\", action=\"created\").first",
+          "lineNumber": 244
+        },
+        {
+          "caller": "test_generate_writes_audit_log",
+          "callee": "AuditLog.query.filter_by",
+          "lineNumber": 244
+        },
+        {
+          "caller": "test_returns_variables_json",
+          "callee": "app.app_context",
+          "lineNumber": 250
+        },
+        {
+          "caller": "test_returns_variables_json",
+          "callee": "db.session.add",
+          "lineNumber": 251
+        },
+        {
+          "caller": "test_returns_variables_json",
+          "callee": "DataElementConcept",
+          "lineNumber": 251
+        },
+        {
+          "caller": "test_returns_variables_json",
+          "callee": "db.session.commit",
+          "lineNumber": 252
+        },
+        {
+          "caller": "test_returns_variables_json",
+          "callee": "client.post",
+          "lineNumber": 253
+        },
+        {
+          "caller": "test_returns_variables_json",
+          "callee": "resp.get_json",
+          "lineNumber": 255
+        },
+        {
+          "caller": "test_missing_bc_id_returns_400",
+          "callee": "client.post",
+          "lineNumber": 259
+        }
+      ],
+      "metrics": {
+        "importCount": 4,
+        "exportCount": 9,
+        "functionCount": 1,
+        "classCount": 8
+      }
+    }
+  ]
+}

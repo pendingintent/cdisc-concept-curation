@@ -1,0 +1,168 @@
+{
+  "projectRoot": "/Users/dmoreland/projects/cdisc-concept-curation",
+  "batchFiles": [
+    {
+      "path": ".claude/agent-memory/cdisc-concept-explorer/MEMORY.md",
+      "language": "markdown",
+      "sizeLines": 1,
+      "fileCategory": "docs"
+    },
+    {
+      "path": ".claude/agent-memory/cdisc-concept-explorer/reference_api_endpoints.md",
+      "language": "markdown",
+      "sizeLines": 36,
+      "fileCategory": "docs"
+    },
+    {
+      "path": ".claude/skills/code-review/SKILL.md",
+      "language": "markdown",
+      "sizeLines": 59,
+      "fileCategory": "docs"
+    },
+    {
+      "path": ".claude/skills/run-concept-curation/SKILL.md",
+      "language": "markdown",
+      "sizeLines": 49,
+      "fileCategory": "docs"
+    },
+    {
+      "path": ".claude/skills/run-concept-curation/smoke.sh",
+      "language": "shell",
+      "sizeLines": 90,
+      "fileCategory": "script"
+    },
+    {
+      "path": ".flake8",
+      "language": "unknown",
+      "sizeLines": 16,
+      "fileCategory": "code"
+    },
+    {
+      "path": ".hintrc",
+      "language": "unknown",
+      "sizeLines": 7,
+      "fileCategory": "code"
+    },
+    {
+      "path": ".ua/.understandignore",
+      "language": "unknown",
+      "sizeLines": 110,
+      "fileCategory": "code"
+    },
+    {
+      "path": ".ua/config.json",
+      "language": "json",
+      "sizeLines": 1,
+      "fileCategory": "config"
+    },
+    {
+      "path": "files/BC Curation Principles and Completion GLs.xlsx",
+      "language": "xlsx",
+      "sizeLines": 182,
+      "fileCategory": "code"
+    },
+    {
+      "path": "files/BC DEC Templates.xlsx",
+      "language": "xlsx",
+      "sizeLines": 94,
+      "fileCategory": "code"
+    },
+    {
+      "path": "files/BC Examples.xlsx",
+      "language": "xlsx",
+      "sizeLines": 332,
+      "fileCategory": "code"
+    },
+    {
+      "path": "files/BC Governance.docx",
+      "language": "docx",
+      "sizeLines": 54,
+      "fileCategory": "code"
+    },
+    {
+      "path": "mcp_server/__init__.py",
+      "language": "python",
+      "sizeLines": 5,
+      "fileCategory": "code"
+    },
+    {
+      "path": "migrations/README",
+      "language": "unknown",
+      "sizeLines": 1,
+      "fileCategory": "code"
+    },
+    {
+      "path": "migrations/alembic.ini",
+      "language": "config",
+      "sizeLines": 50,
+      "fileCategory": "config"
+    },
+    {
+      "path": "migrations/env.py",
+      "language": "python",
+      "sizeLines": 105,
+      "fileCategory": "code"
+    },
+    {
+      "path": "migrations/script.py.mako",
+      "language": "mako",
+      "sizeLines": 24,
+      "fileCategory": "code"
+    },
+    {
+      "path": "migrations/versions/51d4a009d291_baseline_initial_schema.py",
+      "language": "python",
+      "sizeLines": 142,
+      "fileCategory": "code"
+    },
+    {
+      "path": "routes/__init__.py",
+      "language": "python",
+      "sizeLines": 0,
+      "fileCategory": "code"
+    },
+    {
+      "path": "static/css/custom.css",
+      "language": "css",
+      "sizeLines": 1096,
+      "fileCategory": "markup"
+    },
+    {
+      "path": "static/js/main.js",
+      "language": "javascript",
+      "sizeLines": 819,
+      "fileCategory": "code"
+    },
+    {
+      "path": "tests/__init__.py",
+      "language": "python",
+      "sizeLines": 0,
+      "fileCategory": "code"
+    }
+  ],
+  "batchImportData": {
+    ".claude/agent-memory/cdisc-concept-explorer/MEMORY.md": [],
+    ".claude/agent-memory/cdisc-concept-explorer/reference_api_endpoints.md": [],
+    ".claude/skills/code-review/SKILL.md": [],
+    ".claude/skills/run-concept-curation/SKILL.md": [],
+    ".claude/skills/run-concept-curation/smoke.sh": [],
+    ".flake8": [],
+    ".hintrc": [],
+    ".ua/.understandignore": [],
+    ".ua/config.json": [],
+    "files/BC Curation Principles and Completion GLs.xlsx": [],
+    "files/BC DEC Templates.xlsx": [],
+    "files/BC Examples.xlsx": [],
+    "files/BC Governance.docx": [],
+    "mcp_server/__init__.py": [],
+    "migrations/README": [],
+    "migrations/alembic.ini": [],
+    "migrations/env.py": [],
+    "migrations/script.py.mako": [],
+    "migrations/versions/51d4a009d291_baseline_initial_schema.py": [],
+    "routes/__init__.py": [],
+    "static/css/custom.css": [],
+    "static/js/main.js": [],
+    "tests/__init__.py": []
+  }
+}

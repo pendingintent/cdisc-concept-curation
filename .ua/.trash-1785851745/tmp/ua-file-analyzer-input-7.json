@@ -1,0 +1,28 @@
+{
+  "projectRoot": "/Users/dmoreland/projects/cdisc-concept-curation",
+  "batchFiles": [
+    {
+      "path": ".claude/agent-memory/cdisc-frontend-dev/MEMORY.md",
+      "language": "markdown",
+      "sizeLines": 2,
+      "fileCategory": "docs"
+    },
+    {
+      "path": ".claude/agent-memory/cdisc-frontend-dev/frontend_architecture.md",
+      "language": "markdown",
+      "sizeLines": 65,
+      "fileCategory": "docs"
+    },
+    {
+      "path": ".claude/agent-memory/cdisc-frontend-dev/project_foundation.md",
+      "language": "markdown",
+      "sizeLines": 54,
+      "fileCategory": "docs"
+    }
+  ],
+  "batchImportData": {
+    ".claude/agent-memory/cdisc-frontend-dev/MEMORY.md": [],
+    ".claude/agent-memory/cdisc-frontend-dev/frontend_architecture.md": [],
+    ".claude/agent-memory/cdisc-frontend-dev/project_foundation.md": []
+  }
+}

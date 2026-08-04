@@ -1,0 +1,965 @@
+{
+  "nodes": [
+    {
+      "id": "file:models/governance.py",
+      "type": "file",
+      "name": "governance.py",
+      "filePath": "models/governance.py",
+      "summary": "SQLAlchemy model for GovernanceRecord, tracking Biomedical Concept approval workflow stage transitions.",
+      "tags": ["data-model", "database", "governance"],
+      "complexity": "simple"
+    },
+    {
+      "id": "class:models/governance.py:GovernanceRecord",
+      "type": "class",
+      "name": "GovernanceRecord",
+      "filePath": "models/governance.py",
+      "lineRange": [6, 16],
+      "summary": "ORM model recording a single governance stage transition (status, actor, comment, timestamp) for a Biomedical Concept.",
+      "tags": ["data-model", "governance", "audit"],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:routes/bc.py",
+      "type": "file",
+      "name": "bc.py",
+      "filePath": "routes/bc.py",
+      "summary": "Flask blueprint implementing BC CRUD, NCIt/LOINC metadata lookup, export, and lifecycle actions (submit for review, delete) for Biomedical Concepts.",
+      "tags": ["api-handler", "flask-blueprint", "crud", "routes"],
+      "complexity": "complex"
+    },
+    {
+      "id": "function:routes/bc.py:index",
+      "type": "function",
+      "name": "index",
+      "filePath": "routes/bc.py",
+      "lineRange": [23, 39],
+      "summary": "Renders the paginated, filterable list of Biomedical Concepts based on search term and status query params.",
+      "tags": ["api-handler", "listing", "pagination"],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:routes/bc.py:new_bc",
+      "type": "function",
+      "name": "new_bc",
+      "filePath": "routes/bc.py",
+      "lineRange": [43, 59],
+      "summary": "Renders the new-BC creation form, prefilling NCIt fields when arriving from an NCIt search selection.",
+      "tags": ["api-handler", "form"],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:routes/bc.py:export",
+      "type": "function",
+      "name": "export",
+      "filePath": "routes/bc.py",
+      "lineRange": [63, 85],
+      "summary": "Exports all Biomedical Concepts as XLSX, ODM-XML, or JSON depending on the requested format query parameter.",
+      "tags": ["api-handler", "export"],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:routes/bc.py:library_detail",
+      "type": "function",
+      "name": "library_detail",
+      "filePath": "routes/bc.py",
+      "lineRange": [89, 114],
+      "summary": "Displays a published CDISC Library BC's detail, merging in LOINC lookup results for CDASH/QS-style concepts.",
+      "tags": ["api-handler", "integration"],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:routes/bc.py:detail",
+      "type": "function",
+      "name": "detail",
+      "filePath": "routes/bc.py",
+      "lineRange": [118, 151],
+      "summary": "Renders a curated BC's detail page including its Data Element Concepts, and refreshes LOINC lookup data when applicable.",
+      "tags": ["api-handler", "crud"],
+      "complexity": "complex"
+    },
+    {
+      "id": "function:routes/bc.py:fetch_metadata",
+      "type": "function",
+      "name": "fetch_metadata",
+      "filePath": "routes/bc.py",
+      "lineRange": [155, 182],
+      "summary": "AJAX endpoint that fetches and caches NCIt and LOINC metadata for a BC and returns it as JSON.",
+      "tags": ["api-handler", "ajax", "integration"],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:routes/bc.py:create",
+      "type": "function",
+      "name": "create",
+      "filePath": "routes/bc.py",
+      "lineRange": [186, 194],
+      "summary": "Handles the new-BC form submission, delegating persistence and DEC creation to bc_service.",
+      "tags": ["api-handler", "crud"],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:routes/bc.py:edit",
+      "type": "function",
+      "name": "edit",
+      "filePath": "routes/bc.py",
+      "lineRange": [198, 203],
+      "summary": "Handles the BC edit form submission, updating fields and DECs via bc_service.",
+      "tags": ["api-handler", "crud"],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:routes/bc.py:clear_ncit",
+      "type": "function",
+      "name": "clear_ncit",
+      "filePath": "routes/bc.py",
+      "lineRange": [207, 217],
+      "summary": "Clears a BC's NCIt mapping fields and records the change in the audit log.",
+      "tags": ["api-handler", "audit"],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:routes/bc.py:clear_loinc",
+      "type": "function",
+      "name": "clear_loinc",
+      "filePath": "routes/bc.py",
+      "lineRange": [221, 232],
+      "summary": "Clears a BC's LOINC mapping fields and records the change in the audit log.",
+      "tags": ["api-handler", "audit"],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:routes/bc.py:submit_for_review",
+      "type": "function",
+      "name": "submit_for_review",
+      "filePath": "routes/bc.py",
+      "lineRange": [236, 240],
+      "summary": "Transitions a BC from draft into the governance review queue.",
+      "tags": ["api-handler", "governance"],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:routes/bc.py:delete",
+      "type": "function",
+      "name": "delete",
+      "filePath": "routes/bc.py",
+      "lineRange": [244, 255],
+      "summary": "Deletes a BC along with cascading child BCs and governance records, logging the deletion to the audit trail.",
+      "tags": ["api-handler", "crud", "audit"],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:routes/bc.py:_decs_from_form",
+      "type": "function",
+      "name": "_decs_from_form",
+      "filePath": "routes/bc.py",
+      "lineRange": [258, 276],
+      "summary": "Private helper that reconstructs the list of Data Element Concept row dicts from parallel multi-value form fields.",
+      "tags": ["utility", "form-parsing"],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:routes/governance.py",
+      "type": "file",
+      "name": "governance.py",
+      "filePath": "routes/governance.py",
+      "summary": "Flask blueprint for the governance Kanban board — viewing BCs by stage, exporting the published set, and advancing/rejecting BCs through the approval workflow.",
+      "tags": ["api-handler", "governance", "flask-blueprint"],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:routes/governance.py:board",
+      "type": "function",
+      "name": "board",
+      "filePath": "routes/governance.py",
+      "lineRange": [17, 26],
+      "summary": "Renders the 4-stage governance Kanban board with BCs grouped by their current status.",
+      "tags": ["api-handler", "governance"],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:routes/governance.py:export",
+      "type": "function",
+      "name": "export",
+      "filePath": "routes/governance.py",
+      "lineRange": [30, 45],
+      "summary": "Exports the governance workbook for published BCs, sanitizing the requested filename before responding.",
+      "tags": ["api-handler", "export", "governance"],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:routes/governance.py:advance",
+      "type": "function",
+      "name": "advance",
+      "filePath": "routes/governance.py",
+      "lineRange": [49, 58],
+      "summary": "Advances a BC to the next governance stage and responds with JSON or a redirect depending on the request type.",
+      "tags": ["api-handler", "governance", "workflow"],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:routes/governance.py:reject_bc",
+      "type": "function",
+      "name": "reject_bc",
+      "filePath": "routes/governance.py",
+      "lineRange": [62, 68],
+      "summary": "Rejects a BC back through the governance workflow with an optional comment, supporting JSON or redirect responses.",
+      "tags": ["api-handler", "governance", "workflow"],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:routes/ncit.py",
+      "type": "file",
+      "name": "ncit.py",
+      "filePath": "routes/ncit.py",
+      "summary": "Flask blueprint for NCI Thesaurus search and mapping to Biomedical Concepts, including AJAX search and single-concept detail lookups.",
+      "tags": ["api-handler", "ncit", "flask-blueprint"],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:routes/ncit.py:index",
+      "type": "function",
+      "name": "index",
+      "filePath": "routes/ncit.py",
+      "lineRange": [16, 17],
+      "summary": "Redirects the NCIt blueprint's index route to the mapping view.",
+      "tags": ["api-handler", "routing"],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:routes/ncit.py:mapping",
+      "type": "function",
+      "name": "mapping",
+      "filePath": "routes/ncit.py",
+      "lineRange": [21, 30],
+      "summary": "Lists up to 50 Biomedical Concepts that still lack an NCIt code, for manual mapping.",
+      "tags": ["api-handler", "ncit"],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:routes/ncit.py:search_ncit",
+      "type": "function",
+      "name": "search_ncit",
+      "filePath": "routes/ncit.py",
+      "lineRange": [34, 61],
+      "summary": "Searches NCIt concepts by term via the EVS API and returns results as JSON or a rendered partial, depending on the caller.",
+      "tags": ["api-handler", "ncit", "ajax"],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:routes/ncit.py:concept_detail",
+      "type": "function",
+      "name": "concept_detail",
+      "filePath": "routes/ncit.py",
+      "lineRange": [65, 73],
+      "summary": "Fetches a single NCIt concept's detail metadata by code and returns it as JSON, aborting with 404 on lookup error.",
+      "tags": ["api-handler", "ncit"],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:routes/ncit.py:resolve",
+      "type": "function",
+      "name": "resolve",
+      "filePath": "routes/ncit.py",
+      "lineRange": [77, 83],
+      "summary": "Applies a chosen NCIt code to a Biomedical Concept via bc_service and redirects back to the BC detail page.",
+      "tags": ["api-handler", "ncit"],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:services/__init__.py",
+      "type": "file",
+      "name": "__init__.py",
+      "filePath": "services/__init__.py",
+      "summary": "Empty package marker enabling the services directory to be imported as a Python package.",
+      "tags": ["package-init"],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:services/audit.py",
+      "type": "file",
+      "name": "audit.py",
+      "filePath": "services/audit.py",
+      "summary": "Provides the log_change helper used across services and routes to persist immutable AuditLog rows for every entity mutation.",
+      "tags": ["audit", "utility", "service"],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:services/audit.py:log_change",
+      "type": "function",
+      "name": "log_change",
+      "filePath": "services/audit.py",
+      "lineRange": [16, 32],
+      "summary": "Creates and persists an AuditLog row capturing entity type/id, action, actor, and before/after JSON snapshots.",
+      "tags": ["audit", "database", "logging"],
+      "complexity": "simple"
+    }
+  ],
+  "edges": [
+    {
+      "source": "file:models/governance.py",
+      "target": "file:extensions.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:routes/bc.py",
+      "target": "file:extensions.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:routes/bc.py",
+      "target": "file:models/bc.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:routes/bc.py",
+      "target": "file:models/governance.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:routes/bc.py",
+      "target": "file:services/__init__.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:routes/bc.py",
+      "target": "file:services/audit.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:routes/bc.py",
+      "target": "file:services/bc_service.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:routes/bc.py",
+      "target": "file:services/cdisc_api.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:routes/bc.py",
+      "target": "file:services/export.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:routes/bc.py",
+      "target": "file:services/loinc_api.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:routes/bc.py",
+      "target": "file:services/ncit_api.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:routes/governance.py",
+      "target": "file:extensions.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:routes/governance.py",
+      "target": "file:models/bc.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:routes/governance.py",
+      "target": "file:services/__init__.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:routes/governance.py",
+      "target": "file:services/export.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:routes/governance.py",
+      "target": "file:services/governance_service.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:routes/ncit.py",
+      "target": "file:extensions.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:routes/ncit.py",
+      "target": "file:models/bc.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:routes/ncit.py",
+      "target": "file:services/__init__.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:routes/ncit.py",
+      "target": "file:services/bc_service.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:routes/ncit.py",
+      "target": "file:services/ncit_api.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:services/audit.py",
+      "target": "file:extensions.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:services/audit.py",
+      "target": "file:models/audit.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+
+    {
+      "source": "file:models/governance.py",
+      "target": "class:models/governance.py:GovernanceRecord",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:routes/bc.py",
+      "target": "function:routes/bc.py:index",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:routes/bc.py",
+      "target": "function:routes/bc.py:new_bc",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:routes/bc.py",
+      "target": "function:routes/bc.py:export",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:routes/bc.py",
+      "target": "function:routes/bc.py:library_detail",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:routes/bc.py",
+      "target": "function:routes/bc.py:detail",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:routes/bc.py",
+      "target": "function:routes/bc.py:fetch_metadata",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:routes/bc.py",
+      "target": "function:routes/bc.py:create",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:routes/bc.py",
+      "target": "function:routes/bc.py:edit",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:routes/bc.py",
+      "target": "function:routes/bc.py:clear_ncit",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:routes/bc.py",
+      "target": "function:routes/bc.py:clear_loinc",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:routes/bc.py",
+      "target": "function:routes/bc.py:submit_for_review",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:routes/bc.py",
+      "target": "function:routes/bc.py:delete",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:routes/bc.py",
+      "target": "function:routes/bc.py:_decs_from_form",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:routes/governance.py",
+      "target": "function:routes/governance.py:board",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:routes/governance.py",
+      "target": "function:routes/governance.py:export",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:routes/governance.py",
+      "target": "function:routes/governance.py:advance",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:routes/governance.py",
+      "target": "function:routes/governance.py:reject_bc",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:routes/ncit.py",
+      "target": "function:routes/ncit.py:index",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:routes/ncit.py",
+      "target": "function:routes/ncit.py:mapping",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:routes/ncit.py",
+      "target": "function:routes/ncit.py:search_ncit",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:routes/ncit.py",
+      "target": "function:routes/ncit.py:concept_detail",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:routes/ncit.py",
+      "target": "function:routes/ncit.py:resolve",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:services/audit.py",
+      "target": "function:services/audit.py:log_change",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+
+    {
+      "source": "file:models/governance.py",
+      "target": "class:models/governance.py:GovernanceRecord",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:routes/bc.py",
+      "target": "function:routes/bc.py:index",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:routes/bc.py",
+      "target": "function:routes/bc.py:new_bc",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:routes/bc.py",
+      "target": "function:routes/bc.py:export",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:routes/bc.py",
+      "target": "function:routes/bc.py:library_detail",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:routes/bc.py",
+      "target": "function:routes/bc.py:detail",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:routes/bc.py",
+      "target": "function:routes/bc.py:fetch_metadata",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:routes/bc.py",
+      "target": "function:routes/bc.py:create",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:routes/bc.py",
+      "target": "function:routes/bc.py:edit",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:routes/bc.py",
+      "target": "function:routes/bc.py:clear_ncit",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:routes/bc.py",
+      "target": "function:routes/bc.py:clear_loinc",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:routes/bc.py",
+      "target": "function:routes/bc.py:submit_for_review",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:routes/bc.py",
+      "target": "function:routes/bc.py:delete",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:routes/bc.py",
+      "target": "function:routes/bc.py:_decs_from_form",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:routes/governance.py",
+      "target": "function:routes/governance.py:board",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:routes/governance.py",
+      "target": "function:routes/governance.py:export",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:routes/governance.py",
+      "target": "function:routes/governance.py:advance",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:routes/governance.py",
+      "target": "function:routes/governance.py:reject_bc",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:routes/ncit.py",
+      "target": "function:routes/ncit.py:index",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:routes/ncit.py",
+      "target": "function:routes/ncit.py:mapping",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:routes/ncit.py",
+      "target": "function:routes/ncit.py:search_ncit",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:routes/ncit.py",
+      "target": "function:routes/ncit.py:concept_detail",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:routes/ncit.py",
+      "target": "function:routes/ncit.py:resolve",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:services/audit.py",
+      "target": "function:services/audit.py:log_change",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+
+    {
+      "source": "function:routes/bc.py:create",
+      "target": "function:services/bc_service.py:create_bc",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:routes/bc.py:create",
+      "target": "function:services/bc_service.py:save_decs",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:routes/bc.py:edit",
+      "target": "function:services/bc_service.py:update_bc",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:routes/bc.py:edit",
+      "target": "function:services/bc_service.py:save_decs",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:routes/bc.py:submit_for_review",
+      "target": "function:services/bc_service.py:submit_bc_for_review",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:routes/bc.py:clear_ncit",
+      "target": "function:services/audit.py:log_change",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:routes/bc.py:clear_loinc",
+      "target": "function:services/audit.py:log_change",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:routes/bc.py:delete",
+      "target": "function:services/audit.py:log_change",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:routes/bc.py:library_detail",
+      "target": "class:services/cdisc_api.py:CDISCApiClient",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:routes/bc.py:library_detail",
+      "target": "class:services/loinc_api.py:LoincApiClient",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:routes/bc.py:detail",
+      "target": "class:services/loinc_api.py:LoincApiClient",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:routes/bc.py:fetch_metadata",
+      "target": "class:services/loinc_api.py:LoincApiClient",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:routes/bc.py:export",
+      "target": "function:services/export.py:export_xlsx",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:routes/bc.py:export",
+      "target": "function:services/export.py:export_odm_xml",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:routes/bc.py:export",
+      "target": "function:services/export.py:export_json",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+
+    {
+      "source": "function:routes/governance.py:export",
+      "target": "function:services/export.py:export_governance_xlsx",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:routes/governance.py:advance",
+      "target": "function:services/governance_service.py:advance_governance",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:routes/governance.py:reject_bc",
+      "target": "function:services/governance_service.py:reject_bc",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+
+    {
+      "source": "function:routes/ncit.py:search_ncit",
+      "target": "class:services/ncit_api.py:NCItApiClient",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:routes/ncit.py:concept_detail",
+      "target": "class:services/ncit_api.py:NCItApiClient",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:routes/ncit.py:resolve",
+      "target": "function:services/bc_service.py:map_ncit_to_bc",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+
+    {
+      "source": "function:services/audit.py:log_change",
+      "target": "class:models/audit.py:AuditLog",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+
+    {
+      "source": "file:routes/ncit.py",
+      "target": "file:tests/test_ncit.py",
+      "type": "tested_by",
+      "direction": "forward",
+      "weight": 0.5
+    }
+  ]
+}

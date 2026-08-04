@@ -1,0 +1,70 @@
+{
+  "projectRoot": "/Users/dmoreland/projects/cdisc-concept-curation",
+  "batchFiles": [
+    {
+      "path": "app.py",
+      "language": "python",
+      "sizeLines": 59,
+      "fileCategory": "code"
+    },
+    {
+      "path": "config.py",
+      "language": "python",
+      "sizeLines": 14,
+      "fileCategory": "code"
+    },
+    {
+      "path": "db_bootstrap.py",
+      "language": "python",
+      "sizeLines": 71,
+      "fileCategory": "code"
+    },
+    {
+      "path": "extensions.py",
+      "language": "python",
+      "sizeLines": 25,
+      "fileCategory": "code"
+    },
+    {
+      "path": "models/__init__.py",
+      "language": "python",
+      "sizeLines": 1,
+      "fileCategory": "code"
+    },
+    {
+      "path": "tests/test_dashboard.py",
+      "language": "python",
+      "sizeLines": 75,
+      "fileCategory": "code"
+    },
+    {
+      "path": "tests/test_db_bootstrap.py",
+      "language": "python",
+      "sizeLines": 87,
+      "fileCategory": "code"
+    }
+  ],
+  "batchImportData": {
+    "app.py": [
+      "config.py",
+      "extensions.py"
+    ],
+    "config.py": [],
+    "db_bootstrap.py": [
+      "extensions.py"
+    ],
+    "extensions.py": [],
+    "models/__init__.py": [
+      "extensions.py"
+    ],
+    "tests/test_dashboard.py": [
+      "extensions.py",
+      "models/bc.py"
+    ],
+    "tests/test_db_bootstrap.py": [
+      "app.py",
+      "db_bootstrap.py",
+      "extensions.py"
+    ]
+  }
+}

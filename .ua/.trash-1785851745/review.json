@@ -1,0 +1,39 @@
+{
+  "issues": [],
+  "warnings": [
+    "Node 'pipeline:.github/workflows/ci.yml' has no edges (orphan)",
+    "Node 'config:.mcp.json' has no edges (orphan)",
+    "Node 'config:.flake8' has no edges (orphan)",
+    "Node 'config:.hintrc' has no edges (orphan)",
+    "Node 'config:.ua/.understandignore' has no edges (orphan)",
+    "Node 'config:.ua/config.json' has no edges (orphan)",
+    "Node 'document:migrations/README' has no edges (orphan)",
+    "Node 'file:routes/__init__.py' has no edges (orphan)",
+    "Node 'file:tests/__init__.py' has no edges (orphan)"
+  ],
+  "stats": {
+    "totalNodes": 281,
+    "totalEdges": 561,
+    "totalLayers": 8,
+    "tourSteps": 12,
+    "nodeTypes": {
+      "file": 71,
+      "class": 68,
+      "function": 114,
+      "pipeline": 1,
+      "document": 19,
+      "config": 8
+    },
+    "edgeTypes": {
+      "imports": 105,
+      "contains": 182,
+      "exports": 78,
+      "calls": 87,
+      "tested_by": 24,
+      "depends_on": 23,
+      "related": 21,
+      "documents": 40,
+      "configures": 1
+    }
+  }
+}
