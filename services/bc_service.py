@@ -85,6 +85,16 @@ def create_bc(data, actor=None):
     return bc
 
 
+def get_or_create_bc_stub(bc_id, short_name="", actor=None):
+    """Return the local BC for bc_id, creating a minimal provisional stub if
+    none exists yet (e.g. when a user picks a CDISC-Library-only BC on a
+    form that requires a local bc_id to link against)."""
+    bc = db.session.get(BiomedicalConcept, bc_id)
+    if bc:
+        return bc
+    return create_bc({"bc_id": bc_id, "short_name": short_name}, actor=actor or "system")
+
+
 def update_bc(bc_id, data, actor="user"):
     """Update an existing BC from a dict of fields. Returns the BC."""
     bc = _get_bc_or_raise(bc_id)

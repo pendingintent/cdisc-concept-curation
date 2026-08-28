@@ -15,6 +15,15 @@ logger = logging.getLogger(__name__)
 # services/api_cache.py and is used by all three API clients.
 _cached = cached
 
+# The CDISC Library's general MDR API (Controlled Terminology packages,
+# codelists) lives on a different host/path than the COSMoS-specific base
+# used for BCs/specializations above.
+LIBRARY_BASE_URL = "https://library.cdisc.org/api"
+
+# CDISC SDTM Domain Abbreviation codelist (submissionValue = the 2-8 char
+# domain code, e.g. "LB", "VS", "AE").
+SDTM_DOMAIN_CODELIST = "C66734"
+
 
 def _config_value(name, default=""):
     """Read a config value from the Flask app when a context is active,
@@ -49,6 +58,14 @@ class CDISCApiClient:
     def _get(self, path, params=None):
         url = f"{self.base_url}{path}"
         response = requests.get(url, headers=self.headers, params=params, timeout=10)
+        response.raise_for_status()
+        return response.json()
+
+    def _get_library(self, path):
+        """GET against the general CDISC Library MDR API (LIBRARY_BASE_URL),
+        as opposed to the COSMoS-specific base used by _get()."""
+        url = f"{LIBRARY_BASE_URL}{path}"
+        response = requests.get(url, headers=self.headers, timeout=10)
         response.raise_for_status()
         return response.json()
 
@@ -107,6 +124,51 @@ class CDISCApiClient:
                 return [{"error": str(e)}]
 
         return _cached(self._cache_key("dataset_specializations"), _fetch)
+
+    def get_ct_packages(self):
+        """
+        List all Controlled Terminology packages from the CDISC Library
+        (every product family — sdtmct, adamct, cdashct, ... — and every
+        dated version). Returns a list of {href, title, type} link objects.
+        """
+
+        def _fetch():
+            try:
+                data = self._get_library("/mdr/ct/packages")
+                return data.get("_links", {}).get("packages", [])
+            except (requests.RequestException, ValueError) as e:
+                logger.error("CDISC Library CT package list fetch failed: %s", e)
+                return [{"error": str(e)}]
+
+        return _cached(self._cache_key("ct_packages"), _fetch)
+
+    def get_sdtm_domain_codes(self):
+        """
+        Return the SDTM Domain Abbreviation codelist (C66734) terms from the
+        most recent SDTM CT package.
+        Returns a list of {"code": submissionValue, "label": preferredTerm}
+        dicts sorted by code, e.g. [{"code": "AE", "label": "Adverse Event Domain"}, ...].
+        """
+
+        def _fetch():
+            try:
+                packages = self.get_ct_packages()
+                sdtm_packages = sorted(
+                    (p for p in packages if "href" in p and "error" not in p and p["href"].rstrip("/").split("/")[-1].startswith("sdtmct-")),
+                    key=lambda p: p["href"],
+                )
+                if not sdtm_packages:
+                    raise ValueError("No SDTM CT package found in the Library's package list")
+                latest_href = sdtm_packages[-1]["href"]
+                data = self._get_library(f"{latest_href}/codelists/{SDTM_DOMAIN_CODELIST}")
+                codes = [{"code": t["submissionValue"], "label": t.get("preferredTerm", "")} for t in data.get("terms", []) if t.get("submissionValue")]
+                codes.sort(key=lambda c: c["code"])
+                return codes
+            except (requests.RequestException, ValueError) as e:
+                logger.error("CDISC Library SDTM domain codelist fetch failed: %s", e)
+                return [{"error": str(e)}]
+
+        return _cached(self._cache_key("sdtm_domain_codes"), _fetch)
 
     def check_duplicate(self, short_name):
         """

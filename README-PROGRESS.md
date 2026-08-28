@@ -11,11 +11,11 @@ CDISC Biomedical Concept Curation — a Flask/Jinja web application for curating
 | Flask App Foundation       | ✅ Complete    | `app.py`, `extensions.py`, `config.py`                               |
 | Database Models            | ✅ Complete    | BC, DEC, Governance, Audit, Ingestion, Specialization                |
 | Dashboard                  | ✅ Complete    | KPI stats, live CDISC Library API counts + BC/Spec panels, route `/` |
-| Ingestion (Upload + Parse) | ✅ Complete    | XLSX/CSV/JSON upload, AI field mapping, BC/DEC grouping              |
+| Ingestion (Upload + Parse) | ✅ Complete    | XLSX/CSV/JSON upload, AI field mapping, BC/DEC + Specialization grouping |
 | BC CRUD + Export           | ✅ Complete    | JSON/XLSX/ODM-XML export                                             |
 | NCIt Mapping               | ✅ Complete    | EVS REST API search + mapping resolution                             |
 | LOINC API Explorer         | ✅ Complete    | LOINC search + BC metadata integration, `routes/loinc.py`            |
-| Dataset Specializations    | ✅ Complete    | Full CRUD, BC selection, fixed search                                |
+| Dataset Specializations    | ✅ Complete    | Full CRUD, BC selection (local + Library, auto-stub), bulk import via ingestion |
 | Governance Workflow        | ✅ Complete    | 4-stage Kanban board                                                 |
 | Audit Trail                | ✅ Complete    | Filterable audit log                                                 |
 | CDISC Library API Client   | ✅ Complete    | `services/cdisc_api.py`                                              |
@@ -27,6 +27,40 @@ CDISC Biomedical Concept Curation — a Flask/Jinja web application for curating
 | Test Suite                 | 🚧 In Progress | BC routes, LOINC, NCIt coverage added                                |
 
 ## Daily Changelog
+
+### 2026-08-28
+
+#### Added Dataset Specialization Import + Fixed the BC-Picker Orphan-FK Gap
+
+- The Specializations page was blank because there was no bulk-import path into `dataset_specializations` — only one-at-a-time manual entry or "Generate from DEC Templates" existed. Taught the existing `/ingestion` upload+review pipeline (previously BC-only) to also recognize and import SDTM Dataset Specialization rows from the same curation workbooks (e.g. `files/BC Examples.xlsx`, whose `SDTM_LB`/`SDTM_VS` sheets are specializations joined to a BC via `bc_id`)
+- `services/ingestion.py` — added `SPEC_FIELD_MAP`, `_detect_record_type()` (sheet-name prefix `BC_`/`SDTM_`/`CDASH_` first, falls back to a `vlm_group_id` column signature), `validate_specialization()`, `_group_by_spec()` (groups VLM variable rows by `vlm_group_id`, mirroring `_group_by_bc`'s DEC grouping); parameterized `map_fields()`/`_match_field()` to accept a field map; `parse_xlsx/csv/json` and `deduplicate()` now branch by record type
+- `models/ingestion.py` — added `record_type` column (`"bc"` / `"specialization"`, new migration `95643d73ac0e`); `models/specialization.py` — `created_at` now actually defaults instead of always being `NULL`
+- `routes/ingestion.py` — `approve()`/`approve_all()` now create `DatasetSpecialization` rows too; `approve_all()` resolves all BC-type records first (flushed) before specialization-type ones, so a single workbook mixing `BC_`/`SDTM_` sheets imports correctly in one click; a specialization whose BC doesn't exist yet is left `pending` with a flash error instead of orphaning or crashing
+- `routes/specializations.py` — `create()` now auto-creates a minimal local BC stub (new `services/bc_service.get_or_create_bc_stub()`) when a user picks a CDISC-Library-only BC on the manual Specialization form, fixing a real gap: SQLite FK enforcement is off, so that path previously created specializations with no matching local BC row; also sorted the Library `<optgroup>` alphabetically (it was the only unsorted one)
+- `templates/ingestion.html` — split the review queue into separate "Biomedical Concepts" / "Dataset Specializations" sections; `templates/specializations.html` — fixed two dead-attribute bugs (`spec.bc_name`, `spec.variable_count` don't exist on the model) that were silently showing raw `bc_id` and "0 variables" for every row
+- Caught via manual smoke test (not just unit tests): the worksheet's `domain` column holds the real SDTM domain codelist value (`LB`, `VS`, ...), not an `SDTM`/`CDASH` toggle — an early version of this change incorrectly forced a literal `"SDTM"` constant; corrected to map the real column value through
+- Added `tests/test_bc_service.py` and extended `tests/test_ingestion_service.py`, `tests/test_ingestion_routes.py`, `tests/test_specializations_routes.py` — 280 tests passing, isort/black/flake8 clean ✅
+- Verified end-to-end against the real `files/BC Examples.xlsx`: 25 BCs + 23 specializations parsed, 25 BCs + 22 specializations approved (1 correctly held pending — its BC wasn't in that workbook's BC sheets)
+
+#### Replaced the Manual Specialization Form's SDTM/CDASH Toggle with a Real SDTM Domain Codelist Dropdown
+
+- The manual "Add Specialization" form previously let `domain` be either the literal string `SDTM` or `CDASH` via a radio toggle — meaningless once the ingestion import above started populating `domain` with real SDTM domain codes (`LB`, `VS`, ...). Replaced the toggle with a `<select>` populated live from the CDISC Library's own SDTM Domain Abbreviation codelist (C66734), so only real, current domain codes can be chosen
+- `services/cdisc_api.py` — added `get_ct_packages()` (lists all CT packages from the Library's general MDR API at `LIBRARY_BASE_URL = "https://library.cdisc.org/api"`, a different host/path than the COSMoS-specific base this client otherwise uses) and `get_sdtm_domain_codes()` (picks the most recent `sdtmct-*` package by date-sorted href, fetches codelist `C66734`, returns `[{code, label}]` from each term's `submissionValue`/`preferredTerm`, cached like the existing BC/specialization list calls); verified the exact response shape against the live API before writing code against it
+- `routes/specializations.py` — `index()`/`detail()` now pass `domain_codes` into the template; `create()`/`generate()` now require a non-blank `domain` (previously silently defaulted to `"SDTM"`)
+- `templates/specializations.html` — domain `<select>` shows `"CODE — Preferred Term"` options, with a fallback option so editing an existing spec whose domain code has since been retired/superseded doesn't silently blank the field; dropped the SDTM-vs-CDASH conditional badge coloring in the list view (domain is now an open codelist, not a two-value toggle); updated the "Generate from DEC Templates" JS to read the select instead of a checked radio
+- `models/specialization.py` — corrected the stale `# SDTM or CDASH` comment on `domain`
+- Extended `tests/test_cdisc_api_cache.py` (new package/codelist fetch tests, mocked at the `requests.get` level per this file's existing convention) and `tests/test_specializations_routes.py` (domain required, real domain code persists, dropdown rendered from the mocked codelist); 290 tests passing, isort/black/flake8 clean ✅
+- Verified live against the real CDISC Library API (real API key already in this shell's env) that the dropdown renders all 85 real SDTM domain codes from the current package (e.g. `AE — Adverse Event Domain`, `VS — Vital Signs Domain`)
+
+#### Fixed the Edit Button + Rebuilt Variable Import Against Real Worksheet Columns (not a synthesized name/label/data_type/required shape)
+
+- **Edit button did nothing**: `specializations.detail()` renders the same template with `edit_spec` populated, but the pre-filled form lives in a Bootstrap `collapse` div that was never told to expand — the page loaded correctly but the form stayed hidden. `templates/specializations.html` now adds the `show` class whenever `edit_spec` is set.
+- **Variables were imported wrong**: for specialization `KETONESURIN`, the worksheet has 11 rows (`sdtm_variable` column), but only 8 garbled entries were showing (e.g. `KETONES`, `URINALYSIS`, `mmol/L` instead of `LBTESTCD`, `LBORRES`, ...). Root cause: `SPEC_FIELD_MAP` only had ~8 curated canonical fields, so the ~20 other real VLM columns (`dec_id`, `codelist`, `assigned_value`, `subject`, `object`, `predicate_term`, ...) fuzzy-matched onto those few fields with score > 0.5 and silently overwrote them within the same row — `assigned_value` was literally clobbering `sdtm_variable` itself.
+- Fixed by mapping **every real worksheet column (I-AF, 24 variable-level fields) 1:1 to itself** instead of a small curated+fuzzy list — `services/ingestion.py` now has `VARIABLE_FIELD_DEFS`/`VARIABLE_FIELDS` (the full column list: `sdtm_variable`, `dec_id`, `nsv_flag`, `codelist`, `codelist_submission_value`, `subset_codelist`, `value_list`, `assigned_term`, `assigned_value`, `role`, `subject`, `linking_phrase`, `predicate_term`, `object`, `data_type`, `length`, `format`, `significant_digits`, `mandatory_variable`, `mandatory_value`, `origin_type`, `origin_source`, `comparator`, `vlm_target`), each scoring 1.0 against itself so same-row collisions between similarly-named columns (e.g. `mandatory_variable` vs `mandatory_value`) are now structurally impossible; `_group_by_spec()` builds one full-width dict per variable row instead of the old synthesized `{name, label, data_type, required}` shape
+- Dropped the fabricated `label`/`required` fields (not real worksheet columns) per explicit instruction — the UI's variable table now shows/edits exactly the worksheet's I-AF columns, driven from a single `variable_field_defs` list shared between `routes/specializations.py` and the template (header row, form field names, and the JS that builds new/generated rows all read from it, so there's one source of truth instead of three copies)
+- `routes/specializations.py` — `_variables_from_form()` rewritten to parse all `VARIABLE_FIELDS` per row (gated on `sdtm_variable` being non-blank); `_variable_from_dec()` seeds `sdtm_variable`/`dec_id`/`data_type` from a BC's DataElementConcept for the "Generate from DEC Templates" flow, leaving the columns a DEC can't supply blank for the user to fill in
+- Updated `tests/test_ingestion_service.py`, `tests/test_specializations_routes.py` for the new shape; 293 tests passing, flake8 clean ✅
+- Verified end-to-end against the real workbook: `KETONESURIN` now shows exactly 11 variable rows with correct values in the right order (`LBTESTCD`, `LBTEST`, `LBCAT`, `LBORRES`, `LBORRESU`, `LBSTRESC`, `LBSTRESN`, `LBSTRESU`, `LBLOINC`, `LBSPEC`, `LBFAST`), and the Edit link now opens the form expanded
 
 ### 2026-08-03
 

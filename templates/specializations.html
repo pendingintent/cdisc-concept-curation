@@ -16,8 +16,8 @@
   </div>
 </div>
 
-<!-- Add specialization form (collapsed by default) -->
-<div class="collapse mb-3" id="specialization-form-panel">
+<!-- Add specialization form (collapsed by default, expanded when editing) -->
+<div class="collapse mb-3 {% if edit_spec %}show{% endif %}" id="specialization-form-panel">
   <div class="bc-card">
     <div class="bc-card-header">
       <h2 class="bc-card-title">
@@ -72,21 +72,19 @@
         </div>
 
         <div class="col-md-3">
-          <fieldset>
-            <legend class="form-label small fw-semibold">Domain <span class="text-danger" aria-hidden="true">*</span></legend>
-            <div class="d-flex gap-3">
-              <div class="form-check">
-                <input class="form-check-input" type="radio" name="domain" id="domain-sdtm" value="SDTM"
-                       {% if not edit_spec or edit_spec.domain == 'SDTM' %}checked{% endif %}>
-                <label class="form-check-label small" for="domain-sdtm">SDTM</label>
-              </div>
-              <div class="form-check">
-                <input class="form-check-input" type="radio" name="domain" id="domain-cdash" value="CDASH"
-                       {% if edit_spec and edit_spec.domain == 'CDASH' %}checked{% endif %}>
-                <label class="form-check-label small" for="domain-cdash">CDASH</label>
-              </div>
-            </div>
-          </fieldset>
+          <label for="spec_domain" class="form-label small fw-semibold">Domain <span class="text-danger" aria-hidden="true">*</span></label>
+          <select id="spec_domain" name="domain" class="form-select form-select-sm" required
+                  aria-label="Select an SDTM domain">
+            <option value="">— Select Domain —</option>
+            {% for d in domain_codes if d.code %}
+            <option value="{{ d.code }}" {% if edit_spec and edit_spec.domain == d.code %}selected{% endif %}>
+              {{ d.code }} — {{ d.label }}
+            </option>
+            {% endfor %}
+            {% if edit_spec and edit_spec.domain and edit_spec.domain not in (domain_codes | map(attribute='code') | list) %}
+            <option value="{{ edit_spec.domain }}" selected>{{ edit_spec.domain }} (not in current SDTM CT)</option>
+            {% endif %}
+          </select>
         </div>
 
         <div class="col-md-4">
@@ -97,51 +95,33 @@
         </div>
       </div>
 
-      <!-- Variables table -->
+      <!-- Variables table: one column per SDTM VLM worksheet field (I-AF) -->
       <h3 class="form-section-title">Variables</h3>
       <div class="table-responsive mb-3">
         <table class="dec-table" aria-label="Specialization variables">
           <thead>
             <tr>
-              <th scope="col">Variable Name</th>
-              <th scope="col">Label</th>
-              <th scope="col">Data Type</th>
-              <th scope="col" class="text-center">Required</th>
+              {% for field, label in variable_field_defs %}
+              <th scope="col">{{ label }}</th>
+              {% endfor %}
               <th scope="col" style="width: 40px;"></th>
             </tr>
           </thead>
-          <tbody id="spec-variables-body" data-row-count="{{ (edit_spec.variables | length) if edit_spec and edit_spec.variables else 0 }}">
+          <tbody id="spec-variables-body"
+                 data-row-count="{{ (edit_spec.variables | length) if edit_spec and edit_spec.variables else 0 }}"
+                 data-fields='{{ variable_field_defs | map(attribute=0) | list | tojson }}'>
             {% if edit_spec and edit_spec.variables %}
               {% for var in edit_spec.variables %}
+              {% set row_idx = loop.index0 %}
               <tr>
+                {% for field, label in variable_field_defs %}
                 <td>
                   <input type="text" class="form-control form-control-sm"
-                         name="variables[{{ loop.index0 }}][name]"
-                         value="{{ var.name }}"
-                         placeholder="e.g. LBTESTCD" aria-label="Variable name">
+                         name="variables[{{ row_idx }}][{{ field }}]"
+                         value="{{ var[field] }}"
+                         aria-label="{{ label }}">
                 </td>
-                <td>
-                  <input type="text" class="form-control form-control-sm"
-                         name="variables[{{ loop.index0 }}][label]"
-                         value="{{ var.label }}"
-                         placeholder="e.g. Lab Test Short Name" aria-label="Variable label">
-                </td>
-                <td>
-                  <select class="form-select form-select-sm"
-                          name="variables[{{ loop.index0 }}][data_type]"
-                          aria-label="Data type">
-                    {% for dtype in ['string','decimal','integer','boolean','date','datetime'] %}
-                      <option value="{{ dtype }}" {% if var.data_type == dtype %}selected{% endif %}>{{ dtype }}</option>
-                    {% endfor %}
-                  </select>
-                </td>
-                <td class="text-center">
-                  <input type="checkbox" class="form-check-input"
-                         name="variables[{{ loop.index0 }}][required]"
-                         value="1"
-                         {% if var.required %}checked{% endif %}
-                         aria-label="Required">
-                </td>
+                {% endfor %}
                 <td>
                   <button type="button" class="btn btn-sm btn-outline-danger spec-var-delete-btn"
                           aria-label="Delete variable row">
@@ -199,17 +179,16 @@
           <td><code>{{ spec.vlm_group_id | default('—') }}</code></td>
           <td class="fw-medium">
             <a href="{{ url_for('bc.detail', bc_id=spec.bc_id) }}" class="text-decoration-none">
-              {{ spec.bc_name | default(spec.bc_id) }}
+              {{ spec.bc.short_name if spec.bc else spec.bc_id }}
             </a>
           </td>
           <td>
-            <span class="bc-badge {% if spec.domain == 'SDTM' %}bc-badge-cdisc-approval{% else %}bc-badge-sme-review{% endif %}">
-              {{ spec.domain }}
-            </span>
+            <span class="bc-badge bc-badge-cdisc-approval">{{ spec.domain }}</span>
           </td>
           <td>{{ spec.short_name }}</td>
           <td class="text-secondary small">
-            {{ spec.variable_count | default(0) }} variable{{ 's' if spec.variable_count != 1 else '' }}
+            {% set vcount = spec.variables | length %}
+            {{ vcount }} variable{{ 's' if vcount != 1 else '' }}
           </td>
           <td>
             <div class="d-flex gap-1">
@@ -268,51 +247,41 @@
     });
   }
 
-  // Initialize variable row counter from server-rendered data
-  let varRowIndex = parseInt(document.getElementById('spec-variables-body').dataset.rowCount || '0', 10);
+  // Variable rows are built generically from the field list the server
+  // rendered the table header from, so JS never hand-duplicates the ~24
+  // SDTM VLM column names.
+  const varBody = document.getElementById('spec-variables-body');
+  const varFields = varBody ? JSON.parse(varBody.dataset.fields || '[]') : [];
+  let varRowIndex = varBody ? parseInt(varBody.dataset.rowCount || '0', 10) : 0;
+
+  function escapeAttr(value) {
+    return String(value == null ? '' : value).replace(/&/g, '&amp;').replace(/"/g, '&quot;');
+  }
+
+  function buildVariableRow(rowIndex, values) {
+    values = values || {};
+    const cells = varFields.map(function (field) {
+      return `<td><input type="text" class="form-control form-control-sm"
+                     name="variables[${rowIndex}][${field}]"
+                     value="${escapeAttr(values[field])}" aria-label="${field}"></td>`;
+    }).join('');
+    const tr = document.createElement('tr');
+    tr.innerHTML = cells + `
+      <td>
+        <button type="button" class="btn btn-sm btn-outline-danger spec-var-delete-btn"
+                aria-label="Delete variable row">
+          <i class="bi bi-trash" aria-hidden="true"></i>
+        </button>
+      </td>
+    `;
+    return tr;
+  }
 
   // Add variable row
   const addVarBtn = document.getElementById('add-spec-var-btn');
-  const varBody = document.getElementById('spec-variables-body');
   if (addVarBtn && varBody) {
     addVarBtn.addEventListener('click', function () {
-      const tr = document.createElement('tr');
-      tr.innerHTML = `
-        <td>
-          <input type="text" class="form-control form-control-sm"
-                 name="variables[${varRowIndex}][name]"
-                 placeholder="e.g. LBTESTCD" aria-label="Variable name">
-        </td>
-        <td>
-          <input type="text" class="form-control form-control-sm"
-                 name="variables[${varRowIndex}][label]"
-                 placeholder="e.g. Lab Test Short Name" aria-label="Variable label">
-        </td>
-        <td>
-          <select class="form-select form-select-sm"
-                  name="variables[${varRowIndex}][data_type]"
-                  aria-label="Data type">
-            <option value="string">string</option>
-            <option value="decimal">decimal</option>
-            <option value="integer">integer</option>
-            <option value="boolean">boolean</option>
-            <option value="date">date</option>
-            <option value="datetime">datetime</option>
-          </select>
-        </td>
-        <td class="text-center">
-          <input type="checkbox" class="form-check-input"
-                 name="variables[${varRowIndex}][required]"
-                 value="1" aria-label="Required">
-        </td>
-        <td>
-          <button type="button" class="btn btn-sm btn-outline-danger spec-var-delete-btn"
-                  aria-label="Delete variable row">
-            <i class="bi bi-trash" aria-hidden="true"></i>
-          </button>
-        </td>
-      `;
-      varBody.appendChild(tr);
+      varBody.appendChild(buildVariableRow(varRowIndex));
       varRowIndex++;
     });
   }
@@ -330,7 +299,7 @@
   if (generateBtn) {
     generateBtn.addEventListener('click', async function () {
       const bcId = document.getElementById('bc_selector').value;
-      const domain = document.querySelector('input[name="domain"]:checked');
+      const domain = document.getElementById('spec_domain').value;
       if (!bcId || !domain) {
         alert('Please select a BC and domain before generating from templates.');
         return;
@@ -343,7 +312,7 @@
         const resp = await fetch('/specializations/generate-from-dec', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ bc_id: bcId, domain: domain.value })
+          body: JSON.stringify({ bc_id: bcId, domain: domain })
         });
 
         if (!resp.ok) throw new Error('Generation failed');
@@ -353,30 +322,7 @@
           varBody.innerHTML = '';
           varRowIndex = 0;
           data.variables.forEach(function (v) {
-            const tr = document.createElement('tr');
-            tr.innerHTML = `
-              <td><input type="text" class="form-control form-control-sm"
-                         name="variables[${varRowIndex}][name]" value="${v.name || ''}" aria-label="Variable name"></td>
-              <td><input type="text" class="form-control form-control-sm"
-                         name="variables[${varRowIndex}][label]" value="${v.label || ''}" aria-label="Variable label"></td>
-              <td>
-                <select class="form-select form-select-sm" name="variables[${varRowIndex}][data_type]" aria-label="Data type">
-                  ${['string','decimal','integer','boolean','date','datetime'].map(function(dt) {
-                    return `<option value="${dt}" ${v.data_type === dt ? 'selected' : ''}>${dt}</option>`;
-                  }).join('')}
-                </select>
-              </td>
-              <td class="text-center">
-                <input type="checkbox" class="form-check-input" name="variables[${varRowIndex}][required]"
-                       value="1" ${v.required ? 'checked' : ''} aria-label="Required">
-              </td>
-              <td>
-                <button type="button" class="btn btn-sm btn-outline-danger spec-var-delete-btn" aria-label="Delete variable row">
-                  <i class="bi bi-trash" aria-hidden="true"></i>
-                </button>
-              </td>
-            `;
-            varBody.appendChild(tr);
+            varBody.appendChild(buildVariableRow(varRowIndex, v));
             varRowIndex++;
           });
         }

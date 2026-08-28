@@ -118,3 +118,99 @@ class TestClientCacheKeys:
         with app.app_context():
             result = CDISCApiClient().get_biomedical_concepts()
         assert result == [{"href": "/x", "title": "X"}]
+
+
+class _FakeResp:
+    def __init__(self, payload):
+        self._payload = payload
+
+    def raise_for_status(self):
+        pass
+
+    def json(self):
+        return self._payload
+
+
+PACKAGES_PAYLOAD = {
+    "_links": {
+        "packages": [
+            {"href": "/mdr/ct/packages/adamct-2025-09-26", "title": "ADaM CT", "type": "Terminology"},
+            {"href": "/mdr/ct/packages/sdtmct-2024-09-27", "title": "SDTM CT 2024-09-27", "type": "Terminology"},
+            {"href": "/mdr/ct/packages/sdtmct-2025-09-26", "title": "SDTM CT 2025-09-26", "type": "Terminology"},
+        ]
+    }
+}
+
+CODELIST_PAYLOAD = {
+    "conceptId": "C66734",
+    "name": "SDTM Domain Abbreviation",
+    "terms": [
+        {"conceptId": "C49562", "submissionValue": "AE", "preferredTerm": "Adverse Event Domain"},
+        {"conceptId": "C66741", "submissionValue": "VS", "preferredTerm": "Vital Signs Domain"},
+    ],
+}
+
+
+class TestGetCtPackages:
+    def setup_method(self):
+        cdisc_api._cache.clear()
+
+    def test_returns_package_links(self, app, monkeypatch):
+        monkeypatch.setattr(cdisc_api.requests, "get", lambda *a, **kw: _FakeResp(PACKAGES_PAYLOAD))
+        with app.app_context():
+            result = CDISCApiClient().get_ct_packages()
+        assert len(result) == 3
+        assert result[0]["href"] == "/mdr/ct/packages/adamct-2025-09-26"
+
+    def test_error_encoded_not_raised(self, app, monkeypatch):
+        import requests
+
+        def boom(*a, **kw):
+            raise requests.ConnectionError("no network")
+
+        monkeypatch.setattr(cdisc_api.requests, "get", boom)
+        with app.app_context():
+            result = CDISCApiClient().get_ct_packages()
+        assert "error" in result[0]
+
+
+class TestGetSdtmDomainCodes:
+    def setup_method(self):
+        cdisc_api._cache.clear()
+
+    def test_uses_most_recent_sdtm_package(self, app, monkeypatch):
+        requested_urls = []
+
+        def fake_get(url, headers=None, params=None, timeout=None):
+            requested_urls.append(url)
+            if url.endswith("/mdr/ct/packages"):
+                return _FakeResp(PACKAGES_PAYLOAD)
+            return _FakeResp(CODELIST_PAYLOAD)
+
+        monkeypatch.setattr(cdisc_api.requests, "get", fake_get)
+        with app.app_context():
+            result = CDISCApiClient().get_sdtm_domain_codes()
+
+        assert any(u.endswith("/mdr/ct/packages/sdtmct-2025-09-26/codelists/C66734") for u in requested_urls)
+        assert result == [
+            {"code": "AE", "label": "Adverse Event Domain"},
+            {"code": "VS", "label": "Vital Signs Domain"},
+        ]
+
+    def test_no_sdtm_package_found_returns_error(self, app, monkeypatch):
+        empty_payload = {"_links": {"packages": [{"href": "/mdr/ct/packages/adamct-2025-09-26", "title": "ADaM CT"}]}}
+        monkeypatch.setattr(cdisc_api.requests, "get", lambda *a, **kw: _FakeResp(empty_payload))
+        with app.app_context():
+            result = CDISCApiClient().get_sdtm_domain_codes()
+        assert "error" in result[0]
+
+    def test_network_failure_encoded_not_raised(self, app, monkeypatch):
+        import requests
+
+        def boom(*a, **kw):
+            raise requests.ConnectionError("no network")
+
+        monkeypatch.setattr(cdisc_api.requests, "get", boom)
+        with app.app_context():
+            result = CDISCApiClient().get_sdtm_domain_codes()
+        assert "error" in result[0]
