@@ -193,10 +193,24 @@
                    placeholder="e.g. A1C; Glycated Hb">
           </div>
           <div class="col-6">
-            <label for="result_scales" class="form-label small">Result Scales</label>
-            <input type="text" id="result_scales" name="result_scales" class="form-control form-control-sm"
-                   value="{{ bc.result_scales or '' }}"
-                   placeholder="e.g. Quantitative">
+            <span class="form-label small d-block">Result Scales</span>
+            <input type="hidden" name="result_scales_submitted" value="1">
+            {% for scale in result_scale_options %}
+            <div class="form-check form-check-sm">
+              <input type="checkbox" class="form-check-input" id="result_scale_{{ loop.index0 }}"
+                     name="result_scales" value="{{ scale }}"
+                     {% if scale in selected_result_scales %}checked{% endif %}>
+              <label class="form-check-label small" for="result_scale_{{ loop.index0 }}">{{ scale }}</label>
+            </div>
+            {% endfor %}
+            {% if unsupported_result_scales %}
+            <div class="form-text text-danger mt-1">
+              {% for scale in unsupported_result_scales %}
+              <input type="hidden" name="result_scales" value="{{ scale }}">
+              {% endfor %}
+              Not supported: {{ unsupported_result_scales | join(', ') }}
+            </div>
+            {% endif %}
           </div>
         </div>
       </div>

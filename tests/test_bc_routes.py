@@ -53,6 +53,11 @@ class TestNewBc:
         r = client.get("/bc/new")
         assert r.status_code == 200
 
+    def test_shows_all_five_result_scale_checkboxes(self, client):
+        r = client.get("/bc/new")
+        for scale in ("Narrative", "Nominal", "Ordinal", "Quantitative", "Temporal"):
+            assert scale.encode() in r.data
+
 
 # ---------------------------------------------------------------------------
 # POST /bc/ (create)
@@ -95,6 +100,20 @@ class TestCreateBc:
             assert bc.system == "http://loinc.org/"
             assert bc.system_name == "LOINC"
 
+    def test_create_with_selected_result_scales(self, client, app):
+        data = _bc_form()
+        data["result_scales"] = ["Quantitative", "Ordinal"]
+        client.post("/bc/", data=data)
+        with app.app_context():
+            bc = db.session.get(BiomedicalConcept, "C00001")
+            assert bc.result_scales == "Quantitative; Ordinal"
+
+    def test_create_with_no_result_scales_selected(self, client, app):
+        client.post("/bc/", data=_bc_form())
+        with app.app_context():
+            bc = db.session.get(BiomedicalConcept, "C00001")
+            assert bc.result_scales == ""
+
     def test_create_with_decs(self, client, app):
         data = _bc_form()
         data["dec_label[]"] = ["Systolic", "Diastolic"]
@@ -124,6 +143,29 @@ class TestBcDetail:
     def test_missing_bc_returns_404(self, client):
         r = client.get("/bc/DOESNOTEXIST")
         assert r.status_code == 404
+
+    def test_valid_result_scale_checked(self, client, app, sample_bc):
+        import re
+
+        with app.app_context():
+            bc = db.session.get(BiomedicalConcept, sample_bc)
+            bc.result_scales = "Ordinal"
+            db.session.commit()
+        r = client.get(f"/bc/{sample_bc}")
+        assert r.status_code == 200
+        assert re.search(rb'value="Ordinal"\s*checked', r.data)
+        assert not re.search(rb'value="Nominal"\s*checked', r.data)
+
+    def test_unsupported_result_scale_shown_in_red(self, client, app, sample_bc):
+        with app.app_context():
+            bc = db.session.get(BiomedicalConcept, sample_bc)
+            bc.result_scales = "Continuous"
+            db.session.commit()
+        r = client.get(f"/bc/{sample_bc}")
+        assert r.status_code == 200
+        assert b"Continuous" in r.data
+        assert b"not supported" in r.data.lower()
+        assert b"text-danger" in r.data
 
     def test_loinc_api_called_when_code_set(self, client, app):
         with app.app_context():
@@ -246,6 +288,48 @@ class TestEditBc:
     def test_nonexistent_bc_returns_404(self, client):
         r = client.post("/bc/NOPE/edit", data={"short_name": "X"})
         assert r.status_code == 404
+
+    def test_edit_updates_result_scales_when_marker_present(self, client, app, sample_bc):
+        client.post(
+            "/bc/C12345/edit",
+            data={"result_scales_submitted": "1", "result_scales": ["Quantitative", "Ordinal"]},
+        )
+        with app.app_context():
+            bc = db.session.get(BiomedicalConcept, "C12345")
+            assert bc.result_scales == "Quantitative; Ordinal"
+
+    def test_edit_clears_result_scales_when_all_unchecked(self, client, app, sample_bc):
+        with app.app_context():
+            bc = db.session.get(BiomedicalConcept, "C12345")
+            bc.result_scales = "Ordinal"
+            db.session.commit()
+        client.post("/bc/C12345/edit", data={"result_scales_submitted": "1"})
+        with app.app_context():
+            bc = db.session.get(BiomedicalConcept, "C12345")
+            assert bc.result_scales == ""
+
+    def test_edit_without_marker_preserves_existing_result_scales(self, client, app, sample_bc):
+        with app.app_context():
+            bc = db.session.get(BiomedicalConcept, "C12345")
+            bc.result_scales = "Ordinal"
+            db.session.commit()
+        client.post("/bc/C12345/edit", data={"short_name": "Updated Name"})
+        with app.app_context():
+            bc = db.session.get(BiomedicalConcept, "C12345")
+            assert bc.result_scales == "Ordinal"
+
+    def test_edit_preserves_unsupported_value_alongside_new_selection(self, client, app, sample_bc):
+        with app.app_context():
+            bc = db.session.get(BiomedicalConcept, "C12345")
+            bc.result_scales = "Continuous"
+            db.session.commit()
+        client.post(
+            "/bc/C12345/edit",
+            data={"result_scales_submitted": "1", "result_scales": ["Quantitative", "Continuous"]},
+        )
+        with app.app_context():
+            bc = db.session.get(BiomedicalConcept, "C12345")
+            assert bc.result_scales == "Quantitative; Continuous"
 
     def test_edit_clears_ncit_code_when_submitted_empty(self, client, app, sample_bc):
         client.post("/bc/C12345/edit", data={"ncit_code": ""})

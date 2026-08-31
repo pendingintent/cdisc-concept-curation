@@ -137,6 +137,28 @@ class TestValidateBc:
         d["ncit_code"] = "C99999"
         assert validate_bc(d) == []
 
+    def test_supported_result_scale_accepted(self):
+        d = self._valid()
+        d["result_scales"] = "Quantitative; Ordinal"
+        assert validate_bc(d) == []
+
+    def test_unsupported_result_scale_flagged(self):
+        d = self._valid()
+        d["result_scales"] = "Continuous"
+        errors = validate_bc(d)
+        assert any("Continuous" in e for e in errors)
+
+    def test_mixed_supported_and_unsupported_result_scales(self):
+        d = self._valid()
+        d["result_scales"] = "Quantitative; Continuous"
+        errors = validate_bc(d)
+        matches = [e for e in errors if "Continuous" in e]
+        assert len(matches) == 1
+        assert "Unsupported result scale(s): Continuous" in matches[0]
+
+    def test_no_result_scales_has_no_error(self):
+        assert validate_bc(self._valid()) == []
+
 
 # ---------------------------------------------------------------------------
 # deduplicate

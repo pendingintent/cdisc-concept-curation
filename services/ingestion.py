@@ -4,6 +4,8 @@ from difflib import SequenceMatcher
 
 import pandas as pd
 
+from models.bc import RESULT_SCALES, split_result_scales
+
 logger = logging.getLogger(__name__)
 
 # Canonical BC field names and known aliases for fuzzy field mapping
@@ -155,6 +157,9 @@ def validate_bc(bc_dict):
     ncit = bc_dict.get("ncit_code") or bc_dict.get("bc_id", "")
     if ncit and not ncit.upper().startswith("C"):
         errors.append(f"NCIt code should start with C (got: {ncit})")
+    unsupported = [s for s in split_result_scales(bc_dict.get("result_scales")) if s not in RESULT_SCALES]
+    if unsupported:
+        errors.append(f"Unsupported result scale(s): {', '.join(unsupported)} — not in allowed list ({', '.join(RESULT_SCALES)})")
     return errors
 
 
