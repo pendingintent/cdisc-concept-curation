@@ -17,14 +17,16 @@ Read tools (8):
   get_library_bc        Fetch one published BC from the CDISC Library
   list_review_queue     Governance board summary + pending ingestion count
 
-Write tools (6) — same service code path as the web routes, every write
+Write tools (8) — same service code path as the web routes, every write
 audited; actor defaults to "mcp" so agent writes are distinguishable:
-  create_bc             Create a provisional BC (optionally with DECs)
-  update_bc             Update BC fields
-  map_ncit_to_bc        Attach an NCIt code (promotes IMPORT_ ids)
-  submit_bc_for_review  provisional -> sme_review
-  advance_governance    Advance one governance stage
-  reject_bc             Reject back to provisional
+  create_bc                          Create a provisional BC (optionally with DECs)
+  update_bc                          Update BC fields
+  map_ncit_to_bc                     Attach an NCIt code (promotes IMPORT_ ids)
+  submit_bc_for_review               provisional -> sme_review
+  advance_governance                 Advance one governance stage (BC)
+  reject_bc                          Reject back to provisional (BC)
+  advance_specialization_governance  Advance one governance stage (Dataset Specialization)
+  reject_specialization              Reject back to provisional (Dataset Specialization)
 """
 
 import asyncio
@@ -269,6 +271,35 @@ _TOOLS = [
             "required": ["bc_id"],
         },
     ),
+    types.Tool(
+        name="advance_specialization_governance",
+        description=(
+            "Advance a Dataset Specialization one stage (provisional -> sme_review -> cdisc_approval -> published). "
+            "Writes a GovernanceRecord and an audit entry; returns advanced=false if already published."
+        ),
+        inputSchema={
+            "type": "object",
+            "properties": {
+                "vlm_group_id": {"type": "string"},
+                "comment": {"type": "string"},
+                "actor": {"type": "string", "default": "mcp"},
+            },
+            "required": ["vlm_group_id"],
+        },
+    ),
+    types.Tool(
+        name="reject_specialization",
+        description="Reject a Dataset Specialization back to provisional (stage 0). Writes a GovernanceRecord and an audit entry.",
+        inputSchema={
+            "type": "object",
+            "properties": {
+                "vlm_group_id": {"type": "string"},
+                "comment": {"type": "string"},
+                "actor": {"type": "string", "default": "mcp"},
+            },
+            "required": ["vlm_group_id"],
+        },
+    ),
 ]
 
 
@@ -305,6 +336,8 @@ def _dispatch(name: str, args: dict) -> Any:
         "submit_bc_for_review": _submit_bc_for_review,
         "advance_governance": _advance_governance,
         "reject_bc": _reject_bc,
+        "advance_specialization_governance": _advance_specialization_governance,
+        "reject_specialization": _reject_specialization,
     }
     fn = handlers.get(name)
     if fn is None:
@@ -389,6 +422,7 @@ def _get_bc(args: dict) -> dict:
             "domain": s.domain,
             "short_name": s.short_name,
             "variables": s.variables,
+            "status": s.status,
         }
         for s in bc.specializations
     ]
@@ -464,15 +498,20 @@ def _get_library_bc(args: dict) -> dict:
 def _list_review_queue(_args: dict) -> dict:
     from models.bc import BiomedicalConcept
     from models.ingestion import IngestionRecord
+    from models.specialization import DatasetSpecialization
 
     queue = {}
+    spec_queue = {}
     for status in ("sme_review", "cdisc_approval"):
         bcs = BiomedicalConcept.query.filter_by(status=status).order_by(BiomedicalConcept.updated_at.desc()).all()
         queue[status] = [{"bc_id": bc.bc_id, "short_name": bc.short_name, "submitter": bc.submitter, "updated_at": bc.updated_at} for bc in bcs]
+        specs = DatasetSpecialization.query.filter_by(status=status).order_by(DatasetSpecialization.updated_at.desc()).all()
+        spec_queue[status] = [{"vlm_group_id": s.vlm_group_id, "bc_id": s.bc_id, "short_name": s.short_name, "updated_at": s.updated_at} for s in specs]
     pending_ingestion = IngestionRecord.query.filter_by(status="pending").count()
     return {
         "sme_review": queue["sme_review"],
         "cdisc_approval": queue["cdisc_approval"],
+        "specializations": spec_queue,
         "pending_ingestion_records": pending_ingestion,
     }
 
@@ -551,6 +590,28 @@ def _reject_bc(args: dict) -> dict:
         raise ValueError("bc_id is required")
     actor = str(args.get("actor") or "mcp")
     return governance_service.reject_bc(bc_id, actor=actor, comment=str(args.get("comment") or ""))
+
+
+@_with_app_context
+def _advance_specialization_governance(args: dict) -> dict:
+    from services import governance_service
+
+    vlm_group_id = str(args.get("vlm_group_id") or "").strip()
+    if not vlm_group_id:
+        raise ValueError("vlm_group_id is required")
+    actor = str(args.get("actor") or "mcp")
+    return governance_service.advance_specialization_governance(vlm_group_id, actor=actor, comment=str(args.get("comment") or ""))
+
+
+@_with_app_context
+def _reject_specialization(args: dict) -> dict:
+    from services import governance_service
+
+    vlm_group_id = str(args.get("vlm_group_id") or "").strip()
+    if not vlm_group_id:
+        raise ValueError("vlm_group_id is required")
+    actor = str(args.get("actor") or "mcp")
+    return governance_service.reject_specialization(vlm_group_id, actor=actor, comment=str(args.get("comment") or ""))
 
 
 # ---------------------------------------------------------------------------

@@ -5,8 +5,15 @@ from extensions import db
 
 class GovernanceRecord(db.Model):
     __tablename__ = "governance_records"
+    __table_args__ = (
+        db.CheckConstraint(
+            "(bc_id IS NOT NULL) + (vlm_group_id IS NOT NULL) = 1",
+            name="ck_governance_records_one_entity",
+        ),
+    )
     id = db.Column(db.Integer, primary_key=True)
-    bc_id = db.Column(db.String(50), db.ForeignKey("biomedical_concepts.bc_id"), nullable=False)
+    bc_id = db.Column(db.String(50), db.ForeignKey("biomedical_concepts.bc_id"), nullable=True)
+    vlm_group_id = db.Column(db.String(100), db.ForeignKey("dataset_specializations.vlm_group_id"), nullable=True)
     stage = db.Column(db.Integer, default=0)  # 0=Scoping, 1=Development, 2=Draft, 3a=Internal Review, 3b=Public Review, 3c=Publication, 4=Maintenance
     action = db.Column(db.String(100))  # submitted, advanced, rejected, approved, published
     actor = db.Column(db.String(100))
@@ -14,3 +21,4 @@ class GovernanceRecord(db.Model):
     created_at = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc))
 
     bc = db.relationship("BiomedicalConcept", backref=db.backref("governance_records", lazy="dynamic"))
+    specialization = db.relationship("DatasetSpecialization", backref=db.backref("governance_records", lazy="dynamic"))

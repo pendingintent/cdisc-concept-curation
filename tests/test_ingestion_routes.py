@@ -8,6 +8,7 @@ from extensions import db
 from models.audit import AuditLog
 from models.bc import BiomedicalConcept
 from models.ingestion import IngestionRecord
+from models.specialization import DatasetSpecialization
 
 
 def _csv_file(rows):
@@ -21,6 +22,18 @@ def _csv_file(rows):
 
 def _json_file(data):
     return (io.BytesIO(json.dumps(data).encode()), "test.json")
+
+
+def _xlsx_file(sheets):
+    """Build an in-memory XLSX upload from {sheet_name: [row_dicts]}."""
+    import pandas as pd
+
+    buf = io.BytesIO()
+    with pd.ExcelWriter(buf, engine="openpyxl") as writer:
+        for sheet_name, rows in sheets.items():
+            pd.DataFrame(rows).to_excel(writer, sheet_name=sheet_name, index=False)
+    buf.seek(0)
+    return (buf, "test.xlsx")
 
 
 class TestIngestionIndex:
@@ -202,3 +215,112 @@ class TestApproveAll:
             assert db.session.get(BiomedicalConcept, "C001") is not None
             log = AuditLog.query.filter_by(entity_type="BiomedicalConcept", entity_id="C001", action="created_via_ingestion").first()
             assert log is not None
+
+
+class TestUploadSpecializations:
+    def test_sdtm_sheet_produces_specialization_records(self, client, app):
+        sheets = {
+            "SDTM_LB": [
+                {"vlm_group_id": "C001.SDTM", "bc_id": "C001", "short_name": "Test Spec", "sdtm_variable": "LBTESTCD", "data_type": "string"},
+                {"vlm_group_id": "C001.SDTM", "bc_id": "C001", "short_name": "Test Spec", "sdtm_variable": "LBORRES", "data_type": "decimal"},
+            ]
+        }
+        file_obj, filename = _xlsx_file(sheets)
+        client.post(
+            "/ingestion/upload",
+            data={"file": (file_obj, filename)},
+            content_type="multipart/form-data",
+        )
+        with app.app_context():
+            ir = IngestionRecord.query.filter_by(record_type="specialization").first()
+            assert ir is not None
+            assert ir.mapped["vlm_group_id"] == "C001.SDTM"
+            assert len(ir.decs) == 2
+
+    def test_bc_sheet_produces_bc_records(self, client, app):
+        sheets = {"BC_LB": [{"bc_id": "C002", "short_name": "HR", "definition": "Heart Rate"}]}
+        file_obj, filename = _xlsx_file(sheets)
+        client.post(
+            "/ingestion/upload",
+            data={"file": (file_obj, filename)},
+            content_type="multipart/form-data",
+        )
+        with app.app_context():
+            ir = IngestionRecord.query.filter_by(record_type="bc").first()
+            assert ir is not None
+            assert ir.mapped["bc_id"] == "C002"
+
+    def test_duplicate_vlm_group_id_flagged(self, client, app, sample_bc):
+        with app.app_context():
+            db.session.add(DatasetSpecialization(vlm_group_id="C12345.SDTM", bc_id=sample_bc, domain="SDTM"))
+            db.session.commit()
+        sheets = {"SDTM_LB": [{"vlm_group_id": "C12345.SDTM", "bc_id": "C12345", "sdtm_variable": "LBTESTCD"}]}
+        file_obj, filename = _xlsx_file(sheets)
+        client.post(
+            "/ingestion/upload",
+            data={"file": (file_obj, filename)},
+            content_type="multipart/form-data",
+        )
+        with app.app_context():
+            ir = IngestionRecord.query.filter_by(record_type="specialization").first()
+            assert ir.duplicate is True
+
+
+class TestApproveSpecialization:
+    def _upload_spec(self, client, bc_id="C001"):
+        sheets = {"SDTM_LB": [{"vlm_group_id": f"{bc_id}.SDTM", "bc_id": bc_id, "short_name": "Test Spec", "sdtm_variable": "LBTESTCD", "data_type": "string"}]}
+        file_obj, filename = _xlsx_file(sheets)
+        client.post(
+            "/ingestion/upload",
+            data={"file": (file_obj, filename)},
+            content_type="multipart/form-data",
+        )
+
+    def test_approve_creates_specialization_when_bc_exists(self, client, app, sample_bc):
+        self._upload_spec(client, bc_id=sample_bc)
+        with app.app_context():
+            ir = IngestionRecord.query.filter_by(record_type="specialization").first()
+            record_id = ir.id
+        client.post(f"/ingestion/approve/{record_id}")
+        with app.app_context():
+            spec = db.session.get(DatasetSpecialization, f"{sample_bc}.SDTM")
+            assert spec is not None
+            assert spec.bc_id == sample_bc
+            assert len(spec.variables) == 1
+            ir = db.session.get(IngestionRecord, record_id)
+            assert ir.status == "approved"
+            log = AuditLog.query.filter_by(entity_type="DatasetSpecialization", entity_id=f"{sample_bc}.SDTM").first()
+            assert log is not None
+
+    def test_approve_leaves_pending_when_bc_missing(self, client, app):
+        self._upload_spec(client, bc_id="C_NOPE")
+        with app.app_context():
+            ir = IngestionRecord.query.filter_by(record_type="specialization").first()
+            record_id = ir.id
+        client.post(f"/ingestion/approve/{record_id}")
+        with app.app_context():
+            assert db.session.get(DatasetSpecialization, "C_NOPE.SDTM") is None
+            ir = db.session.get(IngestionRecord, record_id)
+            assert ir.status == "pending"
+
+
+class TestApproveAllSpecializations:
+    def test_bc_and_spec_from_same_upload_both_resolve(self, client, app):
+        sheets = {
+            "BC_LB": [{"bc_id": "C777", "short_name": "HR", "definition": "Heart Rate"}],
+            "SDTM_LB": [{"vlm_group_id": "C777.SDTM", "bc_id": "C777", "short_name": "HR Spec", "sdtm_variable": "LBTESTCD"}],
+        }
+        file_obj, filename = _xlsx_file(sheets)
+        with client.session_transaction() as sess:
+            sess["ingestion_key"] = "testkey"
+        client.post(
+            "/ingestion/upload",
+            data={"file": (file_obj, filename)},
+            content_type="multipart/form-data",
+        )
+        client.post("/ingestion/approve_all")
+        with app.app_context():
+            assert db.session.get(BiomedicalConcept, "C777") is not None
+            spec = db.session.get(DatasetSpecialization, "C777.SDTM")
+            assert spec is not None
+            assert spec.bc_id == "C777"

@@ -4,6 +4,7 @@ from flask import Blueprint, Response, flash, jsonify, redirect, render_template
 
 from extensions import db
 from models.bc import BiomedicalConcept
+from models.specialization import DatasetSpecialization
 from services import governance_service
 from services.export import export_governance_xlsx
 from services.governance_service import STATUS_ORDER
@@ -16,11 +17,14 @@ bp = Blueprint("governance", __name__)
 @bp.route("/board")
 def board():
     bcs_by_status = {}
+    specs_by_status = {}
     for status in STATUS_ORDER:
         bcs_by_status[status] = BiomedicalConcept.query.filter_by(status=status).order_by(BiomedicalConcept.updated_at.desc()).all()
+        specs_by_status[status] = DatasetSpecialization.query.filter_by(status=status).order_by(DatasetSpecialization.updated_at.desc()).all()
     return render_template(
         "governance.html",
         columns=bcs_by_status,
+        spec_columns=specs_by_status,
         status_order=STATUS_ORDER,
         page_title="Governance Board",
     )
@@ -36,8 +40,9 @@ def export():
     safe_filename = f"{base}.xlsx"
 
     bcs = BiomedicalConcept.query.filter_by(status="published").all()
+    specs = DatasetSpecialization.query.filter_by(status="published").all()
 
-    buf = export_governance_xlsx(bcs)
+    buf = export_governance_xlsx(bcs, specs)
     return Response(
         buf,
         mimetype="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
@@ -64,5 +69,28 @@ def reject_bc(bc_id):
     result = governance_service.reject_bc(bc_id, actor="user", comment=request.form.get("comment", ""))
     if request.headers.get("X-Requested-With") == "XMLHttpRequest":
         return jsonify({"status": "provisional", "bc_id": bc_id})
+    flash(f'{result["short_name"]} rejected and returned to provisional', "warning")
+    return redirect(url_for("governance.board"))
+
+
+@bp.route("/spec/advance/<vlm_group_id>", methods=["POST"])
+def advance_spec(vlm_group_id):
+    db.get_or_404(DatasetSpecialization, vlm_group_id)
+    result = governance_service.advance_specialization_governance(vlm_group_id, actor="user", comment=request.form.get("comment", ""))
+    if result["advanced"]:
+        if request.headers.get("X-Requested-With") == "XMLHttpRequest":
+            return jsonify({"status": result["status"], "vlm_group_id": vlm_group_id})
+        flash(f'{result["short_name"]} advanced to {result["status"]}', "success")
+    else:
+        flash(f'{result["short_name"]} is already published', "info")
+    return redirect(url_for("governance.board"))
+
+
+@bp.route("/spec/reject/<vlm_group_id>", methods=["POST"])
+def reject_spec(vlm_group_id):
+    db.get_or_404(DatasetSpecialization, vlm_group_id)
+    result = governance_service.reject_specialization(vlm_group_id, actor="user", comment=request.form.get("comment", ""))
+    if request.headers.get("X-Requested-With") == "XMLHttpRequest":
+        return jsonify({"status": "provisional", "vlm_group_id": vlm_group_id})
     flash(f'{result["short_name"]} rejected and returned to provisional', "warning")
     return redirect(url_for("governance.board"))

@@ -51,12 +51,16 @@
 </div>
 
 {% if queue %}
-<!-- Parsed results table -->
+{% set bc_queue = queue | selectattr('record_type', 'ne', 'specialization') | list %}
+{% set spec_queue = queue | selectattr('record_type', 'equalto', 'specialization') | list %}
+
+<!-- Parsed BC results table -->
+{% if bc_queue %}
 <div class="bc-card">
   <div class="bc-card-header">
     <h2 class="bc-card-title">
-      Parsed Results
-      <span class="bc-badge bc-badge-new ms-2">{{ queue | length }} records</span>
+      Parsed Biomedical Concepts
+      <span class="bc-badge bc-badge-new ms-2">{{ bc_queue | length }} records</span>
     </h2>
     <form method="POST" action="{{ url_for('ingestion.approve_all') }}" class="form-inline">
       <button type="submit" class="btn btn-sm btn-success">
@@ -80,7 +84,7 @@
         </tr>
       </thead>
       <tbody>
-        {% for ir in queue %}
+        {% for ir in bc_queue %}
         {% set m = ir.mapped %}
         <tr>
           <td class="fw-medium">{{ m.short_name or '—' }}</td>
@@ -135,6 +139,93 @@
     </table>
   </div>
 </div>
+{% endif %}
+
+<!-- Parsed Dataset Specialization results table -->
+{% if spec_queue %}
+<div class="bc-card">
+  <div class="bc-card-header">
+    <h2 class="bc-card-title">
+      Parsed Dataset Specializations
+      <span class="bc-badge bc-badge-new ms-2">{{ spec_queue | length }} records</span>
+    </h2>
+    {% if not bc_queue %}
+    <form method="POST" action="{{ url_for('ingestion.approve_all') }}" class="form-inline">
+      <button type="submit" class="btn btn-sm btn-success">
+        <i class="bi bi-check-all"></i> Approve All Valid
+      </button>
+    </form>
+    {% endif %}
+  </div>
+  <p class="small text-secondary px-3">
+    A specialization can only be approved once its Biomedical Concept exists locally —
+    approve the matching BC first if it's still pending above.
+  </p>
+
+  <div class="table-responsive">
+    <table class="bc-table" aria-label="Parsed Dataset Specialization results">
+      <thead>
+        <tr>
+          <th scope="col">VLM Group ID</th>
+          <th scope="col">BC ID</th>
+          <th scope="col">Domain</th>
+          <th scope="col">Short Name</th>
+          <th scope="col">Sheet</th>
+          <th scope="col">Variables</th>
+          <th scope="col">Validation</th>
+          <th scope="col">Dup?</th>
+          <th scope="col">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for ir in spec_queue %}
+        {% set m = ir.mapped %}
+        <tr>
+          <td><code>{{ m.vlm_group_id or '—' }}</code></td>
+          <td><code>{{ m.bc_id or '—' }}</code></td>
+          <td>{{ m.domain or '—' }}</td>
+          <td class="fw-medium">{{ m.short_name or '—' }}</td>
+          <td><small class="text-secondary">{{ ir.source_sheet or '—' }}</small></td>
+          <td class="text-secondary small">{{ ir.decs | length }} variable{{ 's' if ir.decs | length != 1 else '' }}</td>
+          <td>
+            {% if ir.errors %}
+              <span class="bc-badge bc-badge-conflict" title="{{ ir.errors | join(', ') }}">
+                <i class="bi bi-x-circle"></i> {{ ir.errors | length }} error(s)
+              </span>
+            {% else %}
+              <span class="bc-badge bc-badge-published">
+                <i class="bi bi-check-circle"></i> Valid
+              </span>
+            {% endif %}
+          </td>
+          <td>
+            {% if ir.duplicate %}
+              <span class="bc-badge bc-badge-provisional">Dup</span>
+            {% else %}
+              <span class="text-secondary">—</span>
+            {% endif %}
+          </td>
+          <td>
+            <div class="d-flex gap-1">
+              <form method="POST" action="{{ url_for('ingestion.approve', record_id=ir.id) }}" class="form-inline">
+                <button type="submit" class="btn btn-sm btn-outline-success">
+                  <i class="bi bi-check"></i> Approve
+                </button>
+              </form>
+              <form method="POST" action="{{ url_for('ingestion.reject', record_id=ir.id) }}" class="form-inline">
+                <button type="submit" class="btn btn-sm btn-outline-danger">
+                  <i class="bi bi-x"></i> Reject
+                </button>
+              </form>
+            </div>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endif %}
 {% endif %}
 
 {% endblock %}

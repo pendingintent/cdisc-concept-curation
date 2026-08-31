@@ -50,6 +50,8 @@ class TestDispatch:
             "submit_bc_for_review",
             "advance_governance",
             "reject_bc",
+            "advance_specialization_governance",
+            "reject_specialization",
         }
         assert {tool.name for tool in mcp_srv._TOOLS} == expected
 
@@ -106,6 +108,7 @@ class TestGetBc:
         assert result["bc_id"] == sample_bc
         assert result["decs"][0]["dec_label"] == "Result"
         assert result["specializations"][0]["vlm_group_id"] == f"{sample_bc}.SDTM"
+        assert result["specializations"][0]["status"] == "provisional"
         assert result["governance_records"][0]["action"] == "advanced"
 
 
@@ -299,12 +302,53 @@ class TestGovernanceWrites:
             assert rec.actor == "mcp"
         assert len(_audit_rows(app, "rejected")) == 1
 
+    def test_submit_spec_then_advance_to_published(self, app, sample_spec):
+        first = _dispatch("advance_specialization_governance", {"vlm_group_id": sample_spec, "comment": "looks good"})
+        assert first == {"vlm_group_id": sample_spec, "short_name": "Test Spec", "status": "sme_review", "advanced": True}
+
+        second = _dispatch("advance_specialization_governance", {"vlm_group_id": sample_spec})
+        assert second["status"] == "cdisc_approval"
+
+        third = _dispatch("advance_specialization_governance", {"vlm_group_id": sample_spec})
+        assert third["status"] == "published"
+
+        fourth = _dispatch("advance_specialization_governance", {"vlm_group_id": sample_spec})
+        assert fourth["advanced"] is False
+        assert fourth["status"] == "published"
+
+        with app.app_context():
+            recs = GovernanceRecord.query.filter_by(vlm_group_id=sample_spec).order_by(GovernanceRecord.id).all()
+            assert [r.action for r in recs] == ["advanced", "advanced", "advanced"]
+            assert recs[0].actor == "mcp"
+            assert recs[0].comment == "looks good"
+        assert len(_audit_rows(app, "status_changed")) == 3
+
+    def test_reject_spec_returns_to_provisional(self, app, sample_spec):
+        _dispatch("advance_specialization_governance", {"vlm_group_id": sample_spec})
+        result = _dispatch("reject_specialization", {"vlm_group_id": sample_spec, "comment": "needs work"})
+        assert result["status"] == "provisional"
+        with app.app_context():
+            rec = GovernanceRecord.query.filter_by(vlm_group_id=sample_spec, action="rejected").one()
+            assert rec.stage == 0
+            assert rec.actor == "mcp"
+        assert len(_audit_rows(app, "rejected")) == 1
+
+    def test_advance_spec_missing_id_raises(self):
+        with pytest.raises(ValueError, match="vlm_group_id is required"):
+            _dispatch("advance_specialization_governance", {})
+
+    def test_advance_spec_missing_spec_raises(self):
+        with pytest.raises(ValueError, match="not found"):
+            _dispatch("advance_specialization_governance", {"vlm_group_id": "NOPE"})
+
 
 class TestReviewQueue:
-    def test_queue_summary(self, app, sample_bc):
+    def test_queue_summary(self, app, sample_bc, sample_spec):
         with app.app_context():
             bc = db.session.get(BiomedicalConcept, sample_bc)
             bc.status = "sme_review"
+            spec = db.session.get(DatasetSpecialization, sample_spec)
+            spec.status = "sme_review"
             db.session.add(IngestionRecord(session_key="s", mapped={"bc_id": "X"}, status="pending"))
             db.session.add(IngestionRecord(session_key="s", mapped={"bc_id": "Y"}, status="approved"))
             db.session.commit()
@@ -313,3 +357,5 @@ class TestReviewQueue:
         assert result["sme_review"][0]["bc_id"] == sample_bc
         assert result["cdisc_approval"] == []
         assert result["pending_ingestion_records"] == 1
+        assert result["specializations"]["sme_review"][0]["vlm_group_id"] == sample_spec
+        assert result["specializations"]["cdisc_approval"] == []
