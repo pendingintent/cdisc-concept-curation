@@ -29,7 +29,7 @@ FIELD_MAP = {
 
 # Spec-level fields (one value per specialization, taken from the first row
 # of its vlm_group_id group).
-_SPEC_HEADER_FIELDS = ("vlm_group_id", "bc_id", "domain", "short_name", "package_date")
+SPEC_HEADER_FIELDS = ("vlm_group_id", "bc_id", "domain", "short_name", "package_date")
 
 # Per-variable fields (one row per SDTM VLM variable, columns I-AF of the
 # SDTM_LB/SDTM_VS worksheets) — every one of these is a real worksheet
@@ -249,7 +249,7 @@ def _group_by_spec(rows, sheet=None):
         if vlm_group_id not in groups:
             groups[vlm_group_id] = {"mapped": {}, "confidences": {}, "variables": [], "source_sheet": sheet}
         g = groups[vlm_group_id]
-        for key in _SPEC_HEADER_FIELDS:
+        for key in SPEC_HEADER_FIELDS:
             if mapped.get(key) and not g["mapped"].get(key):
                 g["mapped"][key] = mapped[key]
         g["confidences"].update(confs)

@@ -62,6 +62,17 @@ class TestCreate:
             assert spec.domain == "CDASH"
             assert spec.variables == []
 
+    def test_create_defaults_to_provisional_status(self, client, app, sample_bc):
+        patcher, _ = _patch_client()
+        with patcher:
+            client.post(
+                "/specializations/",
+                data={"vlm_group_id": "VLM2", "bc_id": sample_bc, "domain": "CDASH", "short_name": "Manual Spec"},
+            )
+        with app.app_context():
+            spec = db.session.get(DatasetSpecialization, "VLM2")
+            assert spec.status == "provisional"
+
     def test_create_requires_ids(self, client, app):
         patcher, _ = _patch_client()
         with patcher:

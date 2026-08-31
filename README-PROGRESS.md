@@ -16,7 +16,7 @@ CDISC Biomedical Concept Curation — a Flask/Jinja web application for curating
 | NCIt Mapping               | ✅ Complete    | EVS REST API search + mapping resolution                             |
 | LOINC API Explorer         | ✅ Complete    | LOINC search + BC metadata integration, `routes/loinc.py`            |
 | Dataset Specializations    | ✅ Complete    | Full CRUD, BC selection (local + Library, auto-stub), bulk import via ingestion |
-| Governance Workflow        | ✅ Complete    | 4-stage Kanban board                                                 |
+| Governance Workflow        | ✅ Complete    | 4-stage Kanban board, covers both BCs and Dataset Specializations    |
 | Audit Trail                | ✅ Complete    | Filterable audit log                                                 |
 | CDISC Library API Client   | ✅ Complete    | `services/cdisc_api.py`                                              |
 | NCIt EVS API Client        | ✅ Complete    | `services/ncit_api.py`                                               |
@@ -27,6 +27,36 @@ CDISC Biomedical Concept Curation — a Flask/Jinja web application for curating
 | Test Suite                 | 🚧 In Progress | BC routes, LOINC, NCIt coverage added                                |
 
 ## Daily Changelog
+
+### 2026-08-31
+
+#### Extended the Governance Workflow to Dataset Specializations
+
+- Dataset Specializations previously had no governance lifecycle at all — no `status` field, no `GovernanceRecord` linkage, no Kanban presence — while BCs had the full 4-stage `provisional → sme_review → cdisc_approval → published` workflow. Brought specializations to parity so they're tracked, advanced, and rejected the same way.
+- New Alembic migration `df33730cf8d2` — `dataset_specializations` gains `status` (default `provisional`) and `updated_at`; `governance_records.bc_id` is now nullable and a new `vlm_group_id` FK (→ `dataset_specializations.vlm_group_id`) was added, with a check constraint (`ck_governance_records_one_entity`) enforcing exactly one of `bc_id`/`vlm_group_id` is set on every row. Hit and fixed an Alembic SQLite batch-mode gotcha along the way (`create_foreign_key(None, ...)` fails with "Constraint must have a name" during a table rebuild — needs an explicit name).
+- `services/governance_service.py` — refactored `advance_governance`/`reject_bc` into shared `_advance()`/`_reject()` helpers generic over either entity type (both `BiomedicalConcept` and `DatasetSpecialization` expose `.status`/`.short_name`/`.updated_at`), then added `advance_specialization_governance()`/`reject_specialization()` on top; existing BC function signatures/return shapes unchanged.
+- `routes/governance.py` — new `POST /governance/spec/advance/<vlm_group_id>` and `POST /governance/spec/reject/<vlm_group_id>`; `board()` now also queries specializations by stage; `export()` now pulls published specializations too.
+- `templates/governance.html` — added a "Biomedical Concepts" / "Dataset Specializations" Bootstrap nav-tab toggle, each with its own 4-column Kanban board; reused the existing status-based CSS classes (`bc-badge-*`, `kanban-header-*`) since they were already generic rather than BC-specific, so no new CSS was needed. `templates/specializations.html` — added a Status badge column to the specializations list.
+- `static/js/main.js` — generalized the Kanban advance/reject click handlers to branch on `data-vlm-group-id` vs `data-bc-id` and POST to the matching endpoint, additive to the existing BC button markup.
+- `mcp_server/server.py` — added `advance_specialization_governance`/`reject_specialization` tools (parity with `advance_governance`/`reject_bc`); `list_review_queue` now includes a `specializations` key; `get_bc`'s specialization dicts now include `status`.
+- `services/export.py` — `export_governance_xlsx()` gained an optional `spec_objects` param that adds specialization worksheet(s) when given; backward compatible (defaults to `None`). (Sheet shape corrected below same day — see "Made the Governance Export Round-Trip Through the Ingestion Importer".)
+- Extended `tests/test_governance_routes.py` (new `TestSpecAdvance`/`TestSpecReject`/`TestGovernanceRecordOneEntityConstraint` classes), `tests/test_mcp_server.py`, `tests/test_specializations_routes.py`, and added a `sample_spec` fixture to `tests/conftest.py`; 312 tests passing, isort/black/flake8 clean ✅
+- Verified end-to-end against the live dev server: created a specialization, advanced it through all 4 stages and rejected it via the new routes, confirmed the `ck_governance_records_one_entity` constraint actually rejects both-null/both-set rows, and confirmed the governance XLSX export contains both worksheets.
+
+#### Fixed the Governance Board Kanban Tab Resetting on Every Advance/Reject
+
+- Reported bug: clicking Advance/Reject while on the "Dataset Specializations" tab bounced the user back to the "Biomedical Concepts" tab. Cause: the click handlers call `location.reload()` on success, and a fresh page load always renders the first Bootstrap tab as active — nothing remembered which tab had been selected.
+- `static/js/main.js` — added `initGovernanceTabs()`: on `shown.bs.tab`, the active tab's `data-bs-target` is written into the URL hash via `history.replaceState` (no extra navigation); on page load, a matching hash reactivates that tab via Bootstrap's Tab API before anything else runs. Since `location.reload()` reloads the same URL (hash included), the tab now survives the reload.
+- No Python changes; verified the rendered `data-bs-target`/hash wiring matches and the file passes `node --check`. Not click-tested in an actual browser this session (Chrome extension not installed) — asked the user to confirm.
+
+#### Made the Governance Export Round-Trip Through the Ingestion Importer
+
+- Reported bug: the Dataset Specializations sheet added to the governance XLSX export didn't match what `/ingestion/upload` expects, so an exported file couldn't be re-imported. The first cut had written a single summary sheet named "Dataset Specializations" with 7 rollup columns (`vlm_group_id, bc_id, bc_short_name, domain, short_name, status, variable_count`) — nothing like the real per-domain, per-variable worksheet shape `services/ingestion.py` parses.
+- Inspected the real reference workbook (`files/BC Examples.xlsx`) to confirm the actual expected shape: one worksheet per domain named `SDTM_<domain>` (e.g. `SDTM_LB`, `SDTM_VS` — the `SDTM_`/`CDASH_` sheet-name prefix is what `_detect_record_type()` keys off), header row = `vlm_group_id, bc_id, domain, short_name, package_date` followed by all 24 `VARIABLE_FIELDS` in their exact snake_case worksheet-column form, one row per SDTM VLM variable with the spec-level fields repeated on every row (same repeat-per-child-row pattern the `BC_LB` sheet already uses for DECs).
+- Promoted `services/ingestion._SPEC_HEADER_FIELDS` to a public `SPEC_HEADER_FIELDS` (now needed by `services/export.py` too) and rewrote `export_governance_xlsx()`'s specialization branch to group `spec_objects` by `domain`, create one `SDTM_<domain>` sheet per group, and emit rows in the importer's exact shape (a specialization with zero variables still emits one header-only row so it round-trips instead of silently disappearing).
+- Added `TestExportGovernanceXlsxSpecializations` to `tests/test_export_service.py`, including a round-trip test that feeds the exported `BytesIO` straight into `services.ingestion.parse_xlsx()` and asserts the resulting record matches the original; 318 tests passing, isort/black/flake8 clean ✅
+- Verified against the live dev server with the real HTTP path end-to-end: created a specialization with a variable via the UI, advanced it to published, downloaded `/governance/export`, and re-uploaded that exact file through `/ingestion/upload` — it parsed back out as a `Dataset Specialization` ingestion record with the same `vlm_group_id`/`bc_id`/`domain`/variables.
+- **Follow-up same day**: the header row above was importer-parseable but not byte-for-byte identical to the reference file — column order was wrong (`vlm_group_id, bc_id, domain, short_name, package_date, ...`) and it was missing 3 real columns the reference sheet has (`sdtmig_start_version`, `sdtmig_end_version`, `vlm_source`) that the model doesn't track but the importer still expects to see as headers. Read `files/BC Examples.xlsx`'s `SDTM_LB`/`SDTM_VS` sheets directly to get the exact column order, added `services/export.py:SPEC_SHEET_HEADER_FIELDS` matching it exactly (the 3 untracked columns are exported blank rather than omitted), and switched the test to assert the literal reference header list instead of deriving it from the same constant the implementation uses. Verified with a direct `openpyxl` diff between the reference file's header row and a live export's — exact match.
 
 ### 2026-08-28
 

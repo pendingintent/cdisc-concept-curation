@@ -6,6 +6,7 @@ from models.audit import AuditLog  # noqa: F401  (registers table metadata)
 from models.bc import BiomedicalConcept, DataElementConcept  # noqa: F401
 from models.governance import GovernanceRecord  # noqa: F401
 from models.ingestion import IngestionRecord  # noqa: F401
+from models.specialization import DatasetSpecialization  # noqa: F401
 
 
 class TestConfig:
@@ -66,3 +67,19 @@ def sample_bc(app):
         _db.session.add(bc)
         _db.session.commit()
         return bc.bc_id  # return PK so tests can re-query within their own context
+
+
+@pytest.fixture()
+def sample_spec(app, sample_bc):
+    """A minimal DatasetSpecialization persisted to the test DB, linked to sample_bc."""
+    with app.app_context():
+        spec = DatasetSpecialization(
+            vlm_group_id="C12345.SDTM",
+            bc_id=sample_bc,
+            domain="VS",
+            short_name="Test Spec",
+            status="provisional",
+        )
+        _db.session.add(spec)
+        _db.session.commit()
+        return spec.vlm_group_id  # return PK so tests can re-query within their own context

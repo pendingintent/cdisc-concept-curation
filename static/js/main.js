@@ -327,6 +327,28 @@
   }
 
   /* ─────────────────────────────────────────────
+     Governance board: keep the active BC/Specialization
+     tab in the URL hash so a post-action reload (and
+     any future revisit of the link) restores it instead
+     of always landing back on the first tab.
+  ───────────────────────────────────────────── */
+  function initGovernanceTabs() {
+    const tabButtons = document.querySelectorAll('#governanceTabs button[data-bs-toggle="tab"]');
+    if (!tabButtons.length) return;
+
+    const hashTarget = location.hash && document.querySelector(`#governanceTabs button[data-bs-target="${location.hash}"]`);
+    if (hashTarget && window.bootstrap) {
+      new bootstrap.Tab(hashTarget).show();
+    }
+
+    tabButtons.forEach(function (btn) {
+      btn.addEventListener('shown.bs.tab', function (e) {
+        history.replaceState(null, '', e.target.getAttribute('data-bs-target'));
+      });
+    });
+  }
+
+  /* ─────────────────────────────────────────────
      Kanban: advance / reject via fetch
   ───────────────────────────────────────────── */
   function initKanban() {
@@ -335,15 +357,19 @@
       btn.addEventListener('click', async function (e) {
         e.stopPropagation();
         const bcId = btn.dataset.bcId;
-        if (!bcId) return;
+        const vlmGroupId = btn.dataset.vlmGroupId;
+        if (!bcId && !vlmGroupId) return;
+        const url = vlmGroupId
+          ? `/governance/spec/advance/${encodeURIComponent(vlmGroupId)}`
+          : `/governance/advance/${encodeURIComponent(bcId)}`;
 
         btn.disabled = true;
         try {
-          const resp = await postJson(`/governance/advance/${encodeURIComponent(bcId)}`);
+          const resp = await postJson(url);
           if (resp.ok) {
             location.reload();
           } else {
-            showInlineToast('Could not advance BC — check the audit trail.', 'error');
+            showInlineToast('Could not advance — check the audit trail.', 'error');
             btn.disabled = false;
           }
         } catch (err) {
@@ -359,17 +385,21 @@
       btn.addEventListener('click', async function (e) {
         e.stopPropagation();
         const bcId = btn.dataset.bcId;
-        if (!bcId) return;
+        const vlmGroupId = btn.dataset.vlmGroupId;
+        if (!bcId && !vlmGroupId) return;
+        const url = vlmGroupId
+          ? `/governance/spec/reject/${encodeURIComponent(vlmGroupId)}`
+          : `/governance/reject/${encodeURIComponent(bcId)}`;
 
-        if (!confirm('Reject this BC? This action will be recorded in the audit trail.')) return;
+        if (!confirm('Reject this item? This action will be recorded in the audit trail.')) return;
 
         btn.disabled = true;
         try {
-          const resp = await postJson(`/governance/reject/${encodeURIComponent(bcId)}`);
+          const resp = await postJson(url);
           if (resp.ok) {
             location.reload();
           } else {
-            showInlineToast('Could not reject BC — check the audit trail.', 'error');
+            showInlineToast('Could not reject — check the audit trail.', 'error');
             btn.disabled = false;
           }
         } catch (err) {
@@ -810,6 +840,7 @@
     initNcitLookup();
     initLoincLookup();
     initDecTable();
+    initGovernanceTabs();
     initKanban();
     initAuditDiff();
     initNcitSearch();

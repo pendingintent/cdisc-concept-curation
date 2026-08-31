@@ -170,6 +170,7 @@
           <th scope="col">Domain</th>
           <th scope="col">Short Name</th>
           <th scope="col">Variables</th>
+          <th scope="col">Status</th>
           <th scope="col">Actions</th>
         </tr>
       </thead>
@@ -189,6 +190,12 @@
           <td class="text-secondary small">
             {% set vcount = spec.variables | length %}
             {{ vcount }} variable{{ 's' if vcount != 1 else '' }}
+          </td>
+          <td>
+            {% set status_labels = {"provisional": "Provisional", "sme_review": "SME Review", "cdisc_approval": "CDISC Approval", "published": "Published"} %}
+            <span class="bc-badge bc-badge-{{ (spec.status or 'provisional') | replace('_', '-') }}">
+              {{ status_labels.get(spec.status, (spec.status or 'provisional') | replace('_', ' ') | title) }}
+            </span>
           </td>
           <td>
             <div class="d-flex gap-1">
