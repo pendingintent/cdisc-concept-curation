@@ -2,7 +2,7 @@
 
 from extensions import db
 from models.audit import AuditLog
-from models.bc import BiomedicalConcept
+from models.bc import RESULT_SCALES, BiomedicalConcept, partition_result_scales, split_result_scales
 from models.ingestion import IngestionRecord
 
 
@@ -114,3 +114,38 @@ class TestBiomedicalConceptToDict:
             db.session.add(bc)
             db.session.commit()
             assert bc.status == "provisional"
+
+
+class TestResultScales:
+    def test_result_scales_alphabetically_sorted(self):
+        assert RESULT_SCALES == tuple(sorted(RESULT_SCALES))
+
+    def test_result_scales_contains_expected_values(self):
+        assert set(RESULT_SCALES) == {"Quantitative", "Ordinal", "Nominal", "Narrative", "Temporal"}
+
+    def test_split_result_scales_empty(self):
+        assert split_result_scales("") == []
+        assert split_result_scales(None) == []
+
+    def test_split_result_scales_single(self):
+        assert split_result_scales("Quantitative") == ["Quantitative"]
+
+    def test_split_result_scales_multiple_trims_whitespace(self):
+        assert split_result_scales("Quantitative; Ordinal ;Nominal") == ["Quantitative", "Ordinal", "Nominal"]
+
+    def test_split_result_scales_ignores_blank_segments(self):
+        assert split_result_scales("Quantitative;; Ordinal") == ["Quantitative", "Ordinal"]
+
+    def test_partition_result_scales_all_supported(self):
+        supported, unsupported = partition_result_scales("Quantitative; Ordinal")
+        assert supported == ["Quantitative", "Ordinal"]
+        assert unsupported == []
+
+    def test_partition_result_scales_mixed(self):
+        supported, unsupported = partition_result_scales("Quantitative; Qualitative")
+        assert supported == ["Quantitative"]
+        assert unsupported == ["Qualitative"]
+
+    def test_partition_result_scales_empty(self):
+        assert partition_result_scales("") == ([], [])
+        assert partition_result_scales(None) == ([], [])

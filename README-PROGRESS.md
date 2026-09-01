@@ -30,6 +30,16 @@ CDISC Biomedical Concept Curation — a Flask/Jinja web application for curating
 
 ### 2026-08-31
 
+#### Constrained Result Scales to a Fixed Checklist on the BC Create/Edit Form
+
+- The BC create/edit form previously took `result_scales` as free text (`e.g. Quantitative`), so nothing stopped a curator from typing an arbitrary value. Replaced it with a checkbox group for the 5 allowed values (`Narrative, Nominal, Ordinal, Quantitative, Temporal`, alphabetically sorted), and made spreadsheet ingestion flag any value outside that list instead of silently accepting it.
+- `models/bc.py` — new `RESULT_SCALES` tuple (the 5 allowed values) and `split_result_scales()` helper to parse the semicolon-separated string stored on the model.
+- `templates/bc_detail.html` — `result_scales` is now 5 checkboxes instead of a text input; any existing value not in `RESULT_SCALES` (e.g. a legacy/imported value like "Continuous") is rendered separately below in red with a "Not supported" label, and preserved via hidden inputs on save rather than silently dropped.
+- `routes/bc.py` — `create()`/`edit()` join the checked checkbox values back into the semicolon-separated string `bc_service` expects. `edit()` uses a hidden `result_scales_submitted` marker to distinguish "all checkboxes unchecked" (clear the field) from "this field wasn't part of the request" (preserve the existing value) — plain HTML checkboxes submit nothing at all when unchecked, so without the marker those two cases are indistinguishable.
+- `services/ingestion.py` — `validate_bc()` now flags any spreadsheet-imported `result_scales` value outside `RESULT_SCALES` as a validation error, surfaced through the existing red error badge on the `/ingestion` review screen (no new UI needed there).
+- Wrote tests first (TDD): extended `tests/test_models.py` (`RESULT_SCALES`/`split_result_scales`), `tests/test_ingestion_service.py` (unsupported/mixed scale validation), and `tests/test_bc_routes.py` (checkbox round-trip, unsupported-value preservation and red display); 337 tests passing, isort/black/flake8 clean ✅
+- Not yet verified in a live browser session — implementation and full test suite only.
+
 #### Extended the Governance Workflow to Dataset Specializations
 
 - Dataset Specializations previously had no governance lifecycle at all — no `status` field, no `GovernanceRecord` linkage, no Kanban presence — while BCs had the full 4-stage `provisional → sme_review → cdisc_approval → published` workflow. Brought specializations to parity so they're tracked, advanced, and rejected the same way.

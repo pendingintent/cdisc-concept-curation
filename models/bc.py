@@ -2,6 +2,24 @@ from datetime import datetime, timezone
 
 from extensions import db
 
+# Alphabetically sorted result scale options a BC's result_scales field may
+# hold; anything else (e.g. a legacy spreadsheet value) is unsupported.
+RESULT_SCALES = ("Narrative", "Nominal", "Ordinal", "Quantitative", "Temporal")
+
+
+def split_result_scales(value):
+    """Split a semicolon-separated result_scales string into trimmed values."""
+    return [v.strip() for v in (value or "").split(";") if v.strip()]
+
+
+def partition_result_scales(value):
+    """Split a result_scales string into (supported, unsupported) lists,
+    e.g. from a legacy/spreadsheet value not in RESULT_SCALES."""
+    scales = split_result_scales(value)
+    supported = [s for s in scales if s in RESULT_SCALES]
+    unsupported = [s for s in scales if s not in RESULT_SCALES]
+    return supported, unsupported
+
 
 class BiomedicalConcept(db.Model):
     __tablename__ = "biomedical_concepts"

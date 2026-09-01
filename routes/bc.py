@@ -5,7 +5,7 @@ from datetime import datetime, timezone
 from flask import Blueprint, Response, flash, redirect, render_template, request, url_for
 
 from extensions import db
-from models.bc import BiomedicalConcept, DataElementConcept
+from models.bc import RESULT_SCALES, BiomedicalConcept, DataElementConcept, split_result_scales
 from models.governance import GovernanceRecord
 from services import bc_service
 from services.audit import log_change
@@ -17,6 +17,17 @@ from services.ncit_api import NCItApiClient
 logger = logging.getLogger(__name__)
 
 bp = Blueprint("bc", __name__)
+
+
+def _result_scale_context(bc):
+    """Split a BC's stored result_scales into (selected valid, unsupported) lists
+    for the checkbox form: unsupported values (e.g. from a spreadsheet import)
+    aren't in RESULT_SCALES and are surfaced separately for a red "not supported"
+    display rather than as a checkbox option."""
+    scales = split_result_scales(bc.result_scales if bc else None)
+    selected = [s for s in scales if s in RESULT_SCALES]
+    unsupported = [s for s in scales if s not in RESULT_SCALES]
+    return {"result_scale_options": RESULT_SCALES, "selected_result_scales": selected, "unsupported_result_scales": unsupported}
 
 
 @bp.route("/")
@@ -56,6 +67,7 @@ def new_bc():
         loinc_data={},
         ncit_data={},
         page_title="New Biomedical Concept",
+        **_result_scale_context(bc),
     )
 
 
@@ -148,6 +160,7 @@ def detail(bc_id):
         needs_ncit_fetch=not ncit_data and bool(bc.ncit_code),
         needs_loinc_fetch=not loinc_data and bool(bc.loinc_code),
         page_title=bc.short_name,
+        **_result_scale_context(bc),
     )
 
 
@@ -184,8 +197,10 @@ def fetch_metadata(bc_id):
 
 @bp.route("/", methods=["POST"])
 def create():
+    data = request.form.to_dict()
+    data["result_scales"] = "; ".join(request.form.getlist("result_scales"))
     try:
-        bc = bc_service.create_bc(request.form)
+        bc = bc_service.create_bc(data)
     except ValueError as e:
         flash(str(e), "danger")
         return redirect(url_for("bc.new_bc"))
@@ -197,7 +212,14 @@ def create():
 @bp.route("/<bc_id>/edit", methods=["POST"])
 def edit(bc_id):
     db.get_or_404(BiomedicalConcept, bc_id)
-    bc_service.update_bc(bc_id, request.form, actor="user")
+    data = request.form.to_dict()
+    # A checkbox group with everything unchecked submits no "result_scales" key
+    # at all, indistinguishable from the field being absent from the form
+    # entirely — the hidden "result_scales_submitted" marker (always present
+    # on the real edit form) disambiguates "clear it" from "leave it alone".
+    if "result_scales_submitted" in request.form:
+        data["result_scales"] = "; ".join(request.form.getlist("result_scales"))
+    bc_service.update_bc(bc_id, data, actor="user")
     bc_service.save_decs(bc_id, _decs_from_form(request.form))
     flash(f"BC {bc_id} updated", "success")
     return redirect(url_for("bc.detail", bc_id=bc_id))

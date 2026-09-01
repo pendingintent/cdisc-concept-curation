@@ -4,6 +4,8 @@ from difflib import SequenceMatcher
 
 import pandas as pd
 
+from models.bc import split_result_scales
+
 logger = logging.getLogger(__name__)
 
 # Canonical BC field names and known aliases for fuzzy field mapping
@@ -155,6 +157,11 @@ def validate_bc(bc_dict):
     ncit = bc_dict.get("ncit_code") or bc_dict.get("bc_id", "")
     if ncit and not ncit.upper().startswith("C"):
         errors.append(f"NCIt code should start with C (got: {ncit})")
+    # An unsupported result_scales value (e.g. from a spreadsheet) is
+    # deliberately not a blocking error here — it shouldn't sink an
+    # otherwise-valid BC. routes/ingestion.py filters it out at approval
+    # time and flashes a warning instead; the review queue highlights it
+    # via partition_result_scales.
     return errors
 
 
@@ -188,7 +195,7 @@ def _group_by_bc(rows, sheet=None):
         if not bc_id:
             continue
         if bc_id not in groups:
-            groups[bc_id] = {"mapped": {}, "confidences": {}, "decs": [], "source_sheet": sheet}
+            groups[bc_id] = {"mapped": {}, "confidences": {}, "decs": [], "source_sheet": sheet, "result_scales": []}
         g = groups[bc_id]
         if mapped.get("definition") and not g["mapped"].get("definition"):
             # Absorb BC-level fields from this row
@@ -210,12 +217,22 @@ def _group_by_bc(rows, sheet=None):
         if not g["mapped"]:
             g["mapped"].update(mapped)
             g["confidences"].update(confs)
+        # result_scales is unioned across every row for this BC rather than
+        # taking whichever row won the BC-level merge above: curation
+        # workbooks repeat it per DEC sub-row, and a value entered
+        # inconsistently on just one row (e.g. an unsupported scale) must
+        # still surface instead of being silently dropped.
+        for scale in split_result_scales(mapped.get("result_scales")):
+            if scale not in g["result_scales"]:
+                g["result_scales"].append(scale)
 
     results = []
     for bc_id, g in groups.items():
         mapped = g["mapped"]
         if not mapped.get("bc_id") and bc_id:
             mapped["bc_id"] = bc_id
+        if g["result_scales"]:
+            mapped["result_scales"] = "; ".join(g["result_scales"])
         errors = validate_bc(mapped)
         results.append(
             {

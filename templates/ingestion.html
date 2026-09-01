@@ -76,6 +76,7 @@
           <th scope="col">BC Name</th>
           <th scope="col">NCIt Code</th>
           <th scope="col">Categories</th>
+          <th scope="col">Result Scales</th>
           <th scope="col">Sheet</th>
           <th scope="col">Confidence</th>
           <th scope="col">Validation</th>
@@ -90,6 +91,20 @@
           <td class="fw-medium">{{ m.short_name or '—' }}</td>
           <td><code>{{ m.ncit_code or m.bc_id or '—' }}</code></td>
           <td>{{ m.bc_categories or '—' }}</td>
+          <td>
+            {% set scales = (m.result_scales or '').split(';') | map('trim') | reject('equalto', '') | list %}
+            {% if scales %}
+              {% for s in scales %}
+                {% if s in (ir.unsupported_result_scales or []) %}
+                  <span class="text-danger" title="Not supported">{{ s }} (not supported)</span>{% if not loop.last %}; {% endif %}
+                {% else %}
+                  {{ s }}{% if not loop.last %}; {% endif %}
+                {% endif %}
+              {% endfor %}
+            {% else %}
+              <span class="text-secondary">—</span>
+            {% endif %}
+          </td>
           <td><small class="text-secondary">{{ ir.source_sheet or '—' }}</small></td>
           <td>
             {% set conf = ir.avg_confidence %}
