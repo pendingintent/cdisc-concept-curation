@@ -28,6 +28,12 @@ CDISC Biomedical Concept Curation — a Flask/Jinja web application for curating
 
 ## Daily Changelog
 
+### 2026-09-01
+
+#### Reordered the Definition Section on the BC Detail Form
+
+- `templates/bc_detail.html` — moved the "Definition" `bc-card` block (textarea for `definition`) to appear right after the top summary section, ahead of the NCIt/LOINC panels; it previously sat lower on the page, after the LOINC results container. Template-only reorder, no field/logic changes.
+
 ### 2026-08-31
 
 #### Constrained Result Scales to a Fixed Checklist on the BC Create/Edit Form
