@@ -628,6 +628,101 @@
   }
 
   /* ─────────────────────────────────────────────
+     Notes panel: add / edit / resolve / flag
+  ───────────────────────────────────────────── */
+  function initNotesPanel() {
+    var panel = document.getElementById('notes-panel');
+    if (!panel) return;
+
+    function createUrl(entityKind, entityId) {
+      return entityKind === 'spec'
+        ? `/notes/spec/${encodeURIComponent(entityId)}`
+        : `/notes/bc/${encodeURIComponent(entityId)}`;
+    }
+
+    async function submitAndReload(url, body, btn) {
+      btn.disabled = true;
+      try {
+        const resp = await postJson(url, body);
+        if (resp.ok) {
+          location.reload();
+          return;
+        }
+        const data = await resp.json().catch(function () { return {}; });
+        showInlineToast(data.error || 'Could not save the note.', 'error');
+      } catch (err) {
+        showInlineToast('Network error — please try again.', 'error');
+        console.error('Notes panel error:', err);
+      }
+      btn.disabled = false;
+    }
+
+    var addBtn = panel.querySelector('.note-add-btn');
+    if (addBtn) {
+      addBtn.addEventListener('click', function () {
+        var textarea = document.getElementById('new-note-text');
+        var text = (textarea.value || '').trim();
+        if (!text) {
+          showInlineToast('Enter note text before saving.', 'error');
+          return;
+        }
+        var url = createUrl(addBtn.dataset.entityKind, addBtn.dataset.entityId);
+        submitAndReload(url, { text: text }, addBtn);
+      });
+    }
+
+    panel.addEventListener('click', function (e) {
+      var item = e.target.closest('.note-item');
+      if (!item) return;
+      var noteId = item.dataset.noteId;
+
+      var editBtn = e.target.closest('.note-edit-btn');
+      if (editBtn) {
+        item.querySelector('.note-text-display').classList.add('d-none');
+        item.querySelector('.note-text-edit').classList.remove('d-none');
+        editBtn.classList.add('d-none');
+        item.querySelector('.note-save-btn').classList.remove('d-none');
+        item.querySelector('.note-cancel-btn').classList.remove('d-none');
+        return;
+      }
+
+      var cancelBtn = e.target.closest('.note-cancel-btn');
+      if (cancelBtn) {
+        item.querySelector('.note-text-display').classList.remove('d-none');
+        item.querySelector('.note-text-edit').classList.add('d-none');
+        item.querySelector('.note-edit-btn').classList.remove('d-none');
+        cancelBtn.classList.add('d-none');
+        item.querySelector('.note-save-btn').classList.add('d-none');
+        return;
+      }
+
+      var saveBtn = e.target.closest('.note-save-btn');
+      if (saveBtn) {
+        var text = (item.querySelector('.note-text-edit').value || '').trim();
+        if (!text) {
+          showInlineToast('Note text cannot be empty.', 'error');
+          return;
+        }
+        submitAndReload(`/notes/${noteId}/update`, { text: text }, saveBtn);
+        return;
+      }
+
+      var resolveBtn = e.target.closest('.note-resolve-toggle-btn');
+      if (resolveBtn) {
+        var nextResolved = resolveBtn.dataset.resolved !== 'true';
+        submitAndReload(`/notes/${noteId}/resolve`, { resolved: nextResolved }, resolveBtn);
+        return;
+      }
+
+      var flagBtn = e.target.closest('.note-flag-toggle-btn');
+      if (flagBtn) {
+        var nextFlagged = flagBtn.dataset.flagged !== 'true';
+        submitAndReload(`/notes/${noteId}/flag`, { flagged: nextFlagged }, flagBtn);
+      }
+    });
+  }
+
+  /* ─────────────────────────────────────────────
      Audit trail: toggle before/after JSON panel
   ───────────────────────────────────────────── */
   function initAuditDiff() {
@@ -1059,6 +1154,7 @@
     initDecNcitLookup();
     initGovernanceTabs();
     initKanban();
+    initNotesPanel();
     initAuditDiff();
     initNcitSearch();
     initClickableRows();

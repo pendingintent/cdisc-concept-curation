@@ -1,9 +1,13 @@
 """Tests for model property serialization and helper methods."""
 
+import pytest
+from sqlalchemy.exc import IntegrityError
+
 from extensions import db
 from models.audit import AuditLog
 from models.bc import RESULT_SCALES, BiomedicalConcept, DataElementConcept, partition_result_scales, split_result_scales
 from models.ingestion import IngestionRecord
+from models.note import Note
 
 
 class TestAuditLogJsonProperties:
@@ -170,3 +174,48 @@ class TestResultScales:
     def test_partition_result_scales_empty(self):
         assert partition_result_scales("") == ([], [])
         assert partition_result_scales(None) == ([], [])
+
+
+class TestNoteModel:
+    def test_defaults(self, app, sample_bc):
+        with app.app_context():
+            note = Note(bc_id=sample_bc, text="Looks good")
+            db.session.add(note)
+            db.session.commit()
+            assert note.flagged is False
+            assert note.resolved is False
+            assert note.resolved_at is None
+            assert note.created_at is not None
+
+    def test_to_dict_contains_expected_keys(self, app, sample_bc):
+        with app.app_context():
+            note = Note(bc_id=sample_bc, text="Looks good", created_by="tester")
+            db.session.add(note)
+            db.session.commit()
+            d = note.to_dict()
+            for key in ("id", "bc_id", "vlm_group_id", "text", "flagged", "resolved", "resolved_at", "resolved_by", "created_by", "created_at", "updated_at"):
+                assert key in d
+            assert d["bc_id"] == sample_bc
+            assert d["text"] == "Looks good"
+
+    def test_scoped_to_specialization(self, app, sample_spec):
+        with app.app_context():
+            note = Note(vlm_group_id=sample_spec, text="Spec note")
+            db.session.add(note)
+            db.session.commit()
+            assert note.vlm_group_id == sample_spec
+            assert note.bc_id is None
+
+    def test_both_bc_id_and_vlm_group_id_set_raises(self, app, sample_bc, sample_spec):
+        with app.app_context():
+            db.session.add(Note(bc_id=sample_bc, vlm_group_id=sample_spec, text="x"))
+            with pytest.raises(IntegrityError):
+                db.session.commit()
+            db.session.rollback()
+
+    def test_neither_bc_id_nor_vlm_group_id_set_raises(self, app):
+        with app.app_context():
+            db.session.add(Note(text="x"))
+            with pytest.raises(IntegrityError):
+                db.session.commit()
+            db.session.rollback()

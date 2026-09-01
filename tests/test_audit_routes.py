@@ -111,3 +111,46 @@ class TestAuditExportJSON:
         r = client.get("/audit/?export=json&actor=alice")
         data = json.loads(r.get_data(as_text=True))
         assert {rec["entity_id"] for rec in data} == {"C001"}
+
+
+class TestNotesInAuditTrail:
+    """Notes are never exported in the governance spreadsheet (see
+    test_notes_routes.py), but every note action must appear here."""
+
+    def test_note_actions_appear_in_csv_export(self, client, app, sample_bc):
+        from services import notes_service
+
+        with app.app_context():
+            note = notes_service.create_bc_note(sample_bc, "audit me", actor="alice")
+            notes_service.set_resolved(note.id, True, actor="alice")
+            notes_service.set_flagged(note.id, True, actor="alice")
+
+        r = client.get("/audit/?export=csv&entity_type=Note")
+        rows = list(csv.reader(io.StringIO(r.get_data(as_text=True))))
+        header, *data_rows = rows
+        actions = [row[header.index("action")] for row in data_rows]
+        assert {"created", "resolved", "flagged"} <= set(actions)
+
+    def test_resolve_filter_matches_both_directions(self, client, app, sample_bc):
+        from services import notes_service
+
+        with app.app_context():
+            note = notes_service.create_bc_note(sample_bc, "audit me")
+            notes_service.set_resolved(note.id, True)
+            notes_service.set_resolved(note.id, False)
+
+        r = client.get("/audit/?action=resolve&entity_type=Note")
+        assert b"Resolved" in r.data
+        assert b"Unresolved" in r.data
+
+    def test_flag_filter_matches_both_directions(self, client, app, sample_bc):
+        from services import notes_service
+
+        with app.app_context():
+            note = notes_service.create_bc_note(sample_bc, "audit me")
+            notes_service.set_flagged(note.id, True)
+            notes_service.set_flagged(note.id, False)
+
+        r = client.get("/audit/?action=flag&entity_type=Note")
+        assert b"Flagged" in r.data
+        assert b"Unflagged" in r.data
