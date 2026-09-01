@@ -30,6 +30,12 @@ CDISC Biomedical Concept Curation — a Flask/Jinja web application for curating
 
 ### 2026-09-01
 
+#### Fixed Export CSV/JSON Buttons on the Audit Trail Page
+
+- The "Export CSV" and "Export JSON" buttons on `/audit/` appended `?export=csv`/`?export=json` to the URL, but `routes/audit.py`'s `index()` never read that parameter — it just re-rendered the same filtered HTML page, so clicking either button silently did nothing.
+- `routes/audit.py` — extracted the existing filter-building logic into `_filtered_query()`; `index()` now checks `request.args.get("export")` and, when set to `csv` or `json`, returns the full filtered (unpaginated) result set as a download via Flask `Response` (`text/csv` / `application/json`, `Content-Disposition: attachment; filename=audit_log.{csv,json}`), matching the existing export pattern in `routes/bc.py`. Added `_log_to_dict()` and `_export_csv()`/`_export_json()` helpers; `before_state`/`after_state` are JSON-serialized in the CSV and left as nested objects in the JSON export.
+- Wrote tests first (TDD): `TestAuditExportCSV` and `TestAuditExportJSON` in `tests/test_audit_routes.py` cover attachment headers/mimetypes, row/record content, filter pass-through (`entity_type`, `actor`), and exporting past the 50-row pagination limit (60 rows in, 60 rows out); 368 tests passing, isort/black/flake8 clean ✅
+
 #### Made the ncit_dec_code Export Column Mirror dec_id
 
 - In the exported `BC_LB`/`BC_VS` xlsx sheet, column M (`dec_id`) was populated correctly but column N (`ncit_dec_code`) was left at whatever was stored on the DEC (typically blank, since the BC detail form no longer exposes it as a separate field — see the DEC ID entry below). Made the export always populate column N with the same value as column M.
