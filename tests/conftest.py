@@ -6,6 +6,7 @@ from models.audit import AuditLog  # noqa: F401  (registers table metadata)
 from models.bc import BiomedicalConcept, DataElementConcept  # noqa: F401
 from models.governance import GovernanceRecord  # noqa: F401
 from models.ingestion import IngestionRecord  # noqa: F401
+from models.note import Note  # noqa: F401
 from models.specialization import DatasetSpecialization  # noqa: F401
 
 

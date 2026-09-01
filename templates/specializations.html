@@ -248,6 +248,13 @@
 </div>
 {% endif %}
 
+{% if edit_spec %}
+{% set notes_entity_kind = "spec" %}
+{% set notes_entity_id = edit_spec.vlm_group_id %}
+{% set notes_locked = edit_spec.status == "published" %}
+{% include "_notes_panel.html" %}
+{% endif %}
+
 {% endblock %}
 
 {% block extra_js %}

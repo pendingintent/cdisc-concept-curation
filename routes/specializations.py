@@ -5,6 +5,7 @@ from flask import Blueprint, flash, jsonify, redirect, render_template, request,
 from extensions import db
 from models.bc import BiomedicalConcept, DataElementConcept
 from models.specialization import DatasetSpecialization
+from services import notes_service
 from services.audit import log_change
 from services.bc_service import get_or_create_bc_stub
 from services.cdisc_api import CDISCApiClient
@@ -89,6 +90,7 @@ def detail(vlm_group_id):
         domain_codes=_get_domain_codes(),
         variable_field_defs=VARIABLE_FIELD_DEFS,
         edit_spec=spec,
+        notes=notes_service.list_spec_notes(vlm_group_id),
         page_title="Specializations",
     )
 

@@ -484,6 +484,13 @@
 {% endif %}
 {% endif %}
 
+{% if not is_new and bc.bc_id %}
+{% set notes_entity_kind = "bc" %}
+{% set notes_entity_id = bc.bc_id %}
+{% set notes_locked = bc.status == "published" %}
+{% include "_notes_panel.html" %}
+{% endif %}
+
 {% endblock %}
 
 {% block extra_js %}

@@ -7,7 +7,7 @@ Handlers run inside a Flask app context (the app factory is shared with
 the web app, so both processes resolve the same instance/ SQLite file)
 and use the same ORM models and service clients as the routes.
 
-Read tools (8):
+Read tools (9):
   list_bcs              Search/paginate curated Biomedical Concepts
   get_bc                Full BC detail incl. DECs, specializations, governance
   search_ncit           Search the NCI Thesaurus (EVS)
@@ -16,8 +16,9 @@ Read tools (8):
   search_cdisc_library  Search published BCs in the CDISC Library
   get_library_bc        Fetch one published BC from the CDISC Library
   list_review_queue     Governance board summary + pending ingestion count
+  list_notes            List notes for a BC or Specialization, most recent first
 
-Write tools (8) — same service code path as the web routes, every write
+Write tools (12) — same service code path as the web routes, every write
 audited; actor defaults to "mcp" so agent writes are distinguishable:
   create_bc                          Create a provisional BC (optionally with DECs)
   update_bc                          Update BC fields
@@ -27,6 +28,10 @@ audited; actor defaults to "mcp" so agent writes are distinguishable:
   reject_bc                          Reject back to provisional (BC)
   advance_specialization_governance  Advance one governance stage (Dataset Specialization)
   reject_specialization              Reject back to provisional (Dataset Specialization)
+  add_note                           Add a note to a BC or Specialization (locked at Ready to Publish)
+  update_note                        Edit an existing note's text (locked at Ready to Publish)
+  resolve_note                       Resolve/unresolve a note (locked at Ready to Publish)
+  flag_note                          Flag/unflag a note as high priority (locked at Ready to Publish)
 """
 
 import asyncio
@@ -160,6 +165,17 @@ _TOOLS = [
         name="list_review_queue",
         description=("Summarize work awaiting review: BCs in sme_review and cdisc_approval (governance board columns) plus counts of pending ingestion records."),
         inputSchema={"type": "object", "properties": {}},
+    ),
+    types.Tool(
+        name="list_notes",
+        description="List notes for a BC or a Dataset Specialization, most recent first. Pass exactly one of bc_id or vlm_group_id.",
+        inputSchema={
+            "type": "object",
+            "properties": {
+                "bc_id": {"type": "string"},
+                "vlm_group_id": {"type": "string"},
+            },
+        },
     ),
     types.Tool(
         name="create_bc",
@@ -300,6 +316,62 @@ _TOOLS = [
             "required": ["vlm_group_id"],
         },
     ),
+    types.Tool(
+        name="add_note",
+        description=(
+            "Add a note to a BC or Dataset Specialization (pass exactly one of bc_id or vlm_group_id). "
+            "Notes are collaborative commentary only — never exported, never deleted. Fails if the entity has reached Ready to Publish status. Audit-logged."
+        ),
+        inputSchema={
+            "type": "object",
+            "properties": {
+                "bc_id": {"type": "string"},
+                "vlm_group_id": {"type": "string"},
+                "text": {"type": "string"},
+                "actor": {"type": "string", "default": "mcp"},
+            },
+            "required": ["text"],
+        },
+    ),
+    types.Tool(
+        name="update_note",
+        description="Edit an existing note's text. Fails if the parent BC/Specialization has reached Ready to Publish status. Audit-logged with before/after state.",
+        inputSchema={
+            "type": "object",
+            "properties": {
+                "note_id": {"type": "integer"},
+                "text": {"type": "string"},
+                "actor": {"type": "string", "default": "mcp"},
+            },
+            "required": ["note_id", "text"],
+        },
+    ),
+    types.Tool(
+        name="resolve_note",
+        description="Resolve or unresolve a note (reversible toggle). Fails if the parent BC/Specialization has reached Ready to Publish status. Audit-logged.",
+        inputSchema={
+            "type": "object",
+            "properties": {
+                "note_id": {"type": "integer"},
+                "resolved": {"type": "boolean", "default": True},
+                "actor": {"type": "string", "default": "mcp"},
+            },
+            "required": ["note_id"],
+        },
+    ),
+    types.Tool(
+        name="flag_note",
+        description="Flag or unflag a note as high priority (reversible toggle). Fails if the parent BC/Specialization has reached Ready to Publish status. Audit-logged.",
+        inputSchema={
+            "type": "object",
+            "properties": {
+                "note_id": {"type": "integer"},
+                "flagged": {"type": "boolean", "default": True},
+                "actor": {"type": "string", "default": "mcp"},
+            },
+            "required": ["note_id"],
+        },
+    ),
 ]
 
 
@@ -330,6 +402,7 @@ def _dispatch(name: str, args: dict) -> Any:
         "search_cdisc_library": _search_cdisc_library,
         "get_library_bc": _get_library_bc,
         "list_review_queue": _list_review_queue,
+        "list_notes": _list_notes,
         "create_bc": _create_bc,
         "update_bc": _update_bc,
         "map_ncit_to_bc": _map_ncit_to_bc,
@@ -338,6 +411,10 @@ def _dispatch(name: str, args: dict) -> Any:
         "reject_bc": _reject_bc,
         "advance_specialization_governance": _advance_specialization_governance,
         "reject_specialization": _reject_specialization,
+        "add_note": _add_note,
+        "update_note": _update_note,
+        "resolve_note": _resolve_note,
+        "flag_note": _flag_note,
     }
     fn = handlers.get(name)
     if fn is None:
@@ -495,6 +572,18 @@ def _get_library_bc(args: dict) -> dict:
 
 
 @_with_app_context
+def _list_notes(args: dict) -> list:
+    from services import notes_service
+
+    bc_id = str(args.get("bc_id") or "").strip()
+    vlm_group_id = str(args.get("vlm_group_id") or "").strip()
+    if bool(bc_id) == bool(vlm_group_id):
+        raise ValueError("Pass exactly one of bc_id or vlm_group_id")
+    notes = notes_service.list_bc_notes(bc_id) if bc_id else notes_service.list_spec_notes(vlm_group_id)
+    return [n.to_dict() for n in notes]
+
+
+@_with_app_context
 def _list_review_queue(_args: dict) -> dict:
     from models.bc import BiomedicalConcept
     from models.ingestion import IngestionRecord
@@ -612,6 +701,55 @@ def _reject_specialization(args: dict) -> dict:
         raise ValueError("vlm_group_id is required")
     actor = str(args.get("actor") or "mcp")
     return governance_service.reject_specialization(vlm_group_id, actor=actor, comment=str(args.get("comment") or ""))
+
+
+@_with_app_context
+def _add_note(args: dict) -> dict:
+    from services import notes_service
+
+    bc_id = str(args.get("bc_id") or "").strip()
+    vlm_group_id = str(args.get("vlm_group_id") or "").strip()
+    if bool(bc_id) == bool(vlm_group_id):
+        raise ValueError("Pass exactly one of bc_id or vlm_group_id")
+    actor = str(args.get("actor") or "mcp")
+    note = notes_service.create_bc_note(bc_id, args.get("text"), actor=actor) if bc_id else notes_service.create_spec_note(vlm_group_id, args.get("text"), actor=actor)
+    return note.to_dict()
+
+
+@_with_app_context
+def _update_note(args: dict) -> dict:
+    from services import notes_service
+
+    note_id = args.get("note_id")
+    if not note_id:
+        raise ValueError("note_id is required")
+    actor = str(args.get("actor") or "mcp")
+    note = notes_service.update_note_text(int(note_id), args.get("text"), actor=actor)
+    return note.to_dict()
+
+
+@_with_app_context
+def _resolve_note(args: dict) -> dict:
+    from services import notes_service
+
+    note_id = args.get("note_id")
+    if not note_id:
+        raise ValueError("note_id is required")
+    actor = str(args.get("actor") or "mcp")
+    note = notes_service.set_resolved(int(note_id), bool(args.get("resolved", True)), actor=actor)
+    return note.to_dict()
+
+
+@_with_app_context
+def _flag_note(args: dict) -> dict:
+    from services import notes_service
+
+    note_id = args.get("note_id")
+    if not note_id:
+        raise ValueError("note_id is required")
+    actor = str(args.get("actor") or "mcp")
+    note = notes_service.set_flagged(int(note_id), bool(args.get("flagged", True)), actor=actor)
+    return note.to_dict()
 
 
 # ---------------------------------------------------------------------------

@@ -8,7 +8,7 @@ from flask import Blueprint, Response, flash, redirect, render_template, request
 from extensions import db
 from models.bc import RESULT_SCALES, BiomedicalConcept, DataElementConcept, split_result_scales
 from models.governance import GovernanceRecord
-from services import bc_service
+from services import bc_service, notes_service
 from services.audit import log_change
 from services.cdisc_api import CDISCApiClient
 from services.export import export_governance_xlsx, export_json, export_odm_xml
@@ -160,6 +160,7 @@ def detail(bc_id):
         ncit_data=ncit_data,
         needs_ncit_fetch=not ncit_data and bool(bc.ncit_code),
         needs_loinc_fetch=not loinc_data and bool(bc.loinc_code),
+        notes=notes_service.list_bc_notes(bc_id),
         page_title=bc.short_name,
         **_result_scale_context(bc),
     )
