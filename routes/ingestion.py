@@ -38,11 +38,12 @@ def _get_session_key():
 
 
 def _bc_from_mapped(bc_id, mapped):
-    # Any result_scales value outside RESULT_SCALES (e.g. a spreadsheet typo
-    # or an unsupported term) is dropped here rather than imported verbatim —
-    # callers use partition_result_scales() themselves to flash a warning
-    # about what got dropped.
-    supported_scales, _ = partition_result_scales(mapped.get("result_scales"))
+    # result_scales is stored as-is, including any value outside
+    # RESULT_SCALES — matching the BC edit form's own rule of never
+    # silently deleting an unsupported value. It stays visible (flagged in
+    # red) on the BC detail/edit page via routes.bc._result_scale_context;
+    # callers here use partition_result_scales() only to flash a heads-up
+    # at approval time.
     return BiomedicalConcept(
         bc_id=bc_id,
         short_name=mapped.get("short_name", ""),
@@ -51,7 +52,7 @@ def _bc_from_mapped(bc_id, mapped):
         parent_bc_id=mapped.get("parent_bc_id") or None,
         bc_categories=mapped.get("bc_categories", ""),
         synonyms=mapped.get("synonyms", ""),
-        result_scales="; ".join(supported_scales),
+        result_scales=mapped.get("result_scales", ""),
         system=mapped.get("system", ""),
         system_name=mapped.get("system_name", ""),
         code=mapped.get("code", ""),
@@ -185,7 +186,7 @@ def approve(record_id):
         flash(f"BC {bc_id} added to library", "success")
         _, unsupported_scales = partition_result_scales(mapped.get("result_scales"))
         if unsupported_scales:
-            flash(f"BC {bc_id}: unsupported result scale value(s) not imported — {', '.join(unsupported_scales)}", "warning")
+            flash(f"BC {bc_id}: result scale value(s) not on the supported list — flagged on the BC page: {', '.join(unsupported_scales)}", "warning")
     else:
         flash(f"BC {bc_id} already exists", "warning")
     ir.status = "approved"
@@ -211,7 +212,7 @@ def approve_all():
     spec_records = [ir for ir in pending if ir.record_type == "specialization"]
 
     added_bc = 0
-    dropped_scale_notes = []
+    unsupported_scale_notes = []
     for ir in bc_records:
         if ir.errors or ir.duplicate:
             ir.status = "rejected"
@@ -235,7 +236,7 @@ def approve_all():
             added_bc += 1
             _, unsupported_scales = partition_result_scales(mapped.get("result_scales"))
             if unsupported_scales:
-                dropped_scale_notes.append(f"{bc_id}: {', '.join(unsupported_scales)}")
+                unsupported_scale_notes.append(f"{bc_id}: {', '.join(unsupported_scales)}")
         else:
             ir.status = "approved"
     # Flush so newly-created BCs are visible to the bc_id existence check below.
@@ -253,6 +254,6 @@ def approve_all():
 
     db.session.commit()
     flash(f"Approved {added_bc} BCs and {added_spec} specializations", "success")
-    if dropped_scale_notes:
-        flash("Unsupported result scale value(s) were not imported — " + "; ".join(dropped_scale_notes), "warning")
+    if unsupported_scale_notes:
+        flash("Result scale value(s) not on the supported list — flagged on the BC page: " + "; ".join(unsupported_scale_notes), "warning")
     return redirect(url_for("ingestion.index"))

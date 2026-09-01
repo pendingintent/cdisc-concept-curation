@@ -140,7 +140,11 @@ class TestApprove:
         r = client.post("/ingestion/approve/99999")
         assert r.status_code == 404
 
-    def test_approve_drops_unsupported_result_scale(self, client, app):
+    def test_approve_preserves_unsupported_result_scale_and_warns(self, client, app):
+        # An unsupported result scale is imported as-is (not stripped) so it
+        # stays visible/flagged on the BC's own page — see
+        # routes.bc._result_scale_context — while the approve flash still
+        # calls out that it isn't on the supported list.
         rows = [{"bc_id": "C001", "short_name": "HR", "definition": "Heart Rate", "result_scales": "Quantitative; Qualitative"}]
         file_obj, filename = _csv_file(rows)
         client.post(
@@ -154,9 +158,28 @@ class TestApprove:
         r = client.post(f"/ingestion/approve/{record_id}", follow_redirects=True)
         with app.app_context():
             bc = db.session.get(BiomedicalConcept, "C001")
-            assert bc.result_scales == "Quantitative"
+            assert bc.result_scales == "Quantitative; Qualitative"
         assert b"Qualitative" in r.data
         assert b"not" in r.data.lower()
+
+    def test_approved_bc_page_flags_unsupported_result_scale(self, client, app):
+        rows = [{"bc_id": "C001", "short_name": "HR", "definition": "Heart Rate", "result_scales": "Quantitative; Qualitative"}]
+        file_obj, filename = _csv_file(rows)
+        client.post(
+            "/ingestion/upload",
+            data={"file": (file_obj, filename)},
+            content_type="multipart/form-data",
+        )
+        with app.app_context():
+            ir = IngestionRecord.query.filter_by(status="pending").first()
+            record_id = ir.id
+        client.post(f"/ingestion/approve/{record_id}")
+
+        r = client.get("/bc/C001")
+        assert r.status_code == 200
+        assert b"Qualitative" in r.data
+        assert b"not supported" in r.data.lower()
+        assert b"text-danger" in r.data
 
     def test_approve_already_existing_bc_does_not_duplicate(self, client, app, sample_bc):
         rows = [{"bc_id": "C12345", "short_name": "Test Concept", "definition": "A definition."}]
@@ -232,8 +255,9 @@ class TestApproveAll:
             assert db.session.get(BiomedicalConcept, "C001") is None
 
     def test_approve_all_still_imports_bc_with_unsupported_result_scale(self, client, app):
-        # An unsupported result scale is a soft, filterable issue — it must
-        # not sink the whole BC the way a missing short_name/definition does.
+        # An unsupported result scale is a soft, non-blocking issue — it must
+        # not sink the whole BC the way a missing short_name/definition does,
+        # and it stays on the record (flagged) rather than being stripped.
         rows = [{"bc_id": "C001", "short_name": "HR", "definition": "Heart Rate", "result_scales": "Quantitative; Qualitative"}]
         file_obj, filename = _csv_file(rows)
         with client.session_transaction() as sess:
@@ -247,7 +271,7 @@ class TestApproveAll:
         with app.app_context():
             bc = db.session.get(BiomedicalConcept, "C001")
             assert bc is not None
-            assert bc.result_scales == "Quantitative"
+            assert bc.result_scales == "Quantitative; Qualitative"
         assert b"Qualitative" in r.data
 
     def test_approve_all_writes_audit_log_per_bc(self, client, app):
