@@ -12,6 +12,15 @@ def split_result_scales(value):
     return [v.strip() for v in (value or "").split(";") if v.strip()]
 
 
+def partition_result_scales(value):
+    """Split a result_scales string into (supported, unsupported) lists,
+    e.g. from a legacy/spreadsheet value not in RESULT_SCALES."""
+    scales = split_result_scales(value)
+    supported = [s for s in scales if s in RESULT_SCALES]
+    unsupported = [s for s in scales if s not in RESULT_SCALES]
+    return supported, unsupported
+
+
 class BiomedicalConcept(db.Model):
     __tablename__ = "biomedical_concepts"
     bc_id = db.Column(db.String(50), primary_key=True)  # NCIt C-code e.g. C49237

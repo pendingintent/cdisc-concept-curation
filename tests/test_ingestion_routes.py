@@ -41,6 +41,19 @@ class TestIngestionIndex:
         r = client.get("/ingestion/")
         assert r.status_code == 200
 
+    def test_unsupported_result_scale_shown_in_red(self, client, app):
+        rows = [{"bc_id": "C001", "short_name": "HR", "definition": "Heart Rate", "result_scales": "Quantitative; Qualitative"}]
+        file_obj, filename = _csv_file(rows)
+        client.post(
+            "/ingestion/upload",
+            data={"file": (file_obj, filename)},
+            content_type="multipart/form-data",
+        )
+        r = client.get("/ingestion/")
+        assert r.status_code == 200
+        assert b"Qualitative" in r.data
+        assert b"text-danger" in r.data
+
 
 class TestUpload:
     def test_upload_csv_creates_ingestion_records(self, client, app):
@@ -127,6 +140,24 @@ class TestApprove:
         r = client.post("/ingestion/approve/99999")
         assert r.status_code == 404
 
+    def test_approve_drops_unsupported_result_scale(self, client, app):
+        rows = [{"bc_id": "C001", "short_name": "HR", "definition": "Heart Rate", "result_scales": "Quantitative; Qualitative"}]
+        file_obj, filename = _csv_file(rows)
+        client.post(
+            "/ingestion/upload",
+            data={"file": (file_obj, filename)},
+            content_type="multipart/form-data",
+        )
+        with app.app_context():
+            ir = IngestionRecord.query.filter_by(status="pending").first()
+            record_id = ir.id
+        r = client.post(f"/ingestion/approve/{record_id}", follow_redirects=True)
+        with app.app_context():
+            bc = db.session.get(BiomedicalConcept, "C001")
+            assert bc.result_scales == "Quantitative"
+        assert b"Qualitative" in r.data
+        assert b"not" in r.data.lower()
+
     def test_approve_already_existing_bc_does_not_duplicate(self, client, app, sample_bc):
         rows = [{"bc_id": "C12345", "short_name": "Test Concept", "definition": "A definition."}]
         file_obj, filename = _csv_file(rows)
@@ -199,6 +230,25 @@ class TestApproveAll:
         client.post("/ingestion/approve_all")
         with app.app_context():
             assert db.session.get(BiomedicalConcept, "C001") is None
+
+    def test_approve_all_still_imports_bc_with_unsupported_result_scale(self, client, app):
+        # An unsupported result scale is a soft, filterable issue — it must
+        # not sink the whole BC the way a missing short_name/definition does.
+        rows = [{"bc_id": "C001", "short_name": "HR", "definition": "Heart Rate", "result_scales": "Quantitative; Qualitative"}]
+        file_obj, filename = _csv_file(rows)
+        with client.session_transaction() as sess:
+            sess["ingestion_key"] = "testkey"
+        client.post(
+            "/ingestion/upload",
+            data={"file": (file_obj, filename)},
+            content_type="multipart/form-data",
+        )
+        r = client.post("/ingestion/approve_all", follow_redirects=True)
+        with app.app_context():
+            bc = db.session.get(BiomedicalConcept, "C001")
+            assert bc is not None
+            assert bc.result_scales == "Quantitative"
+        assert b"Qualitative" in r.data
 
     def test_approve_all_writes_audit_log_per_bc(self, client, app):
         rows = [{"bc_id": "C001", "short_name": "HR", "definition": "Heart Rate"}]

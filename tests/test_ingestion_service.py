@@ -142,19 +142,14 @@ class TestValidateBc:
         d["result_scales"] = "Quantitative; Ordinal"
         assert validate_bc(d) == []
 
-    def test_unsupported_result_scale_flagged(self):
-        d = self._valid()
-        d["result_scales"] = "Continuous"
-        errors = validate_bc(d)
-        assert any("Continuous" in e for e in errors)
-
-    def test_mixed_supported_and_unsupported_result_scales(self):
+    def test_unsupported_result_scale_is_not_a_blocking_error(self):
+        # An unsupported result scale doesn't block the whole BC from being
+        # approved (it's filtered out and flagged at approval time instead —
+        # see routes/ingestion.py — so a bad scale value doesn't also take
+        # down otherwise-valid short_name/definition/DEC data with it).
         d = self._valid()
         d["result_scales"] = "Quantitative; Continuous"
-        errors = validate_bc(d)
-        matches = [e for e in errors if "Continuous" in e]
-        assert len(matches) == 1
-        assert "Unsupported result scale(s): Continuous" in matches[0]
+        assert validate_bc(d) == []
 
     def test_no_result_scales_has_no_error(self):
         assert validate_bc(self._valid()) == []
@@ -289,6 +284,24 @@ class TestGroupByBc:
         rows = [({"bc_id": "C001", "short_name": "HR", "definition": "Heart Rate"}, {})]
         result = _group_by_bc(rows)
         assert result[0]["record_type"] == "bc"
+
+    def test_result_scales_merged_across_dec_sub_rows(self):
+        # Real curation workbooks repeat BC-level fields on every DEC sub-row;
+        # a result_scales value entered on a later row (differing from the
+        # first row) must still surface, not be silently dropped by the
+        # first-row-wins merge used for other BC-level fields.
+        rows = [
+            ({"bc_id": "C001", "short_name": "Temp", "definition": "Body temperature.", "result_scales": "Quantitative"}, {}),
+            ({"bc_id": "C001", "dec_id": "C001.DEC.1", "dec_label": "Value", "result_scales": "Quantitative"}, {}),
+            ({"bc_id": "C001", "dec_id": "C001.DEC.2", "dec_label": "Site", "result_scales": "Quantitative; Qualitative"}, {}),
+        ]
+        result = _group_by_bc(rows)
+        assert result[0]["mapped"]["result_scales"] == "Quantitative; Qualitative"
+
+    def test_result_scales_from_single_row_unaffected(self):
+        rows = [({"bc_id": "C001", "short_name": "HR", "definition": "Heart Rate", "result_scales": "Quantitative"}, {})]
+        result = _group_by_bc(rows)
+        assert result[0]["mapped"]["result_scales"] == "Quantitative"
 
 
 # ---------------------------------------------------------------------------

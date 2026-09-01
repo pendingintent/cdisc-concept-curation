@@ -2,7 +2,7 @@
 
 from extensions import db
 from models.audit import AuditLog
-from models.bc import RESULT_SCALES, BiomedicalConcept, split_result_scales
+from models.bc import RESULT_SCALES, BiomedicalConcept, partition_result_scales, split_result_scales
 from models.ingestion import IngestionRecord
 
 
@@ -135,3 +135,17 @@ class TestResultScales:
 
     def test_split_result_scales_ignores_blank_segments(self):
         assert split_result_scales("Quantitative;; Ordinal") == ["Quantitative", "Ordinal"]
+
+    def test_partition_result_scales_all_supported(self):
+        supported, unsupported = partition_result_scales("Quantitative; Ordinal")
+        assert supported == ["Quantitative", "Ordinal"]
+        assert unsupported == []
+
+    def test_partition_result_scales_mixed(self):
+        supported, unsupported = partition_result_scales("Quantitative; Qualitative")
+        assert supported == ["Quantitative"]
+        assert unsupported == ["Qualitative"]
+
+    def test_partition_result_scales_empty(self):
+        assert partition_result_scales("") == ([], [])
+        assert partition_result_scales(None) == ([], [])
