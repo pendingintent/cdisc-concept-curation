@@ -21,7 +21,7 @@
     {% elif bc.status == 'cdisc_approval' %}
       <span class="bc-badge bc-badge-cdisc-approval">CDISC Approval</span>
     {% elif bc.status == 'published' %}
-      <span class="bc-badge bc-badge-published">Published</span>
+      <span class="bc-badge bc-badge-published">Ready to Publish</span>
     {% endif %}
     {% if bc.submitter %}
       <span class="page-meta">Submitted by {{ bc.submitter }}</span>
@@ -49,6 +49,15 @@
       novalidate>
   {{ form.hidden_tag() if form else '' }}
 
+  {% if not is_new and bc.status == 'published' %}
+  <div class="alert alert-secondary d-flex align-items-center gap-2" role="alert">
+    <i class="bi bi-lock" aria-hidden="true"></i>
+    This concept has reached Ready to Publish status and can no longer be edited. Reject it from the
+    <a href="{{ url_for('governance.board') }}">Governance Board</a> to resume editing.
+  </div>
+  {% endif %}
+
+  <fieldset {% if not is_new and bc.status == 'published' %}disabled{% endif %}>
   <div class="two-col-grid">
 
     <!-- Left column: BC fields + DECs -->
@@ -325,7 +334,7 @@
           {% elif bc.status == 'cdisc_approval' %}
             <span class="bc-badge bc-badge-cdisc-approval">CDISC Approval</span>
           {% elif bc.status == 'published' %}
-            <span class="bc-badge bc-badge-published">Published</span>
+            <span class="bc-badge bc-badge-published">Ready to Publish</span>
           {% endif %}
           <input type="hidden" name="status" value="{{ bc.status if bc else 'provisional' }}">
         </div>
@@ -334,9 +343,13 @@
 
       <!-- Form submit buttons -->
       <div class="d-flex gap-2 mt-3 flex-wrap">
+        {% if not is_new and bc.status == 'published' %}
+        <span class="text-secondary small fst-italic">Read-only — Ready to Publish</span>
+        {% else %}
         <button type="submit" name="action" value="save" class="btn btn-primary btn-sm">
           <i class="bi bi-floppy" aria-hidden="true"></i> Save
         </button>
+        {% endif %}
         <a href="{{ url_for('bc.index') }}" class="btn btn-sm btn-outline-secondary">Cancel</a>
       </div>
 
@@ -458,6 +471,7 @@
     </div><!-- /right column -->
 
   </div><!-- /two-col-grid -->
+  </fieldset>
 </form>
 {% if bc and bc.bc_id %}
 {% if bc.ncit_code %}

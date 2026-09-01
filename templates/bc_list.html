@@ -58,7 +58,7 @@
       <option value="provisional"     {% if request.args.get('status') == 'provisional'     %}selected{% endif %}>Provisional</option>
       <option value="sme_review"      {% if request.args.get('status') == 'sme_review'      %}selected{% endif %}>SME Review</option>
       <option value="cdisc_approval"  {% if request.args.get('status') == 'cdisc_approval'  %}selected{% endif %}>CDISC Approval</option>
-      <option value="published"       {% if request.args.get('status') == 'published'       %}selected{% endif %}>Published</option>
+      <option value="published"       {% if request.args.get('status') == 'published'       %}selected{% endif %}>Ready to Publish</option>
     </select>
 
     <select name="category" class="form-select form-select-sm" style="width: auto;"
@@ -119,7 +119,7 @@
               {% elif bc.status == 'cdisc_approval' %}
                 <span class="bc-badge bc-badge-cdisc-approval">CDISC Approval</span>
               {% elif bc.status == 'published' %}
-                <span class="bc-badge bc-badge-published">Published</span>
+                <span class="bc-badge bc-badge-published">Ready to Publish</span>
               {% else %}
                 <span class="bc-badge bc-badge-new">{{ bc.status | default('—') }}</span>
               {% endif %}
@@ -134,10 +134,15 @@
                 </a>
                 <button type="button"
                         class="btn btn-sm btn-outline-danger"
+                        {% if bc.status == 'published' %}
+                        disabled
+                        title="Ready to Publish concepts cannot be deleted"
+                        {% else %}
                         data-bs-toggle="modal"
                         data-bs-target="#delete-confirm-modal"
                         data-bc-name="{{ bc.short_name | e }}"
                         data-delete-url="{{ url_for('bc.delete', bc_id=bc.bc_id) }}"
+                        {% endif %}
                         aria-label="Delete {{ bc.short_name }}">
                   <i class="bi bi-trash" aria-hidden="true"></i>
                 </button>

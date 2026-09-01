@@ -205,6 +205,14 @@ class TestUpdateBc:
         with pytest.raises(ValueError, match="not found"):
             _dispatch("update_bc", {"bc_id": "NOPE", "short_name": "X"})
 
+    def test_blocked_when_published(self, app, sample_bc):
+        with app.app_context():
+            bc = db.session.get(BiomedicalConcept, sample_bc)
+            bc.status = "published"
+            db.session.commit()
+        with pytest.raises(ValueError, match="Ready to Publish"):
+            _dispatch("update_bc", {"bc_id": sample_bc, "short_name": "Renamed"})
+
 
 class TestMapNcit:
     def test_maps_and_audits(self, app, sample_bc):
@@ -213,6 +221,14 @@ class TestMapNcit:
         rows = _audit_rows(app, "ncit_mapped")
         assert len(rows) == 1
         assert rows[0].actor == "mcp"
+
+    def test_blocked_when_published(self, app, sample_bc):
+        with app.app_context():
+            bc = db.session.get(BiomedicalConcept, sample_bc)
+            bc.status = "published"
+            db.session.commit()
+        with pytest.raises(ValueError, match="Ready to Publish"):
+            _dispatch("map_ncit_to_bc", {"bc_id": sample_bc, "ncit_code": "C77777"})
 
     def test_promotes_import_id(self, app):
         with app.app_context():

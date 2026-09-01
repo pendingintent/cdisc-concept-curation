@@ -122,6 +122,9 @@ def create():
 
     spec = db.session.get(DatasetSpecialization, vlm_group_id)
     if spec:
+        if spec.status == "published":
+            flash(f"Specialization {vlm_group_id} has reached Ready to Publish status and cannot be edited", "danger")
+            return redirect(url_for("specializations.index"))
         before = spec.to_dict()
         spec.bc_id = bc_id
         spec.domain = domain
@@ -149,6 +152,9 @@ def create():
 @bp.route("/<vlm_group_id>/delete", methods=["POST"])
 def delete(vlm_group_id):
     spec = db.get_or_404(DatasetSpecialization, vlm_group_id)
+    if spec.status == "published":
+        flash(f"Specialization {vlm_group_id} has reached Ready to Publish status and cannot be deleted", "danger")
+        return redirect(url_for("specializations.index"))
     log_change("DatasetSpecialization", vlm_group_id, "deleted", actor="user", before=spec.to_dict())
     db.session.delete(spec)
     db.session.commit()

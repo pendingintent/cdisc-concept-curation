@@ -311,6 +311,18 @@ class TestEditBc:
         r = client.post("/bc/NOPE/edit", data={"short_name": "X"})
         assert r.status_code == 404
 
+    def test_edit_blocked_when_published(self, client, app, sample_bc):
+        with app.app_context():
+            bc = db.session.get(BiomedicalConcept, "C12345")
+            bc.status = "published"
+            db.session.commit()
+        r = client.post("/bc/C12345/edit", data={"short_name": "Updated Name"}, follow_redirects=True)
+        assert r.status_code == 200
+        assert b"Ready to Publish" in r.data
+        with app.app_context():
+            bc = db.session.get(BiomedicalConcept, "C12345")
+            assert bc.short_name == "Test Concept"
+
     def test_edit_updates_result_scales_when_marker_present(self, client, app, sample_bc):
         client.post(
             "/bc/C12345/edit",
@@ -564,6 +576,18 @@ class TestClearNcitCode:
         r = client.post("/bc/NOTREAL/clear-ncit")
         assert r.status_code == 404
 
+    def test_clear_ncit_blocked_when_published(self, client, app, sample_bc):
+        with app.app_context():
+            bc = db.session.get(BiomedicalConcept, "C12345")
+            bc.status = "published"
+            db.session.commit()
+        r = client.post("/bc/C12345/clear-ncit", follow_redirects=True)
+        assert r.status_code == 200
+        assert b"Ready to Publish" in r.data
+        with app.app_context():
+            bc = db.session.get(BiomedicalConcept, "C12345")
+            assert bc.ncit_code == "C12345"
+
     def test_clear_ncit_also_clears_parent_bc_id(self, client, app, sample_bc):
         with app.app_context():
             bc = db.session.get(BiomedicalConcept, "C12345")
@@ -620,6 +644,19 @@ class TestClearLoincCode:
         r = client.post("/bc/NOTREAL/clear-loinc")
         assert r.status_code == 404
 
+    def test_clear_loinc_blocked_when_published(self, client, app, sample_bc):
+        with app.app_context():
+            bc = db.session.get(BiomedicalConcept, "C12345")
+            bc.loinc_code = "4548-4"
+            bc.status = "published"
+            db.session.commit()
+        r = client.post("/bc/C12345/clear-loinc", follow_redirects=True)
+        assert r.status_code == 200
+        assert b"Ready to Publish" in r.data
+        with app.app_context():
+            bc = db.session.get(BiomedicalConcept, "C12345")
+            assert bc.loinc_code == "4548-4"
+
 
 # ---------------------------------------------------------------------------
 # POST /bc/<bc_id>/submit
@@ -660,6 +697,17 @@ class TestDeleteBc:
     def test_nonexistent_bc_returns_404(self, client):
         r = client.post("/bc/NOPE/delete")
         assert r.status_code == 404
+
+    def test_delete_blocked_when_published(self, client, app, sample_bc):
+        with app.app_context():
+            bc = db.session.get(BiomedicalConcept, "C12345")
+            bc.status = "published"
+            db.session.commit()
+        r = client.post("/bc/C12345/delete", follow_redirects=True)
+        assert r.status_code == 200
+        assert b"Ready to Publish" in r.data
+        with app.app_context():
+            assert db.session.get(BiomedicalConcept, "C12345") is not None
 
 
 # ---------------------------------------------------------------------------

@@ -30,6 +30,15 @@ CDISC Biomedical Concept Curation — a Flask/Jinja web application for curating
 
 ### 2026-09-01
 
+#### Locked Editing and Added Reject at "Ready to Publish" Status
+
+- Governance stages run `provisional → sme_review → cdisc_approval → published`; the `published` stage is labeled "Ready to Publish" on the Governance Kanban board (`templates/governance.html`) but was inconsistently labeled "Published" everywhere else, and nothing in the app treated it as a terminal, locked state — every BC/specialization edit and delete route worked identically regardless of status.
+- `services/bc_service.py` — `update_bc()` and `map_ncit_to_bc()` now raise `ValueError` when the BC is already `published`; this guard is inherited automatically by the MCP `update_bc`/`map_ncit_to_bc` tools since they call the same functions.
+- `routes/bc.py` — `edit()`, `clear_ncit()`, `clear_loinc()`, and `delete()` now refuse the action (flash + redirect) for a published BC; `routes/ncit.py` `resolve()` catches the new `ValueError`; `routes/specializations.py`'s upsert route (update branch only, not create) and `delete()` refuse the action for a published specialization.
+- The Governance board's `published`/"Ready to Publish" Kanban column previously rendered no action buttons at all, so there was no way to reject an item once it reached that column even though `reject_bc`/`reject_specialization` already worked unconditionally from any status — added a Reject button there for both BCs and specs, reusing the existing `kanban-reject-btn` JS wiring and routes.
+- `templates/bc_detail.html` and `templates/specializations.html` now show a locked notice and wrap their editable fields in a disabled `<fieldset>` when `published`; `templates/bc_list.html` and `templates/specializations.html` disable the row Delete button for published items; relabeled `published` as "Ready to Publish" consistently across `bc_detail.html`, `bc_list.html`, and `specializations.html` to match the Kanban board.
+- Wrote tests first (TDD) covering every new guard across `tests/test_bc_routes.py`, `tests/test_specializations_routes.py`, `tests/test_ncit.py`, `tests/test_governance_routes.py`, and `tests/test_mcp_server.py`; manually verified end-to-end against a running server (create → advance through all 4 stages → edit/delete blocked → reject via the new board button → edit/delete work again) for both a BC and a specialization; 383 tests passing, isort/black/flake8 clean ✅
+
 #### Fixed Export CSV/JSON Buttons on the Audit Trail Page
 
 - The "Export CSV" and "Export JSON" buttons on `/audit/` appended `?export=csv`/`?export=json` to the URL, but `routes/audit.py`'s `index()` never read that parameter — it just re-rendered the same filtered HTML page, so clicking either button silently did nothing.

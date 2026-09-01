@@ -108,6 +108,21 @@ class TestReject:
         r = client.post("/governance/reject/NOPE")
         assert r.status_code == 404
 
+    def test_reject_from_published_returns_to_provisional(self, client, app, sample_bc):
+        for _ in range(3):
+            client.post("/governance/advance/C12345")
+        client.post("/governance/reject/C12345")
+        with app.app_context():
+            bc = db.session.get(BiomedicalConcept, "C12345")
+            assert bc.status == "provisional"
+
+    def test_board_shows_reject_button_for_published_bc(self, client, app, sample_bc):
+        for _ in range(3):
+            client.post("/governance/advance/C12345")
+        r = client.get("/governance/board")
+        assert b'data-bc-id="C12345"' in r.data
+        assert b"kanban-reject-btn" in r.data
+
 
 class TestGovernanceExport:
     def test_export_returns_xlsx(self, client, app, sample_bc):
@@ -323,6 +338,21 @@ class TestSpecReject:
         assert r.status_code == 200
         data = r.get_json()
         assert data["status"] == "provisional"
+
+    def test_reject_from_published_returns_to_provisional(self, client, app, sample_spec):
+        for _ in range(3):
+            client.post(f"/governance/spec/advance/{sample_spec}")
+        client.post(f"/governance/spec/reject/{sample_spec}")
+        with app.app_context():
+            spec = db.session.get(DatasetSpecialization, sample_spec)
+            assert spec.status == "provisional"
+
+    def test_board_shows_reject_button_for_published_spec(self, client, app, sample_spec):
+        for _ in range(3):
+            client.post(f"/governance/spec/advance/{sample_spec}")
+        r = client.get("/governance/board")
+        assert f'data-vlm-group-id="{sample_spec}"'.encode() in r.data
+        assert b"kanban-reject-btn" in r.data
 
     def test_reject_nonexistent_spec_returns_404(self, client):
         r = client.post("/governance/spec/reject/NOPE")
