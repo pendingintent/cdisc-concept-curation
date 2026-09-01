@@ -275,6 +275,18 @@
   /* ─────────────────────────────────────────────
      DEC table: add / delete rows dynamically
   ───────────────────────────────────────────── */
+  // The DEC row most recently created via "Add DEC" — the target for the
+  // DEC-scoped NCIt card below the table (see initDecNcitLookup).
+  let activeDecRow = null;
+
+  function addDecRow(decTableBody) {
+    const rowIndex = decTableBody.querySelectorAll('tr').length;
+    const row = buildDecRow(rowIndex);
+    decTableBody.appendChild(row);
+    activeDecRow = row;
+    return row;
+  }
+
   function initDecTable() {
     const addDecBtn = document.getElementById('add-dec-btn');
     const decTableBody = document.getElementById('dec-table-body');
@@ -282,9 +294,7 @@
     if (!addDecBtn || !decTableBody) return;
 
     addDecBtn.addEventListener('click', function () {
-      const rowIndex = decTableBody.querySelectorAll('tr').length;
-      const row = buildDecRow(rowIndex);
-      decTableBody.appendChild(row);
+      addDecRow(decTableBody);
     });
 
     // Event delegation for delete buttons (covers dynamically added rows)
@@ -292,7 +302,10 @@
       const deleteBtn = e.target.closest('.dec-delete-btn');
       if (deleteBtn) {
         const row = deleteBtn.closest('tr');
-        if (row) row.remove();
+        if (row) {
+          if (row === activeDecRow) activeDecRow = null;
+          row.remove();
+        }
       }
     });
   }
@@ -342,6 +355,191 @@
       </td>
     `;
     return tr;
+  }
+
+  /* ─────────────────────────────────────────────
+     DEC-scoped NCIt card: search NCIt and apply the
+     selected concept's code/preferred name to the
+     DEC row most recently created via "Add DEC".
+  ───────────────────────────────────────────── */
+  function initDecNcitLookup() {
+    const lookupBtn = document.getElementById('dec-ncit-lookup-btn');
+    const ncitCodeInput = document.getElementById('dec_ncit_code');
+    const resultsPanel = document.getElementById('dec-ncit-results-panel');
+    const resultsContainer = document.getElementById('dec-ncit-results-container');
+
+    if (!lookupBtn || !ncitCodeInput || !resultsPanel) return;
+
+    lookupBtn.addEventListener('click', async function () {
+      const term = ncitCodeInput.value.trim();
+      if (!term) {
+        ncitCodeInput.focus();
+        return;
+      }
+
+      lookupBtn.disabled = true;
+      lookupBtn.innerHTML = '<span class="spinner-border spinner-border-sm" aria-hidden="true"></span> Searching…';
+
+      try {
+        const url = new URL('/ncit/search', window.location.origin);
+        url.searchParams.set('term', term);
+
+        const response = await fetch(url.toString(), {
+          headers: { 'Accept': 'application/json' }
+        });
+
+        if (!response.ok) throw new Error('NCIt search failed: ' + response.status);
+
+        const data = await response.json();
+        renderDecNcitResults(data, resultsContainer);
+        resultsPanel.classList.remove('d-none');
+      } catch (err) {
+        if (resultsContainer) {
+          resultsContainer.innerHTML = '<p class="text-danger small mb-0">Error fetching NCIt results. Please try again.</p>';
+        }
+        resultsPanel.classList.remove('d-none');
+        console.error('DEC NCIt lookup error:', err);
+      } finally {
+        lookupBtn.disabled = false;
+        lookupBtn.innerHTML = '<i class="bi bi-search" aria-hidden="true"></i> Look up NCIt';
+      }
+    });
+  }
+
+  /**
+   * Renders NCIt search results for the DEC card. Selecting a result applies
+   * its code/preferred name to the active DEC row (creating one via
+   * addDecRow if none is currently tracked).
+   * Expects data: Array<{ code, preferred_name, definition, synonyms }>
+   */
+  function renderDecNcitResults(data, container) {
+    if (!container) return;
+
+    if (!data || data.length === 0) {
+      container.innerHTML = '<p class="text-secondary small mb-0">No results found.</p>';
+      return;
+    }
+
+    container.innerHTML = data.map(function (item) {
+      const synonymList = Array.isArray(item.synonyms) ? item.synonyms.join('; ') : (item.synonyms || '');
+      const safeCode = escapeHtml(item.code || '');
+      const safeName = escapeHtml(item.preferred_name || '');
+      const safeDef  = escapeHtml(item.definition || '');
+      const safeSyn  = escapeHtml(synonymList);
+
+      return `
+        <div class="ncit-result-card" data-code="${safeCode}">
+          <div class="d-flex align-items-center justify-content-between mb-1">
+            <span class="ncit-code">${safeCode}</span>
+            <button type="button"
+                    class="btn btn-sm btn-outline-primary use-ncit-btn"
+                    data-code="${safeCode}"
+                    data-name="${safeName}">
+              Use this concept
+            </button>
+          </div>
+          <div class="ncit-preferred-name">${safeName}</div>
+          <div class="ncit-definition">${safeDef}</div>
+          ${safeSyn ? `<div class="small text-secondary"><strong>Synonyms:</strong> ${safeSyn}</div>` : ''}
+        </div>
+      `;
+    }).join('');
+
+    // Wire up "Use this concept" buttons
+    container.querySelectorAll('.use-ncit-btn').forEach(function (btn) {
+      btn.addEventListener('click', async function () {
+        const code = btn.dataset.code;
+        const decTableBody = document.getElementById('dec-table-body');
+
+        if (!activeDecRow || !document.body.contains(activeDecRow)) {
+          if (decTableBody) addDecRow(decTableBody);
+        }
+        if (activeDecRow) {
+          const decIdInput = activeDecRow.querySelector('[name$="[dec_id]"]');
+          const decLabelInput = activeDecRow.querySelector('[name$="[dec_label]"]');
+          const ncitDecCodeInput = activeDecRow.querySelector('[name$="[ncit_dec_code]"]');
+          if (decIdInput) decIdInput.value = code;
+          if (decLabelInput) decLabelInput.value = btn.dataset.name || '';
+          if (ncitDecCodeInput) ncitDecCodeInput.value = code;
+        }
+
+        // Hide the panel after selection
+        const panel = document.getElementById('dec-ncit-results-panel');
+        if (panel) panel.classList.add('d-none');
+
+        // Fetch full concept detail and render the NCIt metadata grid
+        const metaDisplay = document.getElementById('dec-ncit-meta-display');
+        if (metaDisplay) {
+          metaDisplay.innerHTML = '<span class="spinner-border spinner-border-sm me-1" aria-hidden="true"></span> Loading…';
+          metaDisplay.classList.remove('d-none');
+        }
+        try {
+          const url = new URL(`/ncit/concept/${encodeURIComponent(code)}`, window.location.origin);
+          const response = await fetch(url.toString(), { headers: { 'Accept': 'application/json' } });
+          if (response.ok) {
+            const data = await response.json();
+            renderDecNcitMetaDisplay(data);
+          } else {
+            if (metaDisplay) metaDisplay.innerHTML = '<p class="text-danger small mb-0">Failed to load concept detail.</p>';
+          }
+        } catch (err) {
+          if (metaDisplay) metaDisplay.innerHTML = '<p class="text-danger small mb-0">Error loading concept detail.</p>';
+          console.error('DEC NCIt concept detail fetch error:', err);
+        }
+      });
+    });
+  }
+
+  /**
+   * Populates #dec-ncit-meta-display grid with fields from a selected NCIt concept.
+   */
+  function renderDecNcitMetaDisplay(item) {
+    var display = document.getElementById('dec-ncit-meta-display');
+    if (!display) return;
+
+    var fields = [
+      { key: 'preferred_name', label: 'Preferred Name' },
+      { key: 'synonyms',       label: 'Synonyms' },
+      { key: 'definition',     label: 'Description' },
+      { key: 'parents',        label: 'Parent Concepts' },
+      { key: 'children',       label: 'Children' },
+      { key: 'definitions',    label: 'References' },
+      { key: 'semantic_type',  label: 'Semantic Type' },
+    ];
+
+    var items = fields.filter(function (f) {
+      var v = item[f.key];
+      return v && (!Array.isArray(v) || v.length > 0);
+    }).map(function (f) {
+      var v = item[f.key];
+      var text;
+      if (f.key === 'definitions') {
+        text = v.map(function (d) { return '[' + (d.source || '') + '] ' + (d.definition || ''); }).filter(Boolean).join('; ');
+      } else if (f.key === 'parents' || f.key === 'children') {
+        text = v.map(function (p) { return p.name + ' (' + p.code + ')'; }).join('; ');
+      } else if (Array.isArray(v)) {
+        text = v.join('; ');
+      } else {
+        text = String(v);
+      }
+      return '<div class="loinc-meta-item">' +
+        '<span class="loinc-meta-label">' + escapeHtml(f.label) + '</span>' +
+        '<span class="loinc-meta-value">' + escapeHtml(text) + '</span>' +
+        '</div>';
+    });
+
+    // NCIt browser link
+    if (item.reference) {
+      items.push('<div class="loinc-meta-item">' +
+        '<span class="loinc-meta-label">NCIt Link</span>' +
+        '<span class="loinc-meta-value"><a href="' + escapeHtml(item.reference) + '" target="_blank" rel="noopener">View in NCIt Browser</a></span>' +
+        '</div>');
+    }
+
+    display.innerHTML = items.length
+      ? '<div class="loinc-meta-grid mt-2">' + items.join('') + '</div>'
+      : '';
+    display.classList.toggle('d-none', !items.length);
   }
 
   /* ─────────────────────────────────────────────
@@ -858,6 +1056,7 @@
     initNcitLookup();
     initLoincLookup();
     initDecTable();
+    initDecNcitLookup();
     initGovernanceTabs();
     initKanban();
     initAuditDiff();
