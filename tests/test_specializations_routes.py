@@ -167,6 +167,38 @@ class TestEditUpsert:
             assert spec.variables[0]["sdtm_variable"] == "RESULT"
             assert spec.variables[0]["data_type"] == "decimal"
 
+    def test_update_blocked_when_published(self, client, app, sample_bc):
+        with app.app_context():
+            db.session.add(DatasetSpecialization(vlm_group_id="VLM1", bc_id=sample_bc, domain="SDTM", short_name="Original", status="published"))
+            db.session.commit()
+        patcher, _ = _patch_client()
+        with patcher:
+            resp = client.post(
+                "/specializations/",
+                data={"vlm_group_id": "VLM1", "bc_id": sample_bc, "domain": "CDASH", "short_name": "Renamed"},
+                follow_redirects=True,
+            )
+        assert resp.status_code == 200
+        assert b"Ready to Publish" in resp.data
+        with app.app_context():
+            spec = db.session.get(DatasetSpecialization, "VLM1")
+            assert spec.domain == "SDTM"
+            assert spec.short_name == "Original"
+
+    def test_new_vlm_group_id_still_creatable_when_other_specs_published(self, client, app, sample_bc):
+        with app.app_context():
+            db.session.add(DatasetSpecialization(vlm_group_id="VLM1", bc_id=sample_bc, domain="SDTM", short_name="Original", status="published"))
+            db.session.commit()
+        patcher, _ = _patch_client()
+        with patcher:
+            resp = client.post(
+                "/specializations/",
+                data={"vlm_group_id": "VLM2", "bc_id": sample_bc, "domain": "CDASH", "short_name": "Brand New"},
+            )
+        assert resp.status_code == 302
+        with app.app_context():
+            assert db.session.get(DatasetSpecialization, "VLM2") is not None
+
     def test_edit_writes_updated_audit_log(self, client, app, sample_bc):
         with app.app_context():
             db.session.add(DatasetSpecialization(vlm_group_id="VLM1", bc_id=sample_bc, domain="SDTM", short_name="Original"))
@@ -213,6 +245,18 @@ class TestDelete:
         with patcher:
             resp = client.post("/specializations/NOPE/delete")
         assert resp.status_code == 404
+
+    def test_delete_blocked_when_published(self, client, app, sample_bc):
+        with app.app_context():
+            db.session.add(DatasetSpecialization(vlm_group_id="VLM1", bc_id=sample_bc, domain="SDTM", status="published"))
+            db.session.commit()
+        patcher, _ = _patch_client()
+        with patcher:
+            resp = client.post("/specializations/VLM1/delete", follow_redirects=True)
+        assert resp.status_code == 200
+        assert b"Ready to Publish" in resp.data
+        with app.app_context():
+            assert db.session.get(DatasetSpecialization, "VLM1") is not None
 
 
 class TestDetail:

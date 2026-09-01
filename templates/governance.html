@@ -194,6 +194,14 @@
             {% if bc.package_date %} &middot; Published {{ bc.package_date }}{% endif %}
           </div>
           <span class="bc-badge bc-badge-published">Ready to Publish</span>
+          <div class="kanban-card-actions">
+            <button type="button"
+                    class="btn btn-sm btn-outline-danger kanban-reject-btn"
+                    data-bc-id="{{ bc.bc_id }}"
+                    aria-label="Reject {{ bc.short_name }}">
+              <i class="bi bi-x" aria-hidden="true"></i> Reject
+            </button>
+          </div>
         </div>
         {% endfor %}
       {% else %}
@@ -371,6 +379,14 @@
             {% if spec.bc %} &middot; {{ spec.bc.short_name }}{% endif %}
           </div>
           <span class="bc-badge bc-badge-published">Ready to Publish</span>
+          <div class="kanban-card-actions">
+            <button type="button"
+                    class="btn btn-sm btn-outline-danger kanban-reject-btn"
+                    data-vlm-group-id="{{ spec.vlm_group_id }}"
+                    aria-label="Reject {{ spec.short_name }}">
+              <i class="bi bi-x" aria-hidden="true"></i> Reject
+            </button>
+          </div>
         </div>
         {% endfor %}
       {% else %}

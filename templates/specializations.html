@@ -30,6 +30,16 @@
           novalidate>
       {{ form.hidden_tag() if form else '' }}
 
+      {% if edit_spec and edit_spec.status == 'published' %}
+      <div class="alert alert-secondary d-flex align-items-center gap-2" role="alert">
+        <i class="bi bi-lock" aria-hidden="true"></i>
+        This specialization has reached Ready to Publish status and can no longer be edited. Reject it
+        from the <a href="{{ url_for('governance.board') }}">Governance Board</a> to resume editing.
+      </div>
+      {% endif %}
+
+      <fieldset {% if edit_spec and edit_spec.status == 'published' %}disabled{% endif %}>
+
       <div class="row g-3 mb-3">
         <div class="col-md-4">
           <label for="vlm_group_id" class="form-label small fw-semibold">VLM Group ID <span class="text-danger" aria-hidden="true">*</span></label>
@@ -145,6 +155,10 @@
         <button type="button" id="add-spec-var-btn" class="btn btn-sm btn-outline-secondary">
           <i class="bi bi-plus-lg" aria-hidden="true"></i> Add Variable Row
         </button>
+      </div>
+      </fieldset>
+
+      <div class="d-flex gap-2 flex-wrap mt-2">
         <button type="button" class="btn btn-sm btn-outline-secondary"
                 data-bs-toggle="collapse" data-bs-target="#specialization-form-panel">
           Cancel
@@ -154,6 +168,7 @@
   </div>
 </div>
 
+{% if not edit_spec %}
 <!-- Specializations list table -->
 <div class="bc-card">
   <div class="bc-card-header">
@@ -192,7 +207,7 @@
             {{ vcount }} variable{{ 's' if vcount != 1 else '' }}
           </td>
           <td>
-            {% set status_labels = {"provisional": "Provisional", "sme_review": "SME Review", "cdisc_approval": "CDISC Approval", "published": "Published"} %}
+            {% set status_labels = {"provisional": "Provisional", "sme_review": "SME Review", "cdisc_approval": "CDISC Approval", "published": "Ready to Publish"} %}
             <span class="bc-badge bc-badge-{{ (spec.status or 'provisional') | replace('_', '-') }}">
               {{ status_labels.get(spec.status, (spec.status or 'provisional') | replace('_', ' ') | title) }}
             </span>
@@ -209,6 +224,7 @@
                     style="display:inline;">
                 {{ form.hidden_tag() if form else '' }}
                 <button type="submit" class="btn btn-sm btn-outline-danger"
+                        {% if spec.status == 'published' %}disabled title="Ready to Publish specializations cannot be deleted"{% endif %}
                         aria-label="Delete {{ spec.short_name }}">
                   <i class="bi bi-trash" aria-hidden="true"></i>
                 </button>
@@ -230,6 +246,7 @@
   </div>
   {% endif %}
 </div>
+{% endif %}
 
 {% endblock %}
 

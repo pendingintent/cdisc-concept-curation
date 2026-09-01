@@ -98,6 +98,8 @@ def get_or_create_bc_stub(bc_id, short_name="", actor=None):
 def update_bc(bc_id, data, actor="user"):
     """Update an existing BC from a dict of fields. Returns the BC."""
     bc = _get_bc_or_raise(bc_id)
+    if bc.status == "published":
+        raise ValueError(f"BC {bc_id} has reached Ready to Publish status and cannot be edited")
     before = bc.to_dict()
     apply_bc_fields(bc, data, is_new=False)
     log_change("BiomedicalConcept", bc_id, "updated", actor=actor, before=before, after=bc.to_dict())
@@ -142,6 +144,8 @@ def map_ncit_to_bc(bc_id, ncit_code, actor="user"):
     if not ncit_code:
         raise ValueError("ncit_code is required")
     bc = _get_bc_or_raise(bc_id)
+    if bc.status == "published":
+        raise ValueError(f"BC {bc_id} has reached Ready to Publish status and cannot be edited")
     before = bc.to_dict()
     bc.ncit_code = ncit_code
     # Promote temporary IMPORT_ IDs to their resolved NCIt code

@@ -220,7 +220,11 @@ def edit(bc_id):
     # on the real edit form) disambiguates "clear it" from "leave it alone".
     if "result_scales_submitted" in request.form:
         data["result_scales"] = "; ".join(request.form.getlist("result_scales"))
-    bc_service.update_bc(bc_id, data, actor="user")
+    try:
+        bc_service.update_bc(bc_id, data, actor="user")
+    except ValueError as e:
+        flash(str(e), "danger")
+        return redirect(url_for("bc.detail", bc_id=bc_id))
     bc_service.save_decs(bc_id, _decs_from_form(request.form))
     flash(f"BC {bc_id} updated", "success")
     return redirect(url_for("bc.detail", bc_id=bc_id))
@@ -229,6 +233,9 @@ def edit(bc_id):
 @bp.route("/<bc_id>/clear-ncit", methods=["POST"])
 def clear_ncit(bc_id):
     bc = db.get_or_404(BiomedicalConcept, bc_id)
+    if bc.status == "published":
+        flash(f"BC {bc_id} has reached Ready to Publish status and cannot be edited", "danger")
+        return redirect(url_for("bc.detail", bc_id=bc_id))
     before = bc.to_dict()
     bc.ncit_code = None
     bc.ncit_metadata = None
@@ -243,6 +250,9 @@ def clear_ncit(bc_id):
 @bp.route("/<bc_id>/clear-loinc", methods=["POST"])
 def clear_loinc(bc_id):
     bc = db.get_or_404(BiomedicalConcept, bc_id)
+    if bc.status == "published":
+        flash(f"BC {bc_id} has reached Ready to Publish status and cannot be edited", "danger")
+        return redirect(url_for("bc.detail", bc_id=bc_id))
     before = bc.to_dict()
     bc.loinc_code = None
     bc.loinc_metadata = None
@@ -266,6 +276,9 @@ def submit_for_review(bc_id):
 @bp.route("/<bc_id>/delete", methods=["POST"])
 def delete(bc_id):
     bc = db.get_or_404(BiomedicalConcept, bc_id)
+    if bc.status == "published":
+        flash(f"BC {bc_id} has reached Ready to Publish status and cannot be deleted", "danger")
+        return redirect(url_for("bc.detail", bc_id=bc_id))
     # Nullify self-referential parent FK on child BCs; without this SQLAlchemy
     # raises CircularDependencyError when flushing the delete.
     BiomedicalConcept.query.filter_by(parent_bc_id=bc_id).update({"parent_bc_id": None}, synchronize_session="fetch")
