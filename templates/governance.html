@@ -7,9 +7,26 @@
 <div class="page-header">
   <h1 class="page-title">Governance Workflow Board</h1>
   <span class="page-meta">
-    BCs enter as Provisional and progress through SME Review and CDISC Approval before publishing.
+    BCs and Dataset Specializations enter as Provisional and progress through SME Review and CDISC Approval before publishing.
   </span>
 </div>
+
+<!-- Entity type tabs -->
+<ul class="nav nav-tabs mb-3" id="governanceTabs" role="tablist">
+  <li class="nav-item" role="presentation">
+    <button class="nav-link active" id="bc-tab" data-bs-toggle="tab" data-bs-target="#bc-board" type="button" role="tab" aria-controls="bc-board" aria-selected="true">
+      Biomedical Concepts
+    </button>
+  </li>
+  <li class="nav-item" role="presentation">
+    <button class="nav-link" id="spec-tab" data-bs-toggle="tab" data-bs-target="#spec-board" type="button" role="tab" aria-controls="spec-board" aria-selected="false">
+      Dataset Specializations
+    </button>
+  </li>
+</ul>
+
+<div class="tab-content" id="governanceTabsContent">
+<div class="tab-pane fade show active" id="bc-board" role="tabpanel" aria-labelledby="bc-tab">
 
 <!-- Summary counts -->
 <div class="metric-grid mb-3">
@@ -177,6 +194,14 @@
             {% if bc.package_date %} &middot; Published {{ bc.package_date }}{% endif %}
           </div>
           <span class="bc-badge bc-badge-published">Ready to Publish</span>
+          <div class="kanban-card-actions">
+            <button type="button"
+                    class="btn btn-sm btn-outline-danger kanban-reject-btn"
+                    data-bc-id="{{ bc.bc_id }}"
+                    aria-label="Reject {{ bc.short_name }}">
+              <i class="bi bi-x" aria-hidden="true"></i> Reject
+            </button>
+          </div>
         </div>
         {% endfor %}
       {% else %}
@@ -186,6 +211,195 @@
   </div>
 
 </div><!-- /kanban-grid -->
+
+</div><!-- /bc-board -->
+
+<div class="tab-pane fade" id="spec-board" role="tabpanel" aria-labelledby="spec-tab">
+
+<!-- Summary counts -->
+<div class="metric-grid mb-3">
+  <div class="metric-card metric-card-amber">
+    <div class="metric-val metric-val-amber">{{ spec_columns.provisional | length if spec_columns else 0 }}</div>
+    <div class="metric-lbl">Provisional</div>
+  </div>
+  <div class="metric-card metric-card-purple">
+    <div class="metric-val metric-val-purple">{{ spec_columns.sme_review | length if spec_columns else 0 }}</div>
+    <div class="metric-lbl">SME Review</div>
+  </div>
+  <div class="metric-card metric-card-blue">
+    <div class="metric-val metric-val-blue">{{ spec_columns.cdisc_approval | length if spec_columns else 0 }}</div>
+    <div class="metric-lbl">CDISC Approval</div>
+  </div>
+  <div class="metric-card metric-card-green">
+    <div class="metric-val metric-val-green">{{ spec_columns.published | length if spec_columns else 0 }}</div>
+    <div class="metric-lbl">Ready to Publish</div>
+  </div>
+</div>
+
+<!-- Kanban board -->
+<div class="kanban-grid" role="region" aria-label="Specialization governance Kanban board">
+
+  <!-- Provisional column -->
+  <div class="kanban-column" role="list" aria-label="Provisional Specializations">
+    <div class="kanban-column-header kanban-header-provisional">
+      <span>Provisional</span>
+      <span class="kanban-column-count kanban-count-provisional">
+        {{ spec_columns.provisional | length if spec_columns else 0 }}
+      </span>
+    </div>
+    <div class="kanban-column-body">
+      {% if spec_columns and spec_columns.provisional %}
+        {% for spec in spec_columns.provisional %}
+        <div class="kanban-card" role="listitem">
+          <a href="{{ url_for('specializations.detail', vlm_group_id=spec.vlm_group_id) }}" class="text-decoration-none">
+            <div class="kanban-card-title">{{ spec.short_name }}</div>
+          </a>
+          <div class="kanban-card-meta">
+            <code>{{ spec.vlm_group_id }}</code> &middot; {{ spec.domain }}
+            {% if spec.bc %} &middot; {{ spec.bc.short_name }}{% endif %}
+          </div>
+          <span class="bc-badge bc-badge-provisional">Awaiting SME</span>
+          <div class="kanban-card-actions">
+            <button type="button"
+                    class="btn btn-sm btn-outline-secondary kanban-advance-btn"
+                    data-vlm-group-id="{{ spec.vlm_group_id }}"
+                    aria-label="Advance {{ spec.short_name }} to SME Review">
+              <i class="bi bi-arrow-right" aria-hidden="true"></i> Advance
+            </button>
+          </div>
+        </div>
+        {% endfor %}
+      {% else %}
+        <div class="small text-secondary px-2 py-3 text-center">No specializations in this stage.</div>
+      {% endif %}
+    </div>
+  </div>
+
+  <!-- SME Review column -->
+  <div class="kanban-column" role="list" aria-label="SME Review Specializations">
+    <div class="kanban-column-header kanban-header-sme-review">
+      <span>SME Review</span>
+      <span class="kanban-column-count kanban-count-sme-review">
+        {{ spec_columns.sme_review | length if spec_columns else 0 }}
+      </span>
+    </div>
+    <div class="kanban-column-body">
+      {% if spec_columns and spec_columns.sme_review %}
+        {% for spec in spec_columns.sme_review %}
+        <div class="kanban-card" role="listitem">
+          <a href="{{ url_for('specializations.detail', vlm_group_id=spec.vlm_group_id) }}" class="text-decoration-none">
+            <div class="kanban-card-title">{{ spec.short_name }}</div>
+          </a>
+          <div class="kanban-card-meta">
+            <code>{{ spec.vlm_group_id }}</code> &middot; {{ spec.domain }}
+            {% if spec.bc %} &middot; {{ spec.bc.short_name }}{% endif %}
+          </div>
+          <span class="bc-badge bc-badge-sme-review">SME Review</span>
+          <div class="kanban-card-actions">
+            <button type="button"
+                    class="btn btn-sm btn-outline-secondary kanban-advance-btn"
+                    data-vlm-group-id="{{ spec.vlm_group_id }}"
+                    aria-label="Advance {{ spec.short_name }} to CDISC Approval">
+              <i class="bi bi-arrow-right" aria-hidden="true"></i> Advance
+            </button>
+            <button type="button"
+                    class="btn btn-sm btn-outline-danger kanban-reject-btn"
+                    data-vlm-group-id="{{ spec.vlm_group_id }}"
+                    aria-label="Reject {{ spec.short_name }}">
+              <i class="bi bi-x" aria-hidden="true"></i> Reject
+            </button>
+          </div>
+        </div>
+        {% endfor %}
+      {% else %}
+        <div class="small text-secondary px-2 py-3 text-center">No specializations in this stage.</div>
+      {% endif %}
+    </div>
+  </div>
+
+  <!-- CDISC Approval column -->
+  <div class="kanban-column" role="list" aria-label="CDISC Approval Specializations">
+    <div class="kanban-column-header kanban-header-cdisc-approval">
+      <span>CDISC Approval</span>
+      <span class="kanban-column-count kanban-count-cdisc-approval">
+        {{ spec_columns.cdisc_approval | length if spec_columns else 0 }}
+      </span>
+    </div>
+    <div class="kanban-column-body">
+      {% if spec_columns and spec_columns.cdisc_approval %}
+        {% for spec in spec_columns.cdisc_approval %}
+        <div class="kanban-card" role="listitem">
+          <a href="{{ url_for('specializations.detail', vlm_group_id=spec.vlm_group_id) }}" class="text-decoration-none">
+            <div class="kanban-card-title">{{ spec.short_name }}</div>
+          </a>
+          <div class="kanban-card-meta">
+            <code>{{ spec.vlm_group_id }}</code> &middot; {{ spec.domain }}
+            {% if spec.bc %} &middot; {{ spec.bc.short_name }}{% endif %}
+          </div>
+          <span class="bc-badge bc-badge-cdisc-approval">CDISC Approval</span>
+          <div class="kanban-card-actions">
+            <button type="button"
+                    class="btn btn-sm btn-outline-success kanban-advance-btn"
+                    data-vlm-group-id="{{ spec.vlm_group_id }}"
+                    aria-label="Publish {{ spec.short_name }}">
+              <i class="bi bi-check-circle" aria-hidden="true"></i> Publish
+            </button>
+            <button type="button"
+                    class="btn btn-sm btn-outline-danger kanban-reject-btn"
+                    data-vlm-group-id="{{ spec.vlm_group_id }}"
+                    aria-label="Reject {{ spec.short_name }}">
+              <i class="bi bi-x" aria-hidden="true"></i> Reject
+            </button>
+          </div>
+        </div>
+        {% endfor %}
+      {% else %}
+        <div class="small text-secondary px-2 py-3 text-center">No specializations in this stage.</div>
+      {% endif %}
+    </div>
+  </div>
+
+  <!-- Published column -->
+  <div class="kanban-column" role="list" aria-label="Published Specializations">
+    <div class="kanban-column-header kanban-header-published">
+      <span>Ready to Publish</span>
+      <span class="kanban-column-count kanban-count-published">
+        {{ spec_columns.published | length if spec_columns else 0 }}
+      </span>
+    </div>
+    <div class="kanban-column-body">
+      {% if spec_columns and spec_columns.published %}
+        {% for spec in spec_columns.published %}
+        <div class="kanban-card" role="listitem">
+          <a href="{{ url_for('specializations.detail', vlm_group_id=spec.vlm_group_id) }}" class="text-decoration-none">
+            <div class="kanban-card-title">{{ spec.short_name }}</div>
+          </a>
+          <div class="kanban-card-meta">
+            <code>{{ spec.vlm_group_id }}</code> &middot; {{ spec.domain }}
+            {% if spec.bc %} &middot; {{ spec.bc.short_name }}{% endif %}
+          </div>
+          <span class="bc-badge bc-badge-published">Ready to Publish</span>
+          <div class="kanban-card-actions">
+            <button type="button"
+                    class="btn btn-sm btn-outline-danger kanban-reject-btn"
+                    data-vlm-group-id="{{ spec.vlm_group_id }}"
+                    aria-label="Reject {{ spec.short_name }}">
+              <i class="bi bi-x" aria-hidden="true"></i> Reject
+            </button>
+          </div>
+        </div>
+        {% endfor %}
+      {% else %}
+        <div class="small text-secondary px-2 py-3 text-center">No specializations ready for publication yet.</div>
+      {% endif %}
+    </div>
+  </div>
+
+</div><!-- /kanban-grid -->
+
+</div><!-- /spec-board -->
+
+</div><!-- /tab-content -->
 
 <!-- Governance action bar -->
 <div class="bc-card mt-3">
@@ -203,7 +417,7 @@
       <i class="bi bi-clock-history" aria-hidden="true"></i> View Full Audit Trail
     </a>
     <button type="button" class="btn btn-sm btn-success" data-bs-toggle="modal" data-bs-target="#exportModal">
-      <i class="bi bi-download" aria-hidden="true"></i> Export Published BCs
+      <i class="bi bi-download" aria-hidden="true"></i> Export Published Data
     </button>
   </div>
 </div>
@@ -213,7 +427,7 @@
   <div class="modal-dialog modal-sm">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="exportModalLabel">Export Published BCs</h5>
+        <h5 class="modal-title" id="exportModalLabel">Export Published Data</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">

@@ -5,6 +5,8 @@ from unittest.mock import MagicMock, patch
 
 import requests
 
+from extensions import db
+from models.bc import BiomedicalConcept
 from services.ncit_api import NCItApiClient
 
 # ---------------------------------------------------------------------------
@@ -154,3 +156,28 @@ class TestNcitConceptRoute:
             r = client.get("/ncit/concept/CXXXXX")
 
         assert r.status_code == 404
+
+
+# ---------------------------------------------------------------------------
+# POST /ncit/resolve/<bc_id>
+# ---------------------------------------------------------------------------
+
+
+class TestNcitResolveRoute:
+    def test_maps_ncit_code_to_bc(self, client, app, sample_bc):
+        client.post("/ncit/resolve/C12345", data={"ncit_code": "C77777"})
+        with app.app_context():
+            bc = db.session.get(BiomedicalConcept, "C12345")
+            assert bc.ncit_code == "C77777"
+
+    def test_blocked_when_published(self, client, app, sample_bc):
+        with app.app_context():
+            bc = db.session.get(BiomedicalConcept, "C12345")
+            bc.status = "published"
+            db.session.commit()
+        r = client.post("/ncit/resolve/C12345", data={"ncit_code": "C77777"}, follow_redirects=True)
+        assert r.status_code == 200
+        assert b"Ready to Publish" in r.data
+        with app.app_context():
+            bc = db.session.get(BiomedicalConcept, "C12345")
+            assert bc.ncit_code == "C12345"

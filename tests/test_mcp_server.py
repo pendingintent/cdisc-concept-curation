@@ -50,6 +50,13 @@ class TestDispatch:
             "submit_bc_for_review",
             "advance_governance",
             "reject_bc",
+            "advance_specialization_governance",
+            "reject_specialization",
+            "list_notes",
+            "add_note",
+            "update_note",
+            "resolve_note",
+            "flag_note",
         }
         assert {tool.name for tool in mcp_srv._TOOLS} == expected
 
@@ -106,6 +113,7 @@ class TestGetBc:
         assert result["bc_id"] == sample_bc
         assert result["decs"][0]["dec_label"] == "Result"
         assert result["specializations"][0]["vlm_group_id"] == f"{sample_bc}.SDTM"
+        assert result["specializations"][0]["status"] == "provisional"
         assert result["governance_records"][0]["action"] == "advanced"
 
 
@@ -202,6 +210,14 @@ class TestUpdateBc:
         with pytest.raises(ValueError, match="not found"):
             _dispatch("update_bc", {"bc_id": "NOPE", "short_name": "X"})
 
+    def test_blocked_when_published(self, app, sample_bc):
+        with app.app_context():
+            bc = db.session.get(BiomedicalConcept, sample_bc)
+            bc.status = "published"
+            db.session.commit()
+        with pytest.raises(ValueError, match="Ready to Publish"):
+            _dispatch("update_bc", {"bc_id": sample_bc, "short_name": "Renamed"})
+
 
 class TestMapNcit:
     def test_maps_and_audits(self, app, sample_bc):
@@ -210,6 +226,14 @@ class TestMapNcit:
         rows = _audit_rows(app, "ncit_mapped")
         assert len(rows) == 1
         assert rows[0].actor == "mcp"
+
+    def test_blocked_when_published(self, app, sample_bc):
+        with app.app_context():
+            bc = db.session.get(BiomedicalConcept, sample_bc)
+            bc.status = "published"
+            db.session.commit()
+        with pytest.raises(ValueError, match="Ready to Publish"):
+            _dispatch("map_ncit_to_bc", {"bc_id": sample_bc, "ncit_code": "C77777"})
 
     def test_promotes_import_id(self, app):
         with app.app_context():
@@ -299,12 +323,53 @@ class TestGovernanceWrites:
             assert rec.actor == "mcp"
         assert len(_audit_rows(app, "rejected")) == 1
 
+    def test_submit_spec_then_advance_to_published(self, app, sample_spec):
+        first = _dispatch("advance_specialization_governance", {"vlm_group_id": sample_spec, "comment": "looks good"})
+        assert first == {"vlm_group_id": sample_spec, "short_name": "Test Spec", "status": "sme_review", "advanced": True}
+
+        second = _dispatch("advance_specialization_governance", {"vlm_group_id": sample_spec})
+        assert second["status"] == "cdisc_approval"
+
+        third = _dispatch("advance_specialization_governance", {"vlm_group_id": sample_spec})
+        assert third["status"] == "published"
+
+        fourth = _dispatch("advance_specialization_governance", {"vlm_group_id": sample_spec})
+        assert fourth["advanced"] is False
+        assert fourth["status"] == "published"
+
+        with app.app_context():
+            recs = GovernanceRecord.query.filter_by(vlm_group_id=sample_spec).order_by(GovernanceRecord.id).all()
+            assert [r.action for r in recs] == ["advanced", "advanced", "advanced"]
+            assert recs[0].actor == "mcp"
+            assert recs[0].comment == "looks good"
+        assert len(_audit_rows(app, "status_changed")) == 3
+
+    def test_reject_spec_returns_to_provisional(self, app, sample_spec):
+        _dispatch("advance_specialization_governance", {"vlm_group_id": sample_spec})
+        result = _dispatch("reject_specialization", {"vlm_group_id": sample_spec, "comment": "needs work"})
+        assert result["status"] == "provisional"
+        with app.app_context():
+            rec = GovernanceRecord.query.filter_by(vlm_group_id=sample_spec, action="rejected").one()
+            assert rec.stage == 0
+            assert rec.actor == "mcp"
+        assert len(_audit_rows(app, "rejected")) == 1
+
+    def test_advance_spec_missing_id_raises(self):
+        with pytest.raises(ValueError, match="vlm_group_id is required"):
+            _dispatch("advance_specialization_governance", {})
+
+    def test_advance_spec_missing_spec_raises(self):
+        with pytest.raises(ValueError, match="not found"):
+            _dispatch("advance_specialization_governance", {"vlm_group_id": "NOPE"})
+
 
 class TestReviewQueue:
-    def test_queue_summary(self, app, sample_bc):
+    def test_queue_summary(self, app, sample_bc, sample_spec):
         with app.app_context():
             bc = db.session.get(BiomedicalConcept, sample_bc)
             bc.status = "sme_review"
+            spec = db.session.get(DatasetSpecialization, sample_spec)
+            spec.status = "sme_review"
             db.session.add(IngestionRecord(session_key="s", mapped={"bc_id": "X"}, status="pending"))
             db.session.add(IngestionRecord(session_key="s", mapped={"bc_id": "Y"}, status="approved"))
             db.session.commit()
@@ -313,3 +378,75 @@ class TestReviewQueue:
         assert result["sme_review"][0]["bc_id"] == sample_bc
         assert result["cdisc_approval"] == []
         assert result["pending_ingestion_records"] == 1
+        assert result["specializations"]["sme_review"][0]["vlm_group_id"] == sample_spec
+        assert result["specializations"]["cdisc_approval"] == []
+
+
+class TestListNotesTool:
+    def test_requires_exactly_one_id(self):
+        with pytest.raises(ValueError, match="exactly one"):
+            _dispatch("list_notes", {})
+
+    def test_rejects_both_ids(self, sample_bc, sample_spec):
+        with pytest.raises(ValueError, match="exactly one"):
+            _dispatch("list_notes", {"bc_id": sample_bc, "vlm_group_id": sample_spec})
+
+    def test_lists_bc_notes_most_recent_first(self, sample_bc):
+        _dispatch("add_note", {"bc_id": sample_bc, "text": "first"})
+        _dispatch("add_note", {"bc_id": sample_bc, "text": "second"})
+        result = _dispatch("list_notes", {"bc_id": sample_bc})
+        assert [n["text"] for n in result] == ["second", "first"]
+
+    def test_lists_spec_notes(self, sample_spec):
+        _dispatch("add_note", {"vlm_group_id": sample_spec, "text": "spec note"})
+        result = _dispatch("list_notes", {"vlm_group_id": sample_spec})
+        assert result[0]["text"] == "spec note"
+
+
+class TestAddNoteTool:
+    def test_add_bc_note_default_actor_is_mcp(self, app, sample_bc):
+        result = _dispatch("add_note", {"bc_id": sample_bc, "text": "hello"})
+        assert result["bc_id"] == sample_bc
+        assert result["created_by"] == "mcp"
+        assert len(_audit_rows(app, "created")) == 1
+
+    def test_requires_exactly_one_id(self):
+        with pytest.raises(ValueError, match="exactly one"):
+            _dispatch("add_note", {"text": "hello"})
+
+    def test_locked_when_published(self, app, sample_bc):
+        with app.app_context():
+            bc = db.session.get(BiomedicalConcept, sample_bc)
+            bc.status = "published"
+            db.session.commit()
+        with pytest.raises(ValueError, match="Ready to Publish"):
+            _dispatch("add_note", {"bc_id": sample_bc, "text": "hello"})
+
+
+class TestUpdateNoteTool:
+    def test_updates_text(self, sample_bc):
+        note = _dispatch("add_note", {"bc_id": sample_bc, "text": "original"})
+        updated = _dispatch("update_note", {"note_id": note["id"], "text": "revised"})
+        assert updated["text"] == "revised"
+
+    def test_missing_note_id_raises(self):
+        with pytest.raises(ValueError, match="note_id is required"):
+            _dispatch("update_note", {"text": "x"})
+
+
+class TestResolveNoteTool:
+    def test_resolve_and_unresolve(self, sample_bc):
+        note = _dispatch("add_note", {"bc_id": sample_bc, "text": "text"})
+        resolved = _dispatch("resolve_note", {"note_id": note["id"]})
+        assert resolved["resolved"] is True
+        unresolved = _dispatch("resolve_note", {"note_id": note["id"], "resolved": False})
+        assert unresolved["resolved"] is False
+
+
+class TestFlagNoteTool:
+    def test_flag_and_unflag(self, sample_bc):
+        note = _dispatch("add_note", {"bc_id": sample_bc, "text": "text"})
+        flagged = _dispatch("flag_note", {"note_id": note["id"]})
+        assert flagged["flagged"] is True
+        unflagged = _dispatch("flag_note", {"note_id": note["id"], "flagged": False})
+        assert unflagged["flagged"] is False

@@ -1,22 +1,34 @@
 import json
 import logging
+import re
 from datetime import datetime, timezone
 
 from flask import Blueprint, Response, flash, redirect, render_template, request, url_for
 
 from extensions import db
-from models.bc import BiomedicalConcept, DataElementConcept
+from models.bc import RESULT_SCALES, BiomedicalConcept, DataElementConcept, split_result_scales
 from models.governance import GovernanceRecord
-from services import bc_service
+from services import bc_service, notes_service
 from services.audit import log_change
 from services.cdisc_api import CDISCApiClient
-from services.export import export_json, export_odm_xml, export_xlsx
+from services.export import export_governance_xlsx, export_json, export_odm_xml
 from services.loinc_api import LoincApiClient
 from services.ncit_api import NCItApiClient
 
 logger = logging.getLogger(__name__)
 
 bp = Blueprint("bc", __name__)
+
+
+def _result_scale_context(bc):
+    """Split a BC's stored result_scales into (selected valid, unsupported) lists
+    for the checkbox form: unsupported values (e.g. from a spreadsheet import)
+    aren't in RESULT_SCALES and are surfaced separately for a red "not supported"
+    display rather than as a checkbox option."""
+    scales = split_result_scales(bc.result_scales if bc else None)
+    selected = [s for s in scales if s in RESULT_SCALES]
+    unsupported = [s for s in scales if s not in RESULT_SCALES]
+    return {"result_scale_options": RESULT_SCALES, "selected_result_scales": selected, "unsupported_result_scales": unsupported}
 
 
 @bp.route("/")
@@ -56,21 +68,22 @@ def new_bc():
         loinc_data={},
         ncit_data={},
         page_title="New Biomedical Concept",
+        **_result_scale_context(bc),
     )
 
 
 @bp.route("/export")
 def export():
     fmt = request.args.get("format", "json")
-    bcs = [bc.to_dict() for bc in BiomedicalConcept.query.all()]
     if fmt == "xlsx":
-        buf = export_xlsx(bcs)
+        buf = export_governance_xlsx(BiomedicalConcept.query.all())
         return Response(
             buf,
             mimetype="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
             headers={"Content-Disposition": "attachment; filename=bcs.xlsx"},
         )
-    elif fmt == "odm":
+    bcs = [bc.to_dict() for bc in BiomedicalConcept.query.all()]
+    if fmt == "odm":
         xml = export_odm_xml(bcs)
         return Response(
             xml,
@@ -147,7 +160,9 @@ def detail(bc_id):
         ncit_data=ncit_data,
         needs_ncit_fetch=not ncit_data and bool(bc.ncit_code),
         needs_loinc_fetch=not loinc_data and bool(bc.loinc_code),
+        notes=notes_service.list_bc_notes(bc_id),
         page_title=bc.short_name,
+        **_result_scale_context(bc),
     )
 
 
@@ -184,8 +199,10 @@ def fetch_metadata(bc_id):
 
 @bp.route("/", methods=["POST"])
 def create():
+    data = request.form.to_dict()
+    data["result_scales"] = "; ".join(request.form.getlist("result_scales"))
     try:
-        bc = bc_service.create_bc(request.form)
+        bc = bc_service.create_bc(data)
     except ValueError as e:
         flash(str(e), "danger")
         return redirect(url_for("bc.new_bc"))
@@ -197,7 +214,18 @@ def create():
 @bp.route("/<bc_id>/edit", methods=["POST"])
 def edit(bc_id):
     db.get_or_404(BiomedicalConcept, bc_id)
-    bc_service.update_bc(bc_id, request.form, actor="user")
+    data = request.form.to_dict()
+    # A checkbox group with everything unchecked submits no "result_scales" key
+    # at all, indistinguishable from the field being absent from the form
+    # entirely — the hidden "result_scales_submitted" marker (always present
+    # on the real edit form) disambiguates "clear it" from "leave it alone".
+    if "result_scales_submitted" in request.form:
+        data["result_scales"] = "; ".join(request.form.getlist("result_scales"))
+    try:
+        bc_service.update_bc(bc_id, data, actor="user")
+    except ValueError as e:
+        flash(str(e), "danger")
+        return redirect(url_for("bc.detail", bc_id=bc_id))
     bc_service.save_decs(bc_id, _decs_from_form(request.form))
     flash(f"BC {bc_id} updated", "success")
     return redirect(url_for("bc.detail", bc_id=bc_id))
@@ -206,6 +234,9 @@ def edit(bc_id):
 @bp.route("/<bc_id>/clear-ncit", methods=["POST"])
 def clear_ncit(bc_id):
     bc = db.get_or_404(BiomedicalConcept, bc_id)
+    if bc.status == "published":
+        flash(f"BC {bc_id} has reached Ready to Publish status and cannot be edited", "danger")
+        return redirect(url_for("bc.detail", bc_id=bc_id))
     before = bc.to_dict()
     bc.ncit_code = None
     bc.ncit_metadata = None
@@ -220,6 +251,9 @@ def clear_ncit(bc_id):
 @bp.route("/<bc_id>/clear-loinc", methods=["POST"])
 def clear_loinc(bc_id):
     bc = db.get_or_404(BiomedicalConcept, bc_id)
+    if bc.status == "published":
+        flash(f"BC {bc_id} has reached Ready to Publish status and cannot be edited", "danger")
+        return redirect(url_for("bc.detail", bc_id=bc_id))
     before = bc.to_dict()
     bc.loinc_code = None
     bc.loinc_metadata = None
@@ -243,6 +277,9 @@ def submit_for_review(bc_id):
 @bp.route("/<bc_id>/delete", methods=["POST"])
 def delete(bc_id):
     bc = db.get_or_404(BiomedicalConcept, bc_id)
+    if bc.status == "published":
+        flash(f"BC {bc_id} has reached Ready to Publish status and cannot be deleted", "danger")
+        return redirect(url_for("bc.detail", bc_id=bc_id))
     # Nullify self-referential parent FK on child BCs; without this SQLAlchemy
     # raises CircularDependencyError when flushing the delete.
     BiomedicalConcept.query.filter_by(parent_bc_id=bc_id).update({"parent_bc_id": None}, synchronize_session="fetch")
@@ -255,22 +292,30 @@ def delete(bc_id):
     return redirect(url_for("bc.index"))
 
 
+_DEC_FIELD_RE = re.compile(r"^decs\[(\d+)\]\[(\w+)\]$")
+
+
 def _decs_from_form(form):
-    """Convert the parallel dec_*[] form lists into a list of dicts for
-    bc_service.save_decs, preserving row positions (blank labels keep
-    their slot so default dec_id numbering matches the form rows)."""
-    labels = form.getlist("dec_label[]")
-    dtypes = form.getlist("dec_data_type[]")
-    examples = form.getlist("dec_example_set[]")
-    dec_ids = form.getlist("dec_id[]")
-    ncit_codes = form.getlist("dec_ncit_code[]")
+    """Convert the decs[N][field] fields submitted by the DEC table
+    (server-rendered rows and rows added via static/js/main.js
+    buildDecRow()) into a list of dicts for bc_service.save_decs, ordered by
+    row index (blank labels keep their slot so default dec_id numbering
+    matches the form rows)."""
+    rows = {}
+    for key in form.keys():
+        match = _DEC_FIELD_RE.match(key)
+        if not match:
+            continue
+        index, field = int(match.group(1)), match.group(2)
+        rows.setdefault(index, {})[field] = form.get(key)
     return [
         {
-            "dec_id": dec_ids[i] if i < len(dec_ids) else "",
-            "ncit_dec_code": ncit_codes[i] if i < len(ncit_codes) else "",
-            "dec_label": label,
-            "data_type": dtypes[i] if i < len(dtypes) else "string",
-            "example_set": examples[i] if i < len(examples) else "",
+            "dec_id": row.get("dec_id", ""),
+            "ncit_dec_code": row.get("ncit_dec_code", ""),
+            "dec_label": row.get("dec_label", ""),
+            "data_type": row.get("data_type") or "string",
+            "example_set": row.get("example_set", ""),
+            "required": row.get("required") == "1",
         }
-        for i, label in enumerate(labels)
+        for _, row in sorted(rows.items())
     ]

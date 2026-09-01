@@ -13,7 +13,8 @@ class IngestionRecord(db.Model):
     _mapped = db.Column("mapped", db.Text)
     _confidences = db.Column("confidences", db.Text)
     _errors = db.Column("errors", db.Text)
-    _decs = db.Column("decs", db.Text)
+    _decs = db.Column("decs", db.Text)  # DEC sub-rows for a BC record, variable rows for a specialization record
+    record_type = db.Column(db.String(20), default="bc", nullable=False)  # "bc" / "specialization"
     duplicate = db.Column(db.Boolean, default=False)
     status = db.Column(db.String(20), default="pending")  # pending / approved / rejected
     created_at = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc))

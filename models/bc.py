@@ -1,6 +1,26 @@
 from datetime import datetime, timezone
 
+from sqlalchemy.orm import object_session
+
 from extensions import db
+
+# Alphabetically sorted result scale options a BC's result_scales field may
+# hold; anything else (e.g. a legacy spreadsheet value) is unsupported.
+RESULT_SCALES = ("Narrative", "Nominal", "Ordinal", "Quantitative", "Temporal")
+
+
+def split_result_scales(value):
+    """Split a semicolon-separated result_scales string into trimmed values."""
+    return [v.strip() for v in (value or "").split(";") if v.strip()]
+
+
+def partition_result_scales(value):
+    """Split a result_scales string into (supported, unsupported) lists,
+    e.g. from a legacy/spreadsheet value not in RESULT_SCALES."""
+    scales = split_result_scales(value)
+    supported = [s for s in scales if s in RESULT_SCALES]
+    unsupported = [s for s in scales if s not in RESULT_SCALES]
+    return supported, unsupported
 
 
 class BiomedicalConcept(db.Model):
@@ -32,6 +52,25 @@ class BiomedicalConcept(db.Model):
     specializations = db.relationship("DatasetSpecialization", backref="bc", lazy="dynamic", cascade="all, delete-orphan")
 
     def to_dict(self):
+        # self.decs is a lazy="dynamic" relationship, which requires the
+        # instance to be session-bound to query — a transient BC that was
+        # never added to a session (e.g. one built ad hoc, not yet saved)
+        # has no DECs to report yet, so skip the query rather than raising.
+        decs = (
+            [
+                {
+                    "dec_id": dec.dec_id,
+                    "ncit_dec_code": dec.ncit_dec_code,
+                    "dec_label": dec.dec_label,
+                    "data_type": dec.data_type,
+                    "example_set": dec.example_set,
+                    "required": dec.required,
+                }
+                for dec in self.decs.order_by(DataElementConcept.sort_order)
+            ]
+            if object_session(self) is not None
+            else []
+        )
         return {
             "bc_id": self.bc_id,
             "short_name": self.short_name,
@@ -47,6 +86,7 @@ class BiomedicalConcept(db.Model):
             "package_date": self.package_date,
             "status": self.status,
             "submitter": self.submitter,
+            "decs": decs,
         }
 
 

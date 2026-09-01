@@ -14,57 +14,41 @@ try:
 except ImportError:
     etree = None
 
+from services.ingestion import VARIABLE_FIELDS
+
 logger = logging.getLogger(__name__)
 
-
-BC_EXPORT_FIELDS = [
-    "bc_id",
-    "short_name",
-    "definition",
-    "ncit_code",
-    "parent_bc_id",
-    "bc_categories",
-    "synonyms",
-    "result_scales",
-    "system",
-    "system_name",
-    "code",
+# Exact header order of the reference file's SDTM_LB/SDTM_VS worksheets
+# (files/BC Examples.xlsx), so an exported specialization sheet is
+# structurally identical to what the ingestion importer produces from a
+# real CDISC-authored workbook — not just importer-parseable. The three
+# *_version/vlm_source columns aren't tracked by DatasetSpecialization and
+# are exported blank; VARIABLE_FIELDS (imported above) supplies the rest.
+SPEC_SHEET_HEADER_FIELDS = [
     "package_date",
-    "status",
+    "bc_id",
+    "sdtmig_start_version",
+    "sdtmig_end_version",
+    "domain",
+    "vlm_source",
+    "vlm_group_id",
+    "short_name",
 ]
+
+# DataElementConcept.data_type values -> ODM-XML ItemDef DataType.
+DEC_ODM_DATA_TYPES = {
+    "string": "text",
+    "decimal": "float",
+    "integer": "integer",
+    "boolean": "boolean",
+    "date": "date",
+    "datetime": "datetime",
+}
 
 
 def export_json(bc_list):
     """Export list of BC dicts to JSON string."""
     return json.dumps(bc_list, indent=2, default=str)
-
-
-def export_xlsx(bc_list):
-    """Export list of BC dicts to BytesIO XLSX."""
-    if openpyxl is None:
-        raise ImportError("openpyxl is required for XLSX export")
-    wb = openpyxl.Workbook()
-    ws = wb.active
-    ws.title = "Biomedical Concepts"
-
-    header_fill = PatternFill("solid", fgColor="003366")
-    header_font_white = Font(bold=True, color="FFFFFF")
-
-    for col_idx, field in enumerate(BC_EXPORT_FIELDS, start=1):
-        cell = ws.cell(row=1, column=col_idx, value=field.replace("_", " ").title())
-        cell.font = header_font_white
-        cell.fill = header_fill
-        cell.alignment = Alignment(horizontal="center")
-
-    for row_idx, bc in enumerate(bc_list, start=2):
-        for col_idx, field in enumerate(BC_EXPORT_FIELDS, start=1):
-            value = bc.get("loinc_code", "") if field == "code" else bc.get(field, "")
-            ws.cell(row=row_idx, column=col_idx, value=value)
-
-    buf = io.BytesIO()
-    wb.save(buf)
-    buf.seek(0)
-    return buf
 
 
 GOVERNANCE_BC_FIELDS = [
@@ -85,13 +69,19 @@ GOVERNANCE_DEC_FIELDS = ["dec_id", "ncit_dec_code", "dec_label", "data_type", "e
 GOVERNANCE_HEADERS = GOVERNANCE_BC_FIELDS + GOVERNANCE_DEC_FIELDS + ["History of Change"]
 
 
-def export_governance_xlsx(bc_objects):
+def export_governance_xlsx(bc_objects, spec_objects=None):
     """Export BiomedicalConcept ORM objects in BC_LB worksheet format.
 
     Matches the column layout of the BC_LB sheet in the reference file:
     18 columns — BC fields, DEC fields, then History of Change.
     One BC-only row is written per BC, followed by one row per DEC
     (all BC fields repeated on each DEC row).
+
+    When spec_objects (DatasetSpecialization ORM objects) is given, one
+    "SDTM_<domain>" worksheet per domain is added — the same sheet naming
+    and column headers (services.ingestion.SPEC_HEADER_FIELDS +
+    VARIABLE_FIELDS) that services.ingestion.parse_xlsx expects, so the
+    export can be re-imported through the ingestion pipeline unchanged.
     Returns a BytesIO object.
     """
     if openpyxl is None:
@@ -132,10 +122,53 @@ def export_governance_xlsx(bc_objects):
                     val = bc_vals[header]
                 elif header == "History of Change":
                     val = bc_vals["History of Change"]
+                elif header == "ncit_dec_code":
+                    # DEC ID is the only identifier curators set through the
+                    # UI, so the legacy ncit_dec_code column always mirrors
+                    # it on export rather than the (now unused) stored value.
+                    val = dec.dec_id or ""
                 else:
                     val = getattr(dec, header, "") or ""
                 ws.cell(row=row_idx, column=col_idx, value=val)
             row_idx += 1
+
+    if spec_objects:
+        spec_headers = SPEC_SHEET_HEADER_FIELDS + list(VARIABLE_FIELDS)
+
+        specs_by_domain = {}
+        for spec in spec_objects:
+            specs_by_domain.setdefault(spec.domain or "", []).append(spec)
+
+        for domain, specs in specs_by_domain.items():
+            spec_ws = wb.create_sheet(f"SDTM_{domain}"[:31])
+            for col_idx, header in enumerate(spec_headers, start=1):
+                cell = spec_ws.cell(row=1, column=col_idx, value=header)
+                cell.font = header_font_white
+                cell.fill = header_fill
+                cell.alignment = Alignment(horizontal="center")
+
+            row_idx = 2
+            for spec in specs:
+                # sdtmig_start_version/sdtmig_end_version/vlm_source are real
+                # columns in the reference worksheet that this app's model
+                # doesn't track — left blank rather than dropped, so the
+                # exported header row matches the reference file exactly.
+                header_vals = {
+                    "vlm_group_id": spec.vlm_group_id,
+                    "bc_id": spec.bc_id,
+                    "domain": spec.domain or "",
+                    "short_name": spec.short_name or "",
+                    "package_date": "",
+                    "sdtmig_start_version": "",
+                    "sdtmig_end_version": "",
+                    "vlm_source": "",
+                }
+                variables = spec.variables or [{}]
+                for variable in variables:
+                    for col_idx, header in enumerate(spec_headers, start=1):
+                        value = header_vals[header] if header in header_vals else variable.get(header, "")
+                        spec_ws.cell(row=row_idx, column=col_idx, value=value)
+                    row_idx += 1
 
     buf = io.BytesIO()
     wb.save(buf)
@@ -181,5 +214,25 @@ def export_odm_xml(bc_list):
                     "Name": bc.get("ncit_code", ""),
                 },
             )
+
+        for dec in bc.get("decs") or []:
+            dec_item_def = etree.SubElement(
+                root,
+                "ItemDef",
+                attrib={
+                    "OID": dec.get("dec_id", ""),
+                    "Name": dec.get("dec_label", ""),
+                    "DataType": DEC_ODM_DATA_TYPES.get(dec.get("data_type"), "text"),
+                },
+            )
+            if dec.get("ncit_dec_code"):
+                etree.SubElement(
+                    dec_item_def,
+                    "Alias",
+                    attrib={
+                        "Context": "nci:ExtCodeID",
+                        "Name": dec.get("ncit_dec_code", ""),
+                    },
+                )
 
     return etree.tostring(root, pretty_print=True, xml_declaration=True, encoding="UTF-8").decode()

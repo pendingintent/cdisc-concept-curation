@@ -78,6 +78,10 @@ def resolve(bc_id):
     bc = db.get_or_404(BiomedicalConcept, bc_id)
     ncit_code = request.form.get("ncit_code", "").strip()
     if ncit_code:
-        bc = bc_service.map_ncit_to_bc(bc_id, ncit_code, actor="user")
+        try:
+            bc = bc_service.map_ncit_to_bc(bc_id, ncit_code, actor="user")
+        except ValueError as e:
+            flash(str(e), "danger")
+            return redirect(url_for("ncit.mapping"))
         flash(f"NCIt mapping updated for {bc.short_name}", "success")
     return redirect(url_for("ncit.mapping"))

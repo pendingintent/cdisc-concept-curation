@@ -816,6 +816,37 @@ code, .mono {
   border-bottom: 1px solid var(--border-light);
 }
 
+/* ── Notes panel ── */
+.note-item {
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-md);
+  padding: 10px 12px;
+}
+
+.note-item-flagged {
+  border-left: 3px solid #D57E00; /* CDISC Orange — high-priority accent */
+}
+
+.note-flag-indicator {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
+  margin-right: 4px;
+  border-radius: 3px;
+  background: #D57E00; /* CDISC Orange */
+  color: #fff;
+  font-weight: 700;
+  font-size: 11px;
+  line-height: 1;
+}
+
+.note-text-display {
+  white-space: pre-wrap;
+  font-size: 13px;
+}
+
 /* ── NCIt lookup panel ── */
 .ncit-result-panel {
   border: 1px solid var(--border-light);

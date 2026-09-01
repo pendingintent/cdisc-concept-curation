@@ -21,7 +21,7 @@
     {% elif bc.status == 'cdisc_approval' %}
       <span class="bc-badge bc-badge-cdisc-approval">CDISC Approval</span>
     {% elif bc.status == 'published' %}
-      <span class="bc-badge bc-badge-published">Published</span>
+      <span class="bc-badge bc-badge-published">Ready to Publish</span>
     {% endif %}
     {% if bc.submitter %}
       <span class="page-meta">Submitted by {{ bc.submitter }}</span>
@@ -49,6 +49,15 @@
       novalidate>
   {{ form.hidden_tag() if form else '' }}
 
+  {% if not is_new and bc.status == 'published' %}
+  <div class="alert alert-secondary d-flex align-items-center gap-2" role="alert">
+    <i class="bi bi-lock" aria-hidden="true"></i>
+    This concept has reached Ready to Publish status and can no longer be edited. Reject it from the
+    <a href="{{ url_for('governance.board') }}">Governance Board</a> to resume editing.
+  </div>
+  {% endif %}
+
+  <fieldset {% if not is_new and bc.status == 'published' %}disabled{% endif %}>
   <div class="two-col-grid">
 
     <!-- Left column: BC fields + DECs -->
@@ -75,11 +84,60 @@
         </div>
       </div>
 
+      <!-- Definition section -->
+      <div class="bc-card bc-card-sm mb-0 mt-3">
+        <h2 class="form-section-title">Definition</h2>
+        <label for="definition" class="form-label small visually-hidden">Definition</label>
+        <textarea id="definition" name="definition" class="form-control form-control-sm"
+                  rows="4"
+                  placeholder="Provide a precise, unambiguous definition aligned with NCI preferred term definition…">{{ bc.definition or '' }}</textarea>
+      </div>
+
+      <!-- Classification section -->
+      <div class="bc-card bc-card-sm mb-0 mt-3">
+        <h2 class="form-section-title">Classification</h2>
+        <div class="mb-2">
+          <label for="bc_categories" class="form-label small">BC Categories</label>
+          <input type="text" id="bc_categories" name="bc_categories" class="form-control form-control-sm"
+                 value="{{ bc.bc_categories or '' }}"
+                 placeholder="e.g. Laboratory Tests; Diabetes">
+          <div class="form-text">Separate multiple categories with semicolons.</div>
+        </div>
+        <div class="row g-2">
+          <div class="col-6">
+            <label for="synonyms" class="form-label small">Synonyms</label>
+            <input type="text" id="synonyms" name="synonyms" class="form-control form-control-sm"
+                   value="{{ bc.synonyms or '' }}"
+                   placeholder="e.g. A1C; Glycated Hb">
+          </div>
+          <div class="col-6">
+            <span class="form-label small d-block">Result Scales</span>
+            <input type="hidden" name="result_scales_submitted" value="1">
+            {% for scale in result_scale_options %}
+            <div class="form-check form-check-sm">
+              <input type="checkbox" class="form-check-input" id="result_scale_{{ loop.index0 }}"
+                     name="result_scales" value="{{ scale }}"
+                     {% if scale in selected_result_scales %}checked{% endif %}>
+              <label class="form-check-label small" for="result_scale_{{ loop.index0 }}">{{ scale }}</label>
+            </div>
+            {% endfor %}
+            {% if unsupported_result_scales %}
+            <div class="form-text text-danger mt-1">
+              {% for scale in unsupported_result_scales %}
+              <input type="hidden" name="result_scales" value="{{ scale }}">
+              {% endfor %}
+              Not supported: {{ unsupported_result_scales | join(', ') }}
+            </div>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+
       <!-- NCIt section -->
       <input type="hidden" id="ncit_metadata" name="ncit_metadata" value="{{ bc.ncit_metadata if bc and bc.ncit_metadata else '' }}">
       <div class="bc-card bc-card-sm mb-0 mt-3">
         <h2 class="form-section-title">
-          NCIt
+          NCIt for Biomedical Concept
           {% if needs_ncit_fetch %}
           <span id="ncit-loading-indicator" class="small fw-normal text-muted ms-2">
             <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Loading…
@@ -175,31 +233,6 @@
           {% endif %}
         </div>
       </div>
-      <!-- Classification section -->
-      <div class="bc-card bc-card-sm mb-0 mt-3">
-        <h2 class="form-section-title">Classification</h2>
-        <div class="mb-2">
-          <label for="bc_categories" class="form-label small">BC Categories</label>
-          <input type="text" id="bc_categories" name="bc_categories" class="form-control form-control-sm"
-                 value="{{ bc.bc_categories or '' }}"
-                 placeholder="e.g. Laboratory Tests; Diabetes">
-          <div class="form-text">Separate multiple categories with semicolons.</div>
-        </div>
-        <div class="row g-2">
-          <div class="col-6">
-            <label for="synonyms" class="form-label small">Synonyms</label>
-            <input type="text" id="synonyms" name="synonyms" class="form-control form-control-sm"
-                   value="{{ bc.synonyms or '' }}"
-                   placeholder="e.g. A1C; Glycated Hb">
-          </div>
-          <div class="col-6">
-            <label for="result_scales" class="form-label small">Result Scales</label>
-            <input type="text" id="result_scales" name="result_scales" class="form-control form-control-sm"
-                   value="{{ bc.result_scales or '' }}"
-                   placeholder="e.g. Quantitative">
-          </div>
-        </div>
-      </div>
 
       <!-- LOINC section -->
       <div class="bc-card bc-card-sm mb-0 mt-3">
@@ -274,14 +307,6 @@
           <div id="loinc-results-container"></div>
         </div>
       </div>
-      <!-- Definition section -->
-      <div class="bc-card bc-card-sm mb-0 mt-3">
-        <h2 class="form-section-title">Definition</h2>
-        <label for="definition" class="form-label small visually-hidden">Definition</label>
-        <textarea id="definition" name="definition" class="form-control form-control-sm"
-                  rows="4"
-                  placeholder="Provide a precise, unambiguous definition aligned with NCI preferred term definition…">{{ bc.definition or '' }}</textarea>
-      </div>
 
       <!-- Metadata section -->
       <div class="bc-card bc-card-sm mb-0 mt-3">
@@ -309,7 +334,7 @@
           {% elif bc.status == 'cdisc_approval' %}
             <span class="bc-badge bc-badge-cdisc-approval">CDISC Approval</span>
           {% elif bc.status == 'published' %}
-            <span class="bc-badge bc-badge-published">Published</span>
+            <span class="bc-badge bc-badge-published">Ready to Publish</span>
           {% endif %}
           <input type="hidden" name="status" value="{{ bc.status if bc else 'provisional' }}">
         </div>
@@ -318,9 +343,13 @@
 
       <!-- Form submit buttons -->
       <div class="d-flex gap-2 mt-3 flex-wrap">
+        {% if not is_new and bc.status == 'published' %}
+        <span class="text-secondary small fst-italic">Read-only — Ready to Publish</span>
+        {% else %}
         <button type="submit" name="action" value="save" class="btn btn-primary btn-sm">
           <i class="bi bi-floppy" aria-hidden="true"></i> Save
         </button>
+        {% endif %}
         <a href="{{ url_for('bc.index') }}" class="btn btn-sm btn-outline-secondary">Cancel</a>
       </div>
 
@@ -341,6 +370,7 @@
           <table class="dec-table" aria-label="Data element concepts">
             <thead>
               <tr>
+                <th scope="col">DEC ID</th>
                 <th scope="col">DEC Label</th>
                 <th scope="col">Data Type</th>
                 <th scope="col">Example Values</th>
@@ -352,6 +382,13 @@
               {% if bc and bc.decs %}
                 {% for dec in bc.decs %}
                 <tr>
+                  <td>
+                    <input type="hidden" name="decs[{{ loop.index0 }}][ncit_dec_code]" value="{{ dec.ncit_dec_code | default('') }}">
+                    <input type="text" class="form-control form-control-sm"
+                           name="decs[{{ loop.index0 }}][dec_id]"
+                           value="{{ dec.dec_id }}"
+                           aria-label="DEC ID">
+                  </td>
                   <td>
                     <input type="text" class="form-control form-control-sm"
                            name="decs[{{ loop.index0 }}][dec_label]"
@@ -394,9 +431,47 @@
         </div>
       </div>
 
+      <!-- NCIt section (DEC-scoped: search NCIt to populate a newly-added DEC row) -->
+      <div class="bc-card bc-card-sm mb-0 mt-3">
+        <h2 class="form-section-title">NCIt for DEC</h2>
+
+        <!-- NCIt Code search + lookup -->
+        <div class="row g-2 mb-2">
+          <div class="col">
+            <label for="dec_ncit_code" class="form-label small">NCIt Code</label>
+            <div class="input-group input-group-sm">
+              <input type="text" id="dec_ncit_code" class="form-control"
+                     placeholder="e.g. C64849"
+                     aria-describedby="dec-ncit-lookup-btn">
+              <button type="button" id="dec-ncit-lookup-btn" class="btn btn-outline-secondary">
+                <i class="bi bi-search" aria-hidden="true"></i> Look up NCIt
+              </button>
+            </div>
+            <div class="form-text small">Click <strong>Add DEC</strong> first, then search here to populate the new row's DEC ID and DEC Label — or search here first and a new row will be added for you.</div>
+          </div>
+        </div>
+
+        <!-- NCIt lookup results panel (hidden until search) -->
+        <div id="dec-ncit-results-panel" class="d-none" aria-live="polite" aria-label="NCIt lookup results for DEC">
+          <div class="ncit-result-panel">
+            <div class="d-flex align-items-center justify-content-between mb-2">
+              <span class="small fw-semibold text-secondary">NCIt Search Results</span>
+              <button type="button" class="btn-close btn-sm"
+                      onclick="document.getElementById('dec-ncit-results-panel').classList.add('d-none')"
+                      aria-label="Close NCIt results"></button>
+            </div>
+            <div id="dec-ncit-results-container"></div>
+          </div>
+        </div>
+
+        <!-- NCIt metadata display -->
+        <div id="dec-ncit-meta-display" class="d-none"></div>
+      </div>
+
     </div><!-- /right column -->
 
   </div><!-- /two-col-grid -->
+  </fieldset>
 </form>
 {% if bc and bc.bc_id %}
 {% if bc.ncit_code %}
@@ -407,6 +482,13 @@
 <form id="clear-loinc-form" method="post"
       action="{{ url_for('bc.clear_loinc', bc_id=bc.bc_id) }}"></form>
 {% endif %}
+{% endif %}
+
+{% if not is_new and bc.bc_id %}
+{% set notes_entity_kind = "bc" %}
+{% set notes_entity_id = bc.bc_id %}
+{% set notes_locked = bc.status == "published" %}
+{% include "_notes_panel.html" %}
 {% endif %}
 
 {% endblock %}

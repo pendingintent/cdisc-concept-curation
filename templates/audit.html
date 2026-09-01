@@ -38,6 +38,7 @@
         <option value="DataElementConcept" {% if request.args.get('entity_type') == 'DataElementConcept' %}selected{% endif %}>Data Element Concept</option>
         <option value="GovernanceRecord"   {% if request.args.get('entity_type') == 'GovernanceRecord'   %}selected{% endif %}>Governance Record</option>
         <option value="DatasetSpecialization" {% if request.args.get('entity_type') == 'DatasetSpecialization' %}selected{% endif %}>Specialization</option>
+        <option value="Note" {% if request.args.get('entity_type') == 'Note' %}selected{% endif %}>Note</option>
       </select>
 
       <select name="action" class="form-select form-select-sm" style="width: auto;"
@@ -50,6 +51,8 @@
         <option value="reject"   {% if request.args.get('action') == 'reject'   %}selected{% endif %}>Reject</option>
         <option value="publish"  {% if request.args.get('action') == 'publish'  %}selected{% endif %}>Publish</option>
         <option value="ingest"   {% if request.args.get('action') == 'ingest'   %}selected{% endif %}>Ingest</option>
+        <option value="resolve"  {% if request.args.get('action') == 'resolve'  %}selected{% endif %}>Resolve/Unresolve</option>
+        <option value="flag"     {% if request.args.get('action') == 'flag'     %}selected{% endif %}>Flag/Unflag</option>
       </select>
 
       <label for="date-from" class="form-label small visually-hidden">From date</label>

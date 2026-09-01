@@ -1,9 +1,13 @@
 """Tests for routes/governance.py — Kanban advance and reject."""
 
+import pytest
+from sqlalchemy.exc import IntegrityError
+
 from extensions import db
 from models.audit import AuditLog
 from models.bc import BiomedicalConcept
 from models.governance import GovernanceRecord
+from models.specialization import DatasetSpecialization
 
 STATUS_ORDER = ["provisional", "sme_review", "cdisc_approval", "published"]
 
@@ -103,6 +107,21 @@ class TestReject:
     def test_reject_nonexistent_bc_returns_404(self, client):
         r = client.post("/governance/reject/NOPE")
         assert r.status_code == 404
+
+    def test_reject_from_published_returns_to_provisional(self, client, app, sample_bc):
+        for _ in range(3):
+            client.post("/governance/advance/C12345")
+        client.post("/governance/reject/C12345")
+        with app.app_context():
+            bc = db.session.get(BiomedicalConcept, "C12345")
+            assert bc.status == "provisional"
+
+    def test_board_shows_reject_button_for_published_bc(self, client, app, sample_bc):
+        for _ in range(3):
+            client.post("/governance/advance/C12345")
+        r = client.get("/governance/board")
+        assert b'data-bc-id="C12345"' in r.data
+        assert b"kanban-reject-btn" in r.data
 
 
 class TestGovernanceExport:
@@ -234,3 +253,123 @@ class TestGovernanceExport:
         code_col = headers.index("code") + 1
         data_row = ws.cell(row=2, column=code_col).value
         assert data_row == "12345-6"
+
+
+class TestSpecAdvance:
+    def test_advances_provisional_to_sme_review(self, client, app, sample_spec):
+        client.post(f"/governance/spec/advance/{sample_spec}")
+        with app.app_context():
+            spec = db.session.get(DatasetSpecialization, sample_spec)
+            assert spec.status == "sme_review"
+
+    def test_advance_through_all_stages(self, client, app, sample_spec):
+        for _ in range(3):
+            client.post(f"/governance/spec/advance/{sample_spec}")
+        with app.app_context():
+            spec = db.session.get(DatasetSpecialization, sample_spec)
+            assert spec.status == "published"
+
+    def test_already_published_stays_published(self, client, app, sample_spec):
+        for _ in range(3):
+            client.post(f"/governance/spec/advance/{sample_spec}")
+        r = client.post(f"/governance/spec/advance/{sample_spec}", follow_redirects=True)
+        assert r.status_code == 200
+        with app.app_context():
+            spec = db.session.get(DatasetSpecialization, sample_spec)
+            assert spec.status == "published"
+
+    def test_advance_creates_governance_record(self, client, app, sample_spec):
+        client.post(f"/governance/spec/advance/{sample_spec}")
+        with app.app_context():
+            rec = GovernanceRecord.query.filter_by(vlm_group_id=sample_spec, action="advanced").first()
+            assert rec is not None
+            assert rec.bc_id is None
+
+    def test_advance_writes_audit_log(self, client, app, sample_spec):
+        client.post(f"/governance/spec/advance/{sample_spec}")
+        with app.app_context():
+            log = AuditLog.query.filter_by(entity_id=sample_spec, action="status_changed").first()
+            assert log is not None
+            assert log.before_state == {"status": "provisional"}
+            assert log.after_state == {"status": "sme_review"}
+
+    def test_advance_nonexistent_spec_returns_404(self, client):
+        r = client.post("/governance/spec/advance/NOPE")
+        assert r.status_code == 404
+
+    def test_advance_ajax_returns_json(self, client, sample_spec):
+        r = client.post(
+            f"/governance/spec/advance/{sample_spec}",
+            headers={"X-Requested-With": "XMLHttpRequest"},
+        )
+        assert r.status_code == 200
+        data = r.get_json()
+        assert data["status"] == "sme_review"
+        assert data["vlm_group_id"] == sample_spec
+
+
+class TestSpecReject:
+    def test_reject_returns_to_provisional(self, client, app, sample_spec):
+        client.post(f"/governance/spec/advance/{sample_spec}")
+        client.post(f"/governance/spec/reject/{sample_spec}")
+        with app.app_context():
+            spec = db.session.get(DatasetSpecialization, sample_spec)
+            assert spec.status == "provisional"
+
+    def test_reject_creates_governance_record(self, client, app, sample_spec):
+        client.post(f"/governance/spec/reject/{sample_spec}")
+        with app.app_context():
+            rec = GovernanceRecord.query.filter_by(vlm_group_id=sample_spec, action="rejected").first()
+            assert rec is not None
+
+    def test_reject_writes_audit_log(self, client, app, sample_spec):
+        client.post(f"/governance/spec/advance/{sample_spec}")
+        client.post(f"/governance/spec/reject/{sample_spec}")
+        with app.app_context():
+            log = AuditLog.query.filter_by(entity_id=sample_spec, action="rejected").first()
+            assert log is not None
+            assert log.after_state == {"status": "provisional"}
+
+    def test_reject_ajax_returns_json(self, client, sample_spec):
+        r = client.post(
+            f"/governance/spec/reject/{sample_spec}",
+            headers={"X-Requested-With": "XMLHttpRequest"},
+        )
+        assert r.status_code == 200
+        data = r.get_json()
+        assert data["status"] == "provisional"
+
+    def test_reject_from_published_returns_to_provisional(self, client, app, sample_spec):
+        for _ in range(3):
+            client.post(f"/governance/spec/advance/{sample_spec}")
+        client.post(f"/governance/spec/reject/{sample_spec}")
+        with app.app_context():
+            spec = db.session.get(DatasetSpecialization, sample_spec)
+            assert spec.status == "provisional"
+
+    def test_board_shows_reject_button_for_published_spec(self, client, app, sample_spec):
+        for _ in range(3):
+            client.post(f"/governance/spec/advance/{sample_spec}")
+        r = client.get("/governance/board")
+        assert f'data-vlm-group-id="{sample_spec}"'.encode() in r.data
+        assert b"kanban-reject-btn" in r.data
+
+    def test_reject_nonexistent_spec_returns_404(self, client):
+        r = client.post("/governance/spec/reject/NOPE")
+        assert r.status_code == 404
+
+
+class TestGovernanceRecordOneEntityConstraint:
+    def test_both_bc_id_and_vlm_group_id_set_raises(self, app, sample_spec):
+        with app.app_context():
+            db.session.add(GovernanceRecord(bc_id="C12345", vlm_group_id=sample_spec, stage=0, action="advanced"))
+            with pytest.raises(IntegrityError):
+                db.session.commit()
+            db.session.rollback()
+
+    def test_neither_bc_id_nor_vlm_group_id_set_raises(self, app):
+        with app.app_context():
+            db.session.add(GovernanceRecord(stage=0, action="advanced"))
+            with pytest.raises(IntegrityError):
+                db.session.commit()
+            db.session.rollback()

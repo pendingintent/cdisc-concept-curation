@@ -1,0 +1,68 @@
+{#
+  Notes panel — shared by bc_detail.html and specializations.html.
+
+  Expects in context:
+    notes              — list of Note objects, most recent first
+    notes_entity_kind   — "bc" or "spec"
+    notes_entity_id     — bc_id or vlm_group_id
+    notes_locked        — True once the parent has reached Ready to Publish
+#}
+<div class="bc-card bc-card-sm mb-0 mt-3" id="notes-panel">
+  <h2 class="form-section-title">Notes</h2>
+
+  {% if notes_locked %}
+  <div class="alert alert-secondary d-flex align-items-center gap-2" role="alert">
+    <i class="bi bi-lock" aria-hidden="true"></i>
+    This item has reached Ready to Publish status. Notes are read-only.
+  </div>
+  {% else %}
+  <div class="mb-3">
+    <label for="new-note-text" class="form-label small visually-hidden">New note</label>
+    <textarea id="new-note-text" class="form-control form-control-sm" rows="2"
+              placeholder="Add a note for other curators…"></textarea>
+    <div class="d-flex justify-content-end mt-2">
+      <button type="button" class="btn btn-sm btn-primary note-add-btn"
+              data-entity-kind="{{ notes_entity_kind }}" data-entity-id="{{ notes_entity_id }}">
+        <i class="bi bi-plus-lg" aria-hidden="true"></i> Add Note
+      </button>
+    </div>
+  </div>
+  {% endif %}
+
+  {% if notes %}
+  <div class="d-flex flex-column gap-2">
+    {% for note in notes %}
+    <div class="note-item {% if note.flagged %}note-item-flagged{% endif %}" data-note-id="{{ note.id }}">
+      <div class="d-flex justify-content-between align-items-start gap-2">
+        <div class="small text-secondary">
+          {% if note.flagged %}<span class="note-flag-indicator" title="High priority">!</span>{% endif %}
+          {{ note.created_by or "user" }} &middot; {{ note.created_at }}
+          {% if note.resolved %}<span class="bc-badge bc-badge-published ms-1">Resolved</span>{% endif %}
+        </div>
+      </div>
+      <div class="note-text-display mt-1">{{ note.text }}</div>
+      <textarea class="form-control form-control-sm note-text-edit d-none mt-1" rows="2">{{ note.text }}</textarea>
+      {% if not notes_locked %}
+      <div class="d-flex gap-1 flex-wrap mt-2">
+        <button type="button" class="btn btn-sm btn-outline-secondary note-edit-btn">
+          <i class="bi bi-pencil" aria-hidden="true"></i> Edit
+        </button>
+        <button type="button" class="btn btn-sm btn-primary note-save-btn d-none">Save</button>
+        <button type="button" class="btn btn-sm btn-outline-secondary note-cancel-btn d-none">Cancel</button>
+        <button type="button" class="btn btn-sm btn-outline-secondary note-resolve-toggle-btn"
+                data-resolved="{{ 'true' if note.resolved else 'false' }}">
+          {% if note.resolved %}Unresolve{% else %}Resolve{% endif %}
+        </button>
+        <button type="button" class="btn btn-sm btn-outline-secondary note-flag-toggle-btn"
+                data-flagged="{{ 'true' if note.flagged else 'false' }}">
+          {% if note.flagged %}Unflag{% else %}Flag{% endif %}
+        </button>
+      </div>
+      {% endif %}
+    </div>
+    {% endfor %}
+  </div>
+  {% else %}
+  <div class="text-secondary small">No notes yet.</div>
+  {% endif %}
+</div>

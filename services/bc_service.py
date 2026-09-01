@@ -85,9 +85,21 @@ def create_bc(data, actor=None):
     return bc
 
 
+def get_or_create_bc_stub(bc_id, short_name="", actor=None):
+    """Return the local BC for bc_id, creating a minimal provisional stub if
+    none exists yet (e.g. when a user picks a CDISC-Library-only BC on a
+    form that requires a local bc_id to link against)."""
+    bc = db.session.get(BiomedicalConcept, bc_id)
+    if bc:
+        return bc
+    return create_bc({"bc_id": bc_id, "short_name": short_name}, actor=actor or "system")
+
+
 def update_bc(bc_id, data, actor="user"):
     """Update an existing BC from a dict of fields. Returns the BC."""
     bc = _get_bc_or_raise(bc_id)
+    if bc.status == "published":
+        raise ValueError(f"BC {bc_id} has reached Ready to Publish status and cannot be edited")
     before = bc.to_dict()
     apply_bc_fields(bc, data, is_new=False)
     log_change("BiomedicalConcept", bc_id, "updated", actor=actor, before=before, after=bc.to_dict())
@@ -99,8 +111,8 @@ def save_decs(bc_id, decs):
     """Replace the BC's Data Element Concepts with the given list of dicts.
 
     Each dict may carry dec_id, ncit_dec_code, dec_label, data_type,
-    example_set. An empty list clears all DECs; rows with a blank label are skipped but
-    keep their position for default dec_id numbering.
+    example_set, required. An empty list clears all DECs; rows with a blank
+    label are skipped but keep their position for default dec_id numbering.
     """
     DataElementConcept.query.filter_by(bc_id=bc_id).delete()
     for i, dec in enumerate(decs or []):
@@ -115,6 +127,7 @@ def save_decs(bc_id, decs):
                 dec_label=label,
                 data_type=dec.get("data_type") or "string",
                 example_set=dec.get("example_set", ""),
+                required=bool(dec.get("required")),
                 sort_order=i,
             )
         )
@@ -131,6 +144,8 @@ def map_ncit_to_bc(bc_id, ncit_code, actor="user"):
     if not ncit_code:
         raise ValueError("ncit_code is required")
     bc = _get_bc_or_raise(bc_id)
+    if bc.status == "published":
+        raise ValueError(f"BC {bc_id} has reached Ready to Publish status and cannot be edited")
     before = bc.to_dict()
     bc.ncit_code = ncit_code
     # Promote temporary IMPORT_ IDs to their resolved NCIt code

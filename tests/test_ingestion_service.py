@@ -4,7 +4,11 @@ import io
 import json
 
 from services.ingestion import (
+    SPEC_FIELD_MAP,
+    VARIABLE_FIELDS,
+    _detect_record_type,
     _group_by_bc,
+    _group_by_spec,
     _match_field,
     _similarity,
     deduplicate,
@@ -12,6 +16,7 @@ from services.ingestion import (
     parse_csv,
     parse_json,
     validate_bc,
+    validate_specialization,
 )
 
 # ---------------------------------------------------------------------------
@@ -131,6 +136,23 @@ class TestValidateBc:
         d = self._valid()
         d["ncit_code"] = "C99999"
         assert validate_bc(d) == []
+
+    def test_supported_result_scale_accepted(self):
+        d = self._valid()
+        d["result_scales"] = "Quantitative; Ordinal"
+        assert validate_bc(d) == []
+
+    def test_unsupported_result_scale_is_not_a_blocking_error(self):
+        # An unsupported result scale doesn't block the whole BC from being
+        # approved (it's filtered out and flagged at approval time instead —
+        # see routes/ingestion.py — so a bad scale value doesn't also take
+        # down otherwise-valid short_name/definition/DEC data with it).
+        d = self._valid()
+        d["result_scales"] = "Quantitative; Continuous"
+        assert validate_bc(d) == []
+
+    def test_no_result_scales_has_no_error(self):
+        assert validate_bc(self._valid()) == []
 
 
 # ---------------------------------------------------------------------------
@@ -257,3 +279,190 @@ class TestGroupByBc:
         rows = [({"short_name": "Orphan", "definition": "No ID"}, {})]
         result = _group_by_bc(rows)
         assert result == []
+
+    def test_result_tagged_as_bc_record_type(self):
+        rows = [({"bc_id": "C001", "short_name": "HR", "definition": "Heart Rate"}, {})]
+        result = _group_by_bc(rows)
+        assert result[0]["record_type"] == "bc"
+
+    def test_result_scales_merged_across_dec_sub_rows(self):
+        # Real curation workbooks repeat BC-level fields on every DEC sub-row;
+        # a result_scales value entered on a later row (differing from the
+        # first row) must still surface, not be silently dropped by the
+        # first-row-wins merge used for other BC-level fields.
+        rows = [
+            ({"bc_id": "C001", "short_name": "Temp", "definition": "Body temperature.", "result_scales": "Quantitative"}, {}),
+            ({"bc_id": "C001", "dec_id": "C001.DEC.1", "dec_label": "Value", "result_scales": "Quantitative"}, {}),
+            ({"bc_id": "C001", "dec_id": "C001.DEC.2", "dec_label": "Site", "result_scales": "Quantitative; Qualitative"}, {}),
+        ]
+        result = _group_by_bc(rows)
+        assert result[0]["mapped"]["result_scales"] == "Quantitative; Qualitative"
+
+    def test_result_scales_from_single_row_unaffected(self):
+        rows = [({"bc_id": "C001", "short_name": "HR", "definition": "Heart Rate", "result_scales": "Quantitative"}, {})]
+        result = _group_by_bc(rows)
+        assert result[0]["mapped"]["result_scales"] == "Quantitative"
+
+
+# ---------------------------------------------------------------------------
+# map_fields with a custom field_map (SPEC_FIELD_MAP)
+# ---------------------------------------------------------------------------
+
+
+class TestMapFieldsWithFieldMap:
+    def test_uses_custom_field_map(self):
+        mapped, confs = map_fields({"vlm_group_id": "C001.SDTM"}, field_map=SPEC_FIELD_MAP)
+        assert mapped["vlm_group_id"] == "C001.SDTM"
+        assert confs["vlm_group_id"] == 1.0
+
+    def test_every_variable_column_maps_to_itself_exactly(self):
+        # Every SDTM VLM column (I-AF) is its own canonical field — an
+        # exact 1:1 map, not fuzzy-matched onto a different column, so two
+        # similarly-named columns (e.g. mandatory_variable vs
+        # mandatory_value) can never collide.
+        raw = {"codelist_submission_value": "X", "linking_phrase": "Y", "mandatory_variable": "Y", "mandatory_value": "N"}
+        mapped, confs = map_fields(raw, field_map=SPEC_FIELD_MAP)
+        assert mapped == {"codelist_submission_value": "X", "linking_phrase": "Y", "mandatory_variable": "Y", "mandatory_value": "N"}
+        assert all(score == 1.0 for score in confs.values())
+
+    def test_bc_only_columns_not_matched_by_spec_map(self):
+        # Fields that only exist on a BC/DEC (not a Dataset Specialization)
+        # should not be force-matched onto anything in SPEC_FIELD_MAP.
+        mapped, _ = map_fields({"definition": "X", "synonyms": "Y"}, field_map=SPEC_FIELD_MAP)
+        assert mapped == {}
+
+    def test_default_field_map_is_bc_field_map(self):
+        mapped, _ = map_fields({"bc_id": "C001"})
+        assert mapped["bc_id"] == "C001"
+
+
+# ---------------------------------------------------------------------------
+# _detect_record_type
+# ---------------------------------------------------------------------------
+
+
+class TestDetectRecordType:
+    def test_sdtm_prefixed_sheet_is_specialization(self):
+        assert _detect_record_type(["short_name"], sheet_name="SDTM_LB") == "specialization"
+
+    def test_bc_prefixed_sheet_is_bc(self):
+        assert _detect_record_type(["vlm_group_id"], sheet_name="BC_LB") == "bc"
+
+    def test_cdash_prefixed_sheet_is_specialization(self):
+        assert _detect_record_type([], sheet_name="CDASH_LB") == "specialization"
+
+    def test_unrecognized_prefix_falls_back_to_column_signature(self):
+        assert _detect_record_type(["vlm_group_id", "bc_id"], sheet_name="Sheet1") == "specialization"
+        assert _detect_record_type(["short_name", "definition"], sheet_name="Sheet1") == "bc"
+
+    def test_no_sheet_name_uses_column_signature(self):
+        assert _detect_record_type(["vlm_group_id"]) == "specialization"
+        assert _detect_record_type(["short_name", "definition"]) == "bc"
+
+
+# ---------------------------------------------------------------------------
+# validate_specialization
+# ---------------------------------------------------------------------------
+
+
+class TestValidateSpecialization:
+    def test_valid_record_has_no_errors(self):
+        assert validate_specialization({"vlm_group_id": "C001.SDTM", "bc_id": "C001"}) == []
+
+    def test_missing_vlm_group_id(self):
+        errors = validate_specialization({"bc_id": "C001"})
+        assert any("vlm_group_id" in e for e in errors)
+
+    def test_missing_bc_id(self):
+        errors = validate_specialization({"vlm_group_id": "C001.SDTM"})
+        assert any("bc_id" in e for e in errors)
+
+
+# ---------------------------------------------------------------------------
+# _group_by_spec
+# ---------------------------------------------------------------------------
+
+
+class TestGroupBySpec:
+    def test_single_row_becomes_one_spec(self):
+        rows = [({"vlm_group_id": "C001.SDTM", "bc_id": "C001", "short_name": "Test Spec"}, {})]
+        result = _group_by_spec(rows)
+        assert len(result) == 1
+        assert result[0]["mapped"]["vlm_group_id"] == "C001.SDTM"
+        assert result[0]["mapped"]["bc_id"] == "C001"
+        assert result[0]["record_type"] == "specialization"
+
+    def test_domain_taken_from_worksheet_column(self):
+        # domain holds the actual SDTM domain codelist value (e.g. "LB"),
+        # as stored in the worksheet's own domain column.
+        rows = [({"vlm_group_id": "C001.SDTM", "bc_id": "C001", "domain": "LB"}, {})]
+        result = _group_by_spec(rows)
+        assert result[0]["mapped"]["domain"] == "LB"
+
+    def test_domain_defaults_to_empty_when_column_absent(self):
+        rows = [({"vlm_group_id": "C001.SDTM", "bc_id": "C001"}, {})]
+        result = _group_by_spec(rows)
+        assert result[0]["mapped"]["domain"] == ""
+
+    def test_variable_rows_grouped_under_parent(self):
+        rows = [
+            ({"vlm_group_id": "C001.SDTM", "bc_id": "C001", "short_name": "Test Spec"}, {}),
+            ({"vlm_group_id": "C001.SDTM", "sdtm_variable": "LBTESTCD", "data_type": "string", "mandatory_variable": "Y"}, {}),
+            ({"vlm_group_id": "C001.SDTM", "sdtm_variable": "LBORRES", "data_type": "decimal", "dec_id": "C001.DEC.1"}, {}),
+        ]
+        result = _group_by_spec(rows)
+        assert len(result) == 1
+        variables = result[0]["variables"]
+        assert len(variables) == 2
+        assert variables[0]["sdtm_variable"] == "LBTESTCD"
+        assert variables[0]["data_type"] == "string"
+        assert variables[0]["mandatory_variable"] == "Y"
+        assert variables[0]["dec_id"] == ""
+        assert variables[1]["sdtm_variable"] == "LBORRES"
+        assert variables[1]["dec_id"] == "C001.DEC.1"
+        # Every VARIABLE_FIELDS column is present on every row, even when blank.
+        assert set(variables[0].keys()) == set(VARIABLE_FIELDS)
+
+    def test_multiple_specs_produce_separate_records(self):
+        rows = [
+            ({"vlm_group_id": "C001.SDTM", "bc_id": "C001"}, {}),
+            ({"vlm_group_id": "C002.SDTM", "bc_id": "C002"}, {}),
+        ]
+        result = _group_by_spec(rows)
+        assert len(result) == 2
+
+    def test_row_without_vlm_group_id_skipped(self):
+        rows = [({"bc_id": "C001"}, {})]
+        result = _group_by_spec(rows)
+        assert result == []
+
+
+# ---------------------------------------------------------------------------
+# deduplicate — specialization records
+# ---------------------------------------------------------------------------
+
+
+class TestDeduplicateSpecializations:
+    def _spec_record(self, vlm_group_id):
+        return {
+            "record_type": "specialization",
+            "mapped": {"vlm_group_id": vlm_group_id},
+            "confidences": {},
+            "errors": [],
+            "variables": [],
+        }
+
+    def test_marks_existing_vlm_group_id_as_duplicate(self):
+        records = [self._spec_record("C001.SDTM")]
+        result = deduplicate(records, set(), existing_spec_ids={"C001.SDTM"})
+        assert result[0]["duplicate"] is True
+
+    def test_new_vlm_group_id_not_duplicate(self):
+        records = [self._spec_record("C999.SDTM")]
+        result = deduplicate(records, set(), existing_spec_ids={"C001.SDTM"})
+        assert result[0]["duplicate"] is False
+
+    def test_bc_records_unaffected_by_spec_ids(self):
+        records = [{"record_type": "bc", "mapped": {"bc_id": "C001"}, "confidences": {}, "errors": [], "decs": []}]
+        result = deduplicate(records, {"C001"}, existing_spec_ids={"C999.SDTM"})
+        assert result[0]["duplicate"] is True
