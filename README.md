@@ -6,7 +6,7 @@ A Flask web application for curating CDISC Biomedical Concepts (BCs). It replace
 
 ## Prerequisites
 
-- Python 3.10 or later
+- Python 3.11 or later
 - pip
 
 ---
