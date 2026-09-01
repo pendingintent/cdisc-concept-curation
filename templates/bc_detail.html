@@ -128,7 +128,7 @@
       <input type="hidden" id="ncit_metadata" name="ncit_metadata" value="{{ bc.ncit_metadata if bc and bc.ncit_metadata else '' }}">
       <div class="bc-card bc-card-sm mb-0 mt-3">
         <h2 class="form-section-title">
-          NCIt
+          NCIt for Biomedical Concept
           {% if needs_ncit_fetch %}
           <span id="ncit-loading-indicator" class="small fw-normal text-muted ms-2">
             <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Loading…
@@ -416,6 +416,43 @@
             </tbody>
           </table>
         </div>
+      </div>
+
+      <!-- NCIt section (DEC-scoped: search NCIt to populate a newly-added DEC row) -->
+      <div class="bc-card bc-card-sm mb-0 mt-3">
+        <h2 class="form-section-title">NCIt for DEC</h2>
+
+        <!-- NCIt Code search + lookup -->
+        <div class="row g-2 mb-2">
+          <div class="col">
+            <label for="dec_ncit_code" class="form-label small">NCIt Code</label>
+            <div class="input-group input-group-sm">
+              <input type="text" id="dec_ncit_code" class="form-control"
+                     placeholder="e.g. C64849"
+                     aria-describedby="dec-ncit-lookup-btn">
+              <button type="button" id="dec-ncit-lookup-btn" class="btn btn-outline-secondary">
+                <i class="bi bi-search" aria-hidden="true"></i> Look up NCIt
+              </button>
+            </div>
+            <div class="form-text small">Click <strong>Add DEC</strong> first, then search here to populate the new row's DEC ID and DEC Label — or search here first and a new row will be added for you.</div>
+          </div>
+        </div>
+
+        <!-- NCIt lookup results panel (hidden until search) -->
+        <div id="dec-ncit-results-panel" class="d-none" aria-live="polite" aria-label="NCIt lookup results for DEC">
+          <div class="ncit-result-panel">
+            <div class="d-flex align-items-center justify-content-between mb-2">
+              <span class="small fw-semibold text-secondary">NCIt Search Results</span>
+              <button type="button" class="btn-close btn-sm"
+                      onclick="document.getElementById('dec-ncit-results-panel').classList.add('d-none')"
+                      aria-label="Close NCIt results"></button>
+            </div>
+            <div id="dec-ncit-results-container"></div>
+          </div>
+        </div>
+
+        <!-- NCIt metadata display -->
+        <div id="dec-ncit-meta-display" class="d-none"></div>
       </div>
 
     </div><!-- /right column -->
