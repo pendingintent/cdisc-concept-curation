@@ -258,6 +258,18 @@
     if (parentInput && !parentInput.value.trim() && Array.isArray(item.parents) && item.parents.length > 0) {
       parentInput.value = item.parents[0].code || '';
     }
+
+    // Populate definition, leaving any existing curator-entered value alone
+    var definitionInput = document.getElementById('definition');
+    if (definitionInput && !definitionInput.value.trim() && item.definition) {
+      definitionInput.value = item.definition;
+    }
+
+    // Populate synonyms (semicolon-separated, matching the field's own convention)
+    var synonymsInput = document.getElementById('synonyms');
+    if (synonymsInput && !synonymsInput.value.trim() && Array.isArray(item.synonyms) && item.synonyms.length > 0) {
+      synonymsInput.value = item.synonyms.join('; ');
+    }
   }
 
   /* ─────────────────────────────────────────────
