@@ -1,5 +1,6 @@
 import json
 import logging
+import re
 from datetime import datetime, timezone
 
 from flask import Blueprint, Response, flash, redirect, render_template, request, url_for
@@ -10,7 +11,7 @@ from models.governance import GovernanceRecord
 from services import bc_service
 from services.audit import log_change
 from services.cdisc_api import CDISCApiClient
-from services.export import export_json, export_odm_xml, export_xlsx
+from services.export import export_governance_xlsx, export_json, export_odm_xml
 from services.loinc_api import LoincApiClient
 from services.ncit_api import NCItApiClient
 
@@ -74,15 +75,15 @@ def new_bc():
 @bp.route("/export")
 def export():
     fmt = request.args.get("format", "json")
-    bcs = [bc.to_dict() for bc in BiomedicalConcept.query.all()]
     if fmt == "xlsx":
-        buf = export_xlsx(bcs)
+        buf = export_governance_xlsx(BiomedicalConcept.query.all())
         return Response(
             buf,
             mimetype="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
             headers={"Content-Disposition": "attachment; filename=bcs.xlsx"},
         )
-    elif fmt == "odm":
+    bcs = [bc.to_dict() for bc in BiomedicalConcept.query.all()]
+    if fmt == "odm":
         xml = export_odm_xml(bcs)
         return Response(
             xml,
@@ -277,22 +278,30 @@ def delete(bc_id):
     return redirect(url_for("bc.index"))
 
 
+_DEC_FIELD_RE = re.compile(r"^decs\[(\d+)\]\[(\w+)\]$")
+
+
 def _decs_from_form(form):
-    """Convert the parallel dec_*[] form lists into a list of dicts for
-    bc_service.save_decs, preserving row positions (blank labels keep
-    their slot so default dec_id numbering matches the form rows)."""
-    labels = form.getlist("dec_label[]")
-    dtypes = form.getlist("dec_data_type[]")
-    examples = form.getlist("dec_example_set[]")
-    dec_ids = form.getlist("dec_id[]")
-    ncit_codes = form.getlist("dec_ncit_code[]")
+    """Convert the decs[N][field] fields submitted by the DEC table
+    (server-rendered rows and rows added via static/js/main.js
+    buildDecRow()) into a list of dicts for bc_service.save_decs, ordered by
+    row index (blank labels keep their slot so default dec_id numbering
+    matches the form rows)."""
+    rows = {}
+    for key in form.keys():
+        match = _DEC_FIELD_RE.match(key)
+        if not match:
+            continue
+        index, field = int(match.group(1)), match.group(2)
+        rows.setdefault(index, {})[field] = form.get(key)
     return [
         {
-            "dec_id": dec_ids[i] if i < len(dec_ids) else "",
-            "ncit_dec_code": ncit_codes[i] if i < len(ncit_codes) else "",
-            "dec_label": label,
-            "data_type": dtypes[i] if i < len(dtypes) else "string",
-            "example_set": examples[i] if i < len(examples) else "",
+            "dec_id": row.get("dec_id", ""),
+            "ncit_dec_code": row.get("ncit_dec_code", ""),
+            "dec_label": row.get("dec_label", ""),
+            "data_type": row.get("data_type") or "string",
+            "example_set": row.get("example_set", ""),
+            "required": row.get("required") == "1",
         }
-        for i, label in enumerate(labels)
+        for _, row in sorted(rows.items())
     ]

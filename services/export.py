@@ -35,55 +35,20 @@ SPEC_SHEET_HEADER_FIELDS = [
     "short_name",
 ]
 
-
-BC_EXPORT_FIELDS = [
-    "bc_id",
-    "short_name",
-    "definition",
-    "ncit_code",
-    "parent_bc_id",
-    "bc_categories",
-    "synonyms",
-    "result_scales",
-    "system",
-    "system_name",
-    "code",
-    "package_date",
-    "status",
-]
+# DataElementConcept.data_type values -> ODM-XML ItemDef DataType.
+DEC_ODM_DATA_TYPES = {
+    "string": "text",
+    "decimal": "float",
+    "integer": "integer",
+    "boolean": "boolean",
+    "date": "date",
+    "datetime": "datetime",
+}
 
 
 def export_json(bc_list):
     """Export list of BC dicts to JSON string."""
     return json.dumps(bc_list, indent=2, default=str)
-
-
-def export_xlsx(bc_list):
-    """Export list of BC dicts to BytesIO XLSX."""
-    if openpyxl is None:
-        raise ImportError("openpyxl is required for XLSX export")
-    wb = openpyxl.Workbook()
-    ws = wb.active
-    ws.title = "Biomedical Concepts"
-
-    header_fill = PatternFill("solid", fgColor="003366")
-    header_font_white = Font(bold=True, color="FFFFFF")
-
-    for col_idx, field in enumerate(BC_EXPORT_FIELDS, start=1):
-        cell = ws.cell(row=1, column=col_idx, value=field.replace("_", " ").title())
-        cell.font = header_font_white
-        cell.fill = header_fill
-        cell.alignment = Alignment(horizontal="center")
-
-    for row_idx, bc in enumerate(bc_list, start=2):
-        for col_idx, field in enumerate(BC_EXPORT_FIELDS, start=1):
-            value = bc.get("loinc_code", "") if field == "code" else bc.get(field, "")
-            ws.cell(row=row_idx, column=col_idx, value=value)
-
-    buf = io.BytesIO()
-    wb.save(buf)
-    buf.seek(0)
-    return buf
 
 
 GOVERNANCE_BC_FIELDS = [
@@ -157,6 +122,11 @@ def export_governance_xlsx(bc_objects, spec_objects=None):
                     val = bc_vals[header]
                 elif header == "History of Change":
                     val = bc_vals["History of Change"]
+                elif header == "ncit_dec_code":
+                    # DEC ID is the only identifier curators set through the
+                    # UI, so the legacy ncit_dec_code column always mirrors
+                    # it on export rather than the (now unused) stored value.
+                    val = dec.dec_id or ""
                 else:
                     val = getattr(dec, header, "") or ""
                 ws.cell(row=row_idx, column=col_idx, value=val)
@@ -244,5 +214,25 @@ def export_odm_xml(bc_list):
                     "Name": bc.get("ncit_code", ""),
                 },
             )
+
+        for dec in bc.get("decs") or []:
+            dec_item_def = etree.SubElement(
+                root,
+                "ItemDef",
+                attrib={
+                    "OID": dec.get("dec_id", ""),
+                    "Name": dec.get("dec_label", ""),
+                    "DataType": DEC_ODM_DATA_TYPES.get(dec.get("data_type"), "text"),
+                },
+            )
+            if dec.get("ncit_dec_code"):
+                etree.SubElement(
+                    dec_item_def,
+                    "Alias",
+                    attrib={
+                        "Context": "nci:ExtCodeID",
+                        "Name": dec.get("ncit_dec_code", ""),
+                    },
+                )
 
     return etree.tostring(root, pretty_print=True, xml_declaration=True, encoding="UTF-8").decode()

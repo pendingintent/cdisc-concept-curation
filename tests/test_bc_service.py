@@ -2,8 +2,8 @@
 
 from extensions import db
 from models.audit import AuditLog
-from models.bc import BiomedicalConcept
-from services.bc_service import get_or_create_bc_stub
+from models.bc import BiomedicalConcept, DataElementConcept
+from services.bc_service import get_or_create_bc_stub, save_decs
 
 
 class TestGetOrCreateBcStub:
@@ -33,3 +33,42 @@ class TestGetOrCreateBcStub:
             db.session.commit()
             get_or_create_bc_stub(sample_bc, short_name="Ignored Name")
             assert AuditLog.query.count() == 0
+
+
+class TestSaveDecs:
+    def test_creates_decs_from_list(self, app, sample_bc):
+        with app.app_context():
+            save_decs(sample_bc, [{"dec_label": "Systolic", "data_type": "decimal", "example_set": "120", "required": True}])
+            decs = DataElementConcept.query.filter_by(bc_id=sample_bc).all()
+            assert len(decs) == 1
+            assert decs[0].dec_label == "Systolic"
+            assert decs[0].required is True
+            assert decs[0].dec_id == f"{sample_bc}.DEC.1"
+
+    def test_blank_label_rows_are_skipped_but_keep_position(self, app, sample_bc):
+        with app.app_context():
+            save_decs(sample_bc, [{"dec_label": ""}, {"dec_label": "Diastolic"}])
+            decs = DataElementConcept.query.filter_by(bc_id=sample_bc).all()
+            assert len(decs) == 1
+            assert decs[0].dec_id == f"{sample_bc}.DEC.2"
+
+    def test_replaces_existing_decs(self, app, sample_bc):
+        with app.app_context():
+            save_decs(sample_bc, [{"dec_label": "Old"}])
+            save_decs(sample_bc, [{"dec_label": "New"}])
+            decs = DataElementConcept.query.filter_by(bc_id=sample_bc).all()
+            assert len(decs) == 1
+            assert decs[0].dec_label == "New"
+
+    def test_empty_list_clears_all_decs(self, app, sample_bc):
+        with app.app_context():
+            save_decs(sample_bc, [{"dec_label": "Old"}])
+            save_decs(sample_bc, [])
+            assert DataElementConcept.query.filter_by(bc_id=sample_bc).count() == 0
+
+    def test_preserves_provided_dec_id_and_ncit_code(self, app, sample_bc):
+        with app.app_context():
+            save_decs(sample_bc, [{"dec_id": "CUSTOM.ID", "ncit_dec_code": "C999", "dec_label": "Systolic"}])
+            dec = DataElementConcept.query.filter_by(bc_id=sample_bc).first()
+            assert dec.dec_id == "CUSTOM.ID"
+            assert dec.ncit_dec_code == "C999"

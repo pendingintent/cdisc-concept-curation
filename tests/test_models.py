@@ -2,7 +2,7 @@
 
 from extensions import db
 from models.audit import AuditLog
-from models.bc import RESULT_SCALES, BiomedicalConcept, partition_result_scales, split_result_scales
+from models.bc import RESULT_SCALES, BiomedicalConcept, DataElementConcept, partition_result_scales, split_result_scales
 from models.ingestion import IngestionRecord
 
 
@@ -114,6 +114,27 @@ class TestBiomedicalConceptToDict:
             db.session.add(bc)
             db.session.commit()
             assert bc.status == "provisional"
+
+    def test_to_dict_includes_decs_in_sort_order(self, app):
+        with app.app_context():
+            bc = BiomedicalConcept(bc_id="C004", short_name="BP", definition="Blood Pressure")
+            db.session.add(bc)
+            db.session.add_all(
+                [
+                    DataElementConcept(dec_id="C004.DEC.2", bc_id="C004", dec_label="Diastolic", data_type="decimal", sort_order=1),
+                    DataElementConcept(dec_id="C004.DEC.1", bc_id="C004", dec_label="Systolic", data_type="decimal", sort_order=0),
+                ]
+            )
+            db.session.commit()
+            decs = bc.to_dict()["decs"]
+            assert [d["dec_label"] for d in decs] == ["Systolic", "Diastolic"]
+
+    def test_to_dict_decs_empty_when_none(self, app):
+        with app.app_context():
+            bc = BiomedicalConcept(bc_id="C005", short_name="X", definition="Y")
+            db.session.add(bc)
+            db.session.commit()
+            assert bc.to_dict()["decs"] == []
 
 
 class TestResultScales:

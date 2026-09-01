@@ -1,6 +1,10 @@
 """Tests for routes/bc.py — CRUD, export, submission."""
 
+import io
+import json
 from unittest.mock import patch
+
+import openpyxl
 
 from extensions import db
 from models.audit import AuditLog
@@ -115,17 +119,21 @@ class TestCreateBc:
             assert bc.result_scales == ""
 
     def test_create_with_decs(self, client, app):
+        """Reflects the actual decs[N][field] naming the rendered DEC table
+        and static/js/main.js buildDecRow() submit, not a legacy shape."""
         data = _bc_form()
-        data["dec_label[]"] = ["Systolic", "Diastolic"]
-        data["dec_data_type[]"] = ["decimal", "decimal"]
-        data["dec_example_set[]"] = ["120", "80"]
-        data["dec_id[]"] = ["", ""]
-        data["dec_ncit_code[]"] = ["", ""]
+        data["decs[0][dec_label]"] = "Systolic"
+        data["decs[0][data_type]"] = "decimal"
+        data["decs[0][example_set]"] = "120"
+        data["decs[1][dec_label]"] = "Diastolic"
+        data["decs[1][data_type]"] = "decimal"
+        data["decs[1][example_set]"] = "80"
         client.post("/bc/", data=data)
         with app.app_context():
-            decs = DataElementConcept.query.filter_by(bc_id="C00001").all()
+            decs = DataElementConcept.query.filter_by(bc_id="C00001").order_by(DataElementConcept.sort_order).all()
             assert len(decs) == 2
             assert decs[0].dec_label == "Systolic"
+            assert decs[1].dec_label == "Diastolic"
 
 
 # ---------------------------------------------------------------------------
@@ -155,6 +163,20 @@ class TestBcDetail:
         assert r.status_code == 200
         assert re.search(rb'value="Ordinal"\s*checked', r.data)
         assert not re.search(rb'value="Nominal"\s*checked', r.data)
+
+    def test_dec_id_field_is_visible_and_precedes_label(self, client, app, sample_bc):
+        """DEC ID must be a visible, editable column (not the old hidden
+        input) and must appear before DEC Label so curators can see/set the
+        value that populates the dec_id column in BC Examples.xlsx."""
+        import re
+
+        with app.app_context():
+            db.session.add(DataElementConcept(dec_id="C12345.DEC.1", bc_id="C12345", dec_label="Systolic", data_type="decimal", sort_order=0))
+            db.session.commit()
+        r = client.get(f"/bc/{sample_bc}")
+        html = r.data.decode()
+        assert html.index(">DEC ID<") < html.index(">DEC Label<")
+        assert re.search(r'<input type="text"[^>]*name="decs\[0\]\[dec_id\]"[^>]*value="C12345\.DEC\.1"', html)
 
     def test_unsupported_result_scale_shown_in_red(self, client, app, sample_bc):
         with app.app_context():
@@ -415,6 +437,105 @@ class TestEditBc:
         assert b'value="None"' not in r.data
         assert b'name="ncit_code"' in r.data
 
+    # -----------------------------------------------------------------------
+    # DEC persistence via edit (regression: decs[N][field] naming used by the
+    # rendered table/static/js/main.js must match what the route parses,
+    # otherwise every save wipes the BC's DECs)
+    # -----------------------------------------------------------------------
+
+    def test_edit_keeps_unchanged_decs(self, client, app, sample_bc):
+        with app.app_context():
+            db.session.add(DataElementConcept(dec_id="C12345.DEC.1", bc_id="C12345", dec_label="Systolic", data_type="decimal", example_set="120", sort_order=0))
+            db.session.commit()
+        client.post(
+            "/bc/C12345/edit",
+            data={
+                "decs[0][dec_id]": "C12345.DEC.1",
+                "decs[0][dec_label]": "Systolic",
+                "decs[0][data_type]": "decimal",
+                "decs[0][example_set]": "120",
+            },
+        )
+        with app.app_context():
+            decs = DataElementConcept.query.filter_by(bc_id="C12345").all()
+            assert len(decs) == 1
+            assert decs[0].dec_id == "C12345.DEC.1"
+            assert decs[0].dec_label == "Systolic"
+
+    def test_edit_updates_existing_dec_fields(self, client, app, sample_bc):
+        with app.app_context():
+            db.session.add(DataElementConcept(dec_id="C12345.DEC.1", bc_id="C12345", dec_label="Systolic", data_type="decimal", example_set="120", sort_order=0))
+            db.session.commit()
+        client.post(
+            "/bc/C12345/edit",
+            data={
+                "decs[0][dec_id]": "C12345.DEC.1",
+                "decs[0][dec_label]": "Systolic Blood Pressure",
+                "decs[0][data_type]": "decimal",
+                "decs[0][example_set]": "110-140",
+            },
+        )
+        with app.app_context():
+            decs = DataElementConcept.query.filter_by(bc_id="C12345").all()
+            assert len(decs) == 1
+            assert decs[0].dec_id == "C12345.DEC.1"
+            assert decs[0].dec_label == "Systolic Blood Pressure"
+            assert decs[0].example_set == "110-140"
+
+    def test_edit_adds_new_dec_row(self, client, app, sample_bc):
+        with app.app_context():
+            db.session.add(DataElementConcept(dec_id="C12345.DEC.1", bc_id="C12345", dec_label="Systolic", data_type="decimal", sort_order=0))
+            db.session.commit()
+        client.post(
+            "/bc/C12345/edit",
+            data={
+                "decs[0][dec_id]": "C12345.DEC.1",
+                "decs[0][dec_label]": "Systolic",
+                "decs[0][data_type]": "decimal",
+                "decs[1][dec_label]": "Diastolic",
+                "decs[1][data_type]": "decimal",
+            },
+        )
+        with app.app_context():
+            decs = DataElementConcept.query.filter_by(bc_id="C12345").order_by(DataElementConcept.sort_order).all()
+            assert len(decs) == 2
+            assert decs[1].dec_label == "Diastolic"
+
+    def test_edit_removes_dec_omitted_from_submission(self, client, app, sample_bc):
+        with app.app_context():
+            db.session.add_all(
+                [
+                    DataElementConcept(dec_id="C12345.DEC.1", bc_id="C12345", dec_label="Systolic", data_type="decimal", sort_order=0),
+                    DataElementConcept(dec_id="C12345.DEC.2", bc_id="C12345", dec_label="Diastolic", data_type="decimal", sort_order=1),
+                ]
+            )
+            db.session.commit()
+        client.post(
+            "/bc/C12345/edit",
+            data={
+                "decs[0][dec_id]": "C12345.DEC.1",
+                "decs[0][dec_label]": "Systolic",
+                "decs[0][data_type]": "decimal",
+            },
+        )
+        with app.app_context():
+            decs = DataElementConcept.query.filter_by(bc_id="C12345").all()
+            assert len(decs) == 1
+            assert decs[0].dec_label == "Systolic"
+
+    def test_edit_persists_required_flag(self, client, app, sample_bc):
+        client.post(
+            "/bc/C12345/edit",
+            data={
+                "decs[0][dec_label]": "Systolic",
+                "decs[0][data_type]": "decimal",
+                "decs[0][required]": "1",
+            },
+        )
+        with app.app_context():
+            dec = DataElementConcept.query.filter_by(bc_id="C12345").first()
+            assert dec.required is True
+
 
 # ---------------------------------------------------------------------------
 # POST /bc/<bc_id>/clear-ncit
@@ -552,15 +673,48 @@ class TestExport:
         assert r.status_code == 200
         assert r.content_type == "application/json"
 
+    def test_json_export_includes_decs(self, client, app, sample_bc):
+        with app.app_context():
+            db.session.add(DataElementConcept(dec_id="C12345.DEC.1", bc_id="C12345", dec_label="Systolic", data_type="decimal", sort_order=0))
+            db.session.commit()
+        r = client.get("/bc/export?format=json")
+        parsed = json.loads(r.data)
+        bc = next(b for b in parsed if b["bc_id"] == "C12345")
+        assert bc["decs"][0]["dec_label"] == "Systolic"
+
     def test_xlsx_export(self, client, sample_bc):
         r = client.get("/bc/export?format=xlsx")
         assert r.status_code == 200
         assert "spreadsheetml" in r.content_type
 
+    def test_xlsx_export_matches_bc_lb_reference_format(self, client, app, sample_bc):
+        """The BC list's own export (not just the governance/published-only
+        export) must produce the files/BC Examples.xlsx BC_LB shape: a
+        BC-only row followed by one row per DEC."""
+        with app.app_context():
+            db.session.add(DataElementConcept(dec_id="C12345.DEC.1", bc_id="C12345", dec_label="Systolic", data_type="decimal", sort_order=0))
+            db.session.commit()
+        r = client.get("/bc/export?format=xlsx")
+        wb = openpyxl.load_workbook(io.BytesIO(r.data))
+        ws = wb.active
+        assert ws.title == "BC_LB"
+        headers = [c.value for c in ws[1]]
+        dec_label_col = headers.index("dec_label") + 1
+        assert ws.cell(row=2, column=dec_label_col).value in ("", None)
+        assert ws.cell(row=3, column=dec_label_col).value == "Systolic"
+
     def test_odm_xml_export(self, client, sample_bc):
         r = client.get("/bc/export?format=odm")
         assert r.status_code == 200
         assert "xml" in r.content_type
+
+    def test_odm_xml_export_includes_dec_item_def(self, client, app, sample_bc):
+        with app.app_context():
+            db.session.add(DataElementConcept(dec_id="C12345.DEC.1", bc_id="C12345", dec_label="Systolic", data_type="decimal", sort_order=0))
+            db.session.commit()
+        r = client.get("/bc/export?format=odm")
+        assert b'OID="C12345.DEC.1"' in r.data
+        assert b'Name="Systolic"' in r.data
 
 
 # ---------------------------------------------------------------------------
