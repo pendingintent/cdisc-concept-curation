@@ -357,6 +357,7 @@
           <table class="dec-table" aria-label="Data element concepts">
             <thead>
               <tr>
+                <th scope="col">DEC ID</th>
                 <th scope="col">DEC Label</th>
                 <th scope="col">Data Type</th>
                 <th scope="col">Example Values</th>
@@ -368,6 +369,13 @@
               {% if bc and bc.decs %}
                 {% for dec in bc.decs %}
                 <tr>
+                  <td>
+                    <input type="hidden" name="decs[{{ loop.index0 }}][ncit_dec_code]" value="{{ dec.ncit_dec_code | default('') }}">
+                    <input type="text" class="form-control form-control-sm"
+                           name="decs[{{ loop.index0 }}][dec_id]"
+                           value="{{ dec.dec_id }}"
+                           aria-label="DEC ID">
+                  </td>
                   <td>
                     <input type="text" class="form-control form-control-sm"
                            name="decs[{{ loop.index0 }}][dec_label]"

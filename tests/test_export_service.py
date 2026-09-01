@@ -9,12 +9,10 @@ from extensions import db
 from models.bc import BiomedicalConcept, DataElementConcept
 from models.specialization import DatasetSpecialization
 from services.export import (
-    BC_EXPORT_FIELDS,
     GOVERNANCE_HEADERS,
     export_governance_xlsx,
     export_json,
     export_odm_xml,
-    export_xlsx,
 )
 from services.ingestion import VARIABLE_FIELDS, parse_xlsx
 
@@ -70,40 +68,6 @@ class TestExportJson:
 
         out = export_json([{"bc_id": "X", "created_at": datetime(2026, 1, 1)}])
         assert "2026-01-01" in out
-
-
-class TestExportXlsx:
-    def test_returns_workbook_with_headers_and_rows(self):
-        buf = export_xlsx(SAMPLE_BCS)
-        wb = openpyxl.load_workbook(buf)
-        ws = wb.active
-        assert ws.title == "Biomedical Concepts"
-        headers = [c.value for c in ws[1]]
-        assert headers[0] == "Bc Id"
-        assert len(headers) == len(BC_EXPORT_FIELDS)
-        # Row 2 = first BC
-        assert ws.cell(row=2, column=1).value == "C64849"
-        assert ws.cell(row=3, column=2).value == "Systolic Blood Pressure"
-
-    def test_empty_list_has_header_only(self):
-        wb = openpyxl.load_workbook(export_xlsx([]))
-        ws = wb.active
-        assert ws.max_row == 1
-
-    def test_missing_fields_render_blank(self):
-        wb = openpyxl.load_workbook(export_xlsx([{"bc_id": "ONLY_ID"}]))
-        ws = wb.active
-        assert ws.cell(row=2, column=1).value == "ONLY_ID"
-        assert ws.cell(row=2, column=2).value in ("", None)
-
-    def test_code_column_uses_loinc_code(self):
-        """BiomedicalConcept.to_dict() has no 'code' key (only 'loinc_code'),
-        so the 'Code' column must be sourced from 'loinc_code'."""
-        wb = openpyxl.load_workbook(export_xlsx(SAMPLE_BCS))
-        ws = wb.active
-        code_col = BC_EXPORT_FIELDS.index("code") + 1
-        assert ws.cell(row=2, column=code_col).value == "4548-4"
-        assert ws.cell(row=3, column=code_col).value in ("", None)
 
 
 class TestExportGovernanceXlsx:
@@ -162,6 +126,42 @@ class TestExportGovernanceXlsx:
         assert ws.cell(row=3, column=bc_id_col).value == "C64849"
         # History of Change lands in the last column
         assert ws.cell(row=2, column=len(GOVERNANCE_HEADERS)).value == "Initial version"
+
+    def test_ncit_dec_code_column_mirrors_dec_id(self, app):
+        """Column N (ncit_dec_code) must always mirror column M (dec_id) on
+        export — the DEC ID field is the only identifier curators can set
+        through the UI, so the legacy ncit_dec_code column is populated from
+        it rather than the (now unused) stored value."""
+        with app.app_context():
+            bc = self._make_bc_with_decs()
+            wb = openpyxl.load_workbook(export_governance_xlsx([bc]))
+        ws = wb.active
+        dec_id_col = GOVERNANCE_HEADERS.index("dec_id") + 1
+        ncit_dec_code_col = GOVERNANCE_HEADERS.index("ncit_dec_code") + 1
+        for row in (3, 4):
+            assert ws.cell(row=row, column=ncit_dec_code_col).value == ws.cell(row=row, column=dec_id_col).value
+
+    def test_ncit_dec_code_column_overrides_a_stored_distinct_value(self, app):
+        with app.app_context():
+            bc = BiomedicalConcept(bc_id="C111", short_name="X", status="provisional")
+            db.session.add(bc)
+            db.session.add(
+                DataElementConcept(
+                    dec_id="C111.DEC.1",
+                    bc_id="C111",
+                    ncit_dec_code="SOME_OTHER_CODE",
+                    dec_label="Label",
+                    data_type="string",
+                    sort_order=0,
+                )
+            )
+            db.session.commit()
+            wb = openpyxl.load_workbook(export_governance_xlsx([bc]))
+        ws = wb.active
+        dec_id_col = GOVERNANCE_HEADERS.index("dec_id") + 1
+        ncit_dec_code_col = GOVERNANCE_HEADERS.index("ncit_dec_code") + 1
+        assert ws.cell(row=3, column=dec_id_col).value == "C111.DEC.1"
+        assert ws.cell(row=3, column=ncit_dec_code_col).value == "C111.DEC.1"
 
     def test_bc_without_loinc_blanks_system_fields(self, app):
         with app.app_context():
@@ -311,3 +311,30 @@ class TestExportOdmXml:
     def test_empty_list(self):
         root = etree.fromstring(export_odm_xml([]).encode())
         assert len(root) == 0
+
+    def test_decs_emit_item_defs(self):
+        bcs_with_dec = [
+            {
+                **SAMPLE_BCS[0],
+                "decs": [
+                    {"dec_id": "C64849.DEC.1", "ncit_dec_code": "C999", "dec_label": "Result Value", "data_type": "decimal", "example_set": "", "required": False},
+                ],
+            }
+        ]
+        xml = export_odm_xml(bcs_with_dec)
+        root = etree.fromstring(xml.encode())
+        ns = {"odm": "http://www.cdisc.org/ns/odm/v1.3"}
+        item_defs = root.findall("odm:ItemDef", ns)
+        assert len(item_defs) == 2
+        dec_item = next(i for i in item_defs if i.get("OID") == "C64849.DEC.1")
+        assert dec_item.get("Name") == "Result Value"
+        assert dec_item.get("DataType") == "float"
+        alias = dec_item.find("odm:Alias", ns)
+        assert alias.get("Name") == "C999"
+
+    def test_bc_without_decs_key_emits_no_extra_item_defs(self):
+        xml = export_odm_xml(SAMPLE_BCS)
+        root = etree.fromstring(xml.encode())
+        ns = {"odm": "http://www.cdisc.org/ns/odm/v1.3"}
+        item_defs = root.findall("odm:ItemDef", ns)
+        assert len(item_defs) == 2

@@ -304,6 +304,12 @@
     const tr = document.createElement('tr');
     tr.innerHTML = `
       <td>
+        <input type="hidden" name="decs[${index}][ncit_dec_code]" value="">
+        <input type="text" class="form-control form-control-sm"
+               name="decs[${index}][dec_id]"
+               placeholder="DEC ID" aria-label="DEC ID">
+      </td>
+      <td>
         <input type="text" class="form-control form-control-sm"
                name="decs[${index}][dec_label]"
                placeholder="DEC label" aria-label="DEC label">

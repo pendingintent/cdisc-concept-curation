@@ -109,8 +109,8 @@ def save_decs(bc_id, decs):
     """Replace the BC's Data Element Concepts with the given list of dicts.
 
     Each dict may carry dec_id, ncit_dec_code, dec_label, data_type,
-    example_set. An empty list clears all DECs; rows with a blank label are skipped but
-    keep their position for default dec_id numbering.
+    example_set, required. An empty list clears all DECs; rows with a blank
+    label are skipped but keep their position for default dec_id numbering.
     """
     DataElementConcept.query.filter_by(bc_id=bc_id).delete()
     for i, dec in enumerate(decs or []):
@@ -125,6 +125,7 @@ def save_decs(bc_id, decs):
                 dec_label=label,
                 data_type=dec.get("data_type") or "string",
                 example_set=dec.get("example_set", ""),
+                required=bool(dec.get("required")),
                 sort_order=i,
             )
         )

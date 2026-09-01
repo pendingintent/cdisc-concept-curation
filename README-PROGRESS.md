@@ -30,6 +30,34 @@ CDISC Biomedical Concept Curation — a Flask/Jinja web application for curating
 
 ### 2026-09-01
 
+#### Made the ncit_dec_code Export Column Mirror dec_id
+
+- In the exported `BC_LB`/`BC_VS` xlsx sheet, column M (`dec_id`) was populated correctly but column N (`ncit_dec_code`) was left at whatever was stored on the DEC (typically blank, since the BC detail form no longer exposes it as a separate field — see the DEC ID entry below). Made the export always populate column N with the same value as column M.
+- `services/export.py` — `export_governance_xlsx()`'s per-DEC row loop now special-cases the `ncit_dec_code` header to use `dec.dec_id` instead of the DEC's stored `ncit_dec_code` attribute. This is an export-time transformation only (nothing is rewritten in the database), applied uniformly since both `/bc/export?format=xlsx` and `/governance/export` share this function.
+- Wrote the test first (TDD): `TestExportGovernanceXlsx.test_ncit_dec_code_column_mirrors_dec_id` and `test_ncit_dec_code_column_overrides_a_stored_distinct_value` in `tests/test_export_service.py` confirm column N always equals column M, even when a DEC has a different stored `ncit_dec_code`; 361 tests passing, isort/black/flake8 clean ✅
+- Verified against a live dev server on a throwaway DB/port: created a BC with a DEC (`dec_id=C64849.DEC.1`), downloaded `/bc/export?format=xlsx`, and confirmed columns M and N both read `C64849.DEC.1` on the DEC row (both blank on the BC-only row, as expected).
+
+#### Added a Visible, Editable DEC ID Field to the BC Detail Form
+
+- The DEC table's `dec_id` value (the column that populates `dec_id` in `files/BC Examples.xlsx`) was a hidden input, silently auto-generated as `{bc_id}.DEC.{n}` if left blank — curators had no way to see or set it directly, e.g. to match a CDISC-published DEC id like `C64849.DEC.1`. Made it a visible text column, positioned before "DEC Label" as requested.
+- `templates/bc_detail.html` — added a `DEC ID` `<th>` before `DEC Label`; the per-row `dec_id` input changed from `type="hidden"` to a visible `form-control form-control-sm` text input (matching the styling of the other DEC fields), still positioned first in the row. `ncit_dec_code` remains a hidden input (not part of this request).
+- `static/js/main.js` — `buildDecRow()` updated to match: new rows get the same visible DEC ID cell ahead of DEC Label.
+- No backend changes needed — `routes/bc.py`'s `_decs_from_form()` and `services/bc_service.save_decs()` already read/persist `dec_id` (from the earlier DEC-save-bug fix) and still auto-generate one when the field is left blank, so this is purely a UI change plus a regression test.
+- Wrote the test first (TDD): `TestBcDetail.test_dec_id_field_is_visible_and_precedes_label` in `tests/test_bc_routes.py` asserts the "DEC ID" header precedes "DEC Label" and that the input is a visible `type="text"` field carrying the DEC's value; 359 tests passing, isort/black/flake8 clean ✅
+- Verified end-to-end against a live dev server on a throwaway DB/port: created a BC with an explicit custom `dec_id` (`C64849.DEC.1`) via the form, confirmed it rendered in the new visible field, and confirmed it flowed through unchanged into the `dec_id` column of the `/bc/export?format=xlsx` output.
+
+#### Fixed DECs Disappearing on Save; Included DECs in All BC Exports
+
+- Adding DECs to a BC on the detail form and clicking Save silently deleted them: the rendered table and `static/js/main.js` submit DEC fields as `decs[N][dec_label]` etc., but `routes/bc.py`'s `_decs_from_form()` was still reading obsolete flat-array names (`dec_label[]`) that the form never sent, so it always parsed zero DECs and `save_decs()`'s delete-then-recreate logic wiped every existing DEC and added nothing back — on both create and edit.
+- `routes/bc.py` — rewrote `_decs_from_form()` to parse the actual `decs[N][field]` keys via regex, grouped and ordered by row index.
+- `templates/bc_detail.html` / `static/js/main.js` — added hidden `decs[N][dec_id]`/`decs[N][ncit_dec_code]` inputs (previously never emitted at all) so editing an existing DEC preserves its identity/NCIt code instead of `save_decs` regenerating a new `dec_id` on every save.
+- `services/bc_service.py` — `save_decs()` now also persists the `required` checkbox onto `DataElementConcept.required`, which the form submitted but the service silently discarded.
+- Separately, DECs weren't reaching any BC export either: `/bc/export?format=xlsx` used an old exporter (`export_xlsx`/`BC_EXPORT_FIELDS`) with no DEC columns/rows at all and the wrong sheet name, while a newer exporter (`export_governance_xlsx`) already matched the reference `files/BC Examples.xlsx` `BC_LB` shape (BC row + one row per DEC, BC columns repeated) but was wired only to the published-only `/governance/export` route. Pointed `/bc/export`'s xlsx branch at `export_governance_xlsx` instead and removed the now-dead `export_xlsx`/`BC_EXPORT_FIELDS`.
+- `models/bc.py` — `BiomedicalConcept.to_dict()` now includes a `decs` list (skipped gracefully for a transient, not-yet-session-bound BC), so JSON export carries DEC data too.
+- `services/export.py` — `export_odm_xml()` now emits a DEC-derived `ItemDef` per DEC (data-type mapped to ODM's, NCIt alias when present).
+- Wrote tests first (TDD): fixed `TestCreateBc.test_create_with_decs` (previously posted a fictitious flat-array shape the browser never sends), added DEC coverage to `TestEditBc` (unchanged/updated/added/removed rows, `required` persistence), a new `TestSaveDecs` unit-test class in `tests/test_bc_service.py` (previously zero coverage), strengthened `TestExport` in `tests/test_bc_routes.py` and `TestExportOdmXml`/removed the now-dead `TestExportXlsx` in `tests/test_export_service.py`, and added `to_dict()` DEC tests to `tests/test_models.py`; 358 tests passing, isort/black/flake8 clean ✅
+- Verified end-to-end against a live dev server on a throwaway DB/port: created a BC with 2 DECs via the real `decs[N][field]` form shape and confirmed both rendered; edited it (updated one DEC, dropped one, added one) in a single save and confirmed the detail page reflected exactly that; confirmed `/bc/export` in JSON, XLSX (`BC_LB` sheet, correct row/column shape), and ODM-XML all carry the DEC data.
+
 #### Reordered the Definition Section on the BC Detail Form
 
 - `templates/bc_detail.html` — moved the "Definition" `bc-card` block (textarea for `definition`) to appear right after the top summary section, ahead of the NCIt/LOINC panels; it previously sat lower on the page, after the LOINC results container. Template-only reorder, no field/logic changes.
