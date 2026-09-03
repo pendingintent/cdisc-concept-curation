@@ -57,4 +57,18 @@ jobs:
         if: startsWith(github.ref, 'refs/tags/')
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: gh release create "${{ github.ref_name }}" dist/*.zip dist/*.tar.gz --generate-notes
+        run: |
+          TAG="${{ github.ref_name }}"
+          # A release for this tag may already exist (e.g. someone drafted
+          # it manually in the GitHub UI when creating the tag) - in that
+          # case `gh release create` fails with "a release with the same
+          # tag name already exists" and this job's own dist/*.zip and
+          # .tar.gz never get attached, silently leaving only GitHub's
+          # auto-generated (submodule-less) source archive for users to
+          # download. Upload to the existing release instead when that
+          # happens.
+          if gh release view "$TAG" >/dev/null 2>&1; then
+            gh release upload "$TAG" dist/*.zip dist/*.tar.gz --clobber
+          else
+            gh release create "$TAG" dist/*.zip dist/*.tar.gz --generate-notes
+          fi

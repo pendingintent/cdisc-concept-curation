@@ -32,6 +32,13 @@ CDISC Biomedical Concept Curation — a Flask/Jinja web application for curating
 
 ### 2026-09-03
 
+#### Fixed the Release Workflow Silently Publishing a Broken Archive When a Release Pre-Exists
+
+- A user reported the NCIt/BC Alignment feature failing with `populate_complete_list failed (exit code 1)` after installing from the `version-0.5` release download. Root cause: `cdisc-bc-ncit-alignment/` was completely empty in the archive they downloaded, so `python -m src.populate_complete_list` couldn't even be found.
+- Traced it to the actual `Release` workflow run for the `version-0.5` tag ([run 33779038795](https://github.com/pendingintent/cdisc-concept-curation/actions/runs/33779038795)): the submodule checkout and `scripts/build_release.py` packaging both succeeded (the produced zip/tar.gz were verified correct — submodule content present, no `.git`), but the final `gh release create` step failed with `a release with the same tag name already exists`, because a `version-0.5` release had already been drafted (via the GitHub UI, `createdAt` 2 minutes before the workflow ran) with zero assets. The job reported overall failure, but nobody was watching the Actions tab, so the release stayed live with only GitHub's auto-generated "Source code" zip/tarball — a plain `git archive` of the tag, which (as documented in `RELEASING.md` from the start) never resolves the submodule.
+- **Immediate remediation**: downloaded the already-correct `dist/*` artifact from that same failed run (`gh run download 33779038795 --name release-archives`), verified it contained real submodule files, and uploaded it directly to the existing `version-0.5` release (`gh release upload`) — the release's download links are now fixed with no re-tag needed.
+- **Root-cause fix**: `.github/workflows/release.yml`'s publish step now checks whether a release for the tag already exists (`gh release view`) and uploads to it (`gh release upload --clobber`) instead of unconditionally trying `gh release create`, which fails whenever one does. `RELEASING.md` updated to warn against drafting a release in the UI ahead of pushing the tag, and to check the Actions tab after pushing.
+
 #### Restricted the Release Workflow to `version-*` Tags Pushed From `main`
 
 - The release workflow (`.github/workflows/release.yml`) previously triggered on any `v*.*.*` tag pushed from anywhere. Per request: only run when the archive is cut from `main`, and use this project's actual tag convention (`version-` prefix, e.g. `version-1.2.3`), not semver `v`.
