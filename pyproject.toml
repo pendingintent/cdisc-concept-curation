@@ -7,10 +7,12 @@ requires-python = ">=3.11"
 [tool.black]
 line-length = 200
 target-version = ['py311', 'py312']
+extend-exclude = "cdisc-bc-ncit-alignment/"
 
 [tool.isort]
 profile = "black"
 line_length = 200
+skip = ["cdisc-bc-ncit-alignment"]
 
 [tool.pytest.ini_options]
 addopts = "--ignore=cdisc-bc-ncit-alignment"
