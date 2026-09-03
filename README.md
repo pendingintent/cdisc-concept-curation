@@ -32,6 +32,23 @@ pre-commit install
 
 Pre-commit hooks will now run automatically before each `git commit`, enforcing code formatting (black) and linting (flake8).
 
+## Submodules
+
+`cdisc-bc-ncit-alignment/` is a git submodule ([pendingintent/cdisc-bc-ncit-alignment](https://github.com/pendingintent/cdisc-bc-ncit-alignment)) containing standalone tools for aligning CDISC Biomedical Concepts with NCI Thesaurus codes. It is not part of the Flask app's import path — see its own README for setup and usage.
+
+```bash
+# If you haven't cloned yet, pull submodules along with the main repo:
+git clone --recurse-submodules https://github.com/your-org/cdisc-concept-curation.git
+
+# If you already cloned without --recurse-submodules:
+git submodule update --init
+
+# To pull the latest changes from the submodule's remote main branch:
+git submodule update --remote cdisc-bc-ncit-alignment
+```
+
+The last command updates your working copy and stages the new submodule commit in the parent repo; commit that change (`git add cdisc-bc-ncit-alignment && git commit`) to record which submodule commit this repo depends on.
+
 ## Configuration
 
 ### Environment Variables
@@ -149,9 +166,10 @@ cdisc-concept-curation/
 ├── static/
 │   ├── css/custom.css
 │   └── js/main.js
-└── files/                        # Reference documents (read-only)
-    ├── implementation.md         # Architecture specification
-    └── result.md                 # Build summary
+├── files/                        # Reference documents (read-only)
+│   ├── implementation.md         # Architecture specification
+│   └── result.md                 # Build summary
+└── cdisc-bc-ncit-alignment/      # Git submodule — NCIt <-> CDISC BC alignment tools (see its own README)
 ```
 
 ---

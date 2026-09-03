@@ -60,6 +60,9 @@ Thumbs.db
 normalized/schedule_instances.csv
 normalized/*.json
 
+# Generated NCIt/BC alignment job output (per-job report files)
+instance/alignment_jobs/
+
 # If you want to ignore all normalized CSV artifacts uncomment below
 # normalized/*.csv
 

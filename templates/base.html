@@ -46,17 +46,23 @@
         <i class="bi bi-diagram-3 nav-icon" aria-hidden="true"></i>
         Biomedical Concepts
       </a>
+      <a href="{{ url_for('specializations.index') }}"
+         class="nav-item {% if request.endpoint and request.endpoint.startswith('specializations.') %}active{% endif %}"
+         aria-current="{% if request.endpoint and request.endpoint.startswith('specializations.') %}page{% endif %}">
+        <i class="bi bi-table nav-icon" aria-hidden="true"></i>
+        SDTM Specializations
+      </a>
       <a href="{{ url_for('ncit.mapping') }}"
          class="nav-item {% if request.endpoint and request.endpoint.startswith('ncit.') %}active{% endif %}"
          aria-current="{% if request.endpoint and request.endpoint.startswith('ncit.') %}page{% endif %}">
         <i class="bi bi-diagram-2 nav-icon" aria-hidden="true"></i>
         NCIT Mapping
       </a>
-      <a href="{{ url_for('specializations.index') }}"
-         class="nav-item {% if request.endpoint and request.endpoint.startswith('specializations.') %}active{% endif %}"
-         aria-current="{% if request.endpoint and request.endpoint.startswith('specializations.') %}page{% endif %}">
-        <i class="bi bi-table nav-icon" aria-hidden="true"></i>
-        Specializations
+      <a href="{{ url_for('ncit_alignment.index') }}"
+         class="nav-item {% if request.endpoint and request.endpoint.startswith('ncit_alignment.') %}active{% endif %}"
+         aria-current="{% if request.endpoint and request.endpoint.startswith('ncit_alignment.') %}page{% endif %}">
+        <i class="bi bi-link-45deg nav-icon" aria-hidden="true"></i>
+        NCIt/BC Alignment
       </a>
     </div>
 

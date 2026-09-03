@@ -1,7 +1,9 @@
 import pytest
 
 from app import create_app
+from config import Config
 from extensions import db as _db
+from models.alignment import AlignmentJob  # noqa: F401
 from models.audit import AuditLog  # noqa: F401  (registers table metadata)
 from models.bc import BiomedicalConcept, DataElementConcept  # noqa: F401
 from models.governance import GovernanceRecord  # noqa: F401
@@ -20,6 +22,7 @@ class TestConfig:
     NCIT_API_BASE_URL = "https://api-evsrest.nci.nih.gov/api/v1"
     MAX_CONTENT_LENGTH = 16 * 1024 * 1024
     WTF_CSRF_ENABLED = False
+    ALIGNMENT_SUBMODULE_DIR = Config.ALIGNMENT_SUBMODULE_DIR
 
 
 @pytest.fixture(scope="session")
