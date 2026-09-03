@@ -18,6 +18,13 @@ branch will not produce a release.
    git tag version-1.2.3
    git push origin version-1.2.3
    ```
+   **Don't also draft a release for this tag in the GitHub UI first.** Push the tag
+   from the command line (or `git push --tags`) and let the workflow create the
+   release. If a release for the tag already exists, it just uploads the correct
+   assets to it instead of failing — but until that upload happens, the release page
+   would only offer GitHub's auto-generated "Source code" zip/tarball, which is a
+   plain `git archive` with no submodule content (see the warning above). Check the
+   **Actions** tab after pushing to confirm the `Release` workflow succeeded.
 2. The `Release` workflow checks out the repo (with the submodule fully resolved via
    `submodules: recursive`), confirms the tag is on `main`, runs
    `scripts/build_release.py`, and publishes a GitHub Release named `version-1.2.3`
