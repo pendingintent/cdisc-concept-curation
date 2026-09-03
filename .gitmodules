@@ -1,0 +1,3 @@
+[submodule "cdisc-bc-ncit-alignment"]
+	path = cdisc-bc-ncit-alignment
+	url = https://github.com/pendingintent/cdisc-bc-ncit-alignment.git

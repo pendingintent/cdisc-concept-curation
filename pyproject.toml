@@ -11,3 +11,6 @@ target-version = ['py311', 'py312']
 [tool.isort]
 profile = "black"
 line_length = 200
+
+[tool.pytest.ini_options]
+addopts = "--ignore=cdisc-bc-ncit-alignment"
