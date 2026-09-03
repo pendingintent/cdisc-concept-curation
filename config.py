@@ -1,5 +1,9 @@
 import os
 
+from dotenv import load_dotenv
+
+load_dotenv()
+
 
 class Config:
     SECRET_KEY = os.environ.get("SECRET_KEY", "dev-secret-key-change-in-prod")
@@ -12,3 +16,7 @@ class Config:
     NCIT_API_BASE_URL = "https://api-evsrest.nci.nih.gov/api/v1"
     MAX_CONTENT_LENGTH = 16 * 1024 * 1024  # 16MB upload limit
     PORT = int(os.environ.get("PORT", 8081))
+    ALIGNMENT_SUBMODULE_DIR = os.environ.get(
+        "ALIGNMENT_SUBMODULE_DIR",
+        os.path.join(os.path.dirname(os.path.abspath(__file__)), "cdisc-bc-ncit-alignment"),
+    )

@@ -11,6 +11,7 @@ exclude =
     *.egg,
     build,
     dist,
-    instance
+    instance,
+    cdisc-bc-ncit-alignment
 per-file-ignores =
     __init__.py:F401

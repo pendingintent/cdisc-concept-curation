@@ -55,10 +55,14 @@ Thumbs.db
 # Environment variables / secrets (add if created)
 .env
 .env.*
+!.env.example
 
 # Generated normalization outputs (optional to ignore)
 normalized/schedule_instances.csv
 normalized/*.json
+
+# Generated NCIt/BC alignment job output (per-job report files)
+instance/alignment_jobs/
 
 # If you want to ignore all normalized CSV artifacts uncomment below
 # normalized/*.csv

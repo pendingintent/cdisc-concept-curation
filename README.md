@@ -11,11 +11,29 @@ A Flask web application for curating CDISC Biomedical Concepts (BCs). It replace
 
 ---
 
-## Installation
+## Quick Start (no git required)
+
+If you're not a developer and just want to run the app locally: download the latest
+release archive from the [Releases page](https://github.com/pendingintent/cdisc-concept-curation/releases)
+(`.zip` for Windows, `.tar.gz` for Mac/Linux), extract it, and double-click the
+installer for your platform:
+
+- **Windows**: `Install (Windows).bat`
+- **Mac**: `Install (Mac).command`
+- **Linux**: `install.sh`
+
+The installer creates a virtual environment, installs dependencies, asks for your
+CDISC API key, sets up the database, and leaves behind a `Start` launcher
+(`Start.bat` / `Start.command` / `start.sh`) — double-click that any time to run the
+app. No git, and no command line beyond double-clicking, required.
+
+Maintainers cutting a release: see [RELEASING.md](RELEASING.md).
+
+## Installation (for developers)
 
 ```bash
 # 1. Clone the repository
-git clone https://github.com/your-org/cdisc-concept-curation.git
+git clone https://github.com/pendingintent/cdisc-concept-curation.git
 cd cdisc-concept-curation
 
 # 2. Create and activate a virtual environment
@@ -32,21 +50,45 @@ pre-commit install
 
 Pre-commit hooks will now run automatically before each `git commit`, enforcing code formatting (black) and linting (flake8).
 
+## Submodules
+
+`cdisc-bc-ncit-alignment/` is a git submodule ([pendingintent/cdisc-bc-ncit-alignment](https://github.com/pendingintent/cdisc-bc-ncit-alignment)) containing standalone tools for aligning CDISC Biomedical Concepts with NCI Thesaurus codes. It is not part of the Flask app's import path — see its own README for setup and usage.
+
+```bash
+# If you haven't cloned yet, pull submodules along with the main repo:
+git clone --recurse-submodules https://github.com/pendingintent/cdisc-concept-curation.git
+
+# If you already cloned without --recurse-submodules:
+git submodule update --init
+
+# To pull the latest changes from the submodule's remote main branch:
+git submodule update --remote cdisc-bc-ncit-alignment
+```
+
+The last command updates your working copy and stages the new submodule commit in the parent repo; commit that change (`git add cdisc-bc-ncit-alignment && git commit`) to record which submodule commit this repo depends on.
+
 ## Configuration
 
 ### Environment Variables
 
-The application is configured entirely through environment variables.
+The application is configured entirely through environment variables, loaded
+automatically from a `.env` file in the repo root if one exists (via
+`python-dotenv`) — copy `.env.example` to `.env` and fill in your values, or set
+real environment variables instead.
 
 | Variable | Required | Default | Description |
 |----------|----------|---------|-------------|
 | `CDISC_API_KEY` | Yes | _(empty)_ | API key for the CDISC Library. All CDISC API calls will fail without it. |
+| `CDISC_SUBSCRIPTION_KEY` | No | _(empty)_ | When set, used instead of `CDISC_API_KEY` (sent as the `Ocp-Apim-Subscription-Key` header). |
 | `SECRET_KEY` | No | `dev-secret-key-change-in-prod` | Flask session secret. Set a strong value in production. |
 | `DATABASE_URL` | No | `sqlite:///cdisc_curation.db` | SQLAlchemy database URI. Defaults to a local SQLite file. |
+| `PORT` | No | `8081` | Dev server port. |
+| `FLASK_DEBUG` | No | `1` | Set to `0` to disable Flask's debugger/auto-reloader (recommended outside active development). |
 | `LOINC_USER` | No | _(empty)_ | Optional Basic Auth username for the NLM Clinical Tables API. If set, `LOINC_PASSWORD` must also be set. |
 | `LOINC_PASSWORD` | No | _(empty)_ | Optional Basic Auth password for the NLM Clinical Tables API. If set, `LOINC_USER` must also be set. |
+| `ALIGNMENT_SUBMODULE_DIR` | No | `<app_dir>/cdisc-bc-ncit-alignment` | Path to the alignment submodule checkout. |
 
-Set environment variables before running the app:
+Set environment variables before running the app (or put them in `.env`):
 
 ```bash
 export CDISC_API_KEY=your_cdisc_api_key_here
@@ -149,9 +191,10 @@ cdisc-concept-curation/
 ├── static/
 │   ├── css/custom.css
 │   └── js/main.js
-└── files/                        # Reference documents (read-only)
-    ├── implementation.md         # Architecture specification
-    └── result.md                 # Build summary
+├── files/                        # Reference documents (read-only)
+│   ├── implementation.md         # Architecture specification
+│   └── result.md                 # Build summary
+└── cdisc-bc-ncit-alignment/      # Git submodule — NCIt <-> CDISC BC alignment tools (see its own README)
 ```
 
 ---

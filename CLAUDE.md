@@ -63,7 +63,7 @@ pytest tests/test_bc_routes.py -v   # single file
 - `extensions.py` — Shared `db` and `migrate` instances (avoids circular imports — always import from here)
 - `tests/` - Unit tests
 
-**8 blueprints** registered in `app.py`:
+**10 blueprints** registered in `app.py`:
 
 | Blueprint | Prefix | Purpose |
 |-----------|--------|---------|
@@ -71,10 +71,12 @@ pytest tests/test_bc_routes.py -v   # single file
 | `ingestion` | `/ingestion` | File upload → parse → queue → approve |
 | `bc` | `/bc` | BC CRUD, export (XLSX/JSON/ODM-XML) |
 | `ncit` | `/ncit` | NCI Thesaurus search & mapping |
+| `ncit_alignment` | `/ncit-alignment` | Background NCIt↔CDISC BC alignment run (`cdisc-bc-ncit-alignment` submodule), progress tracking, XLSX/JSON download |
 | `loinc` | `/loinc` | LOINC code search (NLM Clinical Tables) |
 | `specializations` | `/specializations` | Dataset specialization management |
 | `governance` | `/governance` | 4-stage Kanban board |
 | `audit` | `/audit` | Immutable change log |
+| `notes` | `/notes` | Free-text notes on BCs/specializations |
 
 **Key services:**
 - `services/cdisc_api.py` — CDISC Library REST client with 5-min in-memory cache
@@ -82,6 +84,7 @@ pytest tests/test_bc_routes.py -v   # single file
 - `services/loinc_api.py` — NLM Clinical Tables LOINC search (optional Basic Auth via `LOINC_USER`/`LOINC_PASSWORD`)
 - `services/ingestion.py` — XLSX/CSV/JSON parser + fuzzy field mapper (`SequenceMatcher` similarity scoring)
 - `services/export.py` — XLSX/JSON/ODM-XML exporter
+- `services/alignment_runner.py` — runs the `cdisc-bc-ncit-alignment` submodule's two-stage CLI pipeline as subprocesses from a background thread, tracking progress on an `AlignmentJob` row (see `models/alignment.py`)
 
 **Ingestion pipeline flow:**
 1. Upload file → parser extracts rows, groups by BC ID (handles multi-row DECs per BC)
@@ -117,6 +120,7 @@ All configuration is in `config.py` via environment variables:
 | `DATABASE_URL` | `sqlite:///cdisc_curation.db` | Database connection string (resolves to `instance/cdisc_curation.db`) |
 | `PORT` | `8081` | Dev server port |
 | `LOINC_USER` / `LOINC_PASSWORD` | unset | Optional Basic Auth for the NLM LOINC API |
+| `ALIGNMENT_SUBMODULE_DIR` | `cdisc-bc-ncit-alignment/` (repo root) | Path to the alignment submodule, used as `cwd` when its CLI stages are run as subprocesses |
 
 CDISC API base: `https://api.library.cdisc.org/api/cosmos/v2`
 NCIt API base: `https://api-evsrest.nci.nih.gov/api/v1`
