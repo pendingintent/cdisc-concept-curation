@@ -32,6 +32,14 @@ CDISC Biomedical Concept Curation — a Flask/Jinja web application for curating
 
 ### 2026-09-03
 
+#### Restricted the Release Workflow to `version-*` Tags Pushed From `main`
+
+- The release workflow (`.github/workflows/release.yml`) previously triggered on any `v*.*.*` tag pushed from anywhere. Per request: only run when the archive is cut from `main`, and use this project's actual tag convention (`version-` prefix, e.g. `version-1.2.3`), not semver `v`.
+- `on.push.tags` changed from `v*.*.*` to `version-*`. GitHub's `push` trigger filters only match ref *names*, not the branch a tag's commit happens to be on, so a name filter alone can't express "only from main" — a `version-*` tag pushed from any branch would still trigger.
+- Added an explicit "Verify this is being released from main" step (`git merge-base --is-ancestor "$GITHUB_SHA" origin/main`) that runs before packaging and fails the job with a clear `::error::` if the triggering commit isn't on `main` — covers both a tag push and a manual `workflow_dispatch` run against a non-main branch. Checkout now uses `fetch-depth: 0` so `origin/main`'s full history is available for that check.
+- `gh release create` already uses the tag name as the release title when no `--title` is passed, so a `version-1.2.3` tag produces a release named `version-1.2.3` — no separate change needed for the "release name prefixed with version-" requirement.
+- `RELEASING.md` updated to the new tag format and the main-only requirement; sanity-checked the `git merge-base --is-ancestor` logic locally (false on this feature branch's HEAD, true on `origin/main`'s own tip) and validated the workflow YAML parses.
+
 #### Installer Now Rejects Unsupported Python Versions with a Clear Message (Issue #74)
 
 - [Issue #74](https://github.com/pendingintent/cdisc-concept-curation/issues/74): a user on Python 3.14 ran `pip install -r requirements.txt` (manually, against a pre-installer v0.4 archive) and hit a cryptic native-build failure deep in `pandas==2.2.2`'s metadata step (`meson.build ... Could not find ... vswhere.exe`) — pandas 2.2.2 predates Python 3.14 and ships no prebuilt wheel for it, so pip fell back to a source build requiring a Visual Studio/Meson toolchain the user didn't have.
