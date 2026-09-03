@@ -55,6 +55,7 @@ Thumbs.db
 # Environment variables / secrets (add if created)
 .env
 .env.*
+!.env.example
 
 # Generated normalization outputs (optional to ignore)
 normalized/schedule_instances.csv

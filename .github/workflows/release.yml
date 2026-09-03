@@ -1,0 +1,60 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - "version-*"
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "Version to embed in the archive filenames (e.g. version-1.2.3). Defaults to the branch/tag name."
+        required: false
+        default: ""
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          # Required: a plain checkout leaves cdisc-bc-ncit-alignment/ as an
+          # empty gitlink pointer, which would ship a broken archive.
+          submodules: recursive
+          # Full history (not just the tagged commit) so the "on main" check
+          # below can walk ancestry against origin/main.
+          fetch-depth: 0
+
+      - name: Verify this is being released from main
+        run: |
+          if ! git merge-base --is-ancestor "$GITHUB_SHA" origin/main; then
+            echo "::error::$GITHUB_SHA (${GITHUB_REF_NAME}) is not on main. Release archives are only built from tags/runs on main." >&2
+            exit 1
+          fi
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Build release archives
+        run: |
+          VERSION="${{ github.event.inputs.version }}"
+          if [ -z "$VERSION" ]; then
+            VERSION="${{ github.ref_name }}"
+          fi
+          python scripts/build_release.py --version "$VERSION"
+
+      - name: Upload workflow artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: release-archives
+          path: dist/*
+          if-no-files-found: error
+
+      - name: Publish GitHub Release
+        if: startsWith(github.ref, 'refs/tags/')
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: gh release create "${{ github.ref_name }}" dist/*.zip dist/*.tar.gz --generate-notes
