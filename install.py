@@ -19,6 +19,7 @@ import sys
 from pathlib import Path
 
 MIN_PYTHON = (3, 11)
+MAX_PYTHON_EXCLUSIVE = (3, 13)  # 3.13+: some deps (e.g. pandas==2.2.2) have no installable package yet
 REPO_ROOT = Path(__file__).resolve().parent
 VENV_DIR = REPO_ROOT / ".venv"
 ENV_FILE = REPO_ROOT / ".env"
@@ -35,11 +36,15 @@ def fail(message):
 
 
 def check_python_version():
-    if sys.version_info < MIN_PYTHON:
+    if sys.version_info < MIN_PYTHON or sys.version_info >= MAX_PYTHON_EXCLUSIVE:
         fail(
-            f"Python {MIN_PYTHON[0]}.{MIN_PYTHON[1]}+ is required, found "
-            f"{platform.python_version()}. Install a newer Python from "
-            "https://www.python.org/downloads/ and run this installer again."
+            "Python 3.11 or 3.12 is required, found "
+            f"{platform.python_version()}. Other versions aren't supported yet "
+            "because some dependencies (e.g. pandas) don't have installable "
+            "packages for them on every platform. Install Python 3.12 from "
+            "https://www.python.org/downloads/ and run this installer again "
+            "with that version (on Windows, if you have multiple Python "
+            "versions installed, try: py -3.12 install.py)."
         )
 
 

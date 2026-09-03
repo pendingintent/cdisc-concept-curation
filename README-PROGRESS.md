@@ -32,6 +32,13 @@ CDISC Biomedical Concept Curation — a Flask/Jinja web application for curating
 
 ### 2026-09-03
 
+#### Installer Now Rejects Unsupported Python Versions with a Clear Message (Issue #74)
+
+- [Issue #74](https://github.com/pendingintent/cdisc-concept-curation/issues/74): a user on Python 3.14 ran `pip install -r requirements.txt` (manually, against a pre-installer v0.4 archive) and hit a cryptic native-build failure deep in `pandas==2.2.2`'s metadata step (`meson.build ... Could not find ... vswhere.exe`) — pandas 2.2.2 predates Python 3.14 and ships no prebuilt wheel for it, so pip fell back to a source build requiring a Visual Studio/Meson toolchain the user didn't have.
+- The README already documents "Python 3.11 or 3.12" as required, but `install.py`'s `check_python_version()` only enforced a lower bound (`>= 3.11`) — a Python 3.13/3.14 user would sail straight past that check into the same wall of pip/Meson output, exactly the kind of failure this installer exists to prevent for non-technical users.
+- `install.py` — added `MAX_PYTHON_EXCLUSIVE = (3, 13)`; `check_python_version()` now rejects anything outside `3.11 <= version < 3.13` with a plain-language explanation (some dependencies have no installable package yet for newer versions) and a concrete next step (install 3.12; on Windows, `py -3.12 install.py` if multiple versions are installed) — before ever invoking pip, so the user never sees a Meson traceback.
+- Wrote tests first (TDD): `tests/test_install.py` (new, 8 tests) parametrized over accepted (3.11.x, 3.12.x) and rejected (3.9, 3.10, 3.13, 3.14) versions via `monkeypatch.setattr(sys, "version_info", ...)`; the two 3.13/3.14 cases failed against the old lower-bound-only check, confirming the gap, before the fix made them pass. 481 tests passing, isort/black/flake8 clean ✅
+
 #### Added a Scripted Local Installer and Release Packaging Workflow for Non-Technical Users
 
 - Non-technical SMEs can't work with git/GitHub; the only setup path was the README's manual clone + venv + `.env`-editing instructions. Added a double-click installer and a GitHub Actions release workflow so a SME can download an archive, extract it, and be running the app with no command line beyond double-clicking.
