@@ -199,6 +199,40 @@ cdisc-concept-curation/
 
 ---
 
+## MCP Server
+
+The app ships an MCP server (`mcp_server/`, registered in `.mcp.json` as `cdisc-curation`) that exposes the curation workflow to MCP clients such as Claude Code. Run it with `python -m mcp_server`. Handlers execute inside the Flask app factory's app context, so the MCP process shares the same database (`instance/cdisc_curation.db`) and service clients as the web app; SQLite runs in WAL mode with a 15s busy timeout so the two writer processes coexist. Writes go through `services/bc_service.py` and `services/governance_service.py` — the same code path the routes use — and are audit-logged with `actor` defaulting to `"mcp"`.
+
+**Read tools**
+
+| Tool | Purpose |
+|------|---------|
+| `list_bcs` | Search/paginate locally curated BCs, filterable by text and governance status |
+| `get_bc` | Full detail for one BC: fields, DECs, specializations, governance history |
+| `list_review_queue` | Summary of BCs in `sme_review`/`cdisc_approval` plus pending ingestion counts |
+| `search_ncit` | Search the NCI Thesaurus (EVS API) by term |
+| `get_ncit_concept` | Full NCIt concept detail by C-code |
+| `search_loinc` | Search LOINC codes via the NLM Clinical Tables API |
+| `search_cdisc_library` | Search published BCs in the live CDISC Library (duplicate detection) |
+| `get_library_bc` | Fetch one published BC from the live CDISC Library |
+| `list_notes` | List notes on a BC or Dataset Specialization |
+
+**Write tools**
+
+| Tool | Purpose |
+|------|---------|
+| `create_bc` | Create a new provisional BC, optionally with DECs |
+| `update_bc` | Update fields on an existing BC |
+| `map_ncit_to_bc` | Attach/resolve an NCIt C-code to a BC (promotes temporary `IMPORT_` ids) |
+| `submit_bc_for_review` | Move a BC from provisional to `sme_review` |
+| `advance_governance` | Advance a BC one governance stage |
+| `reject_bc` | Reject a BC back to provisional |
+| `advance_specialization_governance` | Advance a Dataset Specialization one governance stage |
+| `reject_specialization` | Reject a Dataset Specialization back to provisional |
+| `add_note` / `update_note` / `resolve_note` / `flag_note` | Manage collaborative notes on a BC/Specialization |
+
+---
+
 ## External APIs
 
 The platform integrates with three external APIs to provide rich concept metadata:
