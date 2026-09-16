@@ -52,6 +52,12 @@ def _variable_from_dec(dec):
 def index():
     specs = DatasetSpecialization.query.all()
     library_bcs, local_bcs = _get_bc_options()
+    clone_spec = None
+    clone_from = request.args.get("clone_from", "").strip()
+    if clone_from:
+        clone_spec = db.session.get(DatasetSpecialization, clone_from)
+        if clone_spec is None:
+            flash(f"Specialization {clone_from} not found", "warning")
     return render_template(
         "specializations.html",
         specializations=specs,
@@ -59,6 +65,7 @@ def index():
         local_bcs=local_bcs,
         domain_codes=_get_domain_codes(),
         variable_field_defs=VARIABLE_FIELD_DEFS,
+        clone_spec=clone_spec,
         page_title="Specializations",
     )
 
@@ -90,6 +97,7 @@ def detail(vlm_group_id):
         domain_codes=_get_domain_codes(),
         variable_field_defs=VARIABLE_FIELD_DEFS,
         edit_spec=spec,
+        clone_spec=None,
         notes=notes_service.list_spec_notes(vlm_group_id),
         page_title="Specializations",
     )
