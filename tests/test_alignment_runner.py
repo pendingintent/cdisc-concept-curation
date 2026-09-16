@@ -119,6 +119,7 @@ class TestRunPipeline:
             reloaded = db.session.get(AlignmentJob, job_id)
             assert reloaded.status == "failed"
             assert reloaded.error_message
+            assert reloaded.completed_at is not None
 
     def test_success_path_marks_completed(self, app, tmp_path):
         with app.app_context():

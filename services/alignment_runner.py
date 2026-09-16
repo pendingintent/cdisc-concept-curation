@@ -115,6 +115,7 @@ def _run_pipeline(app, job_id, output_dir=None):
             logger.exception("Alignment job %s failed", job_id)
             job.status = "failed"
             job.error_message = str(exc)
+            job.completed_at = datetime.now(timezone.utc)
             db.session.commit()
 
 
