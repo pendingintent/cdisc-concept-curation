@@ -96,10 +96,12 @@ pytest tests/test_bc_routes.py -v   # single file
 **Governance stages:** Provisional → SME Review → CDISC Approval → Published (tracked in `GovernanceRecord`)
 
 **MCP server:** `mcp_server/` (run with `python -m mcp_server`; registered in
-`.mcp.json`). Eight read tools (`list_bcs`, `get_bc`, `search_ncit`,
+`.mcp.json`). Nine read tools (`list_bcs`, `get_bc`, `search_ncit`,
 `get_ncit_concept`, `search_loinc`, `search_cdisc_library`, `get_library_bc`,
-`list_review_queue`) and six write tools (`create_bc`, `update_bc`,
-`map_ncit_to_bc`, `submit_bc_for_review`, `advance_governance`, `reject_bc`).
+`list_review_queue`, `list_notes`) and twelve write tools (`create_bc`,
+`update_bc`, `map_ncit_to_bc`, `submit_bc_for_review`, `advance_governance`,
+`reject_bc`, `advance_specialization_governance`, `reject_specialization`,
+`add_note`, `update_note`, `resolve_note`, `flag_note`).
 Handlers run inside a Flask app context via the shared app factory, so the
 MCP process and the web app use the same `instance/cdisc_curation.db` and the
 same service clients. Writes go through `services/bc_service.py` and

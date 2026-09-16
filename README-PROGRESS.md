@@ -30,6 +30,15 @@ CDISC Biomedical Concept Curation — a Flask/Jinja web application for curating
 
 ## Daily Changelog
 
+### 2026-09-14
+
+#### Fixed a Stuck NCIt/BC Alignment Job Permanently Blocking New Runs
+
+- A leftover `AlignmentJob` row stuck in `running_populate` since 2026-09-03 (its background thread died when the server process was restarted, but nothing marked the row `failed`) tripped `start_job()`'s concurrency guard, so clicking "Start Alignment Run" always got a silent 409 — the UI just resumed polling the stale job.
+- `services/alignment_runner.py` — added `reconcile_stale_jobs()`, which fails out any leftover non-terminal `AlignmentJob` row (marks it `failed` with an explanatory `error_message` and `completed_at`).
+- `app.py` — wired `reconcile_stale_jobs()` into the `if __name__ == "__main__":` startup path (inside an app context, before `app.run()`), so a server restart can never again leave a permanently-blocking stale row.
+- `tests/test_alignment_runner.py` — new `TestReconcileStaleJobs` class covering non-terminal jobs getting marked failed, terminal jobs left untouched, and the no-jobs no-op case; 484 tests passing, lint clean ✅
+
 ### 2026-09-03
 
 #### Fixed the Release Workflow Silently Publishing a Broken Archive When a Release Pre-Exists
