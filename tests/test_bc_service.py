@@ -3,7 +3,7 @@
 from extensions import db
 from models.audit import AuditLog
 from models.bc import BiomedicalConcept, DataElementConcept
-from services.bc_service import get_or_create_bc_stub, save_decs
+from services.bc_service import build_bc_clone, get_or_create_bc_stub, save_decs
 
 
 class TestGetOrCreateBcStub:
@@ -72,3 +72,41 @@ class TestSaveDecs:
             dec = DataElementConcept.query.filter_by(bc_id=sample_bc).first()
             assert dec.dec_id == "CUSTOM.ID"
             assert dec.ncit_dec_code == "C999"
+
+
+class TestBuildBcClone:
+    def test_returns_none_for_missing_bc(self, app):
+        with app.app_context():
+            bc, decs = build_bc_clone("NOPE")
+            assert bc is None
+            assert decs is None
+
+    def test_copies_group_level_fields_but_not_bc_id(self, app, sample_bc):
+        with app.app_context():
+            bc, _ = build_bc_clone(sample_bc)
+            assert bc.bc_id is None
+            assert bc.short_name == "Test Concept"
+            assert bc.definition == "A test BC definition."
+            assert bc.ncit_code == "C12345"
+
+    def test_copies_decs_ordered_with_dec_id_blanked(self, app, sample_bc):
+        with app.app_context():
+            db.session.add_all(
+                [
+                    DataElementConcept(dec_id=f"{sample_bc}.DEC.1", bc_id=sample_bc, dec_label="Systolic", data_type="decimal", required=True, sort_order=0),
+                    DataElementConcept(dec_id=f"{sample_bc}.DEC.2", bc_id=sample_bc, dec_label="Diastolic", data_type="decimal", required=False, sort_order=1),
+                ]
+            )
+            db.session.commit()
+
+            _, decs = build_bc_clone(sample_bc)
+
+            assert [d["dec_label"] for d in decs] == ["Systolic", "Diastolic"]
+            assert all(d["dec_id"] == "" for d in decs)
+            assert decs[0]["required"] is True
+            assert decs[0]["data_type"] == "decimal"
+
+    def test_no_decs_returns_empty_list(self, app, sample_bc):
+        with app.app_context():
+            _, decs = build_bc_clone(sample_bc)
+            assert decs == []

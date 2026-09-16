@@ -27,10 +27,18 @@
       <span class="page-meta">Submitted by {{ bc.submitter }}</span>
     {% endif %}
   {% endif %}
+  {% if is_new and clone_from %}
+    <span class="page-meta">Cloned from {{ clone_from }} — review fields and DECs before saving</span>
+  {% endif %}
   <div class="page-actions">
     <a href="{{ url_for('bc.index') }}" class="btn btn-sm btn-outline-secondary">
       <i class="bi bi-arrow-left" aria-hidden="true"></i> Back to list
     </a>
+    {% if not is_new %}
+      <a href="{{ url_for('bc.new_bc', clone_from=bc.bc_id) }}" class="btn btn-sm btn-outline-secondary">
+        <i class="bi bi-copy" aria-hidden="true"></i> Clone
+      </a>
+    {% endif %}
     {% if not is_new and bc.status == 'provisional' %}
       <button type="submit" form="bc-form"
               formaction="{{ url_for('bc.submit_for_review', bc_id=bc.bc_id) }}"
@@ -379,8 +387,8 @@
               </tr>
             </thead>
             <tbody id="dec-table-body">
-              {% if bc and bc.decs %}
-                {% for dec in bc.decs %}
+              {% if decs %}
+                {% for dec in decs %}
                 <tr>
                   <td>
                     <input type="hidden" name="decs[{{ loop.index0 }}][ncit_dec_code]" value="{{ dec.ncit_dec_code | default('') }}">

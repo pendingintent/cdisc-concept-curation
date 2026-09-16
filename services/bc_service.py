@@ -24,6 +24,10 @@ class NotFoundError(ValueError):
 # Plain-text fields copied verbatim from a form/dict onto the model.
 _BC_TEXT_FIELDS = ("short_name", "definition", "bc_categories", "synonyms", "result_scales", "package_date")
 
+# Fields copied when building a clone of an existing BC (group-level fields
+# plus the same is_new-branch fields apply_bc_fields would set from a form).
+_BC_CLONE_FIELDS = _BC_TEXT_FIELDS + ("ncit_code", "parent_bc_id", "loinc_code", "system", "system_name", "loinc_metadata", "ncit_metadata")
+
 
 def _get_bc_or_raise(bc_id):
     bc = db.session.get(BiomedicalConcept, bc_id)
@@ -83,6 +87,37 @@ def create_bc(data, actor=None):
     log_change("BiomedicalConcept", bc_id, "created", actor=actor or bc.submitter, after=bc.to_dict())
     db.session.commit()
     return bc
+
+
+def build_bc_clone(bc_id):
+    """Build a transient (unsaved) BiomedicalConcept + its DEC dicts, copied
+    from an existing BC, for pre-filling the New BC form so a curator can
+    tweak group-level info and DECs before saving under a new bc_id.
+
+    bc_id itself is left unset (the curator must supply a new one) and each
+    DEC's dec_id is blanked so save_decs() regenerates it under the new
+    bc_id on save, rather than keeping a stale "<old_bc_id>.DEC.N".
+
+    Returns (None, None) if bc_id doesn't exist.
+    """
+    source = db.session.get(BiomedicalConcept, bc_id)
+    if source is None:
+        return None, None
+    clone = BiomedicalConcept()
+    for field in _BC_CLONE_FIELDS:
+        setattr(clone, field, getattr(source, field))
+    decs = [
+        {
+            "dec_id": "",
+            "ncit_dec_code": dec.ncit_dec_code,
+            "dec_label": dec.dec_label,
+            "data_type": dec.data_type,
+            "example_set": dec.example_set,
+            "required": dec.required,
+        }
+        for dec in source.decs.order_by(DataElementConcept.sort_order)
+    ]
+    return clone, decs
 
 
 def get_or_create_bc_stub(bc_id, short_name="", actor=None):
