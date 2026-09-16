@@ -180,6 +180,50 @@ class TestWriteJsonExport:
         ]
 
 
+class TestReconcileStaleJobs:
+    def test_marks_non_terminal_jobs_as_failed(self, app):
+        with app.app_context():
+            db.session.add_all(
+                [
+                    AlignmentJob(status="pending"),
+                    AlignmentJob(status="running_populate"),
+                    AlignmentJob(status="running_augment"),
+                    AlignmentJob(status="generating_json"),
+                ]
+            )
+            db.session.commit()
+
+            reconciled = alignment_runner.reconcile_stale_jobs()
+
+            assert len(reconciled) == 4
+            for job in AlignmentJob.query.all():
+                assert job.status == "failed"
+                assert job.error_message
+                assert job.completed_at is not None
+
+    def test_leaves_terminal_jobs_untouched(self, app):
+        with app.app_context():
+            db.session.add_all(
+                [
+                    AlignmentJob(status="completed", error_message=None),
+                    AlignmentJob(status="failed", error_message="original failure"),
+                ]
+            )
+            db.session.commit()
+
+            reconciled = alignment_runner.reconcile_stale_jobs()
+
+            assert reconciled == []
+            statuses = {job.status for job in AlignmentJob.query.all()}
+            assert statuses == {"completed", "failed"}
+            failed_job = AlignmentJob.query.filter_by(status="failed").one()
+            assert failed_job.error_message == "original failure"
+
+    def test_no_jobs_is_a_noop(self, app):
+        with app.app_context():
+            assert alignment_runner.reconcile_stale_jobs() == []
+
+
 class TestStartJob:
     def test_raises_when_a_job_is_already_running(self, app):
         with app.app_context():

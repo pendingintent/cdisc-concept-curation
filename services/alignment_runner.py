@@ -60,6 +60,26 @@ def start_job(actor="user"):
     return job
 
 
+def reconcile_stale_jobs():
+    """Fail any AlignmentJob left in a non-terminal status.
+
+    A running job's progress lives only in an in-process daemon thread; if
+    the app process restarts (crash, redeploy, dev server reload) mid-run,
+    the thread and its subprocess are gone but the DB row still claims the
+    job is in flight, which permanently blocks start_job()'s concurrency
+    guard from ever letting a new run start. Call this once at startup,
+    before any request can reach start_job().
+    """
+    stale = AlignmentJob.query.filter(~AlignmentJob.status.in_(_NON_TERMINAL_STATUSES)).all()
+    for job in stale:
+        job.status = "failed"
+        job.error_message = "Job was still in flight when the server restarted; marked failed at startup."
+        job.completed_at = datetime.now(timezone.utc)
+    if stale:
+        db.session.commit()
+    return stale
+
+
 def _run_pipeline(app, job_id, output_dir=None):
     """Background-thread target. Must push its own app context — a thread
     has none of its own. Re-queries the job by id rather than sharing the
