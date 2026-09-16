@@ -171,13 +171,7 @@ def create_start_launcher():
     if system == "Windows":
         path = REPO_ROOT / "Start.bat"
         path.write_text(
-            "@echo off\r\n"
-            'cd /d "%~dp0"\r\n'
-            "call .venv\\Scripts\\activate.bat\r\n"
-            'start "" powershell -NoProfile -Command '
-            f"\"Start-Sleep -Seconds 2; Start-Process 'http://localhost:{port}'\"\r\n"
-            "python app.py\r\n"
-            "pause\r\n"
+            "@echo off\r\n" 'cd /d "%~dp0"\r\n' "call .venv\\Scripts\\activate.bat\r\n" f'start "" cmd /c "ping -n 3 127.0.0.1 >nul & http://localhost:{port}"\r\n' "python app.py\r\n" "pause\r\n"
         )
     elif system == "Darwin":
         path = REPO_ROOT / "Start.command"
