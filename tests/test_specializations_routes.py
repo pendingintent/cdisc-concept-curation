@@ -47,6 +47,44 @@ class TestIndex:
         assert resp.status_code == 200
 
 
+class TestCloneSpecialization:
+    def test_expands_panel_prefilled_but_leaves_id_blank(self, client, app, sample_bc):
+        with app.app_context():
+            spec = DatasetSpecialization(vlm_group_id="VLM1", bc_id=sample_bc, domain="SDTM", short_name="Source Spec")
+            spec.variables = [{"sdtm_variable": "RESULT", "data_type": "decimal"}]
+            db.session.add(spec)
+            db.session.commit()
+        patcher, _ = _patch_client()
+        with patcher:
+            resp = client.get("/specializations/?clone_from=VLM1")
+        body = resp.data.decode()
+        assert resp.status_code == 200
+        assert 'class="collapse mb-3 show"' in body
+        assert "Source Spec" in body
+        assert "RESULT" in body
+        vlm_input = body.split('id="vlm_group_id"')[1].split(">")[0]
+        assert 'value=""' in vlm_input
+
+    def test_unknown_source_flashes_but_index_still_renders(self, client):
+        patcher, _ = _patch_client()
+        with patcher:
+            resp = client.get("/specializations/?clone_from=NOPE", follow_redirects=True)
+        assert resp.status_code == 200
+        assert b"NOPE" in resp.data
+
+    def test_does_not_lock_form_even_if_source_is_published(self, client, app, sample_bc):
+        with app.app_context():
+            spec = DatasetSpecialization(vlm_group_id="VLM1", bc_id=sample_bc, domain="SDTM", short_name="Source Spec", status="published")
+            db.session.add(spec)
+            db.session.commit()
+        patcher, _ = _patch_client()
+        with patcher:
+            resp = client.get("/specializations/?clone_from=VLM1")
+        body = resp.data.decode()
+        fieldset_tag = body.split("<fieldset")[1].split(">")[0]
+        assert "disabled" not in fieldset_tag
+
+
 class TestCreate:
     def test_create_persists_spec(self, client, app, sample_bc):
         patcher, _ = _patch_client()
