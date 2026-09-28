@@ -64,6 +64,37 @@ class TestNewBc:
 
 
 # ---------------------------------------------------------------------------
+# GET /bc/new?clone_from=<bc_id>
+# ---------------------------------------------------------------------------
+
+
+class TestCloneBc:
+    def test_prefills_group_level_fields(self, client, sample_bc):
+        r = client.get(f"/bc/new?clone_from={sample_bc}")
+        assert r.status_code == 200
+        assert b"Test Concept" in r.data
+        assert b"A test BC definition." in r.data
+
+    def test_bc_id_field_is_blank_not_source_id(self, client, sample_bc):
+        r = client.get(f"/bc/new?clone_from={sample_bc}")
+        body = r.data.decode()
+        bc_id_input = body.split('id="bc_id"')[1].split(">")[0]
+        assert 'value=""' in bc_id_input
+
+    def test_prefills_decs(self, client, app, sample_bc):
+        with app.app_context():
+            db.session.add(DataElementConcept(dec_id=f"{sample_bc}.DEC.1", bc_id=sample_bc, dec_label="Systolic", data_type="decimal", sort_order=0))
+            db.session.commit()
+        r = client.get(f"/bc/new?clone_from={sample_bc}")
+        assert b"Systolic" in r.data
+
+    def test_unknown_source_flashes_and_redirects_to_index(self, client):
+        r = client.get("/bc/new?clone_from=NOPE", follow_redirects=True)
+        assert r.status_code == 200
+        assert b"NOPE" in r.data
+
+
+# ---------------------------------------------------------------------------
 # POST /bc/ (create)
 # ---------------------------------------------------------------------------
 

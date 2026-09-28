@@ -56,8 +56,11 @@ def create_app(config_class=Config):
 
 if __name__ == "__main__":
     from db_bootstrap import ensure_db
+    from services.alignment_runner import reconcile_stale_jobs
 
     app = create_app()
     ensure_db(app)
+    with app.app_context():
+        reconcile_stale_jobs()
     # Dev-friendly default; set FLASK_DEBUG=0 to disable the debugger/reloader
     app.run(debug=os.environ.get("FLASK_DEBUG", "1") == "1", port=app.config["PORT"])

@@ -98,4 +98,7 @@ files/cdisc_smart_goals_infographic.html
 .claude/settings.json
 .claude/settings.local.json
 
+# Visual studio code workspace
+*.code-workspace
+
 # End of file

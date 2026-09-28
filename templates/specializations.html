@@ -16,12 +16,13 @@
   </div>
 </div>
 
-<!-- Add specialization form (collapsed by default, expanded when editing) -->
-<div class="collapse mb-3 {% if edit_spec %}show{% endif %}" id="specialization-form-panel">
+<!-- Add specialization form (collapsed by default, expanded when editing or cloning) -->
+{% set fs = edit_spec or clone_spec %}
+<div class="collapse mb-3 {% if fs %}show{% endif %}" id="specialization-form-panel">
   <div class="bc-card">
     <div class="bc-card-header">
       <h2 class="bc-card-title">
-        {% if edit_spec %}Edit Specialization{% else %}New Specialization{% endif %}
+        {% if edit_spec %}Edit Specialization{% elif clone_spec %}New Specialization (cloned from {{ clone_spec.vlm_group_id }}){% else %}New Specialization{% endif %}
       </h2>
     </div>
 
@@ -62,7 +63,7 @@
             <optgroup label="CDISC Library ({{ library_bcs | length }})">
               {% for bc in library_bcs %}
               <option value="{{ bc.bc_id }}"
-                      {% if edit_spec and edit_spec.bc_id == bc.bc_id %}selected{% endif %}>
+                      {% if fs and fs.bc_id == bc.bc_id %}selected{% endif %}>
                 {{ bc.short_name }} ({{ bc.bc_id }})
               </option>
               {% endfor %}
@@ -72,7 +73,7 @@
             <optgroup label="Local — Governance Pipeline ({{ local_bcs | length }})">
               {% for bc in local_bcs %}
               <option value="{{ bc.bc_id }}"
-                      {% if edit_spec and edit_spec.bc_id == bc.bc_id %}selected{% endif %}>
+                      {% if fs and fs.bc_id == bc.bc_id %}selected{% endif %}>
                 {{ bc.short_name }} ({{ bc.bc_id }})
               </option>
               {% endfor %}
@@ -87,12 +88,12 @@
                   aria-label="Select an SDTM domain">
             <option value="">— Select Domain —</option>
             {% for d in domain_codes if d.code %}
-            <option value="{{ d.code }}" {% if edit_spec and edit_spec.domain == d.code %}selected{% endif %}>
+            <option value="{{ d.code }}" {% if fs and fs.domain == d.code %}selected{% endif %}>
               {{ d.code }} — {{ d.label }}
             </option>
             {% endfor %}
-            {% if edit_spec and edit_spec.domain and edit_spec.domain not in (domain_codes | map(attribute='code') | list) %}
-            <option value="{{ edit_spec.domain }}" selected>{{ edit_spec.domain }} (not in current SDTM CT)</option>
+            {% if fs and fs.domain and fs.domain not in (domain_codes | map(attribute='code') | list) %}
+            <option value="{{ fs.domain }}" selected>{{ fs.domain }} (not in current SDTM CT)</option>
             {% endif %}
           </select>
         </div>
@@ -100,7 +101,7 @@
         <div class="col-md-4">
           <label for="spec_short_name" class="form-label small fw-semibold">Short Name <span class="text-danger" aria-hidden="true">*</span></label>
           <input type="text" id="spec_short_name" name="short_name" class="form-control form-control-sm"
-                 value="{{ edit_spec.short_name if edit_spec else '' }}"
+                 value="{{ fs.short_name if fs else '' }}"
                  placeholder="e.g. Serum Creatinine SDTM" required>
         </div>
       </div>
@@ -118,10 +119,10 @@
             </tr>
           </thead>
           <tbody id="spec-variables-body"
-                 data-row-count="{{ (edit_spec.variables | length) if edit_spec and edit_spec.variables else 0 }}"
+                 data-row-count="{{ (fs.variables | length) if fs and fs.variables else 0 }}"
                  data-fields='{{ variable_field_defs | map(attribute=0) | list | tojson }}'>
-            {% if edit_spec and edit_spec.variables %}
-              {% for var in edit_spec.variables %}
+            {% if fs and fs.variables %}
+              {% for var in fs.variables %}
               {% set row_idx = loop.index0 %}
               <tr>
                 {% for field, label in variable_field_defs %}
@@ -218,6 +219,11 @@
                  class="btn btn-sm btn-outline-secondary"
                  aria-label="Edit {{ spec.short_name }}">
                 <i class="bi bi-pencil" aria-hidden="true"></i> Edit
+              </a>
+              <a href="{{ url_for('specializations.index', clone_from=spec.vlm_group_id) }}"
+                 class="btn btn-sm btn-outline-secondary"
+                 aria-label="Clone {{ spec.short_name }}">
+                <i class="bi bi-copy" aria-hidden="true"></i> Clone
               </a>
               <form method="POST" action="{{ url_for('specializations.delete', vlm_group_id=spec.vlm_group_id) }}"
                     onsubmit="return confirm('Delete this specialization?');"

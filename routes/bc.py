@@ -53,6 +53,36 @@ def index():
 
 @bp.route("/new")
 def new_bc():
+    clone_from = request.args.get("clone_from", "").strip()
+    if clone_from:
+        bc, decs = bc_service.build_bc_clone(clone_from)
+        if bc is None:
+            flash(f"BC {clone_from} not found", "danger")
+            return redirect(url_for("bc.index"))
+        loinc_data = {}
+        if bc.loinc_metadata:
+            try:
+                loinc_data = json.loads(bc.loinc_metadata)
+            except (ValueError, TypeError):
+                pass
+        ncit_data = {}
+        if bc.ncit_metadata:
+            try:
+                ncit_data = json.loads(bc.ncit_metadata)
+            except (ValueError, TypeError):
+                pass
+        return render_template(
+            "bc_detail.html",
+            bc=bc,
+            decs=decs,
+            is_new=True,
+            loinc_data=loinc_data,
+            ncit_data=ncit_data,
+            clone_from=clone_from,
+            page_title=f"Clone of {clone_from}",
+            **_result_scale_context(bc),
+        )
+
     bc = BiomedicalConcept()
     ncit_code = request.args.get("ncit_code", "").strip()
     if ncit_code:

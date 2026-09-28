@@ -132,6 +132,11 @@
                    aria-label="View/Edit {{ bc.short_name }}">
                   <i class="bi bi-pencil" aria-hidden="true"></i> Edit
                 </a>
+                <a href="{{ url_for('bc.new_bc', clone_from=bc.bc_id) }}"
+                   class="btn btn-sm btn-outline-secondary"
+                   aria-label="Clone {{ bc.short_name }}">
+                  <i class="bi bi-copy" aria-hidden="true"></i> Clone
+                </a>
                 <button type="button"
                         class="btn btn-sm btn-outline-danger"
                         {% if bc.status == 'published' %}
